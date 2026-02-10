@@ -1,0 +1,466 @@
+import SwiftUI
+
+struct SettingsView: View {
+    @Environment(SalesManager.self) private var manager
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var showingKeyEntry = false
+    @State private var editingProvider: SalesProviderType?
+    @State private var newAPIKey = ""
+    @State private var isValidating = false
+    @State private var showError = false
+    @State private var showRemoveConfirmation = false
+    @State private var removingProvider: SalesProviderType?
+    @State private var showExportSheet = false
+    @State private var exportURL: URL?
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                backgroundGradient.ignoresSafeArea()
+                ScrollView {
+                    VStack(spacing: 24) {
+                        #if os(macOS)
+                            macOSAppearanceSection
+                        #endif
+                        providersSection
+                        dataSection
+                        aboutSection
+                        trustTagline
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 16)
+                }
+            }
+            .navigationTitle("Settings")
+            .sheet(isPresented: $showingKeyEntry) {
+                apiKeySheet
+            }
+            .confirmationDialog(
+                "Disconnect \(removingProvider?.displayName ?? "Provider")?",
+                isPresented: $showRemoveConfirmation
+            ) {
+                Button("Disconnect", role: .destructive) {
+                    if let provider = removingProvider {
+                        disconnectProvider(provider)
+                    }
+                }
+            } message: {
+                Text("This will remove the API key and cached data for this provider.")
+            }
+        }
+    }
+
+    private var backgroundGradient: some View {
+        LinearGradient(
+            colors: colorScheme == .dark
+                ? [Color.brandDeepNavy, Color.black]
+                : [Color.saneBackground, Color.salesGreen.opacity(0.02)],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    // MARK: - macOS Appearance Section
+
+    #if os(macOS)
+        @AppStorage("showInMenuBar") private var showInMenuBar = true
+        @AppStorage("showInDock") private var showInDock = true
+        @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
+
+        private var macOSAppearanceSection: some View {
+            GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
+                VStack(spacing: 0) {
+                    Toggle(isOn: $showInMenuBar) {
+                        GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
+                            EmptyView()
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+
+                    GlassDivider()
+
+                    Toggle(isOn: $showInDock) {
+                        GlassRow("Show in Dock", icon: "dock.rectangle", iconColor: .blue) {
+                            EmptyView()
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+
+                    if showInMenuBar {
+                        GlassDivider()
+
+                        Toggle(isOn: $showRevenueInMenuBar) {
+                            GlassRow("Show Revenue in Menu Bar", iconAssetName: "CoinTemplate", iconColor: .salesGreen) {
+                                EmptyView()
+                            }
+                        }
+                        .toggleStyle(.switch)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                    }
+                }
+            }
+        }
+    #endif
+
+    // MARK: - Providers Section
+
+    private var providersSection: some View {
+        GlassSection("Providers", icon: "link.circle.fill", iconColor: .salesGreen) {
+            VStack(spacing: 0) {
+                providerRow(.lemonSqueezy, isConnected: manager.isLemonSqueezyConnected)
+                GlassDivider()
+                providerRow(.gumroad, isConnected: manager.isGumroadConnected)
+                GlassDivider()
+                providerRow(.stripe, isConnected: manager.isStripeConnected)
+            }
+        }
+    }
+
+    private func providerRow(_ provider: SalesProviderType, isConnected: Bool) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: provider.icon)
+                .font(.title3)
+                .foregroundStyle(provider.brandColor)
+                .frame(width: 28)
+
+            Text(provider.displayName)
+                .font(.subheadline.weight(.medium))
+
+            Spacer()
+
+            if isConnected {
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Color.salesSuccess)
+                        .font(.body)
+
+                    Menu {
+                        Button {
+                            editingProvider = provider
+                            showingKeyEntry = true
+                        } label: {
+                            Label("Change Key", systemImage: "key")
+                        }
+                        Button(role: .destructive) {
+                            removingProvider = provider
+                            showRemoveConfirmation = true
+                        } label: {
+                            Label("Disconnect", systemImage: "xmark.circle")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            } else {
+                Button("Connect") {
+                    editingProvider = provider
+                    showingKeyEntry = true
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Color.salesGreen)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+    }
+
+    // MARK: - API Key Sheet
+
+    private var apiKeySheet: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Image(systemName: editingProvider?.icon ?? "key.fill")
+                    .font(.system(size: 40))
+                    .foregroundStyle(editingProvider?.brandColor ?? .salesGreen)
+                    .padding(.top, 20)
+
+                Text("Connect \(editingProvider?.displayName ?? "Provider")")
+                    .font(.title3.weight(.semibold))
+
+                VStack(alignment: .leading, spacing: 8) {
+                    SecureField("API Key", text: $newAPIKey)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.password)
+                        .autocorrectionDisabled()
+
+                    Text(keyHelpText)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        showingKeyEntry = false
+                        newAPIKey = ""
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isValidating {
+                        ProgressView()
+                            .tint(.salesGreen)
+                    } else {
+                        Button("Save") {
+                            saveKey()
+                        }
+                        .disabled(newAPIKey.isEmpty)
+                        .tint(.salesGreen)
+                    }
+                }
+            }
+            .alert("Invalid API Key", isPresented: $showError) {
+                Button("OK") {}
+            } message: {
+                Text("Could not connect with that key. Check it and try again.")
+            }
+        }
+    }
+
+    private var keyHelpText: String {
+        guard let provider = editingProvider else { return "" }
+        switch provider {
+        case .lemonSqueezy: return "lemonsqueezy.com \u{2192} Settings \u{2192} API"
+        case .gumroad: return "gumroad.com \u{2192} Settings \u{2192} Advanced \u{2192} Applications"
+        case .stripe: return "dashboard.stripe.com \u{2192} Developers \u{2192} API keys (use Secret key)"
+        }
+    }
+
+    // MARK: - Data Section
+
+    private var dataSection: some View {
+        GlassSection("Data", icon: "internaldrive", iconColor: .blue) {
+            VStack(spacing: 0) {
+                if let date = manager.lastUpdated {
+                    GlassRow("Last Updated", icon: "clock", iconColor: .salesGreen) {
+                        Text(date.formatted(date: .abbreviated, time: .shortened))
+                            .font(.subheadline)
+                    }
+                    GlassDivider()
+                }
+                GlassRow("Cached Orders", icon: "list.bullet", iconColor: .purple) {
+                    Text("\(manager.orders.count)")
+                        .font(.subheadline.weight(.semibold))
+                }
+                GlassDivider()
+                GlassRow("Products", icon: "shippingbox", iconColor: .orange) {
+                    Text("\(manager.products.count)")
+                        .font(.subheadline.weight(.semibold))
+                }
+                GlassDivider()
+                Button {
+                    Task { await manager.refresh() }
+                } label: {
+                    GlassRow("Refresh Now", icon: "arrow.clockwise", iconColor: .salesGreen) {
+                        if manager.isLoading {
+                            ProgressView()
+                                .tint(.salesGreen)
+                        }
+                    }
+                }
+                if !manager.orders.isEmpty {
+                    GlassDivider()
+                    Button {
+                        exportURL = exportOrdersCSV(manager.orders)
+                        if exportURL != nil { showExportSheet = true }
+                    } label: {
+                        GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
+                            Image(systemName: "tablecells")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showExportSheet) {
+            if let url = exportURL {
+                ShareSheet(activityItems: [url])
+            }
+        }
+    }
+
+    // MARK: - About Section
+
+    private var aboutSection: some View {
+        GlassSection("About", icon: "info.circle", iconColor: .secondary) {
+            VStack(spacing: 0) {
+                GlassRow("Version", icon: "number", iconColor: .secondary) {
+                    Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
+                        .font(.subheadline)
+                }
+                GlassDivider()
+                GlassRow("Build", icon: "hammer", iconColor: .secondary) {
+                    Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
+                        .font(.subheadline)
+                }
+                GlassDivider()
+                Link(destination: URL(string: "https://saneapps.com")!) {
+                    GlassRow("Website", icon: "globe", iconColor: Color.salesGreen) {
+                        Image(systemName: "arrow.up.forward.square")
+                            .foregroundStyle(Color.salesGreen)
+                            .font(.subheadline)
+                    }
+                }
+                GlassDivider()
+                Link(destination: URL(string: "https://github.com/sane-apps/SaneSales/issues")!) {
+                    GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
+                        Image(systemName: "arrow.up.forward.square")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                    }
+                }
+                GlassDivider()
+                Link(destination: URL(string: "https://saneapps.com/privacy")!) {
+                    GlassRow("Privacy Policy", icon: "hand.raised", iconColor: .blue) {
+                        Image(systemName: "arrow.up.forward.square")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                    }
+                }
+                GlassDivider()
+                Link(destination: URL(string: "mailto:hi@saneapps.com")!) {
+                    GlassRow("Email Us", icon: "envelope", iconColor: .purple) {
+                        Image(systemName: "arrow.up.forward.square")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                    }
+                }
+            }
+        }
+    }
+
+    private var trustTagline: some View {
+        Text("Made with love in the USA \u{00B7} 100% On-Device \u{00B7} No Analytics")
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.top, 8)
+    }
+
+    // MARK: - Actions
+
+    private func saveKey() {
+        guard let provider = editingProvider else { return }
+        isValidating = true
+        let key = newAPIKey
+        Task {
+            let success: Bool = switch provider {
+            case .lemonSqueezy:
+                await manager.setLemonSqueezyAPIKey(key)
+            case .gumroad:
+                await manager.setGumroadAPIKey(key)
+            case .stripe:
+                await manager.setStripeAPIKey(key)
+            }
+            isValidating = false
+            if success {
+                showingKeyEntry = false
+                newAPIKey = ""
+            } else {
+                showError = true
+            }
+        }
+    }
+
+    private func disconnectProvider(_ provider: SalesProviderType) {
+        switch provider {
+        case .lemonSqueezy: manager.removeLemonSqueezyAPIKey()
+        case .gumroad: manager.removeGumroadAPIKey()
+        case .stripe: manager.removeStripeAPIKey()
+        }
+    }
+}
+
+private extension SettingsView {
+    func exportOrdersCSV(_ orders: [Order]) -> URL? {
+        let headers = "Date,Order #,Customer,Email,Product,Variant,Provider,Status,Subtotal,Tax,Discount,Total,Currency,Refunded"
+        let dateFormatter = ISO8601DateFormatter()
+        let fileDateFormatter = DateFormatter()
+        fileDateFormatter.dateFormat = "yyyy-MM-dd"
+
+        func escapeCSV(_ value: String) -> String {
+            value.contains(",") || value.contains("\"") || value.contains("\n")
+                ? "\"\(value.replacingOccurrences(of: "\"", with: "\"\""))\""
+                : value
+        }
+
+        func centsString(_ valueInCents: Int?) -> String {
+            guard let valueInCents else { return "" }
+            return String(format: "%.2f", Double(valueInCents) / 100.0)
+        }
+
+        var rows = [headers]
+        for order in orders {
+            let row = [
+                escapeCSV(dateFormatter.string(from: order.createdAt)),
+                escapeCSV(order.orderNumber.map { String($0) } ?? ""),
+                escapeCSV(order.customerName),
+                escapeCSV(order.customerEmail),
+                escapeCSV(order.productName),
+                escapeCSV(order.variantName ?? ""),
+                escapeCSV(order.provider.displayName),
+                escapeCSV(order.status.rawValue),
+                centsString(order.subtotal),
+                centsString(order.tax),
+                centsString(order.discountTotal),
+                String(format: "%.2f", Double(order.total) / 100.0),
+                escapeCSV(order.currency),
+                order.refundedAt.map { dateFormatter.string(from: $0) } ?? ""
+            ]
+            rows.append(row.joined(separator: ","))
+        }
+
+        let filename = "SaneSales-Export-\(fileDateFormatter.string(from: Date())).csv"
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+        do {
+            try rows.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)
+            return url
+        } catch {
+            return nil
+        }
+    }
+}
+
+#if os(iOS)
+    struct ShareSheet: UIViewControllerRepresentable {
+        let activityItems: [Any]
+        func makeUIViewController(context _: Context) -> UIActivityViewController {
+            UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        }
+
+        func updateUIViewController(_: UIActivityViewController, context _: Context) {}
+    }
+#else
+    struct ShareSheet: View {
+        let activityItems: [Any]
+        var body: some View {
+            if let url = activityItems.first as? URL {
+                VStack(spacing: 16) {
+                    Text("Export Ready")
+                        .font(.headline)
+                    Text(url.lastPathComponent)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Button("Reveal in Finder") {
+                        NSWorkspace.shared.activateFileViewerSelecting([url])
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(Color.salesGreen)
+                }
+                .padding(40)
+            }
+        }
+    }
+#endif

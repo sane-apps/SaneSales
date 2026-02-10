@@ -1,0 +1,34 @@
+# SaneProcess compliance manifest
+name: SaneSales
+type: ios_app
+scheme: SaneSalesIOS
+project: SaneSales.xcodeproj
+bundle_id: com.sanesales.app
+
+build:
+  xcodegen: true
+
+release:
+  dist_host: dist.sanesales.com
+  site_host: sanesales.com
+  r2_bucket: sanebar-downloads
+  use_sparkle: false
+  min_system_version: "17.0"
+
+commands:
+  verify: xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+  test: xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
+  lint: swiftlint lint --quiet --cache-path .swiftlint-cache Core iOS macOS Widgets Tests
+
+docs:
+  - CLAUDE.md
+  - README.md
+  - DEVELOPMENT.md
+  - ARCHITECTURE.md
+  - SESSION_HANDOFF.md
+
+mcps:
+  - apple-docs
+  - context7
+  - github
+  - xcode

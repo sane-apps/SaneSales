@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneSales - Universal Indie Sales Tracker for LemonSqueezy, Gumroad & Stripe</title>
+    <meta name="description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe — in one place. Beautiful revenue charts, order tracking, and CSV export. 100% on-device, no analytics.">
+    <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
+    <meta name="author" content="Mr. Sane">
+    <meta name="robots" content="index, follow">
+    <meta name="apple-mobile-web-app-title" content="SaneSales">
+    <meta name="application-name" content="SaneSales">
+    <link rel="icon" type="image/png" href="images/branding.png?v=2">
+    <link rel="apple-touch-icon" href="images/branding.png">
+    <meta name="theme-color" content="#08080c">
+    <link rel="canonical" href="https://sanesales.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="SaneSales - Universal Indie Sales Tracker">
+    <meta property="og:description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe — in one place.">
+    <meta property="og:image" content="https://sanesales.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sanesales.com/">
+    <meta property="og:site_name" content="SaneSales">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaneSales - Universal Indie Sales Tracker">
+    <meta name="twitter:description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe in one beautiful app.">
+    <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
+    <meta name="twitter:site" content="@saneapps">
+    <meta name="twitter:url" content="https://sanesales.com/">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SaneSales",
+      "operatingSystem": "iOS, macOS",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "6.99",
+        "priceCurrency": "USD"
+      },
+      "description": "Universal indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, and products in one app with 100% on-device privacy.",
+      "image": "https://sanesales.com/images/branding.png",
+      "downloadUrl": "#",
+      "author": {
+        "@type": "Person",
+        "name": "Mr. Sane",
+        "url": "https://github.com/sane-apps"
+      },
+      "softwareVersion": "1.0.0",
+      "featureList": [
+        "Multi-Provider Support (LemonSqueezy, Gumroad, Stripe)",
+        "Interactive Revenue Charts",
+        "Order Tracking & Search",
+        "Product Catalog",
+        "CSV Export",
+        "iOS + macOS Universal App",
+        "Home Screen Widgets",
+        "100% On-Device Privacy"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "SaneSales",
+      "url": "https://sanesales.com",
+      "logo": "https://sanesales.com/images/branding.png",
+      "sameAs": [
+        "https://github.com/sane-apps/SaneSales"
+      ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #34B062;
+            --accent-soft: #2a9550;
+            --accent-glow: rgba(52, 176, 98, 0.25);
+            --accent-subtle: rgba(52, 176, 98, 0.08);
+            --text-primary: #f5f5f8;
+            --text-secondary: #c0c0d0;
+            --text-muted: #a0a0b0;
+            --success: #34d399;
+            --success-soft: rgba(52, 211, 153, 0.15);
+            --border: #252530;
+            --border-subtle: #1e1e28;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Elegant gradient background with subtle noise */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 15% 10%, rgba(52, 176, 98, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 90%, rgba(42, 149, 80, 0.1) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.25rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 0;
+        }
+
+        .logo-family {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 12px;
+            margin-right: auto;
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .logo-family:hover {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.btn-primary {
+            color: #ffffff;
+        }
+
+        .nav-links a.btn-primary:hover {
+            color: #ffffff;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 180px 0 100px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.75rem, 7vw, 4.5rem);
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            line-height: 1.1;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            font-weight: 400;
+            line-height: 1.8;
+        }
+
+        .hero .subtitle em {
+            color: var(--text-primary);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .trust-badges {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+            font-size: 1.17rem;
+            color: var(--text-muted);
+        }
+
+        .trust-badges span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow:
+                0 4px 24px var(--accent-glow),
+                0 1px 3px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 40px var(--accent-glow),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .hero-image {
+            max-width: 420px;
+            margin: 0 auto;
+            border-radius: 32px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow:
+                0 25px 80px -12px rgba(52, 176, 98, 0.2),
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Privacy Badge */
+        .badge-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+
+        .privacy-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            background: var(--success-soft);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            color: var(--success);
+            box-shadow: 0 2px 12px rgba(52, 211, 153, 0.15);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2rem, 5vw, 2.75rem);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 540px;
+            margin: 0 auto 64px;
+            line-height: 1.7;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 36px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-6px);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px var(--accent-subtle);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            margin-bottom: 20px;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            height: 44px;
+            width: 44px;
+            background: var(--accent-subtle);
+            border-radius: 12px;
+            justify-content: center;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke-width: 1.75;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.65;
+        }
+
+        /* Highlight Section */
+        .highlight {
+            padding: 120px 0;
+        }
+
+        .highlight-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .highlight-text h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            margin-bottom: 24px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.25;
+        }
+
+        .highlight-text p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.75;
+        }
+
+        .highlight-text p strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .highlight-image {
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow:
+                0 30px 60px -15px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border-subtle);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .highlight-image:hover {
+            transform: scale(1.02);
+        }
+
+        .highlight-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .highlight.reverse .highlight-content {
+            direction: rtl;
+        }
+
+        .highlight.reverse .highlight-content > * {
+            direction: ltr;
+        }
+
+        /* Download Section */
+        .download {
+            padding: 120px 0;
+            text-align: center;
+        }
+
+        .download-card {
+            background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            padding: 72px 48px;
+            max-width: 720px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .download h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .download p {
+            color: var(--text-secondary);
+            margin-bottom: 36px;
+            font-size: 1.05rem;
+        }
+
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Footer */
+        footer {
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-section h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .highlight-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .highlight.reverse .highlight-content {
+                direction: ltr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Mobile Navigation */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--bg-card);
+                border-left: 1px solid var(--border);
+                padding: 80px 24px 24px;
+                transition: right 0.3s;
+                z-index: 101;
+                overflow-y: auto;
+            }
+
+            .mobile-nav.active {
+                right: 0;
+            }
+
+            .mobile-nav a {
+                display: block;
+                padding: 16px 0;
+                color: var(--text-secondary);
+                text-decoration: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .mobile-nav a:hover {
+                color: var(--accent);
+            }
+
+            .mobile-nav-close {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: var(--text-primary);
+                font-size: 2rem;
+                cursor: pointer;
+                line-height: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="images/branding.png" alt="SaneSales">
+                SaneSales
+            </a>
+            <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#download">Download</a>
+                <a href="mailto:hi@saneapps.com">Contact</a>
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Get SaneSales
+                </a>
+            </div>
+            <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <div id="mobileNav" class="mobile-nav">
+        <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close menu">&times;</button>
+        <a href="#features" onclick="toggleMobileNav()">Features</a>
+        <a href="#how-it-works" onclick="toggleMobileNav()">How It Works</a>
+        <a href="#download" onclick="toggleMobileNav()">Download</a>
+        <a href="mailto:hi@saneapps.com" onclick="toggleMobileNav()">Contact</a>
+        <a href="https://saneapps.com">See all SaneApps &rarr;</a>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <h1 class="animate-in delay-2">Track All Your <em>Sales</em><br>in One Place</h1>
+            <p class="subtitle animate-in delay-3">LemonSqueezy, Gumroad, and Stripe — <em>finally unified</em>.<br>Beautiful revenue charts, order tracking, and CSV export.</p>
+            <div class="trust-badges animate-in delay-3">
+                <span>🔒 100% on-device</span>
+                <span>💵 No subscription</span>
+                <span>📱 iOS + macOS</span>
+            </div>
+            <div class="cta-buttons animate-in delay-4">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download — $6.99
+                </a>
+            </div>
+            <div class="badge-container animate-in delay-5">
+                <div class="privacy-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    API keys stored in device Keychain — never transmitted
+                </div>
+            </div>
+            <div class="hero-image animate-in delay-5">
+                <img src="images/screenshot-dashboard.png" alt="SaneSales Dashboard showing revenue tracking with $800 total sales across 160 orders" style="width: 100%; max-width: 380px; display: block; margin: 0 auto;">
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Everything you need to track indie sales</h2>
+            <p class="section-subtitle">Multi-provider support, beautiful analytics, and complete privacy.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Multi-Provider Support</h3>
+                    <p>Connect LemonSqueezy, Gumroad, and Stripe in one app. No more switching between dashboards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Interactive Revenue Charts</h3>
+                    <p>Donut charts, bar charts, and trend lines. Daily, weekly, and monthly views with smooth animations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </div>
+                    <h3>Order Tracking & Search</h3>
+                    <p>Search orders by customer, product, or amount. Filter by date range, provider, or status.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </div>
+                    <h3>Product Catalog</h3>
+                    <p>View all your products with thumbnails, pricing, and per-product revenue analytics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h3>CSV Export</h3>
+                    <p>Export orders to CSV for accounting, email marketing, or custom analytics workflows.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </div>
+                    <h3>iOS + macOS Universal</h3>
+                    <p>One purchase, works everywhere. Seamless sync via iCloud (optional).</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                        </svg>
+                    </div>
+                    <h3>Home Screen Widgets</h3>
+                    <p>Glance at today's revenue, order count, or top products right from your home screen.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3>100% On-Device Privacy</h3>
+                    <p>API keys stored in Keychain. Sales data cached locally. No analytics, no tracking, no servers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="highlight" id="how-it-works">
+        <div class="container">
+            <div class="highlight-content">
+                <div class="highlight-text">
+                    <h2>See Revenue at a Glance</h2>
+                    <p>Interactive donut charts break down revenue by product. Tap any segment to drill into orders.</p>
+                    <p><strong>Daily, weekly, and monthly views</strong> let you spot trends and celebrate milestones.</p>
+                    <p>All data cached locally — no internet needed after the initial sync.</p>
+                </div>
+                <div class="highlight-image">
+                    <img src="images/screenshot-dashboard.png" alt="SaneSales revenue dashboard with daily, weekly, and monthly views" style="width: 100%; max-width: 380px; display: block; margin: 0 auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="highlight reverse">
+        <div class="container">
+            <div class="highlight-content">
+                <div class="highlight-text">
+                    <h2>Track Every Order</h2>
+                    <p>Search by customer name, email, product, or amount. Filter by date range or provider.</p>
+                    <p><strong>Tap any order</strong> to see full details: customer info, payment method, refund status, and more.</p>
+                    <p>Export to CSV for accounting, email marketing, or custom analytics.</p>
+                </div>
+                <div class="highlight-image">
+                    <img src="images/screenshot-dashboard.png" alt="SaneSales order tracking and search" style="width: 100%; max-width: 380px; display: block; margin: 0 auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="highlight">
+        <div class="container">
+            <div class="highlight-content">
+                <div class="highlight-text">
+                    <h2>Connect Once, Track Forever</h2>
+                    <p>Add your LemonSqueezy, Gumroad, and Stripe API keys once. SaneSales handles the rest.</p>
+                    <p><strong>API keys stored in device Keychain</strong> with hardware encryption. Never transmitted to SaneApps servers.</p>
+                    <p>Direct API communication — no middleman, no third-party tracking.</p>
+                </div>
+                <div class="highlight-image">
+                    <img src="images/screenshot-dashboard.png" alt="SaneSales API setup with secure Keychain storage" style="width: 100%; max-width: 380px; display: block; margin: 0 auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-card">
+                <h2>Ready to unify your sales?</h2>
+                <p>One-time purchase. No subscription. Works on iPhone, iPad, and Mac.</p>
+                <div class="download-options">
+                    <a href="#" class="btn btn-primary" style="font-size: 1.1rem; padding: 18px 36px;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download on the App Store — $6.99
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin: 16px 0 0;">Requires iOS 17+ or macOS 14+</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#download">Download</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="mailto:hi@saneapps.com">Email Support</a></li>
+                        <li><a href="https://github.com/sane-apps/SaneSales/issues">Report a Bug</a></li>
+                        <li><a href="https://github.com/sane-apps/SaneSales/discussions">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>More SaneApps</h3>
+                    <ul>
+                        <li><a href="https://sanebar.com">SaneBar — Menu Bar Manager</a></li>
+                        <li><a href="https://saneclip.com">SaneClip — Clipboard Manager</a></li>
+                        <li><a href="https://sanehosts.com">SaneHosts — Ad Blocker</a></li>
+                        <li><a href="https://saneapps.com">See All Apps</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="https://saneapps.com">About SaneApps</a></li>
+                        <li><a href="https://github.com/sane-apps">Open Source</a></li>
+                        <li><a href="mailto:hi@saneapps.com">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 SaneApps. Licensed under <a href="https://github.com/sane-apps/SaneSales/blob/main/LICENSE">GPL-3</a>. Built with ❤️ for indie hackers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobileNav');
+            nav.classList.toggle('active');
+        }
+
+        // Close mobile nav when clicking outside
+        document.addEventListener('click', function(event) {
+            const nav = document.getElementById('mobileNav');
+            const hamburger = document.querySelector('.hamburger');
+
+            if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                nav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
