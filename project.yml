@@ -197,6 +197,8 @@ targets:
     bundleId: com.sanesales.app.widgets
     deploymentTarget:
       macOS: 14.0
+    entitlements:
+      path: Widgets/SaneSalesWidgets.entitlements
     sources:
       - Widgets
       - path: Core/Models
@@ -335,6 +337,8 @@ targets:
     bundleId: com.sanesales.app.widgets
     deploymentTarget:
       iOS: 17.0
+    entitlements:
+      path: Widgets/SaneSalesWidgets.entitlements
     sources:
       - Widgets
       - path: Core/Models
