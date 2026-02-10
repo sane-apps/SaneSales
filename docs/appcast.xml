@@ -5,5 +5,21 @@
     <link>https://sanesales.com/appcast.xml</link>
     <description>SaneSales updates</description>
     <language>en</language>
+    <item>
+      <title>1.0</title>
+      <pubDate>Mon, 10 Feb 2026 21:44:05 +0000</pubDate>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description>
+        <![CDATA[
+        <p>Initial release! Track your sales from LemonSqueezy, Gumroad, and Stripe in one unified dashboard.</p>
+        ]]>
+      </description>
+      <enclosure url="https://dist.sanesales.com/updates/SaneSales-1.0.dmg"
+                 sparkle:version="1"
+                 sparkle:shortVersionString="1.0"
+                 length="8888254"
+                 type="application/x-apple-diskimage"
+                 sparkle:edSignature="1Gb1bhSnHkuwAJG8/7F3m6JW4CfITPjL9ucADjCocwD6/wxas/7o0QIL6N1j1sqbWGro9784eMv5LPLU8Os6BQ=="/>
+    </item>
   </channel>
 </rss>
