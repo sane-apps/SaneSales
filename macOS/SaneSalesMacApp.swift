@@ -56,6 +56,7 @@ import SwiftUI
             if show {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
             } else {
+                menuBarManager?.tearDown()
                 menuBarManager = nil
             }
         }

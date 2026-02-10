@@ -60,7 +60,13 @@ struct SettingsView: View {
         private var macOSAppearanceSection: some View {
             GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
                 VStack(spacing: 0) {
-                    Toggle(isOn: $showInMenuBar) {
+                    Toggle(isOn: Binding(
+                        get: { showInMenuBar },
+                        set: { newValue in
+                            if !newValue, !showInDock { showInDock = true }
+                            showInMenuBar = newValue
+                        }
+                    )) {
                         GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
                             EmptyView()
                         }
@@ -71,7 +77,13 @@ struct SettingsView: View {
 
                     GlassDivider()
 
-                    Toggle(isOn: $showInDock) {
+                    Toggle(isOn: Binding(
+                        get: { showInDock },
+                        set: { newValue in
+                            if !newValue, !showInMenuBar { showInMenuBar = true }
+                            showInDock = newValue
+                        }
+                    )) {
                         GlassRow("Show in Dock", icon: "dock.rectangle", iconColor: .blue) {
                             EmptyView()
                         }
