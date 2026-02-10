@@ -12,7 +12,7 @@
     <meta name="application-name" content="SaneSales">
     <link rel="icon" type="image/png" href="images/branding.png?v=2">
     <link rel="apple-touch-icon" href="images/branding.png">
-    <meta name="theme-color" content="#08080c">
+    <meta name="theme-color" content="#0D1525">
     <link rel="canonical" href="https://sanesales.com/" />
 
     <!-- Open Graph -->
@@ -90,18 +90,24 @@
 
     <style>
         :root {
-            --bg-primary: #08080c;
-            --bg-secondary: #0f0f16;
-            --bg-card: #16161f;
+            --bg-primary: #0D1525;
+            --bg-secondary: #141419;
+            --bg-card: #1A2744;
             --accent: #34B062;
+            --accent-light: #4CC775;
             --accent-soft: #2a9550;
             --accent-glow: rgba(52, 176, 98, 0.25);
             --accent-subtle: rgba(52, 176, 98, 0.08);
             --text-primary: #f5f5f8;
             --text-secondary: #c0c0d0;
             --text-muted: #a0a0b0;
-            --success: #34d399;
-            --success-soft: rgba(52, 211, 153, 0.15);
+            --success: #22C55E;
+            --success-soft: rgba(34, 197, 94, 0.15);
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --provider-lemon: #FCC233;
+            --provider-gumroad: #FF90E8;
+            --provider-stripe: #635BFF;
             --border: #252530;
             --border-subtle: #1e1e28;
         }
@@ -131,8 +137,8 @@
             bottom: 0;
             background:
                 radial-gradient(ellipse at 15% 10%, rgba(52, 176, 98, 0.12) 0%, transparent 45%),
-                radial-gradient(ellipse at 85% 90%, rgba(42, 149, 80, 0.1) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+                radial-gradient(ellipse at 85% 90%, rgba(42, 149, 80, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(13, 21, 37, 1) 0%, var(--bg-primary) 100%);
             z-index: -1;
         }
 
@@ -189,7 +195,7 @@
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(10, 10, 15, 0.85);
+            background: rgba(13, 21, 37, 0.85);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             z-index: 100;
@@ -803,7 +809,7 @@
     <section class="hero">
         <div class="container">
             <h1 class="animate-in delay-2">Track All Your <em>Sales</em><br>in One Place</h1>
-            <p class="subtitle animate-in delay-3">LemonSqueezy, Gumroad, and Stripe — <em>finally unified</em>.<br>Beautiful revenue charts, order tracking, and CSV export.</p>
+            <p class="subtitle animate-in delay-3"><span style="color: var(--provider-lemon);">LemonSqueezy</span>, <span style="color: var(--provider-gumroad);">Gumroad</span>, and <span style="color: var(--provider-stripe);">Stripe</span> — <em>finally unified</em>.<br>Beautiful revenue charts, order tracking, and CSV export.</p>
             <div class="trust-badges animate-in delay-3">
                 <span>🔒 100% on-device</span>
                 <span>💵 No subscription</span>
@@ -847,7 +853,7 @@
                         </svg>
                     </div>
                     <h3>Multi-Provider Support</h3>
-                    <p>Connect LemonSqueezy, Gumroad, and Stripe in one app. No more switching between dashboards.</p>
+                    <p>Connect <span style="color: var(--provider-lemon); font-weight: 500;">LemonSqueezy</span>, <span style="color: var(--provider-gumroad); font-weight: 500;">Gumroad</span>, and <span style="color: var(--provider-stripe); font-weight: 500;">Stripe</span> in one app. No more switching between dashboards.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">
@@ -1034,7 +1040,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 SaneApps. Licensed under <a href="https://github.com/sane-apps/SaneSales/blob/main/LICENSE">GPL-3</a>. Built with ❤️ for indie hackers.</p>
+                <p>&copy; 2026 SaneApps. Licensed under <a href="https://github.com/sane-apps/SaneSales/blob/main/LICENSE">AGPL-3</a>. Built with ❤️ for indie hackers.</p>
             </div>
         </div>
     </footer>
