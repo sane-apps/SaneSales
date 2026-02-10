@@ -1,0 +1,1357 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		06547098496ED9780EE7E04F /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		0929E606204EBFD18D451B03 /* SalesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2701F2BA6C71F0B71FD529AC /* SalesCard.swift */; };
+		092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */; };
+		17E8D20E10630CDADDE33A19 /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
+		21EE94586BFB529EE5B7D105 /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */; };
+		231B67E1A59EBC726D52B88B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
+		24B1F53D7A9F4FA830040104 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		288F8FF0F8F72BFEE563D293 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
+		2965F75C49E5DC14456FE00E /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
+		2A7E9B1D9CB3888488601ACA /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
+		2AA32C8A5C5634617CFD2464 /* SaneSalesMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */; };
+		2C368EEE9BBE47C9E9B6CED8 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		30243AE0512C901F0E4810D3 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
+		32C0DB99CC8B65BD201EFDD0 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
+		36E263B73CB5AA104BA3CBDD /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C618B676662B450F13B5F6 /* ChartsView.swift */; };
+		3855D35A21CE5DE409F58137 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077F3679A1C5054CF24632C /* CacheService.swift */; };
+		38DA1C95E1A9C2528A5A28CE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */; };
+		3A67B43E4B7EF8D6A9EC819D /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
+		3AC5F3E189ED62A55AA4FFA7 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41947086D2C90F540159C8FB /* MenuBarManager.swift */; };
+		3BB4E13BB268DEA02A7CD256 /* SalesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56337DF07E23B45D4BAE3B34 /* SalesManager.swift */; };
+		41911AD194F44D291D4C9370 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
+		46FABC2DDD35C6D340BCD8A6 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
+		4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
+		4FE174E430A0B7B1DD775E14 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
+		5641CD8BA660AD48D6668BE4 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
+		59E1D04A6B65A08639BA7072 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		5BF6BA93A32B90E9E90A113B /* SaneSalesWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5C2A963F84D9C89217B06A8E /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
+		5C7637F882CA003057AE6524 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
+		5D4FB659C3C04F816AE1060A /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */; };
+		642617ADF3590A5E0CD1C451 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
+		64A4461702D7B6637C2DE83D /* LemonSqueezyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */; };
+		68F6F49C7C01F6514E1D85E0 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C618B676662B450F13B5F6 /* ChartsView.swift */; };
+		6F3636A0A6298A673310C402 /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
+		7020DF54114726D1BD09EB79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
+		7081CB9248DDFAEC0FADEA1E /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
+		7BF68D11B4F5DE1DB08C7731 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */; };
+		7F8F2B9A3FE0252B01346396 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
+		87E8C46A885BDAAFEEBD76EF /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		888AFF49461466B408F52712 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23BF71C99337FFA9F9B9382 /* DemoData.swift */; };
+		89C8C9FC2EABA05AA5458EAF /* ActivationPolicyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */; };
+		8C8B9992588154383CE58E41 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		8DCBABF579EA16EDA6C96AAA /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
+		90709287DD129D5990AF32C1 /* MetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69097B39C9B5D8C4772EA48C /* MetricsTests.swift */; };
+		9CFAB192197A9616D3E11F04 /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
+		9E765BC3899B42C73771432E /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
+		B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
+		B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
+		BE88B4FA6C81AFB6D3CBADFA /* SalesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2701F2BA6C71F0B71FD529AC /* SalesCard.swift */; };
+		C3A3F63D3D0A637878568B41 /* SalesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56337DF07E23B45D4BAE3B34 /* SalesManager.swift */; };
+		C513A25CCBEA94EBA6491F17 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
+		C520957CFB19FA1494C0BAC9 /* MetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69097B39C9B5D8C4772EA48C /* MetricsTests.swift */; };
+		CA1144C2B504D3FBC9238835 /* LemonSqueezyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */; };
+		CE21B82ED5DAAE049E85EDD7 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23BF71C99337FFA9F9B9382 /* DemoData.swift */; };
+		D5027B0DEC6A2378992019F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */; };
+		D74B249FAA45A5B7BE00BA15 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077F3679A1C5054CF24632C /* CacheService.swift */; };
+		DC1FA363C0DD2025C7A5E408 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
+		DE58C1B172F33BDAD7826A45 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
+		E6540D3302CBA73ECCC40765 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		EDA18020BD301C7C64E93167 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
+		EE09CE74526519FBB417F589 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
+		EFC470A90B5690F3B3F85B4C /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		F57FA4B44DBAC3C878C8F7F7 /* SaneSalesIOSWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F633CB21222F457890689723 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */; };
+		F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
+		FFBBC53DB96FEF0D4B15FC0B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		915365306BA1A04AA77E6BA9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9417656CD7DEB667AABF0B91;
+			remoteInfo = SaneSalesIOSWidgets;
+		};
+		A46AAD23B983A6A8CDA8F01F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 11F92A0BDD7FD9F39613C6C0;
+			remoteInfo = SaneSales;
+		};
+		BDE473753B9CAF89B193206F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7B1B7BA7CE15C47720B6A092;
+			remoteInfo = SaneSalesIOS;
+		};
+		F023EB8D184F9DF9DE589933 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 372D646238F964199D574608;
+			remoteInfo = SaneSalesWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		997DC21B66128BFE49B43E6F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F57FA4B44DBAC3C878C8F7F7 /* SaneSalesIOSWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E09A5B7F4F172967E68B5E53 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5BF6BA93A32B90E9E90A113B /* SaneSalesWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailView.swift; sourceTree = "<group>"; };
+		12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SaneSalesIOSWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataProvider.swift; sourceTree = "<group>"; };
+		210579112467D7E4B62B4364 /* OrdersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersListView.swift; sourceTree = "<group>"; };
+		22496DBFE79AD55967172B65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2701F2BA6C71F0B71FD529AC /* SalesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesCard.swift; sourceTree = "<group>"; };
+		2DAC67CDC353B3D97B1716D7 /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
+		33BFFCC71CE4FAF457C4E89F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		36073BDA4DE17B1E1C098062 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		389A5B91AE9725FFCB4E264D /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
+		41947086D2C90F540159C8FB /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
+		483C95981793E764EFC426A1 /* GumroadProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GumroadProvider.swift; sourceTree = "<group>"; };
+		48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SaneSalesIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesApp.swift; sourceTree = "<group>"; };
+		56337DF07E23B45D4BAE3B34 /* SalesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesManager.swift; sourceTree = "<group>"; };
+		677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaneSalesWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		67C618B676662B450F13B5F6 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
+		69097B39C9B5D8C4772EA48C /* MetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsTests.swift; sourceTree = "<group>"; };
+		728D82B164E8AD71A7E2E4C2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		7C36DD3BC9D110F383875BCA /* SalesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesWidget.swift; sourceTree = "<group>"; };
+		88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationPolicyManager.swift; sourceTree = "<group>"; };
+		8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesProvider.swift; sourceTree = "<group>"; };
+		918B68B186DDA22ECC661408 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LemonSqueezyProvider.swift; sourceTree = "<group>"; };
+		96DC958090A2551AE9AE1982 /* CacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
+		9E95D67F37D405DC015BD613 /* SaneSales.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneSales.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesMetrics.swift; sourceTree = "<group>"; };
+		BBFB73B1AA8D2007F3C38C41 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
+		CB903445C8A3AE0899087713 /* StripeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeProvider.swift; sourceTree = "<group>"; };
+		D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesMacApp.swift; sourceTree = "<group>"; };
+		D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaneSalesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D669AC02DA1C50DB65C03586 /* SFSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbols.swift; sourceTree = "<group>"; };
+		E077F3679A1C5054CF24632C /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
+		E23BF71C99337FFA9F9B9382 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
+		E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SaneSalesIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB5EE067F26BFA6A79614082 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		224CC4B653925FA0A8692567 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				67C618B676662B450F13B5F6 /* ChartsView.swift */,
+				22496DBFE79AD55967172B65 /* ContentView.swift */,
+				79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */,
+				05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */,
+				210579112467D7E4B62B4364 /* OrdersListView.swift */,
+				389A5B91AE9725FFCB4E264D /* ProductsView.swift */,
+				12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		61DBB3C84EC3FE34543A1186 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				2DAC67CDC353B3D97B1716D7 /* APITests.swift */,
+				96DC958090A2551AE9AE1982 /* CacheTests.swift */,
+				69097B39C9B5D8C4772EA48C /* MetricsTests.swift */,
+				C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		621E4B5FA34A2AE15E1EB3C7 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				2701F2BA6C71F0B71FD529AC /* SalesCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		64FF2B28B4E2FD682F2A6010 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EB5EE067F26BFA6A79614082 /* Order.swift */,
+				728D82B164E8AD71A7E2E4C2 /* Product.swift */,
+				B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */,
+				BBFB73B1AA8D2007F3C38C41 /* Store.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		77CCCE98A045A03596E94058 = {
+			isa = PBXGroup;
+			children = (
+				DBB1D02C0D1E6C02ED71B3D0 /* Core */,
+				80619310AA709860F4051D2D /* iOS */,
+				8771E2D98F18E8BD187FF5C0 /* macOS */,
+				C37468C565F3990D9B84E6EF /* Resources */,
+				61DBB3C84EC3FE34543A1186 /* Tests */,
+				AFB1D9ECC21CBA697DADB16D /* Widgets */,
+				E5F894E2E4E1D3B172C70F81 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		80619310AA709860F4051D2D /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				33BFFCC71CE4FAF457C4E89F /* Info.plist */,
+				4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */,
+				621E4B5FA34A2AE15E1EB3C7 /* Components */,
+				224CC4B653925FA0A8692567 /* Views */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		8771E2D98F18E8BD187FF5C0 /* macOS */ = {
+			isa = PBXGroup;
+			children = (
+				88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */,
+				41947086D2C90F540159C8FB /* MenuBarManager.swift */,
+				D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */,
+			);
+			path = macOS;
+			sourceTree = "<group>";
+		};
+		AFB1D9ECC21CBA697DADB16D /* Widgets */ = {
+			isa = PBXGroup;
+			children = (
+				36073BDA4DE17B1E1C098062 /* Info.plist */,
+				7C36DD3BC9D110F383875BCA /* SalesWidget.swift */,
+				1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */,
+			);
+			path = Widgets;
+			sourceTree = "<group>";
+		};
+		C37468C565F3990D9B84E6EF /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C85946C38436C889C20178C6 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E077F3679A1C5054CF24632C /* CacheService.swift */,
+				483C95981793E764EFC426A1 /* GumroadProvider.swift */,
+				918B68B186DDA22ECC661408 /* KeychainService.swift */,
+				9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */,
+				8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */,
+				CB903445C8A3AE0899087713 /* StripeProvider.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		DBB1D02C0D1E6C02ED71B3D0 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				E23BF71C99337FFA9F9B9382 /* DemoData.swift */,
+				56337DF07E23B45D4BAE3B34 /* SalesManager.swift */,
+				64FF2B28B4E2FD682F2A6010 /* Models */,
+				C85946C38436C889C20178C6 /* Services */,
+				E4B3D8B5D21FA46041DA5C79 /* UI */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		E4B3D8B5D21FA46041DA5C79 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				D669AC02DA1C50DB65C03586 /* SFSymbols.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		E5F894E2E4E1D3B172C70F81 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9E95D67F37D405DC015BD613 /* SaneSales.app */,
+				48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */,
+				E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */,
+				1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */,
+				D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */,
+				677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		11F92A0BDD7FD9F39613C6C0 /* SaneSales */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B87354B3A240663A716822D0 /* Build configuration list for PBXNativeTarget "SaneSales" */;
+			buildPhases = (
+				48BFE6439F1BE28557109B3E /* Sources */,
+				AC1BDE77B58BC18DB4C7033F /* Run SwiftLint */,
+				C10F5F0D900597E9D25DE28E /* Resources */,
+				E09A5B7F4F172967E68B5E53 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DE410E67925DF049735A3F49 /* PBXTargetDependency */,
+			);
+			name = SaneSales;
+			packageProductDependencies = (
+			);
+			productName = SaneSales;
+			productReference = 9E95D67F37D405DC015BD613 /* SaneSales.app */;
+			productType = "com.apple.product-type.application";
+		};
+		372D646238F964199D574608 /* SaneSalesWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A218F39C6A3BC22D459BA9E /* Build configuration list for PBXNativeTarget "SaneSalesWidgets" */;
+			buildPhases = (
+				3F20DF0AE18B6C3269371944 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaneSalesWidgets;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesWidgets;
+			productReference = 677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F5E42A62106205039187134 /* Build configuration list for PBXNativeTarget "SaneSalesTests" */;
+			buildPhases = (
+				86512959EA8AE5520142BBB2 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2F0F3533B8FDFC02FA56B6C /* PBXTargetDependency */,
+			);
+			name = SaneSalesTests;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesTests;
+			productReference = D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5F9E180B2EAA64E5877592C /* Build configuration list for PBXNativeTarget "SaneSalesIOS" */;
+			buildPhases = (
+				00891DF02CA15A3E32F4E219 /* Sources */,
+				0FEB1207A4217BEDBEAED1DB /* Resources */,
+				997DC21B66128BFE49B43E6F /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				881AB296FDA61EE34C84183D /* PBXTargetDependency */,
+			);
+			name = SaneSalesIOS;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesIOS;
+			productReference = 48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 009BF03B2BA57C38A986B8AD /* Build configuration list for PBXNativeTarget "SaneSalesIOSWidgets" */;
+			buildPhases = (
+				34EF426544422B2E9730BB2B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaneSalesIOSWidgets;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesIOSWidgets;
+			productReference = 1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E02FFC58FA0E73943D16C73C /* Build configuration list for PBXNativeTarget "SaneSalesIOSTests" */;
+			buildPhases = (
+				FA534080C1CE818C1B56D0D5 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AE824156FCD5E4C600B71560 /* PBXTargetDependency */,
+			);
+			name = SaneSalesIOSTests;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesIOSTests;
+			productReference = E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CCDB83FD7D77153A3CB27D1E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					11F92A0BDD7FD9F39613C6C0 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+					372D646238F964199D574608 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+					4DF8CAE39C290BCE75EDC12F = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+					7B1B7BA7CE15C47720B6A092 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+					9417656CD7DEB667AABF0B91 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+					FE01AF185479325D5FFB3F5D = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = BAB1924309BF91A796706300 /* Build configuration list for PBXProject "SaneSales" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 77CCCE98A045A03596E94058;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				11F92A0BDD7FD9F39613C6C0 /* SaneSales */,
+				7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */,
+				FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */,
+				9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */,
+				4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */,
+				372D646238F964199D574608 /* SaneSalesWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0FEB1207A4217BEDBEAED1DB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C10F5F0D900597E9D25DE28E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5027B0DEC6A2378992019F7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		AC1BDE77B58BC18DB4C7033F /* Run SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run SwiftLint";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint lint --quiet --cache-path \"${SRCROOT}/.swiftlint-cache\" \"${SRCROOT}/Core\" \"${SRCROOT}/iOS\" \"${SRCROOT}/macOS\" \"${SRCROOT}/Widgets\" \"${SRCROOT}/Tests\" || true\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00891DF02CA15A3E32F4E219 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D74B249FAA45A5B7BE00BA15 /* CacheService.swift in Sources */,
+				68F6F49C7C01F6514E1D85E0 /* ChartsView.swift in Sources */,
+				5C7637F882CA003057AE6524 /* ContentView.swift in Sources */,
+				FFBBC53DB96FEF0D4B15FC0B /* DashboardView.swift in Sources */,
+				CE21B82ED5DAAE049E85EDD7 /* DemoData.swift in Sources */,
+				C513A25CCBEA94EBA6491F17 /* GumroadProvider.swift in Sources */,
+				EE09CE74526519FBB417F589 /* KeychainService.swift in Sources */,
+				CA1144C2B504D3FBC9238835 /* LemonSqueezyProvider.swift in Sources */,
+				4FE174E430A0B7B1DD775E14 /* Order.swift in Sources */,
+				21EE94586BFB529EE5B7D105 /* OrderDetailView.swift in Sources */,
+				32C0DB99CC8B65BD201EFDD0 /* OrdersListView.swift in Sources */,
+				87E8C46A885BDAAFEEBD76EF /* Product.swift in Sources */,
+				EDA18020BD301C7C64E93167 /* ProductsView.swift in Sources */,
+				642617ADF3590A5E0CD1C451 /* SFSymbols.swift in Sources */,
+				BE88B4FA6C81AFB6D3CBADFA /* SalesCard.swift in Sources */,
+				C3A3F63D3D0A637878568B41 /* SalesManager.swift in Sources */,
+				7BF68D11B4F5DE1DB08C7731 /* SalesMetrics.swift in Sources */,
+				6F3636A0A6298A673310C402 /* SalesProvider.swift in Sources */,
+				7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */,
+				F633CB21222F457890689723 /* SettingsView.swift in Sources */,
+				41911AD194F44D291D4C9370 /* Store.swift in Sources */,
+				B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		34EF426544422B2E9730BB2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2965F75C49E5DC14456FE00E /* Order.swift in Sources */,
+				EFC470A90B5690F3B3F85B4C /* Product.swift in Sources */,
+				06547098496ED9780EE7E04F /* SalesMetrics.swift in Sources */,
+				5C2A963F84D9C89217B06A8E /* SalesWidget.swift in Sources */,
+				E6540D3302CBA73ECCC40765 /* Store.swift in Sources */,
+				4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3F20DF0AE18B6C3269371944 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DCBABF579EA16EDA6C96AAA /* Order.swift in Sources */,
+				ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */,
+				2C368EEE9BBE47C9E9B6CED8 /* SalesMetrics.swift in Sources */,
+				17E8D20E10630CDADDE33A19 /* SalesWidget.swift in Sources */,
+				59E1D04A6B65A08639BA7072 /* Store.swift in Sources */,
+				B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		48BFE6439F1BE28557109B3E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89C8C9FC2EABA05AA5458EAF /* ActivationPolicyManager.swift in Sources */,
+				3855D35A21CE5DE409F58137 /* CacheService.swift in Sources */,
+				36E263B73CB5AA104BA3CBDD /* ChartsView.swift in Sources */,
+				7020DF54114726D1BD09EB79 /* ContentView.swift in Sources */,
+				231B67E1A59EBC726D52B88B /* DashboardView.swift in Sources */,
+				888AFF49461466B408F52712 /* DemoData.swift in Sources */,
+				7F8F2B9A3FE0252B01346396 /* GumroadProvider.swift in Sources */,
+				44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */,
+				64A4461702D7B6637C2DE83D /* LemonSqueezyProvider.swift in Sources */,
+				3AC5F3E189ED62A55AA4FFA7 /* MenuBarManager.swift in Sources */,
+				30243AE0512C901F0E4810D3 /* Order.swift in Sources */,
+				5D4FB659C3C04F816AE1060A /* OrderDetailView.swift in Sources */,
+				B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */,
+				24B1F53D7A9F4FA830040104 /* Product.swift in Sources */,
+				288F8FF0F8F72BFEE563D293 /* ProductsView.swift in Sources */,
+				DC1FA363C0DD2025C7A5E408 /* SFSymbols.swift in Sources */,
+				0929E606204EBFD18D451B03 /* SalesCard.swift in Sources */,
+				3BB4E13BB268DEA02A7CD256 /* SalesManager.swift in Sources */,
+				9E765BC3899B42C73771432E /* SalesMetrics.swift in Sources */,
+				F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */,
+				2AA32C8A5C5634617CFD2464 /* SaneSalesMacApp.swift in Sources */,
+				38DA1C95E1A9C2528A5A28CE /* SettingsView.swift in Sources */,
+				8C8B9992588154383CE58E41 /* Store.swift in Sources */,
+				3A67B43E4B7EF8D6A9EC819D /* StripeProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		86512959EA8AE5520142BBB2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				46FABC2DDD35C6D340BCD8A6 /* APITests.swift in Sources */,
+				9CFAB192197A9616D3E11F04 /* CacheTests.swift in Sources */,
+				C520957CFB19FA1494C0BAC9 /* MetricsTests.swift in Sources */,
+				2A7E9B1D9CB3888488601ACA /* ProviderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA534080C1CE818C1B56D0D5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5641CD8BA660AD48D6668BE4 /* APITests.swift in Sources */,
+				7081CB9248DDFAEC0FADEA1E /* CacheTests.swift in Sources */,
+				90709287DD129D5990AF32C1 /* MetricsTests.swift in Sources */,
+				DE58C1B172F33BDAD7826A45 /* ProviderTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		881AB296FDA61EE34C84183D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */;
+			targetProxy = 915365306BA1A04AA77E6BA9 /* PBXContainerItemProxy */;
+		};
+		AE824156FCD5E4C600B71560 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */;
+			targetProxy = BDE473753B9CAF89B193206F /* PBXContainerItemProxy */;
+		};
+		B2F0F3533B8FDFC02FA56B6C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 11F92A0BDD7FD9F39613C6C0 /* SaneSales */;
+			targetProxy = A46AAD23B983A6A8CDA8F01F /* PBXContainerItemProxy */;
+		};
+		DE410E67925DF049735A3F49 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 372D646238F964199D574608 /* SaneSalesWidgets */;
+			targetProxy = F023EB8D184F9DF9DE589933 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		07AAD72C81C91828C8572E99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+			};
+			name = Release;
+		};
+		10586E0C45C012F1D0A2FE1F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ios.widgets;
+				PRODUCT_NAME = SaneSalesIOSWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		201B2675F998CD6AAEE43A42 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
+				PRODUCT_NAME = SaneSalesWidgets;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Release;
+		};
+		2845EC76172F6AE4052F4845 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
+				PRODUCT_NAME = SaneSalesWidgets;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = "Release-AppStore";
+		};
+		2D40EE30D75D311C0D7FDC52 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+			};
+			name = Debug;
+		};
+		3439E6F79EA330173124FC49 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Release-AppStore";
+		};
+		524D1EB2126CE3D0F2D2475E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		570DCAB7E6C39AB82C7067C2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/Contents/MacOS/SaneSales";
+				VALID_ARCHS = arm64;
+			};
+			name = Release;
+		};
+		5F5807FC8A245E3E0562213C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		6DE48C121930E0B8130B74A3 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-AppStore";
+		};
+		80722D4CA2A54B96D2D93711 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		82793E0525C84D11BC481B82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = iOS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ios;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		94811CAB9A27D9B07408481E /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/Contents/MacOS/SaneSales";
+				VALID_ARCHS = arm64;
+			};
+			name = "Release-AppStore";
+		};
+		94FD84920389386C752F4073 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SaneSales/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Debug;
+		};
+		A0F70DA1769EBD166E891FD9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SaneSales/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Release;
+		};
+		AE877033FB322BE354792B2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios.widgets;
+				PRODUCT_NAME = SaneSalesIOSWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B0E6D5E822B94B2383A30DF0 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios.widgets;
+				PRODUCT_NAME = SaneSalesIOSWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-AppStore";
+		};
+		C3874D62A04CCFF247396421 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Widgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
+				PRODUCT_NAME = SaneSalesWidgets;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = Debug;
+		};
+		D07E87214718C82F5777E518 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = SaneSales/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
+				PRODUCT_NAME = SaneSales;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+				VALID_ARCHS = arm64;
+			};
+			name = "Release-AppStore";
+		};
+		D2F73E7C73988471A1328586 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales";
+			};
+			name = "Release-AppStore";
+		};
+		D8A0357037CA16AFE4F8DAE1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesTests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SaneSales.app/Contents/MacOS/SaneSales";
+				VALID_ARCHS = arm64;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		009BF03B2BA57C38A986B8AD /* Build configuration list for PBXNativeTarget "SaneSalesIOSWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10586E0C45C012F1D0A2FE1F /* Debug */,
+				AE877033FB322BE354792B2E /* Release */,
+				B0E6D5E822B94B2383A30DF0 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2A218F39C6A3BC22D459BA9E /* Build configuration list for PBXNativeTarget "SaneSalesWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3874D62A04CCFF247396421 /* Debug */,
+				201B2675F998CD6AAEE43A42 /* Release */,
+				2845EC76172F6AE4052F4845 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8F5E42A62106205039187134 /* Build configuration list for PBXNativeTarget "SaneSalesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8A0357037CA16AFE4F8DAE1 /* Debug */,
+				570DCAB7E6C39AB82C7067C2 /* Release */,
+				94811CAB9A27D9B07408481E /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B5F9E180B2EAA64E5877592C /* Build configuration list for PBXNativeTarget "SaneSalesIOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				82793E0525C84D11BC481B82 /* Debug */,
+				524D1EB2126CE3D0F2D2475E /* Release */,
+				6DE48C121930E0B8130B74A3 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B87354B3A240663A716822D0 /* Build configuration list for PBXNativeTarget "SaneSales" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				94FD84920389386C752F4073 /* Debug */,
+				A0F70DA1769EBD166E891FD9 /* Release */,
+				D07E87214718C82F5777E518 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BAB1924309BF91A796706300 /* Build configuration list for PBXProject "SaneSales" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5F5807FC8A245E3E0562213C /* Debug */,
+				80722D4CA2A54B96D2D93711 /* Release */,
+				3439E6F79EA330173124FC49 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E02FFC58FA0E73943D16C73C /* Build configuration list for PBXNativeTarget "SaneSalesIOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2D40EE30D75D311C0D7FDC52 /* Debug */,
+				07AAD72C81C91828C8572E99 /* Release */,
+				D2F73E7C73988471A1328586 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CCDB83FD7D77153A3CB27D1E /* Project object */;
+}

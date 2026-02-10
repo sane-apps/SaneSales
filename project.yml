@@ -1,0 +1,335 @@
+name: SaneSales
+options:
+  bundleIdPrefix: com.sanesales
+  deploymentTarget:
+    macOS: 14.0
+    iOS: 17.0
+  xcodeVersion: 16.0
+
+configs:
+  Debug: debug
+  Release: release
+  Release-AppStore: release
+
+settings:
+  DEAD_CODE_STRIPPING: YES
+  SWIFT_EMIT_LOC_STRINGS: YES
+  ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+  ENABLE_HARDENED_RUNTIME: YES
+  GENERATE_INFOPLIST_FILE: YES
+  CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING: YES
+  CLANG_WARN_BOOL_CONVERSION: YES
+  CLANG_WARN_COMMA: YES
+  CLANG_WARN_CONSTANT_CONVERSION: YES
+  CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS: YES
+  CLANG_WARN_EMPTY_BODY: YES
+  CLANG_WARN_ENUM_CONVERSION: YES
+  CLANG_WARN_INFINITE_RECURSION: YES
+  CLANG_WARN_INT_CONVERSION: YES
+  CLANG_WARN_NON_LITERAL_NULL_CONVERSION: YES
+  CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF: YES
+  CLANG_WARN_OBJC_LITERAL_CONVERSION: YES
+  CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: YES
+  CLANG_WARN_RANGE_LOOP_ANALYSIS: YES
+  CLANG_WARN_STRICT_PROTOTYPES: YES
+  CLANG_WARN_SUSPICIOUS_MOVE: YES
+  CLANG_WARN_UNREACHABLE_CODE: YES
+  CLANG_WARN__DUPLICATE_METHOD_MATCH: YES
+  ENABLE_STRICT_OBJC_MSGSEND: YES
+  GCC_NO_COMMON_BLOCKS: YES
+  GCC_WARN_64_TO_32_BIT_CONVERSION: YES
+  GCC_WARN_ABOUT_RETURN_TYPE: YES_ERROR
+  GCC_WARN_UNDECLARED_SELECTOR: YES
+  GCC_WARN_UNINITIALIZED_AUTOS: YES_AGGRESSIVE
+  GCC_WARN_UNUSED_FUNCTION: YES
+  GCC_WARN_UNUSED_VARIABLE: YES
+  SWIFT_STRICT_CONCURRENCY: complete
+
+schemes:
+  SaneSales:
+    build:
+      targets:
+        SaneSales: all
+        SaneSalesTests: [test]
+        SaneSalesWidgets: all
+    test:
+      targets:
+        - SaneSalesTests
+    profile:
+      config: Release
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+  SaneSalesIOS:
+    build:
+      targets:
+        SaneSalesIOS: all
+        SaneSalesIOSWidgets: all
+    test:
+      targets:
+        - SaneSalesIOSTests
+    profile:
+      config: Release
+    run:
+      config: Debug
+    archive:
+      config: Release
+
+targets:
+  # macOS App
+  SaneSales:
+    type: application
+    platform: macOS
+    bundleId: com.sanesales.app
+    deploymentTarget:
+      macOS: 14.0
+    sources:
+      - path: Core
+        excludes:
+          - "**/CLAUDE.md"
+      - path: macOS
+        excludes:
+          - "**/CLAUDE.md"
+      - path: iOS
+        excludes:
+          - "Info.plist"
+          - "SaneSalesApp.swift"
+          - "**/CLAUDE.md"
+      - Resources
+    dependencies:
+      - target: SaneSalesWidgets
+        embed: true
+        codeSign: true
+    info:
+      path: SaneSales/Info.plist
+      properties:
+        LSApplicationCategoryType: "public.app-category.finance"
+        CFBundleDisplayName: SaneSales
+    settings:
+      base:
+        PRODUCT_NAME: SaneSales
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+        SWIFT_VERSION: 6.0
+        MACOSX_DEPLOYMENT_TARGET: 14.0
+        ARCHS: arm64
+        VALID_ARCHS: arm64
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_INJECT_BASE_ENTITLEMENTS: YES
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+    postCompileScripts:
+      - script: |
+          if which swiftlint >/dev/null; then
+            swiftlint lint --quiet --cache-path "${SRCROOT}/.swiftlint-cache" "${SRCROOT}/Core" "${SRCROOT}/iOS" "${SRCROOT}/macOS" "${SRCROOT}/Widgets" "${SRCROOT}/Tests" || true
+          else
+            echo "warning: SwiftLint not installed"
+          fi
+        name: Run SwiftLint
+        basedOnDependencyAnalysis: false
+
+  # macOS Tests
+  SaneSalesTests:
+    type: bundle.unit-test
+    platform: macOS
+    bundleId: com.sanesales.appTests
+    deploymentTarget:
+      macOS: 14.0
+    testTarget: SaneSales
+    sources:
+      - Tests
+    dependencies:
+      - target: SaneSales
+    settings:
+      base:
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        ARCHS: arm64
+        VALID_ARCHS: arm64
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          CODE_SIGN_IDENTITY: "Apple Development"
+
+  # macOS Widgets
+  SaneSalesWidgets:
+    type: app-extension
+    platform: macOS
+    bundleId: com.sanesales.app.widgets
+    deploymentTarget:
+      macOS: 14.0
+    sources:
+      - Widgets
+      - path: Core/Models
+        excludes:
+          - "**/CLAUDE.md"
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: SaneSales Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: SaneSalesWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: 6.0
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        ARCHS: arm64
+        VALID_ARCHS: arm64
+        SKIP_INSTALL: YES
+        LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @executable_path/../../../../Frameworks"
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.widgets
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+
+  # iOS App
+  SaneSalesIOS:
+    type: application
+    platform: iOS
+    bundleId: com.sanesales.app.ios
+    deploymentTarget:
+      iOS: 17.0
+    sources:
+      - path: iOS
+        excludes:
+          - "**/CLAUDE.md"
+      - path: Core
+        excludes:
+          - "**/CLAUDE.md"
+      - Resources
+    dependencies:
+      - target: SaneSalesIOSWidgets
+        embed: true
+        codeSign: true
+    info:
+      path: iOS/Info.plist
+      properties:
+        CFBundleDisplayName: SaneSales
+        LSApplicationCategoryType: "public.app-category.finance"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_NAME: SaneSales
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_PREVIEWS: YES
+        SWIFT_VERSION: 6.0
+        IPHONEOS_DEPLOYMENT_TARGET: 17.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.ios
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+
+  # iOS Tests
+  SaneSalesIOSTests:
+    type: bundle.unit-test
+    platform: iOS
+    bundleId: com.sanesales.appTests.ios
+    deploymentTarget:
+      iOS: 17.0
+    testTarget: SaneSalesIOS
+    sources:
+      - Tests
+    dependencies:
+      - target: SaneSalesIOS
+    settings:
+      base:
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales"
+        BUNDLE_LOADER: "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales"
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          CODE_SIGN_IDENTITY: "Apple Development"
+
+  # iOS Widgets
+  SaneSalesIOSWidgets:
+    type: app-extension
+    platform: iOS
+    bundleId: com.sanesales.app.ios.widgets
+    deploymentTarget:
+      iOS: 17.0
+    sources:
+      - Widgets
+      - path: Core/Models
+        excludes:
+          - "**/CLAUDE.md"
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: SaneSales Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: SaneSalesIOSWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios.widgets
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: 6.0
+        IPHONEOS_DEPLOYMENT_TARGET: 17.0
+        TARGETED_DEVICE_FAMILY: "1,2"
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        SKIP_INSTALL: YES
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.ios.widgets
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios.widgets
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ios.widgets
+          CODE_SIGN_IDENTITY: "Apple Distribution"
