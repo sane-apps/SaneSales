@@ -1,6 +1,13 @@
 import SwiftUI
 import WidgetKit
 
+@main
+struct SalesWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        SalesWidget()
+    }
+}
+
 struct SalesWidget: Widget {
     let kind = "SaneSalesWidget"
 
