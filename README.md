@@ -1,44 +1,195 @@
+<div align="center">
+
 # SaneSales
 
-Track your sales from LemonSqueezy, Gumroad, and Stripe — in one place.
+### Track All Your Indie Sales in One Place
 
-## Features
+**LemonSqueezy + Gumroad + Stripe — finally unified**
 
-- **Dashboard** — Today, this month, and all-time revenue at a glance
-- **Orders** — Searchable, sortable order history with full details
-- **Charts** — Revenue trends over time with Swift Charts
-- **Products** — Per-product revenue breakdown with pie chart
-- **Widgets** — Home screen and lock screen sales widgets
-- **Offline** — Cached data shown instantly, refreshes in background
-- **Multi-platform** — iOS, iPad, and macOS from a single codebase
+[![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneSales?style=flat-square)](https://github.com/sane-apps/SaneSales/stargazers)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0)
+[![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
+[![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
+[![Price](https://img.shields.io/badge/Price-$6.99_one--time-green?style=flat-square)](https://sanesales.com)
+[![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](docs/privacy.html)
+[![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-blueviolet?style=flat-square)](https://claude.ai)
 
-## Supported Platforms
+> **Star this repo if you find it useful!** &middot; **[Buy for $6.99](https://sanesales.com)** &middot; Keeps development alive
 
-| Platform | Status |
-|----------|--------|
-| LemonSqueezy | v1.0 |
-| Gumroad | v1.0 |
-| Stripe | v1.0 |
+</div>
 
-## Requirements
+---
 
-- iOS 17.0+ / macOS 14.0+ (Apple Silicon only)
-- Xcode 16+
-- XcodeGen (`brew install xcodegen`)
+## The Problem
 
-## Setup
+You sell on multiple platforms. Every morning you check three dashboards, copy numbers into a spreadsheet, and try to answer: *"How are we actually doing?"*
 
-```bash
-git clone https://github.com/sane-apps/SaneSales.git
-cd SaneSales
-xcodegen generate
-open SaneSales.xcodeproj
-```
+- LemonSqueezy has your licenses
+- Gumroad has your digital products
+- Stripe has your subscriptions
+- Your spreadsheet is already out of date
+
+## The Solution
+
+SaneSales pulls your sales data from all three platforms into one beautiful, native app. Revenue, orders, products, charts — all on your device, all in real time.
+
+| | |
+|---|---|
+| **Revenue Dashboard** | Today, this month, and all-time revenue at a glance with trend indicators |
+| **Interactive Charts** | Daily revenue bar charts with Swift Charts. Tap to drill into any day |
+| **Product Breakdown** | Donut chart showing revenue by product. Tap segments to explore |
+| **Order Tracking** | Search by customer, product, or amount. Filter by provider, status, or date |
+| **CSV Export** | Export your full order history for accounting or email marketing |
+| **Home Screen Widgets** | Glance at today's revenue from your home screen or lock screen |
+| **macOS Menu Bar** | See today's revenue in the menu bar. Right-click for quick actions |
+| **100% On-Device** | API keys in Keychain. Data cached locally. No analytics. No servers |
+
+---
+
+## Supported Providers
+
+| Provider | Revenue | Orders | Products | Refunds | Pagination |
+|----------|:-------:|:------:|:--------:|:-------:|:----------:|
+| **LemonSqueezy** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Gumroad** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Stripe** | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+---
+
+## Download
+
+**One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
+
+**[Download from sanesales.com](https://sanesales.com)** — $6.99
+
+> *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
+
+Or [build from source](#development) — it's AGPL v3 licensed, always will be.
+
+**Requirements:** iOS 17+ / macOS 14+ &middot; Apple Silicon (arm64) only
+
+---
+
+## How It Works
+
+1. **Connect** — Paste your API key from LemonSqueezy, Gumroad, or Stripe
+2. **Sync** — SaneSales fetches your orders, products, and revenue directly from the provider APIs
+3. **Track** — See everything in one dashboard with charts, search, and export
+
+API keys are stored in the device Keychain with hardware encryption. Sales data is cached locally for offline access. Nothing is ever transmitted to SaneApps servers.
+
+---
 
 ## Privacy
 
-Your API key is stored in the device Keychain. SaneSales communicates directly with platform APIs — no intermediary server, no data collection.
+**SaneSales does not collect, transmit, or store any personal data.**
+
+- No accounts, no sign-up, no email required
+- No analytics, no telemetry, no crash reports
+- API keys stored in device Keychain (hardware-encrypted)
+- Direct communication with provider APIs — no intermediary server
+- Sales data cached on-device only
+- Open source — [verify yourself](https://github.com/sane-apps/SaneSales)
+
+Full policy: [sanesales.com/privacy](https://sanesales.com/privacy.html)
+
+---
+
+## Development
+
+```bash
+# Clone the repo
+git clone https://github.com/sane-apps/SaneSales.git
+cd SaneSales
+
+# Generate the Xcode project
+xcodegen generate
+
+# Build macOS
+xcodebuild -scheme SaneSales -destination 'platform=macOS,arch=arm64' build
+
+# Build iOS
+xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+
+# Run tests (20 tests across 4 suites)
+xcodebuild -scheme SaneSales test -destination 'platform=macOS,arch=arm64'
+```
+
+### Requirements
+
+- macOS 14.0+ (Sonoma) / iOS 17.0+
+- Xcode 16+
+- Apple Silicon (arm64) only
+- [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
+
+### Architecture
+
+```
+Core/
+  Models/          Order, Product, Store, SalesMetrics (Codable, Sendable)
+  Services/        SalesProvider protocol, LemonSqueezy/Gumroad/Stripe actors
+  SalesManager     @MainActor @Observable — central state coordinator
+
+iOS/
+  Views/           Shared SwiftUI views (iOS + macOS)
+  Components/      SalesCard, GlassSection, badges, chart components
+
+macOS/
+  SaneSalesMacApp  macOS entry point, menu bar, activation policy
+  MenuBarManager   Status item with revenue display + right-click menu
+
+Widgets/           WidgetKit extensions (small, medium, rectangular)
+Tests/             Swift Testing (API parsing, metrics, cache, providers)
+```
+
+### Key Patterns
+
+- `SalesProvider` protocol for all platform adapters
+- Actors for network services, `@Observable` for state
+- UserDefaults cache for offline mode
+- Keychain for API keys (service: `com.sanesales.app`)
+- Swift 6 strict concurrency
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup and conventions.
+
+---
+
+## Why SaneSales?
+
+| Feature | SaneSales | Baremetrics | ChartMogul | Spreadsheets |
+|---------|:---------:|:-----------:|:----------:|:------------:|
+| **Multi-provider** | ✅ | ❌ Stripe only | ❌ Stripe only | Manual |
+| **LemonSqueezy support** | ✅ | ❌ | ❌ | Manual |
+| **Gumroad support** | ✅ | ❌ | ❌ | Manual |
+| **Native iOS + macOS** | ✅ | Web only | Web only | ❌ |
+| **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
+| **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
+| **100% on-device** | ✅ | Cloud | Cloud | Local |
+| **No subscription** | $6.99 once | $29+/mo | $99+/mo | Free |
+| **Open source** | AGPL v3 | ❌ | ❌ | N/A |
+
+---
+
+## Support
+
+- **Email:** [hi@saneapps.com](mailto:hi@saneapps.com)
+- **Bugs:** [GitHub Issues](https://github.com/sane-apps/SaneSales/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/sane-apps/SaneSales/discussions)
+
+---
 
 ## License
 
-Copyright 2026 SaneApps. All rights reserved.
+AGPL v3 — see [LICENSE](LICENSE) for details.
+
+---
+
+<div align="center">
+
+**Made with love in the USA by [Mr. Sane](https://github.com/MrSaneApps)**
+
+**Not fear, but power, love, sound mind** — 2 Timothy 1:7
+
+**[SaneBar](https://sanebar.com)** &middot; **[SaneClip](https://saneclip.com)** &middot; **[SaneHosts](https://sanehosts.com)** &middot; **[SaneSales](https://sanesales.com)** &middot; **[All Apps](https://saneapps.com)**
+
+</div>
