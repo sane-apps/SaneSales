@@ -46,7 +46,7 @@ actor LemonSqueezyProvider: SalesProvider {
                 variantName: attrs.firstOrderItem?.variantName,
                 createdAt: attrs.createdAt,
                 refundedAt: attrs.refundedAt,
-                refundedAmount: nil,
+                refundedAmount: attrs.refundedAmount,
                 provider: .lemonSqueezy,
                 totalFormatted: attrs.totalFormatted,
                 subtotalFormatted: attrs.subtotalFormatted,
@@ -243,6 +243,7 @@ private struct LSOrderAttributes: Decodable {
     let taxFormatted: String
     let discountTotalFormatted: String
     let refundedAt: Date?
+    let refundedAmount: Int?
     let firstOrderItem: LSFirstOrderItem?
     let urls: LSOrderURLs?
     let createdAt: Date
@@ -261,6 +262,7 @@ private struct LSOrderAttributes: Decodable {
         case taxFormatted = "tax_formatted"
         case discountTotalFormatted = "discount_total_formatted"
         case refundedAt = "refunded_at"
+        case refundedAmount = "refunded_amount"
         case firstOrderItem = "first_order_item"
         case createdAt = "created_at"
     }
@@ -347,10 +349,6 @@ private struct LSMeta: Decodable {
 
 private struct LSPageInfo: Decodable {
     let lastPage: Int
-
-    enum CodingKeys: String, CodingKey {
-        case lastPage = "last_page"
-    }
 }
 
 extension JSONDecoder {

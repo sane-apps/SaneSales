@@ -28,12 +28,72 @@ extension Color {
     static let salesWarning = Color(red: 0.961, green: 0.620, blue: 0.043) // #f59e0b
     static let salesError = Color(red: 0.937, green: 0.267, blue: 0.267) // #ef4444
 
+    // Muted text (replaces .secondary for readability)
+    static let textMuted: Color = .primary.opacity(0.7)
+
     // Platform background
     static var saneBackground: Color {
         #if os(macOS)
             Color(nsColor: .windowBackgroundColor)
         #else
             Color(.systemBackground)
+        #endif
+    }
+}
+
+// MARK: - macOS Visual Effect Background
+
+#if os(macOS)
+    struct VisualEffectBackground: NSViewRepresentable {
+        let material: NSVisualEffectView.Material
+        let blendingMode: NSVisualEffectView.BlendingMode
+
+        init(material: NSVisualEffectView.Material = .hudWindow,
+             blendingMode: NSVisualEffectView.BlendingMode = .behindWindow) {
+            self.material = material
+            self.blendingMode = blendingMode
+        }
+
+        func makeNSView(context _: Context) -> NSVisualEffectView {
+            let view = NSVisualEffectView()
+            view.material = material
+            view.blendingMode = blendingMode
+            view.state = .followsWindowActiveState
+            return view
+        }
+
+        func updateNSView(_ view: NSVisualEffectView, context _: Context) {
+            view.material = material
+            view.blendingMode = blendingMode
+        }
+    }
+#endif
+
+struct SaneBackground: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        #if os(macOS)
+            ZStack {
+                VisualEffectBackground(material: .hudWindow, blendingMode: .behindWindow)
+                LinearGradient(
+                    colors: [
+                        Color.salesGreen.opacity(0.06),
+                        Color.blue.opacity(0.03),
+                        Color.salesGreen.opacity(0.02)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
+        #else
+            LinearGradient(
+                colors: colorScheme == .dark
+                    ? [Color.brandDeepNavy, Color.black]
+                    : [Color.saneBackground, Color.salesGreen.opacity(0.03)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
         #endif
     }
 }
@@ -103,7 +163,7 @@ struct SalesCard: View {
                 iconView
                 Text(title)
                     .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textMuted)
                 Spacer()
                 if let trend {
                     trendBadge(trend)
@@ -117,8 +177,8 @@ struct SalesCard: View {
                 .foregroundStyle(.primary)
 
             Text(subtitle)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.callout)
+                .foregroundStyle(Color.textMuted)
         }
         .padding(16)
         .background(cardBackground)
@@ -199,7 +259,7 @@ struct MetricRow: View {
     var body: some View {
         HStack {
             Text(label)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
             Spacer()
             Text(value)
                 .fontWeight(.semibold)
@@ -240,7 +300,7 @@ struct GlassSection<Content: View>: View {
                 }
                 Text(title)
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textMuted)
                     .textCase(.uppercase)
                     .tracking(0.5)
             }
