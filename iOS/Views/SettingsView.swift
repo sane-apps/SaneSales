@@ -16,7 +16,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient.ignoresSafeArea()
+                SaneBackground().ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 24) {
                         #if os(macOS)
@@ -48,16 +48,6 @@ struct SettingsView: View {
                 Text("This will remove the API key and cached data for this provider.")
             }
         }
-    }
-
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [Color.brandDeepNavy, Color.black]
-                : [Color.saneBackground, Color.salesGreen.opacity(0.02)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
     }
 
     // MARK: - macOS Appearance Section
@@ -154,7 +144,7 @@ struct SettingsView: View {
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textMuted)
                     }
                 }
             } else {
@@ -190,8 +180,8 @@ struct SettingsView: View {
                         .autocorrectionDisabled()
 
                     Text(keyHelpText)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                        .foregroundStyle(Color.textMuted)
                 }
                 .padding(.horizontal)
 
@@ -277,7 +267,7 @@ struct SettingsView: View {
                     } label: {
                         GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
                             Image(systemName: "tablecells")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Color.textMuted)
                         }
                     }
                 }
@@ -316,7 +306,7 @@ struct SettingsView: View {
                 Link(destination: URL(string: "https://github.com/sane-apps/SaneSales/issues")!) {
                     GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
                         Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textMuted)
                             .font(.subheadline)
                     }
                 }
@@ -324,7 +314,7 @@ struct SettingsView: View {
                 Link(destination: URL(string: "https://saneapps.com/privacy")!) {
                     GlassRow("Privacy Policy", icon: "hand.raised", iconColor: .blue) {
                         Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textMuted)
                             .font(.subheadline)
                     }
                 }
@@ -332,7 +322,7 @@ struct SettingsView: View {
                 Link(destination: URL(string: "mailto:hi@saneapps.com")!) {
                     GlassRow("Email Us", icon: "envelope", iconColor: .purple) {
                         Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Color.textMuted)
                             .font(.subheadline)
                     }
                 }
@@ -342,8 +332,8 @@ struct SettingsView: View {
 
     private var trustTagline: some View {
         Text("Made with love in the USA \u{00B7} 100% On-Device \u{00B7} No Analytics")
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+            .font(.callout)
+            .foregroundStyle(Color.textMuted)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
             .padding(.top, 8)
@@ -452,7 +442,7 @@ private extension SettingsView {
                         .font(.headline)
                     Text(url.lastPathComponent)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.textMuted)
                     Button("Reveal in Finder") {
                         NSWorkspace.shared.activateFileViewerSelecting([url])
                     }

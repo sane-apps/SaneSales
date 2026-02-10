@@ -151,6 +151,7 @@
 		41947086D2C90F540159C8FB /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
 		483C95981793E764EFC426A1 /* GumroadProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GumroadProvider.swift; sourceTree = "<group>"; };
 		48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SaneSalesIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4943CC9097853664B1BED54C /* SaneSalesIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesIOS.entitlements; sourceTree = "<group>"; };
 		4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesApp.swift; sourceTree = "<group>"; };
 		56337DF07E23B45D4BAE3B34 /* SalesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesManager.swift; sourceTree = "<group>"; };
 		677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaneSalesWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +242,7 @@
 			children = (
 				33BFFCC71CE4FAF457C4E89F /* Info.plist */,
 				4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */,
+				4943CC9097853664B1BED54C /* SaneSalesIOS.entitlements */,
 				621E4B5FA34A2AE15E1EB3C7 /* Components */,
 				224CC4B653925FA0A8692567 /* Views */,
 			);
@@ -446,7 +448,6 @@
 				TargetAttributes = {
 					11F92A0BDD7FD9F39613C6C0 = {
 						DevelopmentTeam = M78L6FXD48;
-						ProvisioningStyle = Manual;
 					};
 					372D646238F964199D574608 = {
 						DevelopmentTeam = M78L6FXD48;
@@ -843,6 +844,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -958,6 +960,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1045,6 +1048,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1091,9 +1095,10 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1118,6 +1123,7 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
@@ -1216,6 +1222,7 @@
 			buildSettings = {
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;

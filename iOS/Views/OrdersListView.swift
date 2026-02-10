@@ -13,7 +13,7 @@ struct OrdersListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient.ignoresSafeArea()
+                SaneBackground().ignoresSafeArea()
                 Group {
                     if displayedOrders.isEmpty, !manager.isLoading {
                         if searchText.isEmpty {
@@ -56,16 +56,6 @@ struct OrdersListView: View {
                 }
             }
         }
-    }
-
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [Color.brandDeepNavy, Color.black]
-                : [Color.saneBackground, Color.salesGreen.opacity(0.02)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
     }
 
     private var providerFilterMenu: some View {
@@ -111,8 +101,8 @@ struct OrderRow: View {
                     .font(.subheadline.weight(.semibold))
                 HStack(spacing: 6) {
                     Text(order.productName)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                        .foregroundStyle(Color.textMuted)
                     if manager.connectedProviders.count > 1 {
                         ProviderDot(provider: order.provider)
                     }

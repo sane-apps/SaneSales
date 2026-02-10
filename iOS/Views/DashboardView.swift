@@ -18,7 +18,7 @@ struct DashboardView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient.ignoresSafeArea()
+                SaneBackground().ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 20) {
                         if let error = manager.error {
@@ -58,8 +58,8 @@ struct DashboardView: View {
                             .tint(.salesGreen)
                     } else if let date = manager.lastUpdated {
                         Text(date, style: .relative)
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
+                            .font(.callout)
+                            .foregroundStyle(Color.textMuted)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
                             .background(
@@ -89,25 +89,13 @@ struct DashboardView: View {
 }
 
 private extension DashboardView {
-    // MARK: - Background
-
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [Color.brandDeepNavy, Color.black]
-                : [Color.saneBackground, Color.salesGreen.opacity(0.03)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-    }
-
     // MARK: - Hero Revenue
 
     private var heroRevenue: some View {
         VStack(spacing: 6) {
             Text(rangeLabel)
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
 
             Text(formatCents(revenueForRange))
                 .font(.system(size: 48, weight: .bold, design: .rounded))
@@ -117,7 +105,7 @@ private extension DashboardView {
 
             Text(pluralize(ordersForRange, "order"))
                 .font(.callout)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 8)
@@ -193,8 +181,8 @@ private extension DashboardView {
                     ? (isPositive ? Color.salesSuccess : Color.salesError)
                     : .primary)
             Text(label)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.callout)
+                .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
@@ -336,8 +324,8 @@ private extension DashboardView {
                                     .font(.subheadline.weight(.medium))
                                     .lineLimit(1)
                                 Text(pluralize(product.orderCount, "sale"))
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
+                                    .font(.callout)
+                                    .foregroundStyle(Color.textMuted)
                             }
 
                             Spacer()

@@ -10,7 +10,7 @@ struct ProductsView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                backgroundGradient.ignoresSafeArea()
+                SaneBackground().ignoresSafeArea()
                 Group {
                     if manager.products.isEmpty, !manager.isLoading {
                         ContentUnavailableView("No Products", systemImage: "shippingbox",
@@ -34,16 +34,6 @@ struct ProductsView: View {
                 await manager.refresh()
             }
         }
-    }
-
-    private var backgroundGradient: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [Color.brandDeepNavy, Color.black]
-                : [Color.saneBackground, Color.salesGreen.opacity(0.02)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
     }
 
     // MARK: - Revenue Chart
@@ -99,8 +89,8 @@ struct ProductsView: View {
                 Text(formatCents(selected.revenue))
                     .font(.title3.weight(.bold))
                 Text("\(selected.orderCount) sales")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    .font(.callout)
+                    .foregroundStyle(Color.textMuted)
             }
             .padding(.horizontal, 8)
             .transition(.opacity)
@@ -108,7 +98,7 @@ struct ProductsView: View {
             VStack(spacing: 2) {
                 Text("Total")
                     .font(.footnote.weight(.medium))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textMuted)
                 Text(formatCents(totalRevenue))
                     .font(.title3.weight(.bold))
             }
@@ -223,7 +213,7 @@ struct ProductsView: View {
                     .fill(product.provider.brandColor.opacity(0.1))
                     .overlay(
                         Image(systemName: product.provider.icon)
-                            .font(.footnote)
+                            .font(.callout)
                             .foregroundStyle(product.provider.brandColor)
                     )
                     .frame(width: 44, height: 44)
@@ -254,8 +244,8 @@ struct ProductsView: View {
                     .font(.subheadline.weight(.bold))
                 if let sales = product.totalSales {
                     Text("\(sales) sales")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                        .foregroundStyle(Color.textMuted)
                 }
             }
         }

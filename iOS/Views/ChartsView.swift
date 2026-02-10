@@ -37,12 +37,12 @@ struct ChartsView: View {
             .chartYAxis {
                 AxisMarks(position: .leading) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
-                        .foregroundStyle(Color.secondary.opacity(0.3))
+                        .foregroundStyle(Color.primary.opacity(0.15))
                     AxisValueLabel {
                         if let decimal = value.as(Decimal.self) {
                             Text("$\(NSDecimalNumber(decimal: decimal).intValue)")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+                                .font(.callout)
+                                .foregroundStyle(.primary)
                         }
                     }
                 }
@@ -50,8 +50,8 @@ struct ChartsView: View {
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: xAxisStride)) { _ in
                     AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        .font(.footnote)
-                        .foregroundStyle(.primary.opacity(0.6))
+                        .font(.callout)
+                        .foregroundStyle(.primary)
                 }
             }
 
@@ -65,12 +65,12 @@ struct ChartsView: View {
     private func selectedDayOverlay(_ day: DailySales) -> some View {
         HStack(spacing: 8) {
             Text(day.date.formatted(.dateTime.month(.abbreviated).day()))
-                .font(.footnote.weight(.medium))
+                .font(.callout.weight(.medium))
             Text(formatCents(day.revenue))
-                .font(.footnote.weight(.bold))
+                .font(.callout.weight(.bold))
             Text("\(day.orderCount) orders")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+                .font(.callout)
+                .foregroundStyle(Color.textMuted)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)

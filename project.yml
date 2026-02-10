@@ -102,6 +102,13 @@ targets:
       - target: SaneSalesWidgets
         embed: true
         codeSign: true
+    entitlements:
+      path: SaneSales/SaneSales.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        keychain-access-groups:
+          - "$(AppIdentifierPrefix)com.sanesales.app"
     info:
       path: SaneSales/Info.plist
       properties:
@@ -120,17 +127,19 @@ targets:
         ARCHS: arm64
         VALID_ARCHS: arm64
         DEVELOPMENT_TEAM: M78L6FXD48
-        CODE_SIGN_STYLE: Manual
         CODE_SIGN_INJECT_BASE_ENTITLEMENTS: YES
       configs:
         Debug:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev
+          CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+          CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Apple Distribution"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+          CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Apple Distribution"
     postCompileScripts:
       - script: |
@@ -227,6 +236,11 @@ targets:
       - target: SaneSalesIOSWidgets
         embed: true
         codeSign: true
+    entitlements:
+      path: iOS/SaneSalesIOS.entitlements
+      properties:
+        keychain-access-groups:
+          - "$(AppIdentifierPrefix)com.sanesales.app"
     info:
       path: iOS/Info.plist
       properties:

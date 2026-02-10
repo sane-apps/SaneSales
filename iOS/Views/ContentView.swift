@@ -79,14 +79,8 @@ struct OnboardingView: View {
     }
 
     private var backgroundGradient: some View {
-        LinearGradient(
-            colors: colorScheme == .dark
-                ? [Color.brandDeepNavy, Color.black]
-                : [Color.saneBackground, Color.salesGreen.opacity(0.06)],
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        .ignoresSafeArea()
+        SaneBackground()
+            .ignoresSafeArea()
     }
 
     private var heroSection: some View {
@@ -102,7 +96,7 @@ struct OnboardingView: View {
 
             Text("Track your sales from\nLemon Squeezy, Gumroad, and Stripe.")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
                 .multilineTextAlignment(.center)
         }
     }
@@ -111,7 +105,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("CHOOSE A PROVIDER")
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
                 .tracking(0.5)
                 .padding(.leading, 4)
 
@@ -163,7 +157,7 @@ struct OnboardingView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("\(selectedProvider.displayName) API Key")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
 
             SecureField("Paste your API key", text: $apiKey)
@@ -173,7 +167,7 @@ struct OnboardingView: View {
 
             Text(keyHelpText)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
         }
     }
