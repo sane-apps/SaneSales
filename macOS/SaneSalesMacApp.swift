@@ -24,6 +24,14 @@ import SwiftUI
                     .onAppear {
                         setupMenuBar()
                     }
+                    .task {
+                        #if DEBUG
+                            if CommandLine.arguments.contains("--demo") ||
+                                UserDefaults.standard.bool(forKey: "loadDemoData") {
+                                DemoData.loadInto(manager: manager)
+                            }
+                        #endif
+                    }
             }
             .defaultSize(width: 800, height: 600)
             .onChange(of: showInMenuBar) { _, newValue in
@@ -39,16 +47,31 @@ import SwiftUI
                 // Update menu bar when metrics change
                 menuBarManager?.updateTitle()
             }
-
-            Settings {
-                SettingsView()
-                    .environment(manager)
+            .commands {
+                CommandGroup(replacing: .appSettings) {
+                    Button("Settings\u{2026}") {
+                        showSettingsTab()
+                    }
+                    .keyboardShortcut(",", modifiers: .command)
+                }
             }
         }
 
         private func setupMenuBar() {
             if showInMenuBar {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
+            }
+        }
+
+        private func showSettingsTab() {
+            NSApp.activate(ignoringOtherApps: true)
+            if let mainWindow = NSApp.windows.first(where: {
+                !$0.isSheet && $0.className != "NSStatusBarWindow"
+            }) {
+                mainWindow.makeKeyAndOrderFront(nil)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
             }
         }
 
@@ -60,6 +83,8 @@ import SwiftUI
                 menuBarManager = nil
             }
         }
+
+        // Window transparency is now handled by WindowTransparencyAccessor in SaneBackground
     }
 
     // Reuse ContentView from iOS/ (shared code)

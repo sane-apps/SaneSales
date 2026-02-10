@@ -23,11 +23,15 @@ struct SalesWidgetProvider: TimelineProvider {
         guard let orders = try? JSONDecoder().decode([Order].self, from: data) else { return nil }
 
         let metrics = SalesMetrics.compute(from: orders)
+        let currency = Dictionary(grouping: orders, by: \.currency)
+            .mapValues(\.count)
+            .max(by: { $0.value < $1.value })?.key ?? "USD"
         return SalesWidgetEntry(
             date: Date(),
             todayRevenue: metrics.todayRevenue,
             todayOrders: metrics.todayOrders,
-            monthRevenue: metrics.monthRevenue
+            monthRevenue: metrics.monthRevenue,
+            currency: currency
         )
     }
 }

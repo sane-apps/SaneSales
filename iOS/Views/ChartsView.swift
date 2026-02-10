@@ -4,6 +4,7 @@ import SwiftUI
 struct ChartsView: View {
     @Environment(\.colorScheme) private var colorScheme
     let dailySales: [DailySales]
+    var currency: String = "USD"
     @State private var selectedDate: Date?
 
     private var selectedDay: DailySales? {
@@ -60,6 +61,7 @@ struct ChartsView: View {
                 selectedDayOverlay(day)
             }
         }
+        .accessibilityLabel("Revenue chart showing \(dailySales.count) days of sales data")
     }
 
     private func selectedDayOverlay(_ day: DailySales) -> some View {
@@ -91,7 +93,7 @@ struct ChartsView: View {
     private func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
+        formatter.currencyCode = currency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
     }
 }

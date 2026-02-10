@@ -10,6 +10,16 @@ struct OrdersListView: View {
         manager.filteredOrders(search: searchText, provider: providerFilter)
     }
 
+    private var groupedOrders: [(DateSection, [Order])] {
+        let grouped = Dictionary(grouping: displayedOrders) { order in
+            DateSection.from(order.createdAt)
+        }
+        return DateSection.allCases.compactMap { section in
+            guard let orders = grouped[section], !orders.isEmpty else { return nil }
+            return (section, orders)
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -23,17 +33,38 @@ struct OrdersListView: View {
                             ContentUnavailableView.search(text: searchText)
                         }
                     } else {
-                        List(displayedOrders) { order in
-                            NavigationLink(value: order.id) {
-                                OrderRow(order: order)
+                        List {
+                            ForEach(groupedOrders, id: \.0) { section, orders in
+                                Section {
+                                    ForEach(orders) { order in
+                                        NavigationLink(value: order.id) {
+                                            OrderRow(order: order)
+                                        }
+                                        .listRowBackground(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(AnyShapeStyle(.ultraThinMaterial))
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 10)
+                                                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                                                )
+                                                .shadow(
+                                                    color: colorScheme == .dark
+                                                        ? Color.brandBlueGlow.opacity(0.12)
+                                                        : Color.brandBlueGlow.opacity(0.06),
+                                                    radius: 6,
+                                                    x: 0,
+                                                    y: 2
+                                                )
+                                                .padding(.vertical, 2)
+                                        )
+                                    }
+                                } header: {
+                                    Text(section.rawValue)
+                                        .font(.saneSectionHeader)
+                                        .foregroundStyle(Color.textMuted)
+                                        .textCase(nil)
+                                }
                             }
-                            .listRowBackground(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .fill(colorScheme == .dark
-                                        ? Color.white.opacity(0.06)
-                                        : Color.white)
-                                    .padding(.vertical, 1)
-                            )
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)
@@ -74,8 +105,15 @@ struct OrdersListView: View {
                 }
             }
         } label: {
-            Image(systemName: "line.3.horizontal.decrease.circle")
-                .foregroundStyle(Color.salesGreen)
+            Image(systemName: providerFilter != nil
+                ? "line.3.horizontal.decrease.circle.fill"
+                : "line.3.horizontal.decrease.circle")
+                .foregroundStyle(providerFilter != nil
+                    ? providerFilter!.brandColor
+                    : Color.salesGreen)
+                .accessibilityLabel(providerFilter != nil
+                    ? "Filter: \(providerFilter!.displayName)"
+                    : "Filter providers")
         }
     }
 }
@@ -94,14 +132,15 @@ struct OrderRow: View {
                 .font(.title3)
                 .foregroundStyle(statusColor)
                 .frame(width: 28)
+                .accessibilityHidden(true)
 
             // Customer + Product
             VStack(alignment: .leading, spacing: 4) {
                 Text(order.customerName)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.saneSubheadlineBold)
                 HStack(spacing: 6) {
                     Text(order.productName)
-                        .font(.callout)
+                        .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
                     if manager.connectedProviders.count > 1 {
                         ProviderDot(provider: order.provider)
@@ -114,24 +153,48 @@ struct OrderRow: View {
             // Amount + Date
             VStack(alignment: .trailing, spacing: 4) {
                 Text(order.displayTotal)
-                    .font(.subheadline.weight(.bold))
+                    .font(.saneSubheadlineBold)
                     .foregroundStyle(order.isRefunded ? Color.salesWarning : Color.primary)
                 Text(order.createdAt, style: .date)
-                    .font(.footnote)
+                    .font(.saneFootnote)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(order.customerName), \(order.productName), \(order.displayTotal), \(order.status.displayName)")
     }
 
     private var statusColor: Color {
         switch order.status {
         case .paid: .salesSuccess
         case .refunded: .salesWarning
-        case .pending: .yellow
+        case .pending: .salesWarning
         case .failed: .salesError
         case .unknown: .gray
         }
+    }
+}
+
+// MARK: - Date Section
+
+private enum DateSection: String, CaseIterable {
+    case today = "Today"
+    case yesterday = "Yesterday"
+    case thisWeek = "This Week"
+    case thisMonth = "This Month"
+    case earlier = "Earlier"
+
+    static func from(_ date: Date) -> DateSection {
+        let cal = Calendar.current
+        if cal.isDateInToday(date) { return .today }
+        if cal.isDateInYesterday(date) { return .yesterday }
+        let weekAgo = cal.date(byAdding: .day, value: -7, to: cal.startOfDay(for: Date()))!
+        if date >= weekAgo { return .thisWeek }
+        if let monthStart = cal.dateInterval(of: .month, for: Date())?.start, date >= monthStart {
+            return .thisMonth
+        }
+        return .earlier
     }
 }
 
@@ -143,6 +206,7 @@ struct ProviderDot: View {
     var body: some View {
         Circle()
             .fill(provider.brandColor)
-            .frame(width: 7, height: 7)
+            .frame(width: 10, height: 10)
+            .accessibilityLabel(provider.displayName)
     }
 }

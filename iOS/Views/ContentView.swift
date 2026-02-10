@@ -13,34 +13,37 @@ struct ContentView: View {
 }
 
 struct MainTabView: View {
+    @State private var selectedTab = 0
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             DashboardView()
                 .tabItem {
-                    Label {
-                        Text("Dashboard")
-                    } icon: {
-                        Image("CoinTemplate")
-                            .renderingMode(.template)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                    }
+                    Label("Dashboard", systemImage: "chart.bar.fill")
                 }
+                .tag(0)
             OrdersListView()
                 .tabItem {
                     Label("Orders", systemImage: "list.bullet.rectangle")
                 }
+                .tag(1)
             ProductsView()
                 .tabItem {
                     Label("Products", systemImage: "shippingbox.fill")
                 }
+                .tag(2)
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
+                .tag(3)
         }
         .tint(.salesGreen)
+        #if os(macOS)
+            .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
+                selectedTab = 3
+            }
+        #endif
     }
 }
 
@@ -89,6 +92,7 @@ struct OnboardingView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 72, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .padding(.bottom, 4)
 
             Text("SaneSales")
@@ -104,7 +108,7 @@ struct OnboardingView: View {
     private var providerPicker: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("CHOOSE A PROVIDER")
-                .font(.subheadline.weight(.semibold))
+                .font(.saneSectionHeader)
                 .foregroundStyle(Color.textMuted)
                 .tracking(0.5)
                 .padding(.leading, 4)
@@ -119,9 +123,9 @@ struct OnboardingView: View {
                             Image(systemName: provider.icon)
                                 .foregroundStyle(provider.brandColor)
                                 .frame(width: 22)
-                                .font(.subheadline)
+                                .font(.saneSubheadline)
                             Text(provider.displayName)
-                                .font(.subheadline.weight(.medium))
+                                .font(.saneSubheadline)
                                 .foregroundStyle(.primary)
                             Spacer()
                             if selectedProvider == provider {
@@ -138,17 +142,19 @@ struct OnboardingView: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(colorScheme == .dark
-                        ? Color.white.opacity(0.07)
-                        : Color.white)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                    )
             )
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(colorScheme == .dark
-                        ? Color.white.opacity(0.10)
-                        : Color.black.opacity(0.06),
-                        lineWidth: 0.5)
+                    .stroke(
+                        Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.20 : 0.12),
+                        lineWidth: 1
+                    )
             )
         }
     }
@@ -156,7 +162,7 @@ struct OnboardingView: View {
     private var keyEntrySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("\(selectedProvider.displayName) API Key")
-                .font(.subheadline.weight(.medium))
+                .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
 
@@ -166,7 +172,7 @@ struct OnboardingView: View {
                 .autocorrectionDisabled()
 
             Text(keyHelpText)
-                .font(.footnote)
+                .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
         }

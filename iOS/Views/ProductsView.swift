@@ -39,7 +39,7 @@ struct ProductsView: View {
     // MARK: - Revenue Chart
 
     private var revenueChart: some View {
-        GlassSection("Revenue by Product", icon: "chart.pie", iconColor: .purple) {
+        GlassSection("Revenue by Product", icon: "chart.pie", iconColor: .salesGold) {
             VStack(spacing: 16) {
                 // Donut chart with center label
                 ZStack {
@@ -64,6 +64,7 @@ struct ProductsView: View {
                 .frame(height: 220)
                 .padding(.horizontal, 14)
                 .padding(.top, 14)
+                .accessibilityLabel("Revenue breakdown by product, \(manager.metrics.productBreakdown.count) products")
 
                 // Custom legend
                 customLegend
@@ -89,7 +90,7 @@ struct ProductsView: View {
                 Text(formatCents(selected.revenue))
                     .font(.title3.weight(.bold))
                 Text("\(selected.orderCount) sales")
-                    .font(.callout)
+                    .font(.saneCallout)
                     .foregroundStyle(Color.textMuted)
             }
             .padding(.horizontal, 8)
@@ -125,14 +126,14 @@ struct ProductsView: View {
                             .frame(width: 14, height: 14)
 
                         Text(product.productName)
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                             .lineLimit(1)
                             .foregroundStyle(.primary)
 
                         Spacer()
 
                         Text(formatCents(product.revenue))
-                            .font(.subheadline.weight(.semibold))
+                            .font(.saneSubheadlineBold)
                             .foregroundStyle(.primary)
                     }
                     .frame(minHeight: 44)
@@ -146,7 +147,7 @@ struct ProductsView: View {
     }
 
     private let chartColorPalette: [Color] = [
-        .salesGreen, .blue, .purple, .orange, .providerGumroad, .providerStripe, .salesWarning
+        .salesGreen, .blue, .salesGold, .teal, .mint, .cyan, .indigo
     ]
 
     private func chartColor(for product: ProductSales) -> Color {
@@ -175,7 +176,7 @@ struct ProductsView: View {
     private func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
+        formatter.currencyCode = manager.primaryCurrency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
     }
 
@@ -213,7 +214,7 @@ struct ProductsView: View {
                     .fill(product.provider.brandColor.opacity(0.1))
                     .overlay(
                         Image(systemName: product.provider.icon)
-                            .font(.callout)
+                            .font(.saneCallout)
                             .foregroundStyle(product.provider.brandColor)
                     )
                     .frame(width: 44, height: 44)
@@ -222,7 +223,7 @@ struct ProductsView: View {
             // Name + Status
             VStack(alignment: .leading, spacing: 4) {
                 Text(product.name)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.saneSubheadlineBold)
                     .lineLimit(1)
                 HStack(spacing: 6) {
                     SalesBadge(
@@ -244,7 +245,7 @@ struct ProductsView: View {
                     .font(.subheadline.weight(.bold))
                 if let sales = product.totalSales {
                     Text("\(sales) sales")
-                        .font(.callout)
+                        .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
                 }
             }
