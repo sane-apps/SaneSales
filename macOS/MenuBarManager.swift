@@ -25,18 +25,17 @@ final class MenuBarManager: NSObject {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
 
         if let button = item.button {
-            // Prefer a branded coin image (template) so it matches light/dark menu bar automatically.
-            let image =
-                NSImage(named: "MenuBarIcon")
-                ?? NSImage(systemSymbolName: SFSymbols.coin, accessibilityDescription: "SaneSales")
+            let config = NSImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+            let image = NSImage(systemSymbolName: SFSymbols.coin, accessibilityDescription: "SaneSales")?
+                .withSymbolConfiguration(config)
                 ?? NSImage(systemSymbolName: SFSymbols.coinFallback, accessibilityDescription: "SaneSales")
             image?.isTemplate = true
             button.image = image
             button.imagePosition = .imageLeading
             button.target = self
             button.action = #selector(statusItemClicked)
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
-            // Set initial title
             updateTitle()
         }
 
@@ -59,13 +58,86 @@ final class MenuBarManager: NSObject {
         updateTitle()
     }
 
+    // MARK: - Click Handling
+
     @objc private func statusItemClicked() {
-        // Activate the app and bring the main window to front
+        guard let event = NSApp.currentEvent else { return }
+
+        if event.type == .rightMouseUp {
+            showMenu()
+        } else {
+            activateWindow()
+        }
+    }
+
+    private func activateWindow() {
         NSApp.activate(ignoringOtherApps: true)
 
-        // Find the main window and make it key
-        if let mainWindow = NSApp.windows.first(where: { $0.isVisible && !$0.isSheet }) {
+        if let mainWindow = NSApp.windows.first(where: {
+            $0.isVisible && !$0.isSheet && $0.className != "NSStatusBarWindow"
+        }) {
             mainWindow.makeKeyAndOrderFront(nil)
+        } else {
+            // No visible window — open a new one
+            NSApp.activate(ignoringOtherApps: true)
+            if #available(macOS 14.0, *) {
+                // WindowGroup will create a new window when none exist
+            }
         }
+    }
+
+    private func showMenu() {
+        let menu = NSMenu()
+
+        let showItem = NSMenuItem(title: "Show SaneSales", action: #selector(menuShowWindow), keyEquivalent: "")
+        showItem.target = self
+        menu.addItem(showItem)
+
+        menu.addItem(.separator())
+
+        let refreshItem = NSMenuItem(title: "Refresh", action: #selector(menuRefresh), keyEquivalent: "r")
+        refreshItem.target = self
+        menu.addItem(refreshItem)
+
+        menu.addItem(.separator())
+
+        let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(menuOpenSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
+
+        menu.addItem(.separator())
+
+        let quitItem = NSMenuItem(title: "Quit SaneSales", action: #selector(menuQuit), keyEquivalent: "q")
+        quitItem.target = self
+        menu.addItem(quitItem)
+
+        statusItem?.menu = menu
+        statusItem?.button?.performClick(nil)
+        // Clear menu so left-click still activates the window
+        statusItem?.menu = nil
+    }
+
+    // MARK: - Menu Actions
+
+    @objc private func menuShowWindow() {
+        activateWindow()
+    }
+
+    @objc private func menuRefresh() {
+        guard let manager = salesManager else { return }
+        Task { await manager.refresh() }
+    }
+
+    @objc private func menuOpenSettings() {
+        NSApp.activate(ignoringOtherApps: true)
+        if #available(macOS 14.0, *) {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        } else {
+            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        }
+    }
+
+    @objc private func menuQuit() {
+        NSApp.terminate(nil)
     }
 }
