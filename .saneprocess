@@ -1,7 +1,7 @@
 # SaneProcess compliance manifest
 name: SaneSales
-type: ios_app
-scheme: SaneSalesIOS
+type: macos_app
+scheme: SaneSales
 project: SaneSales.xcodeproj
 bundle_id: com.sanesales.app
 
@@ -9,16 +9,31 @@ build:
   xcodegen: true
 
 release:
+  team_id: M78L6FXD48
+  signing_identity: "Developer ID Application"
   dist_host: dist.sanesales.com
   site_host: sanesales.com
-  r2_bucket: sanebar-downloads
-  use_sparkle: false
-  min_system_version: "17.0"
+  r2_bucket: sanesales-downloads
+  use_sparkle: true
+  min_system_version: "14.0"
+  export:
+    options_plist: ExportOptions-DevID.plist
+  archive_extra_args:
+    - "-allowProvisioningUpdates"
+  dmg:
+    volume_icon: Resources/DMGIcon.icns
+    file_icon: Resources/DMGIcon.icns
+    window_size: "800 400"
+    app_icon_pos: "200 185"
+    drop_pos: "600 185"
 
 commands:
-  verify: xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
-  test: xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' test
-  lint: swiftlint lint --quiet --cache-path .swiftlint-cache Core iOS macOS Widgets Tests
+  verify: ./scripts/SaneMaster.rb verify
+  test_mode: ./scripts/SaneMaster.rb tm
+  lint: ./scripts/SaneMaster.rb lint
+  clean: ./scripts/SaneMaster.rb clean
+  launch: ./scripts/SaneMaster.rb launch
+  logs: ./scripts/SaneMaster.rb logs
 
 docs:
   - CLAUDE.md
@@ -32,3 +47,6 @@ mcps:
   - context7
   - github
   - xcode
+
+website: true
+website_domain: sanesales.com

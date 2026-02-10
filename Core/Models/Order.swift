@@ -99,16 +99,6 @@ enum OrderStatus: String, Codable, Sendable {
         case .unknown: "questionmark.circle.fill"
         }
     }
-
-    var tintColor: String {
-        switch self {
-        case .paid: "green"
-        case .refunded: "orange"
-        case .pending: "yellow"
-        case .failed: "red"
-        case .unknown: "gray"
-        }
-    }
 }
 
 enum SalesProviderType: String, Codable, Sendable {

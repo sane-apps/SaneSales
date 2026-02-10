@@ -14,6 +14,7 @@
 		21EE94586BFB529EE5B7D105 /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */; };
 		231B67E1A59EBC726D52B88B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
 		24B1F53D7A9F4FA830040104 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */; };
 		288F8FF0F8F72BFEE563D293 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
 		2965F75C49E5DC14456FE00E /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		2A7E9B1D9CB3888488601ACA /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
@@ -21,8 +22,10 @@
 		2C368EEE9BBE47C9E9B6CED8 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
 		30243AE0512C901F0E4810D3 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		32C0DB99CC8B65BD201EFDD0 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
+		3327D0F949C011B53C31A93C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */; };
 		36E263B73CB5AA104BA3CBDD /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C618B676662B450F13B5F6 /* ChartsView.swift */; };
 		3855D35A21CE5DE409F58137 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077F3679A1C5054CF24632C /* CacheService.swift */; };
+		38C2212EBEB25FEDF47DA255 /* DMGIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */; };
 		38DA1C95E1A9C2528A5A28CE /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */; };
 		3A67B43E4B7EF8D6A9EC819D /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
 		3AC5F3E189ED62A55AA4FFA7 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41947086D2C90F540159C8FB /* MenuBarManager.swift */; };
@@ -30,6 +33,7 @@
 		41911AD194F44D291D4C9370 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
 		44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		46FABC2DDD35C6D340BCD8A6 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
+		4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */; };
 		4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		4FE174E430A0B7B1DD775E14 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		5641CD8BA660AD48D6668BE4 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
@@ -169,6 +173,7 @@
 		B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesMetrics.swift; sourceTree = "<group>"; };
 		BBFB73B1AA8D2007F3C38C41 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
+		C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DMGIcon.icns; sourceTree = "<group>"; };
 		CB903445C8A3AE0899087713 /* StripeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeProvider.swift; sourceTree = "<group>"; };
 		D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesMacApp.swift; sourceTree = "<group>"; };
 		D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaneSalesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -176,6 +181,7 @@
 		E077F3679A1C5054CF24632C /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
 		E23BF71C99337FFA9F9B9382 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SaneSalesIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EB5EE067F26BFA6A79614082 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -273,6 +279,8 @@
 			isa = PBXGroup;
 			children = (
 				22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */,
+				C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */,
+				E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -332,6 +340,7 @@
 			buildPhases = (
 				48BFE6439F1BE28557109B3E /* Sources */,
 				AC1BDE77B58BC18DB4C7033F /* Run SwiftLint */,
+				AFB4FBFF686F465712673041 /* Strip Sparkle for App Store */,
 				C10F5F0D900597E9D25DE28E /* Resources */,
 				E09A5B7F4F172967E68B5E53 /* Embed Foundation Extensions */,
 			);
@@ -448,10 +457,11 @@
 				TargetAttributes = {
 					11F92A0BDD7FD9F39613C6C0 = {
 						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Automatic;
 					};
 					372D646238F964199D574608 = {
 						DevelopmentTeam = M78L6FXD48;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					4DF8CAE39C290BCE75EDC12F = {
 						DevelopmentTeam = M78L6FXD48;
@@ -459,11 +469,11 @@
 					};
 					7B1B7BA7CE15C47720B6A092 = {
 						DevelopmentTeam = M78L6FXD48;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					9417656CD7DEB667AABF0B91 = {
 						DevelopmentTeam = M78L6FXD48;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					FE01AF185479325D5FFB3F5D = {
 						DevelopmentTeam = M78L6FXD48;
@@ -501,6 +511,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */,
+				28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */,
+				4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,6 +521,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D5027B0DEC6A2378992019F7 /* Assets.xcassets in Resources */,
+				38C2212EBEB25FEDF47DA255 /* DMGIcon.icns in Resources */,
+				3327D0F949C011B53C31A93C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,6 +547,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint lint --quiet --cache-path \"${SRCROOT}/.swiftlint-cache\" \"${SRCROOT}/Core\" \"${SRCROOT}/iOS\" \"${SRCROOT}/macOS\" \"${SRCROOT}/Widgets\" \"${SRCROOT}/Tests\" || true\nelse\n  echo \"warning: SwiftLint not installed\"\nfi\n";
+		};
+		AFB4FBFF686F465712673041 /* Strip Sparkle for App Store */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Sparkle for App Store";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$CONFIGURATION\" == \"Release-AppStore\" ]; then\n  echo \"Stripping Sparkle from App Store build...\"\n  rm -rf \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUFeedURL\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUPublicEDKey\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n  echo \"Sparkle stripped from App Store build.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -695,7 +728,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -707,7 +740,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ios.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -720,8 +753,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -741,8 +774,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -845,8 +878,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
@@ -858,7 +891,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -961,8 +994,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
@@ -974,7 +1007,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -1050,7 +1083,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
@@ -1062,7 +1095,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
@@ -1124,9 +1157,9 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1149,8 +1182,8 @@
 		AE877033FB322BE354792B2E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1162,7 +1195,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1174,8 +1207,8 @@
 		B0E6D5E822B94B2383A30DF0 /* Release-AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1187,7 +1220,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ios.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1201,7 +1234,7 @@
 			buildSettings = {
 				ARCHS = arm64;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1223,9 +1256,9 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;

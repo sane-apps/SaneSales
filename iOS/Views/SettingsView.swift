@@ -131,7 +131,7 @@ struct SettingsView: View {
                 .frame(width: 28)
 
             Text(provider.displayName)
-                .font(.subheadline.weight(.medium))
+                .font(.saneSubheadline)
 
             Spacer()
 
@@ -164,7 +164,7 @@ struct SettingsView: View {
                     editingProvider = provider
                     showingKeyEntry = true
                 }
-                .font(.subheadline.weight(.semibold))
+                .font(.saneSubheadlineBold)
                 .foregroundStyle(Color.salesGreen)
             }
         }
@@ -192,7 +192,7 @@ struct SettingsView: View {
                         .autocorrectionDisabled()
 
                     Text(keyHelpText)
-                        .font(.callout)
+                        .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
                 }
                 .padding(.horizontal)
@@ -247,18 +247,18 @@ struct SettingsView: View {
                 if let date = manager.lastUpdated {
                     GlassRow("Last Updated", icon: "clock", iconColor: .salesGreen) {
                         Text(date.formatted(date: .abbreviated, time: .shortened))
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                     }
                     GlassDivider()
                 }
-                GlassRow("Cached Orders", icon: "list.bullet", iconColor: .purple) {
+                GlassRow("Cached Orders", icon: "list.bullet", iconColor: .blue) {
                     Text("\(manager.orders.count)")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.saneSubheadlineBold)
                 }
                 GlassDivider()
                 GlassRow("Products", icon: "shippingbox", iconColor: .orange) {
                     Text("\(manager.products.count)")
-                        .font(.subheadline.weight(.semibold))
+                        .font(.saneSubheadlineBold)
                 }
                 GlassDivider()
                 Button {
@@ -299,19 +299,19 @@ struct SettingsView: View {
             VStack(spacing: 0) {
                 GlassRow("Version", icon: "number", iconColor: .secondary) {
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
-                        .font(.subheadline)
+                        .font(.saneSubheadline)
                 }
                 GlassDivider()
                 GlassRow("Build", icon: "hammer", iconColor: .secondary) {
                     Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
-                        .font(.subheadline)
+                        .font(.saneSubheadline)
                 }
                 GlassDivider()
                 Link(destination: URL(string: "https://saneapps.com")!) {
                     GlassRow("Website", icon: "globe", iconColor: Color.salesGreen) {
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(Color.salesGreen)
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                     }
                 }
                 GlassDivider()
@@ -319,7 +319,7 @@ struct SettingsView: View {
                     GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(Color.textMuted)
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                     }
                 }
                 GlassDivider()
@@ -327,15 +327,15 @@ struct SettingsView: View {
                     GlassRow("Privacy Policy", icon: "hand.raised", iconColor: .blue) {
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(Color.textMuted)
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                     }
                 }
                 GlassDivider()
                 Link(destination: URL(string: "mailto:hi@saneapps.com")!) {
-                    GlassRow("Email Us", icon: "envelope", iconColor: .purple) {
+                    GlassRow("Email Us", icon: "envelope", iconColor: .blue) {
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(Color.textMuted)
-                            .font(.subheadline)
+                            .font(.saneSubheadline)
                     }
                 }
             }
@@ -344,7 +344,7 @@ struct SettingsView: View {
 
     private var trustTagline: some View {
         Text("Made with love in the USA \u{00B7} 100% On-Device \u{00B7} No Analytics")
-            .font(.callout)
+            .font(.saneCallout)
             .foregroundStyle(Color.textMuted)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
@@ -453,7 +453,7 @@ private extension SettingsView {
                     Text("Export Ready")
                         .font(.headline)
                     Text(url.lastPathComponent)
-                        .font(.subheadline)
+                        .font(.saneSubheadline)
                         .foregroundStyle(Color.textMuted)
                     Button("Reveal in Finder") {
                         NSWorkspace.shared.activateFileViewerSelecting([url])

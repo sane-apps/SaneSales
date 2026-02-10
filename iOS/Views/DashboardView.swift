@@ -12,15 +12,16 @@ enum TimeRange: String, CaseIterable {
 struct DashboardView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
-    @State private var selectedRange: TimeRange = .today
+    @AppStorage("selectedTimeRange") private var selectedRange: TimeRange = .today
     @State private var animateCards = false
+    @Namespace private var pickerNamespace
 
     var body: some View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 24) {
                         if let error = manager.error {
                             errorBanner(error)
                         }
@@ -58,15 +59,13 @@ struct DashboardView: View {
                             .tint(.salesGreen)
                     } else if let date = manager.lastUpdated {
                         Text(date, style: .relative)
-                            .font(.callout)
+                            .font(.saneCallout)
                             .foregroundStyle(Color.textMuted)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
                             .background(
                                 Capsule()
-                                    .fill(colorScheme == .dark
-                                        ? Color.white.opacity(0.07)
-                                        : Color.black.opacity(0.04))
+                                    .fill(AnyShapeStyle(.ultraThinMaterial))
                             )
                     }
                 }
@@ -94,17 +93,17 @@ private extension DashboardView {
     private var heroRevenue: some View {
         VStack(spacing: 6) {
             Text(rangeLabel)
-                .font(.subheadline.weight(.medium))
+                .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
 
             Text(formatCents(revenueForRange))
-                .font(.system(size: 48, weight: .bold, design: .rounded))
+                .font(.saneCardValue(size: 48))
                 .foregroundStyle(.primary)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
                 .animation(.spring(response: 0.4), value: revenueForRange)
 
             Text(pluralize(ordersForRange, "order"))
-                .font(.callout)
+                .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
@@ -118,12 +117,12 @@ private extension DashboardView {
         HStack(spacing: 0) {
             ForEach(TimeRange.allCases, id: \.self) { range in
                 Button {
-                    withAnimation(.spring(response: 0.3)) {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
                         selectedRange = range
                     }
                 } label: {
                     Text(range.rawValue)
-                        .font(.subheadline.weight(.semibold))
+                        .font(.saneSubheadline)
                         .foregroundStyle(selectedRange == range ? .white : .secondary)
                         .frame(maxWidth: .infinity)
                         .frame(minHeight: 40)
@@ -132,6 +131,7 @@ private extension DashboardView {
                             if selectedRange == range {
                                 Capsule()
                                     .fill(Color.salesGreen)
+                                    .matchedGeometryEffect(id: "picker", in: pickerNamespace)
                             }
                         }
                 }
@@ -141,9 +141,7 @@ private extension DashboardView {
         .padding(4)
         .background(
             Capsule()
-                .fill(colorScheme == .dark
-                    ? Color.white.opacity(0.07)
-                    : Color.black.opacity(0.05))
+                .fill(AnyShapeStyle(.ultraThinMaterial))
         )
     }
 
@@ -176,21 +174,24 @@ private extension DashboardView {
     private func comparisonPill(label: String, value: String, isPositive: Bool) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.subheadline.weight(.bold))
+                .font(.saneSubheadline)
+                .fontWeight(.bold)
                 .foregroundStyle(label == "vs prev"
                     ? (isPositive ? Color.salesSuccess : Color.salesError)
                     : .primary)
             Text(label)
-                .font(.callout)
+                .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(colorScheme == .dark
-                    ? Color.white.opacity(0.05)
-                    : Color.black.opacity(0.03))
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                )
         )
     }
 
@@ -212,7 +213,7 @@ private extension DashboardView {
     // MARK: - Revenue Cards
 
     private var revenueCards: some View {
-        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 14) {
+        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 16) {
             SalesCard(
                 title: "Today",
                 value: formatCents(manager.metrics.todayRevenue),
@@ -223,6 +224,7 @@ private extension DashboardView {
             )
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
 
             SalesCard(
                 title: "This Month",
@@ -233,20 +235,23 @@ private extension DashboardView {
             )
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
 
             SalesCard(
                 title: "All Time",
                 value: formatCents(manager.metrics.allTimeRevenue),
                 subtitle: pluralize(manager.metrics.allTimeOrders, "order"),
                 iconAssetName: "CoinTemplate",
-                iconColor: .purple
+                iconColor: .salesGold
             )
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
             storeCard
                 .offset(y: animateCards ? 0 : 20)
                 .opacity(animateCards ? 1 : 0)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15), value: animateCards)
         }
     }
 
@@ -285,8 +290,10 @@ private extension DashboardView {
                                        description: Text("Sales data will appear here after your first order."))
                     .frame(height: 200)
             } else {
-                ChartsView(dailySales: chartData)
-                    .frame(height: 200)
+                ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
+                    .padding(.top, 8)
+                    .frame(height: 220)
+                    .clipped()
                     .padding(14)
             }
         }
@@ -321,17 +328,17 @@ private extension DashboardView {
 
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(product.productName)
-                                    .font(.subheadline.weight(.medium))
+                                    .font(.saneSubheadline)
                                     .lineLimit(1)
                                 Text(pluralize(product.orderCount, "sale"))
-                                    .font(.callout)
+                                    .font(.saneCallout)
                                     .foregroundStyle(Color.textMuted)
                             }
 
                             Spacer()
 
                             Text(formatCents(product.revenue))
-                                .font(.subheadline.weight(.bold))
+                                .font(.saneSubheadlineBold)
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -345,7 +352,7 @@ private extension DashboardView {
         switch index {
         case 0: .salesGreen
         case 1: .blue
-        case 2: .purple
+        case 2: .salesGold
         default: .secondary
         }
     }
@@ -368,7 +375,7 @@ private extension DashboardView {
 
     private func rankCircle(_ index: Int) -> some View {
         Text("\(index + 1)")
-            .font(.footnote.weight(.bold))
+            .font(.saneFootnote)
             .foregroundStyle(.white)
             .frame(width: 34, height: 34)
             .background(rankColor(index))
@@ -382,7 +389,7 @@ private extension DashboardView {
             Image(systemName: "exclamationmark.triangle.fill")
                 .foregroundStyle(Color.salesWarning)
             Text(error.localizedDescription)
-                .font(.callout)
+                .font(.saneCallout)
             Spacer()
             Button("Retry") {
                 Task { await manager.refresh() }
@@ -508,7 +515,7 @@ private extension DashboardView {
     private func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
+        formatter.currencyCode = manager.primaryCurrency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
     }
 

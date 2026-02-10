@@ -25,6 +25,15 @@ final class SalesManager {
         isLemonSqueezyConnected || isGumroadConnected || isStripeConnected
     }
 
+    /// Most common currency across all orders (falls back to store currency, then USD).
+    var primaryCurrency: String {
+        guard !orders.isEmpty else {
+            return stores.first?.currency ?? "USD"
+        }
+        let counts = Dictionary(grouping: orders, by: \.currency).mapValues(\.count)
+        return counts.max(by: { $0.value < $1.value })?.key ?? "USD"
+    }
+
     var connectedProviders: [SalesProviderType] {
         var result: [SalesProviderType] = []
         if isLemonSqueezyConnected { result.append(.lemonSqueezy) }
@@ -45,7 +54,8 @@ final class SalesManager {
 
     init() {
         #if DEBUG
-            if CommandLine.arguments.contains("--demo") {
+            if CommandLine.arguments.contains("--demo")
+                || UserDefaults.standard.bool(forKey: "demo_mode") {
                 DemoData.loadInto(manager: self)
                 return
             }
@@ -220,8 +230,19 @@ final class SalesManager {
 
             let (orders, products, store) = try await (fetchedOrders, fetchedProducts, fetchedStore)
             result.orders = orders
-            result.products = products
             result.store = store
+
+            // Fix product currencies: LS and Stripe products don't have currency in API,
+            // so providers hardcode "USD". Replace with actual store currency.
+            let storeCurrency = store.currency
+            result.products = products.map { product in
+                guard product.provider == .lemonSqueezy || product.provider == .stripe,
+                      product.currency == "USD", storeCurrency != "USD"
+                else { return product }
+                var updated = product
+                updated.currency = storeCurrency
+                return updated
+            }
         } catch {
             if let apiError = error as? SalesAPIError {
                 result.error = apiError

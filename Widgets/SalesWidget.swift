@@ -26,6 +26,7 @@ struct SalesWidgetEntry: TimelineEntry {
     let todayRevenue: Int // cents
     let todayOrders: Int
     let monthRevenue: Int
+    let currency: String
 
     var todayRevenueFormatted: String {
         formatCents(todayRevenue)
@@ -38,7 +39,7 @@ struct SalesWidgetEntry: TimelineEntry {
     private func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = "USD"
+        formatter.currencyCode = currency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
     }
 
@@ -46,7 +47,8 @@ struct SalesWidgetEntry: TimelineEntry {
         date: Date(),
         todayRevenue: 2500,
         todayOrders: 5,
-        monthRevenue: 15000
+        monthRevenue: 15000,
+        currency: "USD"
     )
 }
 

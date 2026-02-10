@@ -118,15 +118,16 @@ actor StripeProvider: SalesProvider {
         let balanceData = try await request(path: "balance")
         let balance = try JSONDecoder.stripe.decode(StripeBalance.self, from: balanceData)
 
-        let availableUSD = balance.available.first(where: { $0.currency == "usd" })?.amount ?? 0
-        let pendingUSD = balance.pending.first(where: { $0.currency == "usd" })?.amount ?? 0
+        let defaultCurrency = account.defaultCurrency // lowercase from Stripe API
+        let available = balance.available.first(where: { $0.currency == defaultCurrency })?.amount ?? 0
+        let pending = balance.pending.first(where: { $0.currency == defaultCurrency })?.amount ?? 0
 
         return Store(
             id: account.id,
             name: account.businessProfile?.name ?? "Stripe Account",
             slug: nil,
             currency: account.defaultCurrency.uppercased(),
-            totalRevenue: availableUSD + pendingUSD,
+            totalRevenue: available + pending,
             thirtyDayRevenue: 0, // Stripe doesn't provide this; computed from orders
             provider: .stripe,
             url: account.businessProfile?.url.flatMap(URL.init(string:)),
@@ -151,7 +152,7 @@ actor StripeProvider: SalesProvider {
         do {
             do {
                 _ = try await request(path: "account")
-            } catch SalesAPIError.serverError(let statusCode) where statusCode == 404 {
+            } catch let SalesAPIError.serverError(statusCode) where statusCode == 404 {
                 // Fallback in case /account is unavailable for a given key/environment.
                 _ = try await request(path: "charges", queryItems: [URLQueryItem(name: "limit", value: "1")])
             }

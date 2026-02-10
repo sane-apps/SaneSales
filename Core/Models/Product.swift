@@ -7,7 +7,7 @@ struct Product: Identifiable, Codable, Equatable, Sendable {
     let slug: String?
     let description: String?
     let price: Int // cents
-    let currency: String
+    var currency: String
     let status: ProductStatus
     let createdAt: Date
     let provider: SalesProviderType

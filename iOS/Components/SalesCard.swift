@@ -1,5 +1,72 @@
 import SwiftUI
 
+// MARK: - Platform Font Scaling
+
+extension Font {
+    /// Body text that reads well on both iOS and macOS
+    static var saneBody: Font {
+        #if os(macOS)
+            .system(size: 15)
+        #else
+            .body
+        #endif
+    }
+
+    /// Subheadline that doesn't shrink to nothing on Mac
+    static var saneSubheadline: Font {
+        #if os(macOS)
+            .system(size: 14, weight: .medium)
+        #else
+            .subheadline.weight(.medium)
+        #endif
+    }
+
+    /// Callout / secondary text
+    static var saneCallout: Font {
+        #if os(macOS)
+            .system(size: 14)
+        #else
+            .callout
+        #endif
+    }
+
+    /// Section header
+    static var saneSectionHeader: Font {
+        #if os(macOS)
+            .system(size: 13, weight: .semibold)
+        #else
+            .subheadline.weight(.semibold)
+        #endif
+    }
+
+    /// Subheadline with semibold weight (for names, titles in rows)
+    static var saneSubheadlineBold: Font {
+        #if os(macOS)
+            .system(size: 14, weight: .semibold)
+        #else
+            .subheadline.weight(.semibold)
+        #endif
+    }
+
+    /// Footnote text
+    static var saneFootnote: Font {
+        #if os(macOS)
+            .system(size: 12, weight: .medium)
+        #else
+            .footnote
+        #endif
+    }
+
+    /// Card value (big number)
+    static func saneCardValue(size: CGFloat = 28) -> Font {
+        #if os(macOS)
+            .system(size: size + 6, weight: .bold, design: .rounded)
+        #else
+            .system(size: size, weight: .bold, design: .rounded)
+        #endif
+    }
+}
+
 // MARK: - Brand Colors
 
 extension Color {
@@ -27,9 +94,13 @@ extension Color {
     static let salesSuccess = Color(red: 0.133, green: 0.773, blue: 0.369) // #22c55e
     static let salesWarning = Color(red: 0.961, green: 0.620, blue: 0.043) // #f59e0b
     static let salesError = Color(red: 0.937, green: 0.267, blue: 0.267) // #ef4444
+    static let salesGold = Color(red: 0.85, green: 0.65, blue: 0.13) // Accumulated value / All Time
+
+    // Brand blue for glows (matches SaneBackground ambient)
+    static let brandBlueGlow = Color(red: 0.31, green: 0.56, blue: 0.98)
 
     // Muted text (replaces .secondary for readability)
-    static let textMuted: Color = .primary.opacity(0.7)
+    static let textMuted: Color = .primary.opacity(0.85)
 
     // Platform background
     static var saneBackground: Color {
@@ -48,7 +119,7 @@ extension Color {
         let material: NSVisualEffectView.Material
         let blendingMode: NSVisualEffectView.BlendingMode
 
-        init(material: NSVisualEffectView.Material = .hudWindow,
+        init(material: NSVisualEffectView.Material = .sidebar,
              blendingMode: NSVisualEffectView.BlendingMode = .behindWindow) {
             self.material = material
             self.blendingMode = blendingMode
@@ -58,7 +129,7 @@ extension Color {
             let view = NSVisualEffectView()
             view.material = material
             view.blendingMode = blendingMode
-            view.state = .followsWindowActiveState
+            view.state = .active
             return view
         }
 
@@ -67,6 +138,7 @@ extension Color {
             view.blendingMode = blendingMode
         }
     }
+
 #endif
 
 struct SaneBackground: View {
@@ -74,13 +146,30 @@ struct SaneBackground: View {
 
     var body: some View {
         #if os(macOS)
-            ZStack {
-                VisualEffectBackground(material: .hudWindow, blendingMode: .behindWindow)
+            if colorScheme == .dark {
+                // Brand blue ambient glow — materials blur this to create frosted glass.
+                // Only the brand color (blue #4f8ffa) — no decorative colors.
+                ZStack {
+                    Color(red: 0.04, green: 0.05, blue: 0.10)
+
+                    Circle()
+                        .fill(Color(red: 0.31, green: 0.56, blue: 0.98).opacity(0.20))
+                        .frame(width: 400, height: 400)
+                        .blur(radius: 140)
+                        .offset(x: -120, y: -180)
+
+                    Circle()
+                        .fill(Color(red: 0.31, green: 0.56, blue: 0.98).opacity(0.14))
+                        .frame(width: 320, height: 320)
+                        .blur(radius: 120)
+                        .offset(x: 180, y: 160)
+                }
+            } else {
                 LinearGradient(
                     colors: [
-                        Color.salesGreen.opacity(0.06),
-                        Color.blue.opacity(0.03),
-                        Color.salesGreen.opacity(0.02)
+                        Color(red: 0.95, green: 0.97, blue: 1.0),
+                        Color(red: 0.92, green: 0.95, blue: 0.99),
+                        Color(red: 0.94, green: 0.96, blue: 1.0)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -114,6 +203,9 @@ extension SalesProviderType {
 
 struct SalesCard: View {
     @Environment(\.colorScheme) private var colorScheme
+    #if os(macOS)
+        @State private var isHovered = false
+    #endif
 
     let title: String
     let value: String
@@ -158,11 +250,11 @@ struct SalesCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 iconView
                 Text(title)
-                    .font(.subheadline.weight(.medium))
+                    .font(.saneSubheadline)
                     .foregroundStyle(Color.textMuted)
                 Spacer()
                 if let trend {
@@ -171,13 +263,13 @@ struct SalesCard: View {
             }
 
             Text(value)
-                .font(.system(size: 28, weight: .bold, design: .rounded))
+                .font(.saneCardValue())
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
                 .foregroundStyle(.primary)
 
             Text(subtitle)
-                .font(.callout)
+                .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
         }
         .padding(16)
@@ -185,32 +277,42 @@ struct SalesCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(cardBorder)
         .shadow(
-            color: colorScheme == .dark ? .black.opacity(0.3) : .black.opacity(0.06),
-            radius: colorScheme == .dark ? 10 : 8,
+            color: colorScheme == .dark ? Color.brandBlueGlow.opacity(0.25) : Color.brandBlueGlow.opacity(0.10),
+            radius: colorScheme == .dark ? 12 : 8,
             x: 0,
             y: 4
         )
+        .shadow(
+            color: colorScheme == .dark ? .black.opacity(0.15) : .clear,
+            radius: 6,
+            x: 0,
+            y: 2
+        )
+        #if os(macOS)
+        .scaleEffect(isHovered ? 1.02 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isHovered)
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        #endif
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title): \(value), \(subtitle)")
     }
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 14)
-            .fill(colorScheme == .dark
-                ? Color.white.opacity(0.07)
-                : Color.white
-            )
-            .background(
+            .fill(.ultraThinMaterial)
+            .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(colorScheme == .dark ? .ultraThinMaterial : .regularMaterial)
+                    .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
             )
     }
 
     private var cardBorder: some View {
         RoundedRectangle(cornerRadius: 14)
             .stroke(
-                colorScheme == .dark
-                    ? Color.white.opacity(0.10)
-                    : Color.black.opacity(0.06),
-                lineWidth: 0.5
+                Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.20 : 0.12),
+                lineWidth: 1
             )
     }
 
@@ -220,6 +322,7 @@ struct SalesCard: View {
             Image(systemName: iconSystemName)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(iconColor)
+                .accessibilityHidden(true)
         } else if let iconAssetName {
             Image(iconAssetName)
                 .renderingMode(.template)
@@ -227,6 +330,7 @@ struct SalesCard: View {
                 .scaledToFit()
                 .frame(width: 16, height: 16)
                 .foregroundStyle(iconColor)
+                .accessibilityHidden(true)
         }
     }
 
@@ -290,16 +394,17 @@ struct GlassSection<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             // Header
             HStack(spacing: 8) {
                 if let icon {
                     Image(systemName: icon)
                         .foregroundStyle(iconColor)
                         .font(.subheadline)
+                        .accessibilityHidden(true)
                 }
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.saneSectionHeader)
                     .foregroundStyle(Color.textMuted)
                     .textCase(.uppercase)
                     .tracking(0.5)
@@ -312,30 +417,31 @@ struct GlassSection<Content: View>: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(colorScheme == .dark
-                        ? Color.white.opacity(0.07)
-                        : Color.white
-                    )
-                    .background(
+                    .fill(.ultraThinMaterial)
+                    .overlay(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(colorScheme == .dark ? .ultraThinMaterial : .regularMaterial)
+                            .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
                     )
             )
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
                     .stroke(
-                        colorScheme == .dark
-                            ? Color.white.opacity(0.10)
-                            : Color.black.opacity(0.06),
-                        lineWidth: 0.5
+                        Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.20 : 0.12),
+                        lineWidth: 1
                     )
             )
             .shadow(
-                color: colorScheme == .dark ? .black.opacity(0.3) : .black.opacity(0.06),
-                radius: colorScheme == .dark ? 10 : 8,
+                color: colorScheme == .dark ? Color.brandBlueGlow.opacity(0.25) : Color.brandBlueGlow.opacity(0.10),
+                radius: colorScheme == .dark ? 12 : 8,
                 x: 0,
                 y: 4
+            )
+            .shadow(
+                color: colorScheme == .dark ? .black.opacity(0.15) : .clear,
+                radius: 6,
+                x: 0,
+                y: 2
             )
         }
     }
@@ -383,6 +489,7 @@ struct GlassRow<Content: View>: View {
                     .foregroundStyle(iconColor)
                     .frame(width: 22)
                     .font(.subheadline)
+                    .accessibilityHidden(true)
             } else if let iconAssetName {
                 Image(iconAssetName)
                     .renderingMode(.template)
@@ -391,9 +498,10 @@ struct GlassRow<Content: View>: View {
                     .foregroundStyle(iconColor)
                     .frame(width: 18, height: 18)
                     .frame(width: 22)
+                    .accessibilityHidden(true)
             }
             Text(label)
-                .font(.subheadline)
+                .font(.saneBody)
             Spacer()
             content
         }
@@ -429,6 +537,7 @@ struct SalesBadge: View {
             if let icon {
                 Image(systemName: icon)
                     .font(.footnote)
+                    .accessibilityHidden(true)
             }
             Text(text)
                 .font(.footnote.weight(.semibold))
@@ -438,6 +547,8 @@ struct SalesBadge: View {
         .background(color.opacity(0.12))
         .foregroundStyle(color)
         .clipShape(Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(text)
     }
 }
 
@@ -450,6 +561,7 @@ struct ProviderBadge: View {
         HStack(spacing: 4) {
             Image(systemName: provider.icon)
                 .font(.footnote)
+                .accessibilityHidden(true)
             Text(provider.displayName)
                 .font(.footnote.weight(.semibold))
         }
@@ -458,5 +570,7 @@ struct ProviderBadge: View {
         .background(provider.brandColor.opacity(0.12))
         .foregroundStyle(provider.brandColor)
         .clipShape(Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(provider.displayName) provider")
     }
 }

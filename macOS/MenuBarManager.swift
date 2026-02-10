@@ -74,15 +74,9 @@ final class MenuBarManager: NSObject {
         NSApp.activate(ignoringOtherApps: true)
 
         if let mainWindow = NSApp.windows.first(where: {
-            $0.isVisible && !$0.isSheet && $0.className != "NSStatusBarWindow"
+            !$0.isSheet && $0.className != "NSStatusBarWindow"
         }) {
             mainWindow.makeKeyAndOrderFront(nil)
-        } else {
-            // No visible window — open a new one
-            NSApp.activate(ignoringOtherApps: true)
-            if #available(macOS 14.0, *) {
-                // WindowGroup will create a new window when none exist
-            }
         }
     }
 
@@ -129,15 +123,18 @@ final class MenuBarManager: NSObject {
     }
 
     @objc private func menuOpenSettings() {
-        NSApp.activate(ignoringOtherApps: true)
-        if #available(macOS 14.0, *) {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        } else {
-            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        activateWindow()
+        // Switch to Settings tab after window is visible
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
         }
     }
 
     @objc private func menuQuit() {
         NSApp.terminate(nil)
     }
+}
+
+extension Notification.Name {
+    static let showSettingsTab = Notification.Name("com.sanesales.showSettingsTab")
 }

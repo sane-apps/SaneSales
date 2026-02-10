@@ -20,7 +20,13 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.finance</string>
+	<key>SUFeedURL</key>
+	<string>https://sanesales.com/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
 </dict>
 </plist>
