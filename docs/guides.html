@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneSales Guides - Track Indie Sales Like a Pro</title>
+    <meta name="description" content="9 guides for SaneSales. Connect LemonSqueezy, Gumroad, and Stripe. Track revenue, export CSV, use widgets, and see sales in your Mac menu bar.">
+    <link rel="icon" type="image/png" href="images/branding.png?v=2">
+    <link rel="apple-touch-icon" href="images/branding.png">
+    <link rel="canonical" href="https://sanesales.com/guides.html">
+    <meta name="theme-color" content="#08080c">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sanesales.com/guides.html">
+    <meta property="og:title" content="SaneSales Guides — Track Indie Sales Like a Pro">
+    <meta property="og:description" content="Guides for connecting LemonSqueezy, Gumroad, Stripe, exporting CSV, using widgets, and tracking revenue from your menu bar.">
+    <meta property="og:image" content="https://sanesales.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="SaneSales">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaneSales Guides — Track Indie Sales Like a Pro">
+    <meta name="twitter:description" content="Guides for connecting LemonSqueezy, Gumroad, Stripe, exporting CSV, using widgets, and tracking revenue from your menu bar.">
+    <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
+    <meta name="twitter:site" content="@saneapps">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #4f8ffa;
+            --accent-soft: #3b7ce8;
+            --accent-glow: rgba(79, 143, 250, 0.25);
+            --text-primary: #f5f5f8;
+            --text-secondary: #c0c0d0;
+            --text-muted: #a0a0b0;
+            --border: #252530;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        nav {
+            padding: 20px 0;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.25rem; text-decoration: none; color: var(--text-primary); }
+        .logo img { width: 32px; height: 32px; border-radius: 8px; }
+
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff !important;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 24px var(--accent-glow);
+        }
+
+        header.header {
+            padding: 220px 24px 80px !important;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 24px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .guides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+            padding-bottom: 120px;
+        }
+
+        .guide-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .guide-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .guide-icon { font-size: 2.5rem; margin-bottom: 20px; }
+
+        .guide-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .guide-card p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            flex-grow: 1;
+        }
+
+        .read-more {
+            margin-top: 24px;
+            color: var(--accent);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        footer {
+            padding: 60px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            header.header { padding-top: 140px !important; }
+            .header h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">
+                <img src="images/branding.png" alt="SaneSales">
+                SaneSales
+            </a>
+            <div class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="https://go.saneapps.com/buy/sanesales" class="btn-primary">Buy $6.99</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>SaneSales Guides</h1>
+            <p>Everything you need to connect your platforms, track revenue, and stop checking three dashboards every morning.</p>
+        </header>
+
+        <div class="guides-grid">
+            <a href="how-to-track-lemonsqueezy-sales-mac-iphone.html" class="guide-card">
+                <div class="guide-icon">🍋</div>
+                <h2>Track LemonSqueezy Sales</h2>
+                <p>Connect your LemonSqueezy API key and see every order, refund, and product breakdown on your Mac or iPhone.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-track-gumroad-sales-mac-iphone.html" class="guide-card">
+                <div class="guide-icon">🛒</div>
+                <h2>Track Gumroad Sales</h2>
+                <p>Pull your entire Gumroad sales history into SaneSales. See revenue across all your digital products.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-track-stripe-revenue-mac-iphone.html" class="guide-card">
+                <div class="guide-icon">💳</div>
+                <h2>Track Stripe Revenue</h2>
+                <p>Connect Stripe and track subscriptions, one-time payments, and refunds alongside your other platforms.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-see-all-indie-sales-one-dashboard.html" class="guide-card">
+                <div class="guide-icon">📊</div>
+                <h2>All Sales in One Dashboard</h2>
+                <p>Stop checking three dashboards every morning. See combined revenue from LemonSqueezy, Gumroad, and Stripe in one view.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-track-refunds-across-platforms.html" class="guide-card">
+                <div class="guide-icon">💸</div>
+                <h2>Track Refunds Across Platforms</h2>
+                <p>Every dashboard overstates your revenue. SaneSales deducts refunds automatically so you see what you actually earned.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-export-sales-data-csv.html" class="guide-card">
+                <div class="guide-icon">📁</div>
+                <h2>Export Sales Data to CSV</h2>
+                <p>Need your order history for taxes, accounting, or email marketing? Export everything to CSV with one tap.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-use-sales-widgets-iphone.html" class="guide-card">
+                <div class="guide-icon">📱</div>
+                <h2>Revenue Widgets for iPhone</h2>
+                <p>Glance at today's revenue from your home screen or lock screen. No need to open the app.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-see-revenue-mac-menu-bar.html" class="guide-card">
+                <div class="guide-icon">🖥️</div>
+                <h2>Revenue in Your Mac Menu Bar</h2>
+                <p>See today's revenue in the menu bar while you work. Right-click for quick actions. Always visible, never intrusive.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="how-to-use-sanesales-demo-mode.html" class="guide-card">
+                <div class="guide-icon">🎮</div>
+                <h2>Try Demo Mode</h2>
+                <p>Explore SaneSales with realistic fake data before connecting your real accounts. See every feature in action.</p>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cross-sell" style="margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--border);">
+            <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; color: var(--text-primary);">More Guides from SaneApps</h2>
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <a href="https://sanebar.com/guides.html" style="color: var(--accent); text-decoration: none; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; transition: all 0.2s;">SaneBar &mdash; Menu Bar Guides</a>
+                <a href="https://saneclip.com/guides.html" style="color: var(--accent); text-decoration: none; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; transition: all 0.2s;">SaneClip &mdash; Clipboard Guides</a>
+                <a href="https://sanehosts.com/guides.html" style="color: var(--accent); text-decoration: none; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; transition: all 0.2s;">SaneHosts &mdash; Blocking Guides</a>
+                <a href="https://saneapps.com" style="color: var(--accent); text-decoration: none; padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;">All SaneApps &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Part of the <a href="https://saneapps.com">SaneApps</a> family.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

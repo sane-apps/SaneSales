@@ -2,7 +2,7 @@
 
 # SaneSales
 
-### Track All Your Indie Sales in One Place
+### Bring Sanity to Your Sales Tracking
 
 **LemonSqueezy + Gumroad + Stripe — finally unified**
 
@@ -14,7 +14,7 @@
 [![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](docs/privacy.html)
 [![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-blueviolet?style=flat-square)](https://claude.ai)
 
-> **Star this repo if you find it useful!** &middot; **[Buy for $6.99](https://sanesales.com)** &middot; Keeps development alive
+> **Star this repo if you find it useful!** &middot; **[Buy — $6.99](https://sanesales.com)** &middot; Keeps development alive
 
 </div>
 
@@ -38,6 +38,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 | **Revenue Dashboard** | Today, this month, and all-time revenue at a glance with trend indicators |
 | **Interactive Charts** | Daily revenue bar charts with Swift Charts. Tap to drill into any day |
 | **Product Breakdown** | Donut chart showing revenue by product. Tap segments to explore |
+| **Refund-Aware Revenue** | Net totals that deduct refunds automatically — no more overstated numbers |
 | **Order Tracking** | Search by customer, product, or amount. Filter by provider, status, or date |
 | **CSV Export** | Export your full order history for accounting or email marketing |
 | **Home Screen Widgets** | Glance at today's revenue from your home screen or lock screen |
@@ -56,11 +57,42 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ---
 
+## Why Not Just Use Baremetrics or ChartMogul?
+
+They're cloud dashboards. That means:
+
+- **Your revenue data lives on their servers** — every sale, every customer, every refund, stored and processed by a third party
+- **They only support Stripe** — sell on LemonSqueezy or Gumroad? Tough luck
+- **$29–$99/month forever** — that's $350–$1,200/year to look at your own sales numbers
+- **No native app** — just a browser tab competing with your other 47 tabs
+- **No offline access** — no internet, no data
+
+SaneSales is the opposite:
+
+| Feature | SaneSales | Baremetrics | ChartMogul | Spreadsheets |
+|---------|:---------:|:-----------:|:----------:|:------------:|
+| **Multi-provider** | ✅ | ❌ Stripe only | ❌ Stripe only | Manual |
+| **LemonSqueezy support** | ✅ | ❌ | ❌ | Manual |
+| **Gumroad support** | ✅ | ❌ | ❌ | Manual |
+| **Refund-aware revenue** | ✅ Net after refunds | ✅ | ✅ | Manual |
+| **Native iOS + macOS** | ✅ | Web only | Web only | ❌ |
+| **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
+| **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
+| **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
+| **No subscription** | **$6.99 once** | $29+/mo | $99+/mo | Free |
+| **Open source** | AGPL v3 | ❌ | ❌ | N/A |
+
+> **$6.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
+
+---
+
 ## Download
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
 **[Download from sanesales.com](https://sanesales.com)** — $6.99
+
+Also coming to the iOS & Mac App Store (submitted, awaiting review).
 
 > *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
 
@@ -150,23 +182,7 @@ Tests/             Swift Testing (API parsing, metrics, cache, providers)
 - Keychain for API keys (service: `com.sanesales.app`)
 - Swift 6 strict concurrency
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup and conventions.
-
----
-
-## Why SaneSales?
-
-| Feature | SaneSales | Baremetrics | ChartMogul | Spreadsheets |
-|---------|:---------:|:-----------:|:----------:|:------------:|
-| **Multi-provider** | ✅ | ❌ Stripe only | ❌ Stripe only | Manual |
-| **LemonSqueezy support** | ✅ | ❌ | ❌ | Manual |
-| **Gumroad support** | ✅ | ❌ | ❌ | Manual |
-| **Native iOS + macOS** | ✅ | Web only | Web only | ❌ |
-| **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
-| **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
-| **100% on-device** | ✅ | Cloud | Cloud | Local |
-| **No subscription** | $6.99 once | $29+/mo | $99+/mo | Free |
-| **Open source** | AGPL v3 | ❌ | ❌ | N/A |
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventions.
 
 ---
 

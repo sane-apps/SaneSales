@@ -1,8 +1,48 @@
 import SwiftUI
 
 #if os(macOS)
+    class SaneSalesAppDelegate: NSObject, NSApplicationDelegate {
+        weak var salesManager: SalesManager?
+
+        func applicationDockMenu(_: NSApplication) -> NSMenu? {
+            let menu = NSMenu()
+
+            let refreshItem = NSMenuItem(title: "Refresh", action: #selector(dockRefresh), keyEquivalent: "")
+            refreshItem.target = self
+            menu.addItem(refreshItem)
+
+            menu.addItem(.separator())
+
+            let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(dockOpenSettings), keyEquivalent: "")
+            settingsItem.target = self
+            menu.addItem(settingsItem)
+
+            return menu
+        }
+
+        @objc private func dockRefresh() {
+            guard let manager = salesManager else { return }
+            Task { @MainActor in
+                await manager.refresh()
+            }
+        }
+
+        @objc private func dockOpenSettings() {
+            NSApp.activate(ignoringOtherApps: true)
+            if let mainWindow = NSApp.windows.first(where: {
+                !$0.isSheet && $0.className != "NSStatusBarWindow"
+            }) {
+                mainWindow.makeKeyAndOrderFront(nil)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+            }
+        }
+    }
+
     @main
     struct SaneSalesMacApp: App {
+        @NSApplicationDelegateAdaptor(SaneSalesAppDelegate.self) private var appDelegate
         @State private var manager = SalesManager()
         @State private var menuBarManager: MenuBarManager?
 
@@ -22,6 +62,7 @@ import SwiftUI
                     .environment(manager)
                     .frame(minWidth: 600, minHeight: 400)
                     .onAppear {
+                        appDelegate.salesManager = manager
                         setupMenuBar()
                     }
                     .task {
