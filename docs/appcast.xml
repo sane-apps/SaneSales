@@ -6,6 +6,25 @@
     <description>SaneSales updates</description>
     <language>en</language>
     <item>
+      <title>1.2</title>
+      <pubDate>Tue, 11 Feb 2026 20:00:06 +0000</pubDate>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description>
+        <![CDATA[
+        <ul>
+          <li>Fixed misleading error messages when connecting API keys — now shows specific errors for invalid keys, network failures, rate limits, and server errors</li>
+          <li>API keys are now automatically trimmed of whitespace when pasted</li>
+        </ul>
+        ]]>
+      </description>
+      <enclosure url="https://dist.sanesales.com/updates/SaneSales-1.2.zip"
+                 sparkle:version="1"
+                 sparkle:shortVersionString="1.2"
+                 length="6986375"
+                 type="application/octet-stream"
+                 sparkle:edSignature="4Af+xdeMOLM9FtpiVVyrB/vLa2g1yBNJGWmY1/zJBM8dnMR4nLl6sgU8h4FBxXnX+H6yBDdlq+ZkKY41Jh6SCA=="/>
+    </item>
+    <item>
       <title>1.0</title>
       <pubDate>Mon, 10 Feb 2026 21:44:05 +0000</pubDate>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
