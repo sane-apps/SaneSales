@@ -6,6 +6,56 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://sanesales.com/guides.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-track-gumroad-sales-mac-iphone.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-track-stripe-revenue-mac-iphone.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-see-all-indie-sales-one-dashboard.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-track-refunds-across-platforms.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-export-sales-data-csv.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-use-sales-widgets-iphone.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-see-revenue-mac-menu-bar.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sanesales.com/how-to-use-sanesales-demo-mode.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://sanesales.com/privacy.html</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>

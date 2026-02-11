@@ -14,10 +14,11 @@ xcodebuild -scheme SaneSales -destination 'platform=macOS' build
 xcodebuild -scheme SaneSales test -destination 'platform=macOS'
 ```
 
-16 tests across 3 suites:
+20 tests across 4 suites:
 - **APITests** (4) — JSON:API parsing, date handling, unknown enum values
 - **MetricsTests** (7) — Aggregation, filtering, product breakdown, date ranges
 - **CacheTests** (5) — Round-trip caching, timestamps, clear
+- **ProviderTests** (4) — Provider edge cases, refund handling, pagination
 
 ## Project Generation
 
@@ -25,6 +26,31 @@ Uses XcodeGen. After modifying `project.yml`:
 ```bash
 xcodegen generate
 ```
+
+**WARNING: XcodeGen overwrites entitlements.** Running `xcodegen generate` resets `Widgets/SaneSalesWidgets.entitlements` to an empty `<dict/>`. After regenerating, restore the entitlements:
+```bash
+git checkout Widgets/SaneSalesWidgets.entitlements
+```
+
+## Demo Mode
+
+Launch with `--demo` to load realistic fake data (fictional "Pixel Studio" indie studio with 4 products across all 3 providers):
+
+```bash
+# macOS
+xcodebuild -scheme SaneSales -destination 'platform=macOS,arch=arm64' build
+./build/Build/Products/Debug/SaneSales.app/Contents/MacOS/SaneSales --demo
+
+# iOS Simulator
+xcrun simctl launch booted com.sanesales.app -- --demo
+```
+
+Or set UserDefaults programmatically:
+```bash
+defaults write com.sanesales.app demo_mode -bool true
+```
+
+Demo data is defined in `Core/DemoData.swift`. Used for App Store screenshots and previews.
 
 ## Adding a New Provider
 

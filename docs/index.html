@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneSales - Track All Your Indie Sales in One Place</title>
+    <title>SaneSales - Bring Sanity to Your Sales Tracking</title>
     <meta name="description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe in one beautiful app. Revenue charts, order tracking, CSV export. 100% on-device, no analytics.">
     <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
     <meta name="author" content="Mr. Sane">
@@ -16,7 +16,7 @@
     <link rel="canonical" href="https://sanesales.com/" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="SaneSales - Track All Your Indie Sales in One Place">
+    <meta property="og:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
     <meta property="og:description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe in one beautiful app.">
     <meta property="og:image" content="https://sanesales.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -28,7 +28,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SaneSales - Track All Your Indie Sales in One Place">
+    <meta name="twitter:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
     <meta name="twitter:description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe in one beautiful app.">
     <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
     <meta name="twitter:site" content="@saneapps">
@@ -54,7 +54,7 @@
       },
       "description": "Universal indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, and products in one app.",
       "image": "https://sanesales.com/images/branding.png",
-      "downloadUrl": "https://go.saneapps.com/buy/sanesales?ref=website",
+      "downloadUrl": "https://sanesales.com",
       "author": {
         "@type": "Person",
         "name": "Mr. Sane",
@@ -70,6 +70,21 @@
         "Home Screen Widgets",
         "macOS Menu Bar Revenue",
         "100% On-Device Privacy"
+      ]
+    }
+    </script>
+
+    <!-- Structured Data - FAQ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
+        {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server. Zero analytics, zero telemetry."}},
+        {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. $6.99 one-time. You own it forever. All future updates included. Or build from source for free — it's AGPL v3 licensed."}},
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales includes a demo mode with realistic sample data so you can explore every feature. Or clone the repo from GitHub and build it yourself."}}
       ]
     }
     </script>
@@ -369,10 +384,18 @@
             transform: translateY(-2px);
         }
 
-        .hero-image {
-            max-width: 360px;
+        .hero-devices {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            max-width: 960px;
             margin: 0 auto;
-            border-radius: 16px;
+        }
+
+        .hero-device-mac {
+            flex: 0 1 600px;
+            border-radius: 12px;
             overflow: hidden;
             background: var(--bg-card);
             box-shadow:
@@ -380,12 +403,89 @@
                 0 0 0 1px var(--border);
         }
 
-        .hero-image img {
+        .hero-device-mac img {
             width: 100%;
             height: auto;
             display: block;
-            min-height: 200px;
-            object-fit: contain;
+        }
+
+        .hero-device-iphone {
+            flex: 0 0 220px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+        }
+
+        .hero-device-iphone img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-gallery {
+            padding: 80px 0;
+        }
+
+        .screenshot-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .screenshot-tab {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .screenshot-tab:hover, .screenshot-tab.active {
+            border-color: var(--accent);
+            color: var(--text-primary);
+            background: rgba(79, 143, 250, 0.08);
+        }
+
+        .screenshot-pair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 32px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        .screenshot-pair[data-screen]:not(.active) {
+            display: none;
+        }
+
+        .screenshot-pair .mac-shot {
+            flex: 0 1 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
+        }
+
+        .screenshot-pair .iphone-shot {
+            flex: 0 0 200px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
+        }
+
+        .screenshot-pair img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         /* Provider Logos */
@@ -481,13 +581,19 @@
         }
 
         .feature-card {
-            background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-            border: 1px solid var(--border-subtle);
+            background:
+                radial-gradient(ellipse at 90% 50%, rgba(79, 143, 250, 0.18) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 30%, rgba(79, 143, 250, 0.1) 0%, transparent 40%),
+                linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #081020 100%);
+            border: 1px solid rgba(79, 143, 250, 0.25);
             border-radius: 20px;
             padding: 36px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            box-shadow:
+                0 0 30px rgba(79, 143, 250, 0.08),
+                0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .feature-card::before {
@@ -503,38 +609,18 @@
         }
 
         .feature-card:hover {
-            border-color: var(--accent);
+            border-color: rgba(79, 143, 250, 0.45);
             transform: translateY(-6px);
             box-shadow:
-                0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 0 1px var(--accent-subtle);
+                0 0 50px rgba(79, 143, 250, 0.12),
+                0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .feature-card:hover::before {
             opacity: 1;
         }
 
-        /* Featured card - flagship feature */
-        .feature-card.featured {
-            background:
-                radial-gradient(ellipse at 90% 50%, rgba(79, 143, 250, 0.25) 0%, transparent 50%),
-                radial-gradient(ellipse at 85% 30%, rgba(79, 143, 250, 0.15) 0%, transparent 40%),
-                radial-gradient(ellipse at 95% 70%, rgba(59, 130, 246, 0.2) 0%, transparent 45%),
-                linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #081020 100%);
-            border-color: rgba(79, 143, 250, 0.3);
-            box-shadow:
-                0 0 40px rgba(79, 143, 250, 0.15),
-                0 8px 32px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        }
-
-        .feature-card.featured:hover {
-            border-color: rgba(79, 143, 250, 0.5);
-            box-shadow:
-                0 0 60px rgba(79, 143, 250, 0.25),
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        }
+        /* Featured card kept for markup compatibility */
 
         .feature-icon {
             margin-bottom: 20px;
@@ -607,15 +693,15 @@
         }
 
         .step-card h3 {
-            font-size: 1.15rem;
+            font-size: 1.3rem;
             margin-bottom: 12px;
             font-weight: 600;
         }
 
         .step-card p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.7;
         }
 
         /* Comparison Table */
@@ -793,6 +879,103 @@
             flex: 1;
             height: 1px;
             background: var(--border-subtle);
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 100px 0;
+            background: var(--bg-secondary);
+        }
+
+        .faq-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .faq-question {
+            width: 100%;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: left;
+            padding: 24px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: color 0.2s;
+        }
+
+        .faq-question:hover {
+            color: var(--accent);
+        }
+
+        .faq-chevron {
+            flex-shrink: 0;
+            transition: transform 0.3s;
+            color: var(--text-muted);
+        }
+
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer-inner {
+            padding: 0 0 24px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 300px;
+        }
+
+        /* Sticky Mobile CTA */
+        .sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            background: rgba(8, 8, 12, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            z-index: 99;
+            text-align: center;
+        }
+
+        .sticky-cta a {
+            display: block;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        @media (max-width: 768px) {
+            .sticky-cta { display: block; }
+            footer { padding-bottom: 80px !important; }
         }
 
         /* Support Section */
@@ -1193,6 +1376,36 @@
             .steps-grid {
                 grid-template-columns: 1fr;
             }
+
+            .hero-devices {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .hero-device-mac {
+                flex: 0 1 auto;
+                width: 100%;
+            }
+
+            .hero-device-iphone {
+                flex: 0 0 auto;
+                width: 180px;
+            }
+
+            .screenshot-pair {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .screenshot-pair .mac-shot {
+                flex: 0 1 auto;
+                width: 100%;
+            }
+
+            .screenshot-pair .iphone-shot {
+                flex: 0 0 auto;
+                width: 160px;
+            }
         }
     </style>
 </head>
@@ -1210,7 +1423,10 @@
             </div>
             <div class="nav-links">
                 <a href="#features">Features</a>
+                <a href="#screenshots">Screenshots</a>
                 <a href="#compare">Compare</a>
+                <a href="#faq">FAQ</a>
+                <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
                 <a href="#support" class="btn btn-primary btn-donate">
@@ -1231,6 +1447,8 @@
         <p class="mobile-nav-section">Navigation</p>
         <a href="#features" onclick="toggleMobileNav()">Features</a>
         <a href="#compare" onclick="toggleMobileNav()">Compare</a>
+        <a href="#faq" onclick="toggleMobileNav()">FAQ</a>
+        <a href="guides.html">Guides</a>
         <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
         <a href="mailto:hi@saneapps.com" onclick="toggleMobileNav()">Contact</a>
         <a href="#support" onclick="toggleMobileNav()">Donate</a>
@@ -1239,17 +1457,17 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://go.saneapps.com/buy/sanesales?ref=website" class="mobile-nav-cta">Download SaneSales &mdash; $6.99</a>
+        <a href="https://go.saneapps.com/buy/sanesales" class="mobile-nav-cta">Download &mdash; $6.99</a>
     </div>
 
     <section class="hero">
         <div class="container">
-            <h1 class="animate-in delay-2">Track All Your <em>Indie Sales</em> in One Place</h1>
+            <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Sales Tracking</h1>
             <p class="subtitle animate-in delay-3"><em>LemonSqueezy</em> + <em>Gumroad</em> + <em>Stripe</em> — finally unified.<br>Revenue, orders, charts — all on your device.</p>
             <div class="trust-badges animate-in delay-3">
-                <span>💰 Three providers, one app</span>
+                <span>🔒 No spying</span>
                 <span>💵 No subscription</span>
-                <span>🔒 100% on-device</span>
+                <span>🛠️ Actively maintained</span>
             </div>
             <div class="cta-buttons animate-in delay-4">
                 <a href="https://go.saneapps.com/buy/sanesales?ref=website" class="btn btn-primary">
@@ -1261,9 +1479,14 @@
                     Download — $6.99
                 </a><span class="price-note">*</span>
             </div>
-            <p class="system-requirements animate-in delay-4" style="color: var(--text-muted); font-size: 0.85em; margin-top: 12px;">Requires iOS 17+ / macOS 14+ &middot; Apple Silicon only</p>
-            <div class="hero-image animate-in delay-5">
-                <img src="images/screenshot-dashboard.png" alt="SaneSales Dashboard — Revenue, charts, and orders from LemonSqueezy, Gumroad, and Stripe">
+            <p class="animate-in delay-4" style="color: var(--text-muted); font-size: 0.85em; margin-top: -20px; margin-bottom: 24px;">iOS 17+ / macOS 14+ &middot; Apple Silicon &middot; Also coming to the App Store</p>
+            <div class="hero-devices animate-in delay-5">
+                <div class="hero-device-mac">
+                    <img src="images/screenshot-mac-dashboard.png" alt="SaneSales on Mac — Revenue dashboard showing today's sales, monthly totals, and provider breakdown" loading="eager">
+                </div>
+                <div class="hero-device-iphone">
+                    <img src="images/screenshot-iphone-dashboard.png" alt="SaneSales on iPhone — Revenue dashboard with LemonSqueezy, Gumroad, and Stripe totals" loading="eager">
+                </div>
             </div>
         </div>
     </section>
@@ -1277,12 +1500,12 @@
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <h3>Connect</h3>
-                    <p>Paste your API key from LemonSqueezy, Gumroad, or Stripe. Stored securely in your device Keychain.</p>
+                    <p>Paste your API key from LemonSqueezy, Gumroad, and/or Stripe. Stored securely on your device.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
                     <h3>Sync</h3>
-                    <p>SaneSales fetches your orders, products, and revenue directly from the provider APIs. No middleman.</p>
+                    <p>SaneSales fetches your orders, products, and revenue directly from each platform. No middleman.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
@@ -1296,7 +1519,7 @@
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Everything you need. Nothing you don't.</h2>
-            <p class="section-subtitle">Built for indie hackers who sell on multiple platforms.</p>
+            <p class="section-subtitle">One app. Every platform. No cloud required.</p>
             <div class="feature-grid">
                 <!-- 1. Multi-Provider - THE unique selling point -->
                 <div class="feature-card featured">
@@ -1407,10 +1630,44 @@
         </div>
     </section>
 
+    <section class="screenshot-gallery" id="screenshots">
+        <div class="container">
+            <h2 class="section-title">See It in Action</h2>
+            <p class="section-subtitle">Mac + iPhone. Dark mode. All your sales data in one place.</p>
+            <div class="screenshot-tabs">
+                <button class="screenshot-tab active" onclick="showScreen('dashboard')">Dashboard</button>
+                <button class="screenshot-tab" onclick="showScreen('charts')">Charts</button>
+                <button class="screenshot-tab" onclick="showScreen('orders')">Orders</button>
+                <button class="screenshot-tab" onclick="showScreen('products')">Products</button>
+                <button class="screenshot-tab" onclick="showScreen('settings')">Settings</button>
+            </div>
+            <div class="screenshot-pair active" data-screen="dashboard">
+                <div class="mac-shot"><img src="images/screenshot-mac-dashboard.png" alt="SaneSales Mac dashboard" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-dashboard.png" alt="SaneSales iPhone dashboard" loading="lazy"></div>
+            </div>
+            <div class="screenshot-pair" data-screen="charts">
+                <div class="mac-shot"><img src="images/screenshot-mac-charts.png" alt="SaneSales Mac revenue charts" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-charts.png" alt="SaneSales iPhone revenue charts" loading="lazy"></div>
+            </div>
+            <div class="screenshot-pair" data-screen="orders">
+                <div class="mac-shot"><img src="images/screenshot-mac-orders.png" alt="SaneSales Mac order list" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-orders.png" alt="SaneSales iPhone order list" loading="lazy"></div>
+            </div>
+            <div class="screenshot-pair" data-screen="products">
+                <div class="mac-shot"><img src="images/screenshot-mac-products.png" alt="SaneSales Mac product breakdown" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-products.png" alt="SaneSales iPhone product breakdown" loading="lazy"></div>
+            </div>
+            <div class="screenshot-pair" data-screen="settings">
+                <div class="mac-shot"><img src="images/screenshot-mac-settings.png" alt="SaneSales Mac settings" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-settings.png" alt="SaneSales iPhone settings" loading="lazy"></div>
+            </div>
+        </div>
+    </section>
+
     <section class="comparison" id="compare">
         <div class="container">
-            <h2 class="section-title">How SaneSales Stacks Up</h2>
-            <p class="section-subtitle">Other tools cost $30-100/month, only support Stripe, or require a spreadsheet. SaneSales does it all for $6.99.</p>
+            <h2 class="section-title">Why Not Baremetrics or ChartMogul?</h2>
+            <p class="section-subtitle">They route your revenue data through their cloud servers. They only support Stripe. They charge $29–$99/month — forever. And they have no native app, no widgets, no offline access. Your sales numbers shouldn't live on someone else's infrastructure.</p>
             <div class="comparison-table-wrapper">
                 <table class="comparison-table">
                     <thead>
@@ -1447,7 +1704,7 @@
                         <tr>
                             <td class="feature-name">
                                 <span class="feature-label">Gumroad Support</span>
-                                <span class="feature-desc">Full sales history with pagination</span>
+                                <span class="feature-desc">Every sale, even thousands of orders</span>
                             </td>
                             <td class="highlight-col"><span class="check">&#10003;</span></td>
                             <td><span class="cross">&#10007;</span></td>
@@ -1517,12 +1774,12 @@
                         <!-- TRUST & VALUE -->
                         <tr>
                             <td class="feature-name">
-                                <span class="feature-label">100% On-Device</span>
-                                <span class="feature-desc">No server, no analytics, no tracking</span>
+                                <span class="feature-label">Your Data Stays Yours</span>
+                                <span class="feature-desc">Revenue data never leaves your device</span>
                             </td>
                             <td class="highlight-col"><span class="check">&#10003;</span></td>
-                            <td><span class="cross">Cloud</span></td>
-                            <td><span class="cross">Cloud</span></td>
+                            <td><span class="cross">Their servers</span></td>
+                            <td><span class="cross">Their servers</span></td>
                             <td><span class="check">Local</span></td>
                         </tr>
                         <tr>
@@ -1548,7 +1805,65 @@
                     </tbody>
                 </table>
             </div>
-            <p class="comparison-footnote">SaneSales connects directly to provider APIs. Your sales data never touches our servers.</p>
+            <p class="comparison-footnote">SaneSales connects directly to each platform. Your sales data never touches our servers — or anyone else's. No intermediary. No cloud dependency. Just your device, talking to your sales platforms.</p>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Everything you need to know before buying.</p>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Does it work offline?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet. New data syncs when you're back online.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Is my data sent to SaneApps servers?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales talks directly to LemonSqueezy, Gumroad, and Stripe from your device. There is no SaneApps server in the middle. Your keys are stored securely on your device. Zero analytics, zero tracking.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        What if I only use one provider?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three. Many users start with LemonSqueezy or Stripe alone and add more later.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        How do I get my API key?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">Each provider has a settings page where you can generate an API key. LemonSqueezy: Settings &rarr; API. Gumroad: Settings &rarr; Advanced &rarr; Application API. Stripe: Developers &rarr; API Keys (use the secret key). SaneSales only needs read access.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Is there a subscription?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. $6.99 one-time. You own it forever. All future updates included. No recurring charges, no tiers, no upsells. Or build from source for free — it's AGPL v3 licensed.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Does it track subscriptions and recurring revenue?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales tracks all orders including subscription payments. Each renewal shows as an order with revenue. MRR/ARR metrics are on the roadmap for a future update.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Can I try it before buying?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales includes a demo mode with realistic sample data so you can explore every feature before connecting your own API keys. Or clone the repo from GitHub and build it yourself — it's fully open source.</div></div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1639,9 +1954,9 @@
                             <h4>Build It Yourself</h4>
                             <p>Clone the repo. AGPL v3 Licensed. Build from source for free.</p>
                         </a>
-                        <a href="https://go.saneapps.com/buy/sanesales?ref=website" class="sustainability-option featured">
-                            <h4>Buy the App — $6.99</h4>
-                            <p>Get a signed, notarized, ready-to-use app and support development.</p>
+                        <a href="https://go.saneapps.com/buy/sanesales" class="sustainability-option featured">
+                            <h4>Buy — $6.99</h4>
+                            <p>One-time purchase. macOS + iOS. Support development.</p>
                         </a>
                     </div>
                 </div>
@@ -1668,7 +1983,18 @@
         </div>
     </footer>
 
+    <!-- Sticky Mobile CTA -->
+    <div class="sticky-cta">
+        <a href="https://go.saneapps.com/buy/sanesales?ref=sticky">Download SaneSales — $6.99</a>
+    </div>
+
     <script>
+        // FAQ Toggle
+        function toggleFaq(btn) {
+            var item = btn.parentElement;
+            item.classList.toggle('open');
+        }
+
         // Mobile Nav Toggle
         function toggleMobileNav() {
             var nav = document.getElementById('mobileNav');
@@ -1681,6 +2007,13 @@
             var orig = el.textContent;
             el.textContent = 'Copied!';
             setTimeout(function() { el.textContent = orig; }, 1500);
+        }
+
+        function showScreen(name) {
+            document.querySelectorAll('.screenshot-pair').forEach(function(p) { p.classList.remove('active'); });
+            document.querySelectorAll('.screenshot-tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelector('.screenshot-pair[data-screen="' + name + '"]').classList.add('active');
+            event.target.classList.add('active');
         }
     </script>
 </body>

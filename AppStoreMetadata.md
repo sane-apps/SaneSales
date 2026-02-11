@@ -4,7 +4,7 @@
 SaneSales
 
 ## Subtitle (30 chars max)
-Track All Your Indie Sales
+Sane Sales Tracking
 
 ## Category
 Primary: Finance

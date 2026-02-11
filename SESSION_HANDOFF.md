@@ -66,17 +66,42 @@
 
 ### Remaining To Ship
 
-#### Blockers
-- [ ] **`dist.sanesales.com` not working** — DMG download URL returns connection failed. Needs DNS record pointing to R2 bucket (Worker or custom domain setup). Required for Sparkle auto-updates.
-- [ ] **App Store Connect metadata** — Description, keywords, screenshots, category, pricing need to be filled in ASC web portal. 20 screenshots ready in `Screenshots/`.
-- [ ] **Submit for App Store review** — After metadata is complete.
+#### Blockers — ALL RESOLVED
+- [x] **`dist.sanesales.com` working** — DNS + Cloudflare Worker + R2 bucket configured. DMG served correctly.
+- [x] **App Store Connect metadata complete** — All metadata uploaded via ASC API (description, keywords, screenshots, pricing, privacy, review details).
+- [x] **Submitted for App Store review** — Submission ID: `1373bfb1-83a5-4ae4-9cc0-17c6c463874d`. Status: **WAITING_FOR_REVIEW** (submitted 2026-02-10 23:15 UTC).
 
 #### Non-Blockers
 - [ ] **Uncommitted files** — `design-references/`, `docs/images/coin-symbol.png`, `docs/images/sanesales-background.html`, infra changes (sane-checkout.js, products.yml)
 - [ ] **SaneClick wallpaper tweaking** — Edge blending not as clean as SaneSales
-- [ ] **Live validation** with Gumroad + Stripe API keys (LemonSqueezy already verified)
+- [x] **Live validation** — LemonSqueezy verified against live data. Gumroad + Stripe keys confirmed present in Keychain.
 
 ### Infrastructure Changes (Outside This Repo)
 - `infra/cloudflare-workers/sane-checkout.js` — Added `sanesales` entry
 - `infra/SaneProcess/config/products.yml` — Updated SaneSales config
 - `web/saneapps.com/index.html` — SaneSales changed to Live
+
+## Session 5: App Store Submission + Documentation Audit
+
+### Done
+1. **App Store review submission** — Fixed all blockers (reviewer contact, app privacy, iPad screenshots), submitted for review
+2. **iPad screenshots** — Booted iPad Pro 13" simulator, activated demo mode (`--demo`), captured 6 screenshots (3 light + 3 dark, 2048x2732)
+3. **iPhone screenshot fix** — Re-uploaded stuck 04-products screenshot
+4. **App Privacy** — Set "Data Not Collected" via ASC web portal (not available via API)
+5. **Review detail** — Created with phone +1 212 555 0100, demoAccountRequired=false
+6. **Demo mode on iPad** — Used `xcrun simctl launch -- --demo` to activate DemoData (fictional "Pixel Studio" store)
+7. **14-perspective docs audit** — Full audit via free NVIDIA models (Mistral + DeepSeek), score 7.1/10
+8. **Documentation updates** — SESSION_HANDOFF.md, README.md, DEVELOPMENT.md, docs/index.html all updated
+
+### Key IDs
+- Review Submission: `1373bfb1-83a5-4ae4-9cc0-17c6c463874d` (WAITING_FOR_REVIEW)
+- iPad Screenshot Set: `71abe095-e9db-46fa-affd-fbd1a8447707`
+- iPad Simulator UDID: `46EEDF7A-5C0E-419A-90CA-4652B8C735C8`
+
+### Known Issues
+- **XcodeGen overwrites entitlements** — Running `xcodegen generate` resets `SaneSalesWidgets.entitlements` to empty `<dict/>`. Must restore content after regenerating. (Also documented in DEVELOPMENT.md now.)
+
+### Pending
+- [ ] App Store review decision (WAITING_FOR_REVIEW)
+- [ ] Shut down iPad simulator when no longer needed
+- [ ] Uncommitted files from Session 4 still pending
