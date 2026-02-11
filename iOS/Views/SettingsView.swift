@@ -8,6 +8,8 @@ struct SettingsView: View {
     @State private var newAPIKey = ""
     @State private var isValidating = false
     @State private var showError = false
+    @State private var errorTitle = ""
+    @State private var errorMessage = ""
     @State private var showRemoveConfirmation = false
     @State private var removingProvider: SalesProviderType?
     @State private var showExportSheet = false
@@ -222,10 +224,10 @@ struct SettingsView: View {
                     }
                 }
             }
-            .alert("Invalid API Key", isPresented: $showError) {
+            .alert(errorTitle, isPresented: $showError) {
                 Button("OK") {}
             } message: {
-                Text("Could not connect with that key. Check it and try again.")
+                Text(errorMessage)
             }
         }
     }
@@ -356,7 +358,7 @@ struct SettingsView: View {
     private func saveKey() {
         guard let provider = editingProvider else { return }
         isValidating = true
-        let key = newAPIKey
+        let key = newAPIKey.trimmingCharacters(in: .whitespacesAndNewlines)
         Task {
             let success: Bool = switch provider {
             case .lemonSqueezy:
@@ -371,6 +373,23 @@ struct SettingsView: View {
                 showingKeyEntry = false
                 newAPIKey = ""
             } else {
+                switch manager.error {
+                case .invalidAPIKey:
+                    errorTitle = "Invalid API Key"
+                    errorMessage = "The server rejected this key. Check it and try again."
+                case .networkError:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Couldn't reach the server. Check your internet connection and try again."
+                case .rateLimited:
+                    errorTitle = "Rate Limited"
+                    errorMessage = "Too many requests. Wait a moment and try again."
+                case let .serverError(code):
+                    errorTitle = "Server Error"
+                    errorMessage = "The server returned an error (\(code)). Try again later."
+                default:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Could not connect with that key. Check it and try again."
+                }
                 showError = true
             }
         }
