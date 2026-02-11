@@ -34,6 +34,7 @@
 		44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		46FABC2DDD35C6D340BCD8A6 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
 		4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */; };
+		4B30EB2945E49C17999D62E8 /* MoveToApplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8094724132C2F9AEB095C0 /* MoveToApplications.swift */; };
 		4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		4FE174E430A0B7B1DD775E14 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		5641CD8BA660AD48D6668BE4 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
@@ -74,6 +75,7 @@
 		DC1FA363C0DD2025C7A5E408 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
 		DE58C1B172F33BDAD7826A45 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
 		E6540D3302CBA73ECCC40765 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		EBCB763D17CAA15C6335D9A5 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 890451BF522D74B820D61449 /* Sparkle */; };
 		EDA18020BD301C7C64E93167 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
 		EE09CE74526519FBB417F589 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		EFC470A90B5690F3B3F85B4C /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
@@ -184,7 +186,19 @@
 		E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA18F6A68852AC673B6D19D9 /* SaneSalesWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesWidgets.entitlements; sourceTree = "<group>"; };
 		EB5EE067F26BFA6A79614082 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
+		FC8094724132C2F9AEB095C0 /* MoveToApplications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveToApplications.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4EAB9E8B84DC2A911D585940 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EBCB763D17CAA15C6335D9A5 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		224CC4B653925FA0A8692567 /* Views */ = {
@@ -238,6 +252,7 @@
 				80619310AA709860F4051D2D /* iOS */,
 				8771E2D98F18E8BD187FF5C0 /* macOS */,
 				C37468C565F3990D9B84E6EF /* Resources */,
+				8DBB8D7E9F8B182D9EAE622A /* shared */,
 				61DBB3C84EC3FE34543A1186 /* Tests */,
 				AFB1D9ECC21CBA697DADB16D /* Widgets */,
 				E5F894E2E4E1D3B172C70F81 /* Products */,
@@ -264,6 +279,15 @@
 				D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */,
 			);
 			path = macOS;
+			sourceTree = "<group>";
+		};
+		8DBB8D7E9F8B182D9EAE622A /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				FC8094724132C2F9AEB095C0 /* MoveToApplications.swift */,
+			);
+			name = shared;
+			path = ../../infra/SaneProcess/shared;
 			sourceTree = "<group>";
 		};
 		AFB1D9ECC21CBA697DADB16D /* Widgets */ = {
@@ -344,6 +368,7 @@
 				AC1BDE77B58BC18DB4C7033F /* Run SwiftLint */,
 				AFB4FBFF686F465712673041 /* Strip Sparkle for App Store */,
 				C10F5F0D900597E9D25DE28E /* Resources */,
+				4EAB9E8B84DC2A911D585940 /* Frameworks */,
 				E09A5B7F4F172967E68B5E53 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -353,6 +378,7 @@
 			);
 			name = SaneSales;
 			packageProductDependencies = (
+				890451BF522D74B820D61449 /* Sparkle */,
 			);
 			productName = SaneSales;
 			productReference = 9E95D67F37D405DC015BD613 /* SaneSales.app */;
@@ -493,6 +519,9 @@
 			);
 			mainGroup = 77CCCE98A045A03596E94058;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9527B5F8D842884BF5AED6EA /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
@@ -641,6 +670,7 @@
 				44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */,
 				64A4461702D7B6637C2DE83D /* LemonSqueezyProvider.swift in Sources */,
 				3AC5F3E189ED62A55AA4FFA7 /* MenuBarManager.swift in Sources */,
+				4B30EB2945E49C17999D62E8 /* MoveToApplications.swift in Sources */,
 				30243AE0512C901F0E4810D3 /* Order.swift in Sources */,
 				5D4FB659C3C04F816AE1060A /* OrderDetailView.swift in Sources */,
 				B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */,
@@ -742,7 +772,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -764,7 +794,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -786,7 +816,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -895,7 +925,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1011,7 +1041,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1099,7 +1129,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1147,7 +1177,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1175,7 +1205,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1200,7 +1230,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1226,7 +1256,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1248,7 +1278,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1277,7 +1307,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1400,6 +1430,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9527B5F8D842884BF5AED6EA /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		890451BF522D74B820D61449 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9527B5F8D842884BF5AED6EA /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CCDB83FD7D77153A3CB27D1E /* Project object */;
 }

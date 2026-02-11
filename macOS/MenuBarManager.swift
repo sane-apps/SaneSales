@@ -95,6 +95,10 @@ final class MenuBarManager: NSObject {
 
         menu.addItem(.separator())
 
+        let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(menuCheckForUpdates), keyEquivalent: "")
+        updateItem.target = self
+        menu.addItem(updateItem)
+
         let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(menuOpenSettings), keyEquivalent: ",")
         settingsItem.target = self
         menu.addItem(settingsItem)
@@ -120,6 +124,10 @@ final class MenuBarManager: NSObject {
     @objc private func menuRefresh() {
         guard let manager = salesManager else { return }
         Task { await manager.refresh() }
+    }
+
+    @objc private func menuCheckForUpdates() {
+        UpdateService.shared.checkForUpdates()
     }
 
     @objc private func menuOpenSettings() {

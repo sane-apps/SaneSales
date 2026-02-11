@@ -63,8 +63,16 @@ Demo data is defined in `Core/DemoData.swift`. Used for App Store screenshots an
 
 The LemonSqueezy key is in macOS Keychain (service: `lemonsqueezy`, account: `api_key`). The app stores its own copy under `com.sanesales.app` / `lemonsqueezy-api-key` when the user connects via Settings.
 
+## Shared Infrastructure (SaneProcess)
+
+The macOS target includes shared files from `SaneProcess/shared/`:
+
+- **`MoveToApplications.swift`** — `SaneAppMover.moveToApplicationsFolderIfNeeded()` prompts users to move the app to /Applications on first launch. Called in `applicationDidFinishLaunching` wrapped in `#if !DEBUG`. Tries direct move first, falls back to AppleScript admin prompt.
+
+These files are referenced via relative path in `project.yml` (`../../infra/SaneProcess/shared/`). Do NOT duplicate them — edit the shared source.
+
 ## Deployment Targets
 
 - iOS 17.0 / macOS 14.0
 - Swift 6 strict concurrency
-- No third-party dependencies
+- Sparkle for auto-updates (macOS only, stripped from App Store builds)

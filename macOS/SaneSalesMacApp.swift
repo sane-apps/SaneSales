@@ -1,17 +1,81 @@
 import SwiftUI
+#if canImport(Sparkle)
+    import Sparkle
+#endif
 
 #if os(macOS)
+
+    // MARK: - Update Service
+
+    @MainActor
+    class UpdateService: NSObject, ObservableObject {
+        static let shared = UpdateService()
+
+        #if canImport(Sparkle)
+            private var updaterController: SPUStandardUpdaterController?
+        #endif
+
+        override init() {
+            super.init()
+            #if canImport(Sparkle)
+                updaterController = SPUStandardUpdaterController(
+                    startingUpdater: true,
+                    updaterDelegate: nil,
+                    userDriverDelegate: nil
+                )
+            #endif
+        }
+
+        func checkForUpdates() {
+            #if canImport(Sparkle)
+                updaterController?.checkForUpdates(nil)
+            #endif
+        }
+
+        var automaticallyChecksForUpdates: Bool {
+            get {
+                #if canImport(Sparkle)
+                    return updaterController?.updater.automaticallyChecksForUpdates ?? false
+                #else
+                    return false
+                #endif
+            }
+            set {
+                #if canImport(Sparkle)
+                    updaterController?.updater.automaticallyChecksForUpdates = newValue
+                #endif
+            }
+        }
+    }
+
+    // MARK: - App Delegate
+
+    @MainActor
     class SaneSalesAppDelegate: NSObject, NSApplicationDelegate {
         weak var salesManager: SalesManager?
 
+        func applicationDidFinishLaunching(_: Notification) {
+            #if !DEBUG
+                SaneAppMover.moveToApplicationsFolderIfNeeded()
+            #endif
+        }
+
         func applicationDockMenu(_: NSApplication) -> NSMenu? {
             let menu = NSMenu()
+
+            let showItem = NSMenuItem(title: "Show SaneSales", action: #selector(dockShowWindow), keyEquivalent: "")
+            showItem.target = self
+            menu.addItem(showItem)
 
             let refreshItem = NSMenuItem(title: "Refresh", action: #selector(dockRefresh), keyEquivalent: "")
             refreshItem.target = self
             menu.addItem(refreshItem)
 
             menu.addItem(.separator())
+
+            let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(dockCheckForUpdates), keyEquivalent: "")
+            updateItem.target = self
+            menu.addItem(updateItem)
 
             let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(dockOpenSettings), keyEquivalent: "")
             settingsItem.target = self
@@ -20,11 +84,24 @@ import SwiftUI
             return menu
         }
 
+        @objc private func dockShowWindow() {
+            NSApp.activate(ignoringOtherApps: true)
+            if let mainWindow = NSApp.windows.first(where: {
+                !$0.isSheet && $0.className != "NSStatusBarWindow"
+            }) {
+                mainWindow.makeKeyAndOrderFront(nil)
+            }
+        }
+
         @objc private func dockRefresh() {
             guard let manager = salesManager else { return }
-            Task { @MainActor in
+            Task {
                 await manager.refresh()
             }
+        }
+
+        @objc private func dockCheckForUpdates() {
+            UpdateService.shared.checkForUpdates()
         }
 
         @objc private func dockOpenSettings() {
@@ -39,6 +116,8 @@ import SwiftUI
             }
         }
     }
+
+    // MARK: - App
 
     @main
     struct SaneSalesMacApp: App {
@@ -95,6 +174,11 @@ import SwiftUI
                     }
                     .keyboardShortcut(",", modifiers: .command)
                 }
+                CommandGroup(after: .appInfo) {
+                    Button("Check for Updates\u{2026}") {
+                        UpdateService.shared.checkForUpdates()
+                    }
+                }
             }
         }
 
@@ -124,8 +208,6 @@ import SwiftUI
                 menuBarManager = nil
             }
         }
-
-        // Window transparency is now handled by WindowTransparencyAccessor in SaneBackground
     }
 
     // Reuse ContentView from iOS/ (shared code)
