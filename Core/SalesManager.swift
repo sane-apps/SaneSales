@@ -94,6 +94,7 @@ final class SalesManager {
                 await refresh()
                 return true
             }
+            error = .invalidAPIKey
             return false
         } catch {
             self.error = error as? SalesAPIError ?? .networkError(underlying: error)
@@ -121,6 +122,7 @@ final class SalesManager {
                 await refresh()
                 return true
             }
+            error = .invalidAPIKey
             return false
         } catch {
             self.error = error as? SalesAPIError ?? .networkError(underlying: error)
@@ -148,6 +150,7 @@ final class SalesManager {
                 await refresh()
                 return true
             }
+            error = .invalidAPIKey
             return false
         } catch {
             self.error = error as? SalesAPIError ?? .networkError(underlying: error)
