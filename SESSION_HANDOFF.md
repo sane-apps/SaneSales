@@ -45,7 +45,7 @@
 3. **Full screenshot set captured** — 20 screenshots (iPhone 6.7" + Mac, light + dark, 5 screens each) in `Screenshots/`.
 4. **Widget App Store fixes** — Created `Widgets/SaneSalesWidgets.entitlements` with app-sandbox + network.client. Added `@main WidgetBundle` entry point to `SalesWidget.swift`. Wired entitlements in `project.yml` for both macOS and iOS widget extensions.
 5. **iOS + macOS uploaded to App Store Connect** — Both builds successfully uploaded via `xcrun altool`. Universal purchase under single bundle ID `com.sanesales.app`.
-6. **Notarized DMG built** — `release.sh` ran successfully. DMG uploaded to R2 bucket `sanesales-downloads`.
+6. **Notarized DMG built** — `release.sh` ran successfully. DMG uploaded to shared R2 bucket `sanebar-downloads`.
 7. **Appcast.xml created** — v1.0 entry with EdDSA signature for Sparkle updates.
 8. **Website deployed** — `docs/` deployed to Cloudflare Pages at sanesales.com.
 9. **LemonSqueezy product live** — Product ID 822714, $6.99, published. Checkout UUID: `5f7903d4-d6c8-4da4-b3e3-4586ef86bb51`.
@@ -103,5 +103,32 @@
 
 ### Pending
 - [ ] App Store review decision (WAITING_FOR_REVIEW)
-- [ ] Shut down iPad simulator when no longer needed
-- [ ] Uncommitted files from Session 4 still pending
+- [ ] Uncommitted website changes in `docs/index.html` (trust badges + testimonials carousel)
+- [ ] `DOCS_AUDIT_FINDINGS.md` and `SEO_AUDIT_FINDINGS.md` — audit artifacts, gitignore or delete
+
+## Session 6: v1.2 Release + Pipeline-Wide Infrastructure Audit
+
+> Last updated: 2026-02-11
+
+### Done
+1. **v1.2 released** — Fixed misleading API key error messages, auto-trim whitespace on paste. Built, signed, notarized, ZIP'd, Sparkle-signed.
+2. **v1.2 deployed** — ZIP uploaded to shared R2 bucket, sane-dist Worker updated to accept .zip, appcast.xml updated, website deployed.
+3. **Pipeline-wide infrastructure audit** — Fixed systemic config drift across ALL SaneApps:
+   - All 7 `.saneprocess` files → `r2_bucket: sanebar-downloads` (shared bucket)
+   - `release.sh` default bucket fixed
+   - `wrangler.toml` rewritten with all 8 routes (added sanesync, sanevideo)
+   - Email webhook `PRODUCT_CONFIG` updated to current versions for all 5 apps
+   - Missing DNS records created for `dist.sanehosts.com`, `dist.sanesync.com`, `dist.sanevideo.com`
+   - Worker routes created for sanesync and sanevideo domains
+4. **Orphan infrastructure deleted** — 3 orphan R2 buckets (saneclick-dist, sanehosts-dist, sanesales-downloads) emptied and deleted. Legacy `sanebar-dist` Worker deleted.
+5. **E2E verification** — 33/33 checks pass across all 7 dist domains
+6. **Customer impact assessed** — 4 SaneHosts customers had broken webhook download links, but LemonSqueezy provides its own download at purchase — minimal real impact. SaneBar/SaneClip customers got stale versions but Sparkle auto-updates.
+7. **All repos committed and pushed** — SaneClick, SaneHosts, SaneSync, sane-email-automation all pushed. SaneVideo committed locally (blocked by faraday CVE in pre-push hook).
+
+### Commits
+- `97dc5f7` — fix: improve API key error messages with specific error types
+- `4cec689` — Bump version to 1.2 for release
+- `3abcd22` — Add v1.2 to appcast for Sparkle auto-updates
+
+### Key Lesson
+Per-app R2 buckets were never wired to the sane-dist Worker — only `sanebar-downloads` was. This caused broken download links for SaneHosts customers and stale versions in webhook emails for all other apps. Now standardized: ONE shared bucket, ONE Worker, all apps upload to `sanebar-downloads`.
