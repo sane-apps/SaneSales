@@ -13,7 +13,7 @@ release:
   signing_identity: "Developer ID Application"
   dist_host: dist.sanesales.com
   site_host: sanesales.com
-  r2_bucket: sanesales-downloads
+  r2_bucket: sanebar-downloads
   use_sparkle: true
   min_system_version: "14.0"
   export:
@@ -47,6 +47,20 @@ mcps:
   - context7
   - github
   - xcode
+
+appstore:
+  enabled: true
+  app_id: "6759010976"
+  configuration: Release-AppStore
+  platforms: [macos, ios]
+  ios_scheme: SaneSalesIOS
+  screenshots:
+    macos: Screenshots/*-light-mac.png
+    ios: Screenshots/*-light-6.7.png
+  contact:
+    name: "Stephan Joseph"
+    phone: "+17277589785"
+    email: "hi@saneapps.com"
 
 website: true
 website_domain: sanesales.com

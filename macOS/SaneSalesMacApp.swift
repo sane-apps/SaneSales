@@ -1,5 +1,5 @@
 import SwiftUI
-#if canImport(Sparkle)
+#if !APP_STORE
     import Sparkle
 #endif
 
@@ -11,13 +11,13 @@ import SwiftUI
     class UpdateService: NSObject, ObservableObject {
         static let shared = UpdateService()
 
-        #if canImport(Sparkle)
+        #if !APP_STORE
             private var updaterController: SPUStandardUpdaterController?
         #endif
 
         override init() {
             super.init()
-            #if canImport(Sparkle)
+            #if !APP_STORE
                 updaterController = SPUStandardUpdaterController(
                     startingUpdater: true,
                     updaterDelegate: nil,
@@ -27,21 +27,21 @@ import SwiftUI
         }
 
         func checkForUpdates() {
-            #if canImport(Sparkle)
+            #if !APP_STORE
                 updaterController?.checkForUpdates(nil)
             #endif
         }
 
         var automaticallyChecksForUpdates: Bool {
             get {
-                #if canImport(Sparkle)
+                #if !APP_STORE
                     return updaterController?.updater.automaticallyChecksForUpdates ?? false
                 #else
                     return false
                 #endif
             }
             set {
-                #if canImport(Sparkle)
+                #if !APP_STORE
                     updaterController?.updater.automaticallyChecksForUpdates = newValue
                 #endif
             }

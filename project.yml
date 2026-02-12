@@ -153,6 +153,7 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
+          OTHER_SWIFT_FLAGS: "-D APP_STORE"
     postCompileScripts:
       - script: |
           if which swiftlint >/dev/null; then
@@ -311,6 +312,7 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
+          OTHER_SWIFT_FLAGS: "-D APP_STORE"
 
   # iOS Tests
   SaneSalesIOSTests:
