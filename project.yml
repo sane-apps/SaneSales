@@ -207,6 +207,9 @@ targets:
       macOS: 14.0
     entitlements:
       path: Widgets/SaneSalesWidgets.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
     sources:
       - Widgets
       - path: Core/Models
@@ -348,6 +351,9 @@ targets:
       iOS: 17.0
     entitlements:
       path: Widgets/SaneSalesWidgets.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
     sources:
       - Widgets
       - path: Core/Models
