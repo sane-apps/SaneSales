@@ -309,35 +309,43 @@ struct SettingsView: View {
                         .font(.saneSubheadline)
                 }
                 GlassDivider()
-                Link(destination: URL(string: "https://saneapps.com")!) {
-                    GlassRow("Website", icon: "globe", iconColor: Color.salesGreen) {
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(Color.salesGreen)
-                            .font(.saneSubheadline)
+                if let url = URL(string: "https://saneapps.com") {
+                    Link(destination: url) {
+                        GlassRow("Website", icon: "globe", iconColor: Color.salesGreen) {
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundStyle(Color.salesGreen)
+                                .font(.saneSubheadline)
+                        }
                     }
                 }
                 GlassDivider()
-                Link(destination: URL(string: "https://github.com/sane-apps/SaneSales/issues")!) {
-                    GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(Color.textMuted)
-                            .font(.saneSubheadline)
+                if let url = URL(string: "https://github.com/sane-apps/SaneSales/issues") {
+                    Link(destination: url) {
+                        GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundStyle(Color.textMuted)
+                                .font(.saneSubheadline)
+                        }
                     }
                 }
                 GlassDivider()
-                Link(destination: URL(string: "https://saneapps.com/privacy")!) {
-                    GlassRow("Privacy Policy", icon: "hand.raised", iconColor: .blue) {
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(Color.textMuted)
-                            .font(.saneSubheadline)
+                if let url = URL(string: "https://saneapps.com/privacy") {
+                    Link(destination: url) {
+                        GlassRow("Privacy Policy", icon: "hand.raised", iconColor: .blue) {
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundStyle(Color.textMuted)
+                                .font(.saneSubheadline)
+                        }
                     }
                 }
                 GlassDivider()
-                Link(destination: URL(string: "mailto:hi@saneapps.com")!) {
-                    GlassRow("Email Us", icon: "envelope", iconColor: .blue) {
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(Color.textMuted)
-                            .font(.saneSubheadline)
+                if let url = URL(string: "mailto:hi@saneapps.com") {
+                    Link(destination: url) {
+                        GlassRow("Email Us", icon: "envelope", iconColor: .blue) {
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundStyle(Color.textMuted)
+                                .font(.saneSubheadline)
+                        }
                     }
                 }
             }

@@ -20,13 +20,18 @@ actor LemonSqueezyProvider: SalesProvider {
     // MARK: - Orders
 
     func fetchOrders(page: Int = 1, pageSize: Int = 100) async throws -> OrdersPage {
-        var components = URLComponents(url: baseURL.appendingPathComponent("orders"), resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: baseURL.appendingPathComponent("orders"), resolvingAgainstBaseURL: false) else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
         components.queryItems = [
             URLQueryItem(name: "page[number]", value: "\(page)"),
             URLQueryItem(name: "page[size]", value: "\(pageSize)")
         ]
 
-        let data = try await request(url: components.url!)
+        guard let url = components.url else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
+        let data = try await request(url: url)
         let response = try JSONDecoder.lemonSqueezy.decode(LSOrdersResponse.self, from: data)
 
         let orders = response.data.map { item -> Order in

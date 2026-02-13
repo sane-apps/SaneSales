@@ -227,21 +227,31 @@ actor GumroadProvider: SalesProvider {
     // MARK: - Networking
 
     private func request(path: String, queryItems: [URLQueryItem] = []) async throws -> Data {
-        var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false) else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
         var items = queryItems
         items.append(URLQueryItem(name: "access_token", value: apiKey))
         components.queryItems = items
-        return try await request(url: components.url!)
+        guard let url = components.url else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
+        return try await request(url: url)
     }
 
     private func request(url: URL) async throws -> Data {
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
         var items = components.queryItems ?? []
         items.removeAll { $0.name == "access_token" }
         items.append(URLQueryItem(name: "access_token", value: apiKey))
         components.queryItems = items
 
-        var req = URLRequest(url: components.url!)
+        guard let resolvedURL = components.url else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
+        var req = URLRequest(url: resolvedURL)
         req.setValue("application/json", forHTTPHeaderField: "Accept")
 
         let (data, response): (Data, URLResponse)
