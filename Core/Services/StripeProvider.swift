@@ -209,15 +209,22 @@ actor StripeProvider: SalesProvider {
     // MARK: - Networking
 
     private func request(path: String, queryItems: [URLQueryItem] = []) async throws -> Data {
-        var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false)!
+        guard var components = URLComponents(url: baseURL.appendingPathComponent(path), resolvingAgainstBaseURL: false) else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
         if !queryItems.isEmpty {
             components.queryItems = queryItems
         }
 
-        var req = URLRequest(url: components.url!)
+        guard let url = components.url else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
+        var req = URLRequest(url: url)
         // Stripe uses Basic Auth: base64("sk_xxx:")
         let authString = "\(apiKey):"
-        let authData = authString.data(using: .utf8)!
+        guard let authData = authString.data(using: .utf8) else {
+            throw SalesAPIError.networkError(underlying: URLError(.badURL))
+        }
         req.setValue("Basic \(authData.base64EncodedString())", forHTTPHeaderField: "Authorization")
 
         let (data, response): (Data, URLResponse)
