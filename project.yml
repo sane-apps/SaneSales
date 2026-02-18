@@ -435,7 +435,9 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
-      - Resources/Assets.xcassets
+      - Resources/Assets.xcassets/CoinTemplate.imageset/CoinTemplate_2x.png
+      - Resources/Assets.xcassets/CoinTemplate.imageset/CoinTemplate_3x.png
+      - Resources/Assets.xcassets/CoinColor.imageset/CoinColor_3x.png
     dependencies:
       - target: SaneSalesWatchWidgets
         embed: true

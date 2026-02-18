@@ -1,5 +1,8 @@
 import Foundation
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#endif
 
 @MainActor
 final class WatchDashboardViewModel: ObservableObject {
@@ -29,7 +32,7 @@ final class WatchDashboardViewModel: ObservableObject {
         let metrics = SalesMetrics.compute(from: resolvedOrders)
         let currency = dominantCurrency(for: resolvedOrders)
         let providerRows = providerRows(from: resolvedOrders)
-        let recentRows = resolvedOrders.sorted(by: { $0.createdAt > $1.createdAt }).prefix(4).map {
+        let recentRows = resolvedOrders.sorted(by: { $0.createdAt > $1.createdAt }).prefix(15).map {
             WatchRecentSaleRow(
                 productName: $0.productName,
                 provider: $0.provider,
@@ -82,12 +85,28 @@ final class WatchDashboardViewModel: ObservableObject {
     private func demoOrders() -> [Order] {
         let now = Date()
         return [
-            makeDemoOrder(id: "watch_demo_1", product: "SaneBar Pro", cents: 1900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-15 * 60)),
-            makeDemoOrder(id: "watch_demo_2", product: "SaneClip Plus", cents: 1200, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-55 * 60)),
-            makeDemoOrder(id: "watch_demo_3", product: "SaneSales", cents: 699, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-2 * 3600)),
-            makeDemoOrder(id: "watch_demo_4", product: "SaneBar Team", cents: 4500, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-6 * 3600)),
-            makeDemoOrder(id: "watch_demo_5", product: "SaneClip Lifetime", cents: 3900, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-22 * 3600)),
-            makeDemoOrder(id: "watch_demo_6", product: "SaneSales", cents: 699, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-32 * 3600))
+            // 5 products x 3 providers = 15 orders.
+            // Each product appears multiple times across different sources.
+            // Product 1
+            makeDemoOrder(id: "watch_demo_p1_ls", product: "SaneBar", cents: 1900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-8 * 60)),
+            makeDemoOrder(id: "watch_demo_p1_gr", product: "SaneBar", cents: 1800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-14 * 60)),
+            makeDemoOrder(id: "watch_demo_p1_st", product: "SaneBar", cents: 1700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-20 * 60)),
+            // Product 2
+            makeDemoOrder(id: "watch_demo_p2_ls", product: "SaneClip", cents: 1200, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-26 * 60)),
+            makeDemoOrder(id: "watch_demo_p2_gr", product: "SaneClip", cents: 1150, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-32 * 60)),
+            makeDemoOrder(id: "watch_demo_p2_st", product: "SaneClip", cents: 1100, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-38 * 60)),
+            // Product 3
+            makeDemoOrder(id: "watch_demo_p3_ls", product: "SaneSales", cents: 699, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-44 * 60)),
+            makeDemoOrder(id: "watch_demo_p3_gr", product: "SaneSales", cents: 699, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-50 * 60)),
+            makeDemoOrder(id: "watch_demo_p3_st", product: "SaneSales", cents: 699, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-56 * 60)),
+            // Product 4
+            makeDemoOrder(id: "watch_demo_p4_ls", product: "SaneSync", cents: 2900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-62 * 60)),
+            makeDemoOrder(id: "watch_demo_p4_gr", product: "SaneSync", cents: 2800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-68 * 60)),
+            makeDemoOrder(id: "watch_demo_p4_st", product: "SaneSync", cents: 2700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-74 * 60)),
+            // Product 5
+            makeDemoOrder(id: "watch_demo_p5_ls", product: "SaneHosts", cents: 4900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-80 * 60)),
+            makeDemoOrder(id: "watch_demo_p5_gr", product: "SaneHosts", cents: 4700, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-86 * 60)),
+            makeDemoOrder(id: "watch_demo_p5_st", product: "SaneHosts", cents: 4500, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-92 * 60))
         ]
     }
 
@@ -135,6 +154,7 @@ final class WatchDashboardViewModel: ObservableObject {
 
 struct WatchDashboardView: View {
     @ObservedObject var viewModel: WatchDashboardViewModel
+    private let focusRecentOnAppear = CommandLine.arguments.contains("--focus-recent")
 
     var body: some View {
         ZStack {
@@ -158,106 +178,119 @@ struct WatchDashboardView: View {
         let miniHeight = WatchLayout.miniCardHeight(for: contentWidth)
         let cornerRadius = WatchLayout.cardCornerRadius(for: contentWidth)
 
-        return ScrollView {
-            VStack(alignment: .leading, spacing: sectionSpacing) {
-                headerRow(snapshot: snapshot, width: contentWidth)
+        return ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: sectionSpacing) {
+                    headerRow(snapshot: snapshot, width: contentWidth)
 
-                WatchGlassCard(cornerRadius: cornerRadius) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Today")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(.white.opacity(0.95))
-
-                        Text(currencyString(cents: snapshot.metrics.todayRevenue, currency: snapshot.currency))
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.65)
-
-                        Text("\(snapshot.metrics.todayOrders) paid orders")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.9))
-                    }
-                }
-                .frame(height: primaryHeight)
-
-                HStack(spacing: sectionSpacing / WatchLayout.phi) {
-                    WatchMiniCard(
-                        title: "Month",
-                        value: currencyString(cents: snapshot.metrics.monthRevenue, currency: snapshot.currency, compact: true),
-                        subtitle: "\(snapshot.metrics.monthOrders) orders",
-                        cornerRadius: cornerRadius,
-                        height: miniHeight
-                    )
-                    WatchMiniCard(
-                        title: "All Time",
-                        value: currencyString(cents: snapshot.metrics.allTimeRevenue, currency: snapshot.currency, compact: true),
-                        subtitle: "\(snapshot.metrics.allTimeOrders) orders",
-                        cornerRadius: cornerRadius,
-                        height: miniHeight
-                    )
-                }
-
-                if !snapshot.providerRows.isEmpty {
-                    WatchGlassCard(cornerRadius: cornerRadius) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Providers")
+                    WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.salesGreen) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Today")
                                 .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(WatchPalette.salesGreen)
+
+                            Text(currencyString(cents: snapshot.metrics.todayRevenue, currency: snapshot.currency))
+                                .font(.system(size: 28, weight: .bold, design: .rounded))
                                 .foregroundStyle(.white)
-                            ForEach(snapshot.providerRows) { row in
-                                HStack(spacing: 6) {
-                                    Circle()
-                                        .fill(providerColor(row.provider))
-                                        .frame(width: 6, height: 6)
-                                    Text(row.provider.displayName)
-                                        .font(.system(size: 11, weight: .semibold))
-                                        .foregroundStyle(.white)
-                                        .lineLimit(1)
-                                    Spacer()
-                                    Text(currencyString(cents: row.revenueCents, currency: row.currency, compact: true))
-                                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                                        .foregroundStyle(.white)
-                                }
-                            }
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.65)
+
+                            Text("\(snapshot.metrics.todayOrders) paid orders")
+                                .font(.system(size: 12, weight: .medium))
+                                .foregroundStyle(WatchPalette.salesGreenSoft)
                         }
                     }
-                }
+                    .frame(height: primaryHeight)
 
-                if !snapshot.recentRows.isEmpty {
-                    WatchGlassCard(cornerRadius: cornerRadius) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Recent Sales")
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(.white)
-                            ForEach(snapshot.recentRows) { row in
-                                HStack(spacing: 6) {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(row.productName)
-                                            .font(.system(size: 11, weight: .semibold))
-                                            .foregroundStyle(.white)
-                                            .lineLimit(1)
+                    HStack(spacing: sectionSpacing / WatchLayout.phi) {
+                        WatchMiniCard(
+                            title: "Month",
+                            value: currencyString(cents: snapshot.metrics.monthRevenue, currency: snapshot.currency, compact: true),
+                            subtitle: "\(snapshot.metrics.monthOrders) orders",
+                            cornerRadius: cornerRadius,
+                            height: miniHeight,
+                            accentColor: WatchPalette.brandBlue
+                        )
+                        WatchMiniCard(
+                            title: "All Time",
+                            value: currencyString(cents: snapshot.metrics.allTimeRevenue, currency: snapshot.currency, compact: true),
+                            subtitle: "\(snapshot.metrics.allTimeOrders) orders",
+                            cornerRadius: cornerRadius,
+                            height: miniHeight,
+                            accentColor: WatchPalette.salesGold
+                        )
+                    }
+
+                    if !snapshot.providerRows.isEmpty {
+                        WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.providerAccent) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Providers")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(WatchPalette.providerAccent)
+                                ForEach(snapshot.providerRows) { row in
+                                    HStack(spacing: 6) {
+                                        Circle()
+                                            .fill(providerColor(row.provider))
+                                            .frame(width: 6, height: 6)
                                         Text(row.provider.displayName)
-                                            .font(.system(size: 10, weight: .medium))
-                                            .foregroundStyle(.white.opacity(0.9))
+                                            .font(.system(size: 11, weight: .semibold))
+                                            .foregroundStyle(providerColor(row.provider))
                                             .lineLimit(1)
-                                    }
-                                    Spacer()
-                                    VStack(alignment: .trailing, spacing: 1) {
-                                        Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
+                                        Spacer()
+                                        Text(currencyString(cents: row.revenueCents, currency: row.currency, compact: true))
                                             .font(.system(size: 11, weight: .bold, design: .rounded))
                                             .foregroundStyle(.white)
-                                        Text(row.createdAt, style: .time)
-                                            .font(.system(size: 10, weight: .medium))
-                                            .foregroundStyle(.white.opacity(0.9))
                                     }
                                 }
                             }
                         }
+                    }
+
+                    if !snapshot.recentRows.isEmpty {
+                        WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.salesGreenSoft) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Recent Sales")
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(WatchPalette.salesGreenSoft)
+                                ForEach(snapshot.recentRows) { row in
+                                    HStack(spacing: 6) {
+                                        RoundedRectangle(cornerRadius: 2, style: .continuous)
+                                            .fill(providerColor(row.provider))
+                                            .frame(width: 3, height: 26)
+
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text(row.productName)
+                                                .font(.system(size: 11, weight: .semibold))
+                                                .foregroundStyle(.white)
+                                                .lineLimit(1)
+                                        }
+                                        Spacer()
+                                        VStack(alignment: .trailing, spacing: 1) {
+                                            Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
+                                                .font(.system(size: 11, weight: .bold, design: .rounded))
+                                                .foregroundStyle(.white)
+                                            Text(row.createdAt, style: .time)
+                                                .font(.system(size: 10, weight: .medium))
+                                                .foregroundStyle(.white.opacity(0.9))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .id("recent-sales")
+                    }
+                }
+                .padding(.horizontal, WatchLayout.horizontalPadding)
+                .padding(.vertical, WatchLayout.verticalPadding)
+            }
+            .onAppear {
+                guard focusRecentOnAppear else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        proxy.scrollTo("recent-sales", anchor: .top)
                     }
                 }
             }
-            .padding(.horizontal, WatchLayout.horizontalPadding)
-            .padding(.vertical, WatchLayout.verticalPadding)
         }
     }
 
@@ -293,15 +326,7 @@ struct WatchDashboardView: View {
     private func headerRow(snapshot: WatchSalesSnapshot, width: CGFloat) -> some View {
         let logoSize = WatchLayout.logoSize(for: width)
         return HStack(spacing: 6) {
-            ZStack {
-                RoundedRectangle(cornerRadius: logoSize / 4, style: .continuous)
-                    .fill(Color.white.opacity(0.12))
-                Image("CoinColor")
-                    .resizable()
-                    .scaledToFit()
-                    .padding(2)
-            }
-            .frame(width: logoSize, height: logoSize)
+            WatchLogoView(size: logoSize)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text("SaneSales")
@@ -309,7 +334,7 @@ struct WatchDashboardView: View {
                     .foregroundStyle(.white)
                 Text(snapshot.lastUpdatedText(usingDemoData: viewModel.usingDemoData))
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(WatchPalette.brandBlueSoft)
             }
 
             Spacer(minLength: 4)
@@ -329,7 +354,7 @@ struct WatchDashboardView: View {
                 }
                 .frame(width: 22, height: 22)
                 .background(
-                    Circle().fill(WatchPalette.brandBlue.opacity(0.35))
+                    Circle().fill(WatchPalette.salesGreen.opacity(0.45))
                 )
             }
             .buttonStyle(.plain)
@@ -371,12 +396,45 @@ struct WatchDashboardView: View {
     }
 }
 
+private struct WatchLogoView: View {
+    let size: CGFloat
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: size / 4, style: .continuous)
+                .fill(Color.white.opacity(0.12))
+
+            #if canImport(UIKit)
+            if let coinImage = UIImage(named: "CoinColor_3x.png") ?? UIImage(named: "CoinColor_3x") {
+                Image(uiImage: coinImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: size * 1.8, height: size * 1.8)
+                    .saturation(1.2)
+            } else {
+                Image(systemName: "dollarsign.circle.fill")
+                    .font(.system(size: size * 0.78, weight: .semibold))
+                    .foregroundStyle(WatchPalette.salesGreen)
+            }
+            #else
+            Image(systemName: "dollarsign.circle.fill")
+                .font(.system(size: size * 0.78, weight: .semibold))
+                .foregroundStyle(WatchPalette.salesGreen)
+            #endif
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: size / 4, style: .continuous))
+    }
+}
+
 private struct WatchGlassCard<Content: View>: View {
     let cornerRadius: CGFloat
+    let accentColor: Color
     @ViewBuilder let content: Content
 
-    init(cornerRadius: CGFloat = 14, @ViewBuilder content: () -> Content) {
+    init(cornerRadius: CGFloat = 14, accentColor: Color = WatchPalette.brandBlue, @ViewBuilder content: () -> Content) {
         self.cornerRadius = cornerRadius
+        self.accentColor = accentColor
         self.content = content()
     }
 
@@ -395,8 +453,15 @@ private struct WatchGlassCard<Content: View>: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(WatchPalette.brandBlue.opacity(0.38), lineWidth: 1)
+                    .stroke(accentColor.opacity(0.44), lineWidth: 1)
             )
+            .overlay(alignment: .topLeading) {
+                Capsule(style: .continuous)
+                    .fill(accentColor.opacity(0.92))
+                    .frame(width: 26, height: 2)
+                    .padding(.top, 7)
+                    .padding(.leading, 10)
+            }
             .shadow(color: WatchPalette.brandBlue.opacity(0.22), radius: 8, x: 0, y: 4)
     }
 }
@@ -407,13 +472,14 @@ private struct WatchMiniCard: View {
     let subtitle: String
     let cornerRadius: CGFloat
     let height: CGFloat
+    let accentColor: Color
 
     var body: some View {
-        WatchGlassCard(cornerRadius: cornerRadius) {
+        WatchGlassCard(cornerRadius: cornerRadius, accentColor: accentColor) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.95))
+                    .foregroundStyle(accentColor)
                 Text(value)
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
@@ -421,7 +487,7 @@ private struct WatchMiniCard: View {
                     .minimumScaleFactor(0.7)
                 Text(subtitle)
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(accentColor.opacity(0.88))
                     .lineLimit(1)
             }
         }
@@ -456,7 +522,11 @@ private struct WatchSaneBackground: View {
 private enum WatchPalette {
     static let deepNavy = Color(red: 0.051, green: 0.082, blue: 0.145)
     static let brandBlue = Color(red: 0.31, green: 0.56, blue: 0.98)
+    static let brandBlueSoft = Color(red: 0.60, green: 0.75, blue: 1.00)
     static let salesGreen = Color(red: 0.204, green: 0.690, blue: 0.384)
+    static let salesGreenSoft = Color(red: 0.55, green: 0.90, blue: 0.70)
+    static let salesGold = Color(red: 0.98, green: 0.78, blue: 0.34)
+    static let providerAccent = Color(red: 0.74, green: 0.64, blue: 1.0)
 }
 
 private enum WatchLayout {
