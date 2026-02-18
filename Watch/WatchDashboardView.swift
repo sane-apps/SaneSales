@@ -279,9 +279,11 @@ struct WatchDashboardView: View {
 
     private func headerRow(snapshot: WatchSalesSnapshot) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: "dollarsign.circle.fill")
-                .foregroundStyle(WatchPalette.salesGreen)
-                .font(.system(size: 14, weight: .bold))
+            Image("CoinColor")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
 
             VStack(alignment: .leading, spacing: 1) {
                 Text("SaneSales")
