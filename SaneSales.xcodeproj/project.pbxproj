@@ -58,6 +58,7 @@
 		7020DF54114726D1BD09EB79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
 		7081CB9248DDFAEC0FADEA1E /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
 		7BF68D11B4F5DE1DB08C7731 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		7C2C68615D3B3E5C39C1EC22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */; };
 		7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */; };
 		7F8F2B9A3FE0252B01346396 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
 		863C28E514B149C57DC17F77 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
@@ -662,6 +663,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C2C68615D3B3E5C39C1EC22 /* Assets.xcassets in Resources */,
 				ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

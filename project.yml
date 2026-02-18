@@ -435,6 +435,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
+      - Resources/Assets.xcassets
     dependencies:
       - target: SaneSalesWatchWidgets
         embed: true
