@@ -142,19 +142,27 @@ struct WatchDashboardView: View {
                 .ignoresSafeArea()
 
             if let snapshot = viewModel.snapshot {
-                watchContent(snapshot: snapshot)
+                GeometryReader { proxy in
+                    watchContent(snapshot: snapshot, width: proxy.size.width)
+                }
             } else {
                 emptyState
             }
         }
     }
 
-    private func watchContent(snapshot: WatchSalesSnapshot) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
-                headerRow(snapshot: snapshot)
+    private func watchContent(snapshot: WatchSalesSnapshot, width: CGFloat) -> some View {
+        let contentWidth = max(120, width - (WatchLayout.horizontalPadding * 2))
+        let sectionSpacing = WatchLayout.sectionSpacing(for: contentWidth)
+        let primaryHeight = WatchLayout.primaryCardHeight(for: contentWidth)
+        let miniHeight = WatchLayout.miniCardHeight(for: contentWidth)
+        let cornerRadius = WatchLayout.cardCornerRadius(for: contentWidth)
 
-                WatchGlassCard {
+        return ScrollView {
+            VStack(alignment: .leading, spacing: sectionSpacing) {
+                headerRow(snapshot: snapshot, width: contentWidth)
+
+                WatchGlassCard(cornerRadius: cornerRadius) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Today")
                             .font(.system(size: 12, weight: .semibold))
@@ -171,22 +179,27 @@ struct WatchDashboardView: View {
                             .foregroundStyle(.white.opacity(0.9))
                     }
                 }
+                .frame(height: primaryHeight)
 
-                HStack(spacing: 8) {
+                HStack(spacing: sectionSpacing / WatchLayout.phi) {
                     WatchMiniCard(
                         title: "Month",
                         value: currencyString(cents: snapshot.metrics.monthRevenue, currency: snapshot.currency, compact: true),
-                        subtitle: "\(snapshot.metrics.monthOrders) orders"
+                        subtitle: "\(snapshot.metrics.monthOrders) orders",
+                        cornerRadius: cornerRadius,
+                        height: miniHeight
                     )
                     WatchMiniCard(
                         title: "All Time",
                         value: currencyString(cents: snapshot.metrics.allTimeRevenue, currency: snapshot.currency, compact: true),
-                        subtitle: "\(snapshot.metrics.allTimeOrders) orders"
+                        subtitle: "\(snapshot.metrics.allTimeOrders) orders",
+                        cornerRadius: cornerRadius,
+                        height: miniHeight
                     )
                 }
 
                 if !snapshot.providerRows.isEmpty {
-                    WatchGlassCard {
+                    WatchGlassCard(cornerRadius: cornerRadius) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Providers")
                                 .font(.system(size: 12, weight: .semibold))
@@ -211,7 +224,7 @@ struct WatchDashboardView: View {
                 }
 
                 if !snapshot.recentRows.isEmpty {
-                    WatchGlassCard {
+                    WatchGlassCard(cornerRadius: cornerRadius) {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("Recent Sales")
                                 .font(.system(size: 12, weight: .semibold))
@@ -243,8 +256,8 @@ struct WatchDashboardView: View {
                     }
                 }
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 8)
+            .padding(.horizontal, WatchLayout.horizontalPadding)
+            .padding(.vertical, WatchLayout.verticalPadding)
         }
     }
 
@@ -277,13 +290,18 @@ struct WatchDashboardView: View {
         .padding(12)
     }
 
-    private func headerRow(snapshot: WatchSalesSnapshot) -> some View {
-        HStack(spacing: 6) {
-            Image("CoinColor")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 20, height: 20)
-                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+    private func headerRow(snapshot: WatchSalesSnapshot, width: CGFloat) -> some View {
+        let logoSize = WatchLayout.logoSize(for: width)
+        return HStack(spacing: 6) {
+            ZStack {
+                RoundedRectangle(cornerRadius: logoSize / 4, style: .continuous)
+                    .fill(Color.white.opacity(0.12))
+                Image("CoinColor")
+                    .resizable()
+                    .scaledToFit()
+                    .padding(2)
+            }
+            .frame(width: logoSize, height: logoSize)
 
             VStack(alignment: .leading, spacing: 1) {
                 Text("SaneSales")
@@ -354,13 +372,19 @@ struct WatchDashboardView: View {
 }
 
 private struct WatchGlassCard<Content: View>: View {
+    let cornerRadius: CGFloat
     @ViewBuilder let content: Content
+
+    init(cornerRadius: CGFloat = 14, @ViewBuilder content: () -> Content) {
+        self.cornerRadius = cornerRadius
+        self.content = content()
+    }
 
     var body: some View {
         content
             .padding(10)
             .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: [Color.white.opacity(0.16), Color.white.opacity(0.08)],
@@ -370,9 +394,10 @@ private struct WatchGlassCard<Content: View>: View {
                     )
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(WatchPalette.brandBlue.opacity(0.38), lineWidth: 1)
             )
+            .shadow(color: WatchPalette.brandBlue.opacity(0.22), radius: 8, x: 0, y: 4)
     }
 }
 
@@ -380,9 +405,11 @@ private struct WatchMiniCard: View {
     let title: String
     let value: String
     let subtitle: String
+    let cornerRadius: CGFloat
+    let height: CGFloat
 
     var body: some View {
-        WatchGlassCard {
+        WatchGlassCard(cornerRadius: cornerRadius) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.system(size: 10, weight: .semibold))
@@ -398,6 +425,7 @@ private struct WatchMiniCard: View {
                     .lineLimit(1)
             }
         }
+        .frame(height: height)
     }
 }
 
@@ -429,6 +457,32 @@ private enum WatchPalette {
     static let deepNavy = Color(red: 0.051, green: 0.082, blue: 0.145)
     static let brandBlue = Color(red: 0.31, green: 0.56, blue: 0.98)
     static let salesGreen = Color(red: 0.204, green: 0.690, blue: 0.384)
+}
+
+private enum WatchLayout {
+    static let phi: CGFloat = 1.61803398875
+    static let horizontalPadding: CGFloat = 8
+    static let verticalPadding: CGFloat = 8
+
+    static func sectionSpacing(for width: CGFloat) -> CGFloat {
+        max(6, min(11, width / (phi * phi * phi * 2.8)))
+    }
+
+    static func primaryCardHeight(for width: CGFloat) -> CGFloat {
+        max(96, min(126, width / phi))
+    }
+
+    static func miniCardHeight(for width: CGFloat) -> CGFloat {
+        max(60, min(82, primaryCardHeight(for: width) / phi))
+    }
+
+    static func cardCornerRadius(for width: CGFloat) -> CGFloat {
+        max(12, min(18, width / (phi * phi * phi)))
+    }
+
+    static func logoSize(for width: CGFloat) -> CGFloat {
+        max(20, min(24, width / (phi * phi * phi * phi)))
+    }
 }
 
 struct WatchSalesSnapshot {
