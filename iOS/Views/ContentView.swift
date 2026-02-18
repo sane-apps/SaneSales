@@ -162,7 +162,7 @@ struct OnboardingView: View {
 
     private var keyEntrySection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(selectedProvider.displayName) API Key (existing account)")
+            Text("\(selectedProvider.displayName) API Credential (existing merchant account)")
                 .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -177,7 +177,7 @@ struct OnboardingView: View {
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
 
-            Text("This app only reads your existing sales data. It does not sell or unlock digital content.")
+            Text("Read-only analytics only. No in-app purchases, no external checkout, and no feature unlocks based on payments.")
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -201,7 +201,7 @@ struct OnboardingView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Connect Existing Account")
+                    Text("Add Read-Only Credential")
                         .fontWeight(.semibold)
                 }
             }
