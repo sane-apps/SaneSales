@@ -53,13 +53,11 @@ final class SalesManager {
     private let cache = CacheService()
 
     init() {
-        #if DEBUG
-            if CommandLine.arguments.contains("--demo")
-                || UserDefaults.standard.bool(forKey: "demo_mode") {
-                DemoData.loadInto(manager: self)
-                return
-            }
-        #endif
+        if CommandLine.arguments.contains("--demo")
+            || UserDefaults.standard.bool(forKey: "demo_mode") {
+            DemoData.loadInto(manager: self)
+            return
+        }
         isLemonSqueezyConnected = KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey)
         isGumroadConnected = KeychainService.exists(account: KeychainService.gumroadAPIKey)
         isStripeConnected = KeychainService.exists(account: KeychainService.stripeAPIKey)
@@ -84,11 +82,17 @@ final class SalesManager {
     // MARK: - LemonSqueezy Key Management
 
     func setLemonSqueezyAPIKey(_ key: String) async -> Bool {
-        let provider = LemonSqueezyProvider(apiKey: key)
+        let normalizedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedKey.isEmpty else {
+            error = .invalidAPIKey
+            return false
+        }
+
+        let provider = LemonSqueezyProvider(apiKey: normalizedKey)
         do {
-            let valid = try await provider.validateAPIKey(key)
+            let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
-                KeychainService.save(string: key, account: KeychainService.lemonSqueezyAPIKey)
+                KeychainService.save(string: normalizedKey, account: KeychainService.lemonSqueezyAPIKey)
                 lemonSqueezyProvider = provider
                 isLemonSqueezyConnected = true
                 await refresh()
@@ -112,11 +116,17 @@ final class SalesManager {
     // MARK: - Gumroad Key Management
 
     func setGumroadAPIKey(_ key: String) async -> Bool {
-        let provider = GumroadProvider(apiKey: key)
+        let normalizedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedKey.isEmpty else {
+            error = .invalidAPIKey
+            return false
+        }
+
+        let provider = GumroadProvider(apiKey: normalizedKey)
         do {
-            let valid = try await provider.validateAPIKey(key)
+            let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
-                KeychainService.save(string: key, account: KeychainService.gumroadAPIKey)
+                KeychainService.save(string: normalizedKey, account: KeychainService.gumroadAPIKey)
                 gumroadProvider = provider
                 isGumroadConnected = true
                 await refresh()
@@ -140,11 +150,17 @@ final class SalesManager {
     // MARK: - Stripe Key Management
 
     func setStripeAPIKey(_ key: String) async -> Bool {
-        let provider = StripeProvider(apiKey: key)
+        let normalizedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalizedKey.isEmpty else {
+            error = .invalidAPIKey
+            return false
+        }
+
+        let provider = StripeProvider(apiKey: normalizedKey)
         do {
-            let valid = try await provider.validateAPIKey(key)
+            let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
-                KeychainService.save(string: key, account: KeychainService.stripeAPIKey)
+                KeychainService.save(string: normalizedKey, account: KeychainService.stripeAPIKey)
                 stripeProvider = provider
                 isStripeConnected = true
                 await refresh()
@@ -308,6 +324,30 @@ final class SalesManager {
 
     func storeFor(_ provider: SalesProviderType) -> Store? {
         stores.first { $0.provider == provider }
+    }
+
+    // MARK: - Demo Mode
+
+    func enableDemoMode() {
+        UserDefaults.standard.set(true, forKey: "demo_mode")
+        DemoData.loadInto(manager: self)
+    }
+
+    func disableDemoMode() {
+        UserDefaults.standard.set(false, forKey: "demo_mode")
+
+        orders = []
+        products = []
+        stores = []
+        metrics = .empty
+        lastUpdated = nil
+
+        isLemonSqueezyConnected = KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey)
+        isGumroadConnected = KeychainService.exists(account: KeychainService.gumroadAPIKey)
+        isStripeConnected = KeychainService.exists(account: KeychainService.stripeAPIKey)
+        configureProviders()
+
+        Task { await cache.clearCache() }
     }
 }
 

@@ -41,7 +41,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 | **Refund-Aware Revenue** | Net totals that deduct refunds automatically — no more overstated numbers |
 | **Order Tracking** | Search by customer, product, or amount. Filter by provider, status, or date |
 | **CSV Export** | Export your full order history for accounting or email marketing |
-| **Home Screen Widgets** | Glance at today's revenue from your home screen or lock screen |
+| **Widgets + Watch Glance** | Glance at today's revenue from Home Screen, Lock Screen, or Apple Watch Smart Stack |
 | **macOS Menu Bar** | See today's revenue in the menu bar. Right-click for quick actions |
 | **100% On-Device** | API keys in Keychain. Data cached locally. No analytics. No servers |
 
@@ -170,7 +170,7 @@ macOS/
   SaneSalesMacApp  macOS entry point, menu bar, activation policy
   MenuBarManager   Status item with revenue display + right-click menu
 
-Widgets/           WidgetKit extensions (small, medium, rectangular)
+Widgets/           WidgetKit extensions (small, medium, accessory watch/lock-screen)
 Tests/             Swift Testing (API parsing, metrics, cache, providers)
 ```
 

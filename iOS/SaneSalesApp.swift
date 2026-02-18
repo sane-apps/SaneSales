@@ -9,11 +9,9 @@ struct SaneSalesApp: App {
             ContentView()
                 .environment(manager)
                 .task {
-                    #if DEBUG
-                        if CommandLine.arguments.contains("--demo") {
-                            DemoData.loadInto(manager: manager)
-                        }
-                    #endif
+                    if CommandLine.arguments.contains("--demo") {
+                        DemoData.loadInto(manager: manager)
+                    }
                 }
         }
     }

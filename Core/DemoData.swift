@@ -3,8 +3,7 @@ import Foundation
 
 /// Generates realistic fake data for screenshots and App Store previews.
 /// Launched via `--demo` argument. Uses a fictional indie studio across all 3 providers.
-#if DEBUG
-    enum DemoData {
+enum DemoData {
         // MARK: - Public API
 
         @MainActor static func loadInto(manager: SalesManager) {
@@ -238,5 +237,4 @@ import Foundation
             comps.day = day
             return Calendar.current.date(from: comps)!
         }
-    }
-#endif
+}

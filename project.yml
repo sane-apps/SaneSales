@@ -4,6 +4,7 @@ options:
   deploymentTarget:
     macOS: 14.0
     iOS: 17.0
+    watchOS: 10.0
   xcodeVersion: 16.0
 
 packages:
@@ -65,7 +66,7 @@ schemes:
     run:
       config: Debug
     archive:
-      config: Release
+      config: Release-AppStore
 
   SaneSalesIOS:
     build:
@@ -80,7 +81,19 @@ schemes:
     run:
       config: Debug
     archive:
+      config: Release-AppStore
+
+  SaneSalesWatch:
+    build:
+      targets:
+        SaneSalesWatch: all
+        SaneSalesWatchWidgets: all
+    profile:
       config: Release
+    run:
+      config: Debug
+    archive:
+      config: Release-AppStore
 
 targets:
   # macOS App
@@ -154,6 +167,8 @@ targets:
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
+          INFOPLIST_KEY_SUFeedURL: ""
+          INFOPLIST_KEY_SUPublicEDKey: ""
     postCompileScripts:
       - script: |
           if which swiftlint >/dev/null; then
@@ -163,13 +178,21 @@ targets:
           fi
         name: Run SwiftLint
         basedOnDependencyAnalysis: false
+    postBuildScripts:
       - script: |
           if [ "$CONFIGURATION" == "Release-AppStore" ]; then
-            echo "Stripping Sparkle from App Store build..."
+            echo "App Store build: stripping Sparkle framework and keys..."
             rm -rf "${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework" 2>/dev/null || true
             /usr/libexec/PlistBuddy -c "Delete :SUFeedURL" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
             /usr/libexec/PlistBuddy -c "Delete :SUPublicEDKey" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
-            echo "Sparkle stripped from App Store build."
+
+            APP_BINARY="${TARGET_BUILD_DIR}/${EXECUTABLE_PATH}"
+            WEAKEN_SCRIPT="${SRCROOT}/scripts/weaken_sparkle.rb"
+            if [ -f "${WEAKEN_SCRIPT}" ] && [ -f "${APP_BINARY}" ]; then
+              ruby "${WEAKEN_SCRIPT}" "${APP_BINARY}" || exit 1
+            fi
+
+            echo "App Store build: Sparkle stripped and weak-linked."
           fi
         name: Strip Sparkle for App Store
         basedOnDependencyAnalysis: false
@@ -210,11 +233,14 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - "group.com.sanesales.app"
     sources:
       - Widgets
       - path: Core/Models
         excludes:
           - "**/CLAUDE.md"
+      - Core/Services/SharedStore.swift
     info:
       path: Widgets/Info.plist
       properties:
@@ -354,11 +380,14 @@ targets:
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
+        com.apple.security.application-groups:
+          - "group.com.sanesales.app"
     sources:
       - Widgets
       - path: Core/Models
         excludes:
           - "**/CLAUDE.md"
+      - Core/Services/SharedStore.swift
     info:
       path: Widgets/Info.plist
       properties:
@@ -388,5 +417,106 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+
+  # watchOS App (read-only companion)
+  SaneSalesWatch:
+    type: application
+    platform: watchOS
+    bundleId: com.sanesales.app.watch
+    deploymentTarget:
+      watchOS: 10.0
+    sources:
+      - path: Watch
+        excludes:
+          - "**/CLAUDE.md"
+      - path: Core/Models
+        excludes:
+          - "**/CLAUDE.md"
+      - Core/Services/SharedStore.swift
+    dependencies:
+      - target: SaneSalesWatchWidgets
+        embed: true
+        codeSign: true
+    entitlements:
+      path: Watch/SaneSalesWatch.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - "group.com.sanesales.app"
+    info:
+      path: Watch/Info.plist
+      properties:
+        CFBundleDisplayName: SaneSales
+    settings:
+      base:
+        PRODUCT_NAME: SaneSalesWatch
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
+        MARKETING_VERSION: "1.2"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: 6.0
+        WATCHOS_DEPLOYMENT_TARGET: 10.0
+        TARGETED_DEVICE_FAMILY: "4"
+        DEVELOPMENT_TEAM: M78L6FXD48
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.watch
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+
+  # watchOS Widget extension (Smart Stack)
+  SaneSalesWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    bundleId: com.sanesales.app.watch.widgets
+    deploymentTarget:
+      watchOS: 10.0
+    entitlements:
+      path: Watch/SaneSalesWatchWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - "group.com.sanesales.app"
+    sources:
+      - Widgets
+      - path: Core/Models
+        excludes:
+          - "**/CLAUDE.md"
+      - Core/Services/SharedStore.swift
+    info:
+      path: Watch/WidgetInfo.plist
+      properties:
+        CFBundleDisplayName: SaneSales Watch Widgets
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_NAME: SaneSalesWatchWidgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
+        MARKETING_VERSION: "1.2"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: 6.0
+        WATCHOS_DEPLOYMENT_TARGET: 10.0
+        TARGETED_DEVICE_FAMILY: "4"
+        DEVELOPMENT_TEAM: M78L6FXD48
+        SKIP_INSTALL: YES
+      configs:
+        Debug:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.watch.widgets
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release-AppStore:
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"

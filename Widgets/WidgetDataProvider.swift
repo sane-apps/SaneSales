@@ -19,7 +19,8 @@ struct SalesWidgetProvider: TimelineProvider {
     }
 
     private func loadCachedEntry() -> SalesWidgetEntry? {
-        guard let data = UserDefaults.standard.data(forKey: "cached_orders") else { return nil }
+        let defaults = SharedStore.userDefaults()
+        guard let data = defaults.data(forKey: SharedStore.cachedOrdersKey) else { return nil }
         guard let orders = try? JSONDecoder().decode([Order].self, from: data) else { return nil }
 
         let metrics = SalesMetrics.compute(from: orders)
