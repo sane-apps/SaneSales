@@ -22,6 +22,7 @@
 		2A7E9B1D9CB3888488601ACA /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
 		2AA32C8A5C5634617CFD2464 /* SaneSalesMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */; };
 		2C368EEE9BBE47C9E9B6CED8 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		2F95BF09F622B019DF6EEE22 /* CoinTemplate_3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8AF19E8AFD6B6979EE15676B /* CoinTemplate_3x.png */; };
 		30243AE0512C901F0E4810D3 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		32C0DB99CC8B65BD201EFDD0 /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
 		3327D0F949C011B53C31A93C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */; };
@@ -58,7 +59,6 @@
 		7020DF54114726D1BD09EB79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
 		7081CB9248DDFAEC0FADEA1E /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
 		7BF68D11B4F5DE1DB08C7731 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
-		7C2C68615D3B3E5C39C1EC22 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */; };
 		7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */; };
 		7F8F2B9A3FE0252B01346396 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
 		863C28E514B149C57DC17F77 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
@@ -75,6 +75,7 @@
 		A36CFB734C00A708626C4683 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */; };
 		ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		AEB60C139F196D8DDDE6F39B /* CoinColor_3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3F461326125DC32CEE2DA183 /* CoinColor_3x.png */; };
 		B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
 		B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
@@ -88,6 +89,7 @@
 		D74B249FAA45A5B7BE00BA15 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077F3679A1C5054CF24632C /* CacheService.swift */; };
 		DC1FA363C0DD2025C7A5E408 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
 		DE58C1B172F33BDAD7826A45 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
+		E1511F8FD6C3802C14749ABD /* CoinTemplate_2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FC8D2CAF1BDE483A8C0F777 /* CoinTemplate_2x.png */; };
 		E2052BA8D49770E9AEE2671C /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		E5BC020D5D18102BA3DA13A5 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		E608B5FA4E223A2C1C7EDBF9 /* SaneSalesWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B754A0B3442228B7FB449435 /* SaneSalesWatchApp.swift */; };
@@ -198,6 +200,7 @@
 		33BFFCC71CE4FAF457C4E89F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		36073BDA4DE17B1E1C098062 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		389A5B91AE9725FFCB4E264D /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
+		3F461326125DC32CEE2DA183 /* CoinColor_3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CoinColor_3x.png; sourceTree = "<group>"; };
 		41947086D2C90F540159C8FB /* MenuBarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarManager.swift; sourceTree = "<group>"; };
 		483C95981793E764EFC426A1 /* GumroadProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GumroadProvider.swift; sourceTree = "<group>"; };
 		48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SaneSalesIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,7 +215,9 @@
 		7C36DD3BC9D110F383875BCA /* SalesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesWidget.swift; sourceTree = "<group>"; };
 		83C301435219765A93A886DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationPolicyManager.swift; sourceTree = "<group>"; };
+		8AF19E8AFD6B6979EE15676B /* CoinTemplate_3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CoinTemplate_3x.png; sourceTree = "<group>"; };
 		8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesProvider.swift; sourceTree = "<group>"; };
+		8FC8D2CAF1BDE483A8C0F777 /* CoinTemplate_2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CoinTemplate_2x.png; sourceTree = "<group>"; };
 		918B68B186DDA22ECC661408 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LemonSqueezyProvider.swift; sourceTree = "<group>"; };
 		96DC958090A2551AE9AE1982 /* CacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
@@ -249,6 +254,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00EE865E0C84BC7238031A65 /* CoinColor.imageset */ = {
+			isa = PBXGroup;
+			children = (
+				3F461326125DC32CEE2DA183 /* CoinColor_3x.png */,
+			);
+			name = CoinColor.imageset;
+			path = Resources/Assets.xcassets/CoinColor.imageset;
+			sourceTree = "<group>";
+		};
 		224CC4B653925FA0A8692567 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -296,6 +310,8 @@
 		77CCCE98A045A03596E94058 = {
 			isa = PBXGroup;
 			children = (
+				00EE865E0C84BC7238031A65 /* CoinColor.imageset */,
+				BBDF7CA41FACAE2ABD132D51 /* CoinTemplate.imageset */,
 				DBB1D02C0D1E6C02ED71B3D0 /* Core */,
 				80619310AA709860F4051D2D /* iOS */,
 				8771E2D98F18E8BD187FF5C0 /* macOS */,
@@ -361,6 +377,16 @@
 				0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */,
 			);
 			path = Watch;
+			sourceTree = "<group>";
+		};
+		BBDF7CA41FACAE2ABD132D51 /* CoinTemplate.imageset */ = {
+			isa = PBXGroup;
+			children = (
+				8FC8D2CAF1BDE483A8C0F777 /* CoinTemplate_2x.png */,
+				8AF19E8AFD6B6979EE15676B /* CoinTemplate_3x.png */,
+			);
+			name = CoinTemplate.imageset;
+			path = Resources/Assets.xcassets/CoinTemplate.imageset;
 			sourceTree = "<group>";
 		};
 		C37468C565F3990D9B84E6EF /* Resources */ = {
@@ -663,7 +689,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C2C68615D3B3E5C39C1EC22 /* Assets.xcassets in Resources */,
+				AEB60C139F196D8DDDE6F39B /* CoinColor_3x.png in Resources */,
+				E1511F8FD6C3802C14749ABD /* CoinTemplate_2x.png in Resources */,
+				2F95BF09F622B019DF6EEE22 /* CoinTemplate_3x.png in Resources */,
 				ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
