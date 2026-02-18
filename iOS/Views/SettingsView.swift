@@ -163,7 +163,7 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                Button("Connect Account") {
+                Button("Add Credential") {
                     editingProvider = provider
                     showingKeyEntry = true
                 }
@@ -185,7 +185,7 @@ struct SettingsView: View {
                     .foregroundStyle(editingProvider?.brandColor ?? .salesGreen)
                     .padding(.top, 20)
 
-                Text("Connect Existing \(editingProvider?.displayName ?? "Provider") Account")
+                Text("Add \(editingProvider?.displayName ?? "Provider") Credential")
                     .font(.title3.weight(.semibold))
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -196,6 +196,10 @@ struct SettingsView: View {
 
                     Text(keyHelpText)
                         .font(.saneCallout)
+                        .foregroundStyle(Color.textMuted)
+
+                    Text("Used only to read your existing merchant data. No purchases or feature unlocks.")
+                        .font(.saneFootnote)
                         .foregroundStyle(Color.textMuted)
                 }
                 .padding(.horizontal)
