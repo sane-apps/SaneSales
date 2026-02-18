@@ -461,14 +461,17 @@ targets:
       configs:
         Debug:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.watch
+          INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sanesales.dev
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
+          INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
+          INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
           CODE_SIGN_IDENTITY: "Apple Development"
 
@@ -485,7 +488,9 @@ targets:
         com.apple.security.application-groups:
           - "group.com.sanesales.app"
     sources:
-      - Widgets
+      - path: Widgets
+        excludes:
+          - Info.plist
       - path: Core/Models
         excludes:
           - "**/CLAUDE.md"

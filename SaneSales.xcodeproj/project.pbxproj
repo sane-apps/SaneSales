@@ -102,7 +102,6 @@
 		F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
 		F6F8A869D3BF46186E6BCF62 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		F7BD81E718815C3734903D2D /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
-		FD5A0B6EC42A4AC01F0CF941 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36073BDA4DE17B1E1C098062 /* Info.plist */; };
 		FFBBC53DB96FEF0D4B15FC0B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
 /* End PBXBuildFile section */
 
@@ -454,7 +453,6 @@
 			buildConfigurationList = 7A4033FD203F60820030D253 /* Build configuration list for PBXNativeTarget "SaneSalesWatchWidgets" */;
 			buildPhases = (
 				5076667D3BB58DBD1D1A45C2 /* Sources */,
-				65C8FE2B2D12933C1AA6E721 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -657,14 +655,6 @@
 				092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */,
 				28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */,
 				4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		65C8FE2B2D12933C1AA6E721 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FD5A0B6EC42A4AC01F0CF941 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -958,6 +948,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.dev;
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch;
 				PRODUCT_NAME = SaneSalesWatch;
@@ -1564,6 +1555,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
@@ -1656,6 +1648,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
