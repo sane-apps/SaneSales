@@ -68,6 +68,7 @@ struct OnboardingView: View {
                         providerPicker
                         keyEntrySection
                         connectButton
+                        demoButton
                         Spacer()
                     }
                     .padding(.horizontal, 24)
@@ -98,7 +99,7 @@ struct OnboardingView: View {
             Text("SaneSales")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
 
-            Text("Track your sales from\nLemon Squeezy, Gumroad, and Stripe.")
+            Text("Read-only sales tracking for your existing\nLemon Squeezy, Gumroad, and Stripe accounts.")
                 .font(.body)
                 .foregroundStyle(Color.textMuted)
                 .multilineTextAlignment(.center)
@@ -161,7 +162,7 @@ struct OnboardingView: View {
 
     private var keyEntrySection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(selectedProvider.displayName) API Key")
+            Text("\(selectedProvider.displayName) API Key (existing account)")
                 .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -172,6 +173,11 @@ struct OnboardingView: View {
                 .autocorrectionDisabled()
 
             Text(keyHelpText)
+                .font(.saneFootnote)
+                .foregroundStyle(Color.textMuted)
+                .padding(.leading, 4)
+
+            Text("This app only reads your existing sales data. It does not sell or unlock digital content.")
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -195,7 +201,7 @@ struct OnboardingView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Connect \(selectedProvider.displayName)")
+                    Text("Connect Existing Account")
                         .fontWeight(.semibold)
                 }
             }
@@ -207,6 +213,15 @@ struct OnboardingView: View {
         .controlSize(.large)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .disabled(apiKey.isEmpty || isValidating)
+    }
+
+    private var demoButton: some View {
+        Button("Try Demo Data") {
+            manager.enableDemoMode()
+        }
+        .buttonStyle(.bordered)
+        .tint(.salesGreen)
+        .controlSize(.large)
     }
 
     private func validateAndSave() {

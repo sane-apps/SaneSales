@@ -14,6 +14,7 @@ struct SettingsView: View {
     @State private var removingProvider: SalesProviderType?
     @State private var showExportSheet = false
     @State private var exportURL: URL?
+    @AppStorage("demo_mode") private var demoMode = false
 
     var body: some View {
         NavigationStack {
@@ -162,7 +163,7 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                Button("Connect") {
+                Button("Connect Account") {
                     editingProvider = provider
                     showingKeyEntry = true
                 }
@@ -184,7 +185,7 @@ struct SettingsView: View {
                     .foregroundStyle(editingProvider?.brandColor ?? .salesGreen)
                     .padding(.top, 20)
 
-                Text("Connect \(editingProvider?.displayName ?? "Provider")")
+                Text("Connect Existing \(editingProvider?.displayName ?? "Provider") Account")
                     .font(.title3.weight(.semibold))
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -261,6 +262,20 @@ struct SettingsView: View {
                 GlassRow("Products", icon: "shippingbox", iconColor: .orange) {
                     Text("\(manager.products.count)")
                         .font(.saneSubheadlineBold)
+                }
+                GlassDivider()
+                Button {
+                    toggleDemoMode()
+                } label: {
+                    GlassRow(
+                        demoMode ? "Disable Demo Mode" : "Enable Demo Mode",
+                        icon: demoMode ? "sparkles.slash" : "sparkles",
+                        iconColor: demoMode ? .orange : .purple
+                    ) {
+                        Text(demoMode ? "On" : "Off")
+                            .font(.saneSubheadlineBold)
+                            .foregroundStyle(demoMode ? .orange : Color.textMuted)
+                    }
                 }
                 GlassDivider()
                 Button {
@@ -408,6 +423,16 @@ struct SettingsView: View {
         case .lemonSqueezy: manager.removeLemonSqueezyAPIKey()
         case .gumroad: manager.removeGumroadAPIKey()
         case .stripe: manager.removeStripeAPIKey()
+        }
+    }
+
+    private func toggleDemoMode() {
+        if demoMode {
+            manager.disableDemoMode()
+            demoMode = false
+        } else {
+            manager.enableDemoMode()
+            demoMode = true
         }
     }
 }

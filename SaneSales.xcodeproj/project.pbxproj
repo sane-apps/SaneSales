@@ -11,9 +11,11 @@
 		0929E606204EBFD18D451B03 /* SalesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2701F2BA6C71F0B71FD529AC /* SalesCard.swift */; };
 		092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */; };
 		17E8D20E10630CDADDE33A19 /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
+		1BA7BDB90E149F02FE796F22 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		21EE94586BFB529EE5B7D105 /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */; };
 		231B67E1A59EBC726D52B88B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
 		24B1F53D7A9F4FA830040104 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		27C0926C5E71A3439FF2A371 /* SaneSalesWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E9DD6893D342983CC4592767 /* SaneSalesWatchWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */; };
 		288F8FF0F8F72BFEE563D293 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
 		2965F75C49E5DC14456FE00E /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
@@ -31,10 +33,12 @@
 		3AC5F3E189ED62A55AA4FFA7 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41947086D2C90F540159C8FB /* MenuBarManager.swift */; };
 		3BB4E13BB268DEA02A7CD256 /* SalesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56337DF07E23B45D4BAE3B34 /* SalesManager.swift */; };
 		41911AD194F44D291D4C9370 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		4381CBC1CE87BDB74F2FC67E /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
 		44A7382DFB63D26A62FF1D20 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		46FABC2DDD35C6D340BCD8A6 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
 		4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */; };
 		4B30EB2945E49C17999D62E8 /* MoveToApplications.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8094724132C2F9AEB095C0 /* MoveToApplications.swift */; };
+		4CBEEDD48B785DF6B7FE6987 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		4FE174E430A0B7B1DD775E14 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		5641CD8BA660AD48D6668BE4 /* APITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAC67CDC353B3D97B1716D7 /* APITests.swift */; };
@@ -43,23 +47,32 @@
 		5C2A963F84D9C89217B06A8E /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
 		5C7637F882CA003057AE6524 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
 		5D4FB659C3C04F816AE1060A /* OrderDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */; };
+		5EB1EEB6FB6C75D0EC06300F /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
 		642617ADF3590A5E0CD1C451 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
 		64A4461702D7B6637C2DE83D /* LemonSqueezyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */; };
+		65AE723CA2A14F13C418099F /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		663194DBB29BD0CF6EE4534A /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
 		68F6F49C7C01F6514E1D85E0 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C618B676662B450F13B5F6 /* ChartsView.swift */; };
+		6D328BE3F814825CBDF19D3E /* WatchDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271A866DC8E8E23D28BE3565 /* WatchDashboardView.swift */; };
 		6F3636A0A6298A673310C402 /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
 		7020DF54114726D1BD09EB79 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22496DBFE79AD55967172B65 /* ContentView.swift */; };
 		7081CB9248DDFAEC0FADEA1E /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
 		7BF68D11B4F5DE1DB08C7731 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
 		7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */; };
 		7F8F2B9A3FE0252B01346396 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
+		863C28E514B149C57DC17F77 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		87E8C46A885BDAAFEEBD76EF /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
 		888AFF49461466B408F52712 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23BF71C99337FFA9F9B9382 /* DemoData.swift */; };
+		893D203CDC728B106E61B994 /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
 		89C8C9FC2EABA05AA5458EAF /* ActivationPolicyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */; };
 		8C8B9992588154383CE58E41 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
 		8DCBABF579EA16EDA6C96AAA /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		90709287DD129D5990AF32C1 /* MetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69097B39C9B5D8C4772EA48C /* MetricsTests.swift */; };
+		97EA5F022E71E5E88BEEDECC /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		9CFAB192197A9616D3E11F04 /* CacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC958090A2551AE9AE1982 /* CacheTests.swift */; };
 		9E765BC3899B42C73771432E /* SalesMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */; };
+		A36CFB734C00A708626C4683 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
+		ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */; };
 		ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
 		B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
@@ -74,18 +87,33 @@
 		D74B249FAA45A5B7BE00BA15 /* CacheService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E077F3679A1C5054CF24632C /* CacheService.swift */; };
 		DC1FA363C0DD2025C7A5E408 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
 		DE58C1B172F33BDAD7826A45 /* ProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */; };
+		E2052BA8D49770E9AEE2671C /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
+		E5BC020D5D18102BA3DA13A5 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
+		E608B5FA4E223A2C1C7EDBF9 /* SaneSalesWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B754A0B3442228B7FB449435 /* SaneSalesWatchApp.swift */; };
 		E6540D3302CBA73ECCC40765 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
 		EBCB763D17CAA15C6335D9A5 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 890451BF522D74B820D61449 /* Sparkle */; };
+		EC46321434CCE024561A1588 /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
 		EDA18020BD301C7C64E93167 /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 389A5B91AE9725FFCB4E264D /* ProductsView.swift */; };
 		EE09CE74526519FBB417F589 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		EFC470A90B5690F3B3F85B4C /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		F21BA502E1459F1686B0C8E3 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
 		F57FA4B44DBAC3C878C8F7F7 /* SaneSalesIOSWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F633CB21222F457890689723 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */; };
 		F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
+		F6F8A869D3BF46186E6BCF62 /* Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5EE067F26BFA6A79614082 /* Order.swift */; };
+		F7BD81E718815C3734903D2D /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBFB73B1AA8D2007F3C38C41 /* Store.swift */; };
+		FD5A0B6EC42A4AC01F0CF941 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 36073BDA4DE17B1E1C098062 /* Info.plist */; };
 		FFBBC53DB96FEF0D4B15FC0B /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1F3426D6BF60C6A5961D4789 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 265F0DA8DB254C48C0EA1CB9;
+			remoteInfo = SaneSalesWatchWidgets;
+		};
 		915365306BA1A04AA77E6BA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
@@ -117,6 +145,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		29BE6D29FE6E28FED63FEA70 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				27C0926C5E71A3439FF2A371 /* SaneSalesWatchWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		997DC21B66128BFE49B43E6F /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -143,14 +182,19 @@
 
 /* Begin PBXFileReference section */
 		05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailView.swift; sourceTree = "<group>"; };
+		0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = WidgetInfo.plist; sourceTree = "<group>"; };
+		115482D088C746CEDDA697C2 /* SaneSalesWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesWatchWidgets.entitlements; sourceTree = "<group>"; };
 		12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SaneSalesIOSWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataProvider.swift; sourceTree = "<group>"; };
 		210579112467D7E4B62B4364 /* OrdersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersListView.swift; sourceTree = "<group>"; };
 		22496DBFE79AD55967172B65 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		26F41CB8E83537E42ADB7B7E /* SaneSalesWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesWatch.entitlements; sourceTree = "<group>"; };
 		2701F2BA6C71F0B71FD529AC /* SalesCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesCard.swift; sourceTree = "<group>"; };
+		271A866DC8E8E23D28BE3565 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		2DAC67CDC353B3D97B1716D7 /* APITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITests.swift; sourceTree = "<group>"; };
+		2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
 		33BFFCC71CE4FAF457C4E89F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		36073BDA4DE17B1E1C098062 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		389A5B91AE9725FFCB4E264D /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
@@ -166,14 +210,17 @@
 		728D82B164E8AD71A7E2E4C2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		7C36DD3BC9D110F383875BCA /* SalesWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesWidget.swift; sourceTree = "<group>"; };
+		83C301435219765A93A886DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		88216D153A5ABF7AA4DAD9D7 /* ActivationPolicyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationPolicyManager.swift; sourceTree = "<group>"; };
 		8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesProvider.swift; sourceTree = "<group>"; };
 		918B68B186DDA22ECC661408 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LemonSqueezyProvider.swift; sourceTree = "<group>"; };
 		96DC958090A2551AE9AE1982 /* CacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheTests.swift; sourceTree = "<group>"; };
 		9E95D67F37D405DC015BD613 /* SaneSales.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneSales.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B754A0B3442228B7FB449435 /* SaneSalesWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesWatchApp.swift; sourceTree = "<group>"; };
 		B886BBFA795B4DED0B58F118 /* SalesMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesMetrics.swift; sourceTree = "<group>"; };
 		BBFB73B1AA8D2007F3C38C41 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		BCC6B84ED900A1B059633227 /* SaneSalesWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneSalesWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4AFD79A53A7F46BAA078078 /* ProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderTests.swift; sourceTree = "<group>"; };
 		C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = DMGIcon.icns; sourceTree = "<group>"; };
 		CB903445C8A3AE0899087713 /* StripeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeProvider.swift; sourceTree = "<group>"; };
@@ -183,6 +230,7 @@
 		E077F3679A1C5054CF24632C /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
 		E23BF71C99337FFA9F9B9382 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SaneSalesIOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9DD6893D342983CC4592767 /* SaneSalesWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaneSalesWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA18F6A68852AC673B6D19D9 /* SaneSalesWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesWidgets.entitlements; sourceTree = "<group>"; };
 		EB5EE067F26BFA6A79614082 /* Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Order.swift; sourceTree = "<group>"; };
@@ -254,6 +302,7 @@
 				C37468C565F3990D9B84E6EF /* Resources */,
 				8DBB8D7E9F8B182D9EAE622A /* shared */,
 				61DBB3C84EC3FE34543A1186 /* Tests */,
+				B7488814C6C47093BA9375E1 /* Watch */,
 				AFB1D9ECC21CBA697DADB16D /* Widgets */,
 				E5F894E2E4E1D3B172C70F81 /* Products */,
 			);
@@ -301,6 +350,19 @@
 			path = Widgets;
 			sourceTree = "<group>";
 		};
+		B7488814C6C47093BA9375E1 /* Watch */ = {
+			isa = PBXGroup;
+			children = (
+				83C301435219765A93A886DD /* Info.plist */,
+				26F41CB8E83537E42ADB7B7E /* SaneSalesWatch.entitlements */,
+				B754A0B3442228B7FB449435 /* SaneSalesWatchApp.swift */,
+				115482D088C746CEDDA697C2 /* SaneSalesWatchWidgets.entitlements */,
+				271A866DC8E8E23D28BE3565 /* WatchDashboardView.swift */,
+				0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */,
+			);
+			path = Watch;
+			sourceTree = "<group>";
+		};
 		C37468C565F3990D9B84E6EF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,6 +381,7 @@
 				918B68B186DDA22ECC661408 /* KeychainService.swift */,
 				9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */,
 				8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */,
+				2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */,
 				CB903445C8A3AE0899087713 /* StripeProvider.swift */,
 			);
 			path = Services;
@@ -352,6 +415,8 @@
 				E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */,
 				1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */,
 				D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */,
+				BCC6B84ED900A1B059633227 /* SaneSalesWatch.app */,
+				E9DD6893D342983CC4592767 /* SaneSalesWatchWidgets.appex */,
 				677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */,
 			);
 			name = Products;
@@ -366,10 +431,10 @@
 			buildPhases = (
 				48BFE6439F1BE28557109B3E /* Sources */,
 				AC1BDE77B58BC18DB4C7033F /* Run SwiftLint */,
-				AFB4FBFF686F465712673041 /* Strip Sparkle for App Store */,
 				C10F5F0D900597E9D25DE28E /* Resources */,
 				4EAB9E8B84DC2A911D585940 /* Frameworks */,
 				E09A5B7F4F172967E68B5E53 /* Embed Foundation Extensions */,
+				AFB4FBFF686F465712673041 /* Strip Sparkle for App Store */,
 			);
 			buildRules = (
 			);
@@ -383,6 +448,24 @@
 			productName = SaneSales;
 			productReference = 9E95D67F37D405DC015BD613 /* SaneSales.app */;
 			productType = "com.apple.product-type.application";
+		};
+		265F0DA8DB254C48C0EA1CB9 /* SaneSalesWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A4033FD203F60820030D253 /* Build configuration list for PBXNativeTarget "SaneSalesWatchWidgets" */;
+			buildPhases = (
+				5076667D3BB58DBD1D1A45C2 /* Sources */,
+				65C8FE2B2D12933C1AA6E721 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SaneSalesWatchWidgets;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesWatchWidgets;
+			productReference = E9DD6893D342983CC4592767 /* SaneSalesWatchWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		372D646238F964199D574608 /* SaneSalesWidgets */ = {
 			isa = PBXNativeTarget;
@@ -456,6 +539,26 @@
 			productReference = 1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		B43EC054FF0424D1792495B8 /* SaneSalesWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ADDF386F8E468E20FEA426D5 /* Build configuration list for PBXNativeTarget "SaneSalesWatch" */;
+			buildPhases = (
+				553B1E1DE1C2FABD13AB1785 /* Sources */,
+				87AE2010009072F18C549D8C /* Resources */,
+				29BE6D29FE6E28FED63FEA70 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5068F3BF81936E6921B3D605 /* PBXTargetDependency */,
+			);
+			name = SaneSalesWatch;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesWatch;
+			productReference = BCC6B84ED900A1B059633227 /* SaneSalesWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
 		FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E02FFC58FA0E73943D16C73C /* Build configuration list for PBXNativeTarget "SaneSalesIOSTests" */;
@@ -487,6 +590,10 @@
 						DevelopmentTeam = M78L6FXD48;
 						ProvisioningStyle = Automatic;
 					};
+					265F0DA8DB254C48C0EA1CB9 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Automatic;
+					};
 					372D646238F964199D574608 = {
 						DevelopmentTeam = M78L6FXD48;
 						ProvisioningStyle = Automatic;
@@ -500,6 +607,10 @@
 						ProvisioningStyle = Automatic;
 					};
 					9417656CD7DEB667AABF0B91 = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Automatic;
+					};
+					B43EC054FF0424D1792495B8 = {
 						DevelopmentTeam = M78L6FXD48;
 						ProvisioningStyle = Automatic;
 					};
@@ -531,6 +642,8 @@
 				FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */,
 				9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */,
 				4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */,
+				B43EC054FF0424D1792495B8 /* SaneSalesWatch */,
+				265F0DA8DB254C48C0EA1CB9 /* SaneSalesWatchWidgets */,
 				372D646238F964199D574608 /* SaneSalesWidgets */,
 			);
 		};
@@ -544,6 +657,22 @@
 				092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */,
 				28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */,
 				4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		65C8FE2B2D12933C1AA6E721 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD5A0B6EC42A4AC01F0CF941 /* Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		87AE2010009072F18C549D8C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,7 +725,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"$CONFIGURATION\" == \"Release-AppStore\" ]; then\n  echo \"Stripping Sparkle from App Store build...\"\n  rm -rf \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUFeedURL\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUPublicEDKey\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n  echo \"Sparkle stripped from App Store build.\"\nfi\n";
+			shellScript = "if [ \"$CONFIGURATION\" == \"Release-AppStore\" ]; then\n  echo \"App Store build: stripping Sparkle framework and keys...\"\n  rm -rf \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sparkle.framework\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUFeedURL\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n  /usr/libexec/PlistBuddy -c \"Delete :SUPublicEDKey\" \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\" 2>/dev/null || true\n\n  APP_BINARY=\"${TARGET_BUILD_DIR}/${EXECUTABLE_PATH}\"\n  WEAKEN_SCRIPT=\"${SRCROOT}/scripts/weaken_sparkle.rb\"\n  if [ -f \"${WEAKEN_SCRIPT}\" ] && [ -f \"${APP_BINARY}\" ]; then\n    ruby \"${WEAKEN_SCRIPT}\" \"${APP_BINARY}\" || exit 1\n  fi\n\n  echo \"App Store build: Sparkle stripped and weak-linked.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -625,6 +754,7 @@
 				6F3636A0A6298A673310C402 /* SalesProvider.swift in Sources */,
 				7EB572248AE9563E4BE5AAAC /* SaneSalesApp.swift in Sources */,
 				F633CB21222F457890689723 /* SettingsView.swift in Sources */,
+				E2052BA8D49770E9AEE2671C /* SharedStore.swift in Sources */,
 				41911AD194F44D291D4C9370 /* Store.swift in Sources */,
 				B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */,
 			);
@@ -638,6 +768,7 @@
 				EFC470A90B5690F3B3F85B4C /* Product.swift in Sources */,
 				06547098496ED9780EE7E04F /* SalesMetrics.swift in Sources */,
 				5C2A963F84D9C89217B06A8E /* SalesWidget.swift in Sources */,
+				4CBEEDD48B785DF6B7FE6987 /* SharedStore.swift in Sources */,
 				E6540D3302CBA73ECCC40765 /* Store.swift in Sources */,
 				4F259F59BB90E749B9C82298 /* WidgetDataProvider.swift in Sources */,
 			);
@@ -651,6 +782,7 @@
 				ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */,
 				2C368EEE9BBE47C9E9B6CED8 /* SalesMetrics.swift in Sources */,
 				17E8D20E10630CDADDE33A19 /* SalesWidget.swift in Sources */,
+				E5BC020D5D18102BA3DA13A5 /* SharedStore.swift in Sources */,
 				59E1D04A6B65A08639BA7072 /* Store.swift in Sources */,
 				B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */,
 			);
@@ -683,8 +815,37 @@
 				F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */,
 				2AA32C8A5C5634617CFD2464 /* SaneSalesMacApp.swift in Sources */,
 				38DA1C95E1A9C2528A5A28CE /* SettingsView.swift in Sources */,
+				1BA7BDB90E149F02FE796F22 /* SharedStore.swift in Sources */,
 				8C8B9992588154383CE58E41 /* Store.swift in Sources */,
 				3A67B43E4B7EF8D6A9EC819D /* StripeProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5076667D3BB58DBD1D1A45C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F21BA502E1459F1686B0C8E3 /* Order.swift in Sources */,
+				65AE723CA2A14F13C418099F /* Product.swift in Sources */,
+				663194DBB29BD0CF6EE4534A /* SalesMetrics.swift in Sources */,
+				EC46321434CCE024561A1588 /* SalesWidget.swift in Sources */,
+				863C28E514B149C57DC17F77 /* SharedStore.swift in Sources */,
+				4381CBC1CE87BDB74F2FC67E /* Store.swift in Sources */,
+				97EA5F022E71E5E88BEEDECC /* WidgetDataProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		553B1E1DE1C2FABD13AB1785 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6F8A869D3BF46186E6BCF62 /* Order.swift in Sources */,
+				5EB1EEB6FB6C75D0EC06300F /* Product.swift in Sources */,
+				893D203CDC728B106E61B994 /* SalesMetrics.swift in Sources */,
+				E608B5FA4E223A2C1C7EDBF9 /* SaneSalesWatchApp.swift in Sources */,
+				A36CFB734C00A708626C4683 /* SharedStore.swift in Sources */,
+				F7BD81E718815C3734903D2D /* Store.swift in Sources */,
+				6D328BE3F814825CBDF19D3E /* WatchDashboardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -713,6 +874,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		5068F3BF81936E6921B3D605 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 265F0DA8DB254C48C0EA1CB9 /* SaneSalesWatchWidgets */;
+			targetProxy = 1F3426D6BF60C6A5961D4789 /* PBXContainerItemProxy */;
+		};
 		881AB296FDA61EE34C84183D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */;
@@ -779,6 +945,27 @@
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		17C4B78670AF4BC35ED5FDEA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/Info.plist;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch;
+				PRODUCT_NAME = SaneSalesWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -905,8 +1092,34 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = "Release-AppStore";
+		};
+		4B4A8C13E7E1D34E13B98434 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/WidgetInfo.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch.widgets;
+				PRODUCT_NAME = SaneSalesWatchWidgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
 		};
 		524D1EB2126CE3D0F2D2475E /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1021,6 +1234,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Debug;
 		};
@@ -1110,6 +1324,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
 			};
 			name = Release;
 		};
@@ -1138,6 +1353,31 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		929DAE2D4CD2DAA646A0B9FC /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/WidgetInfo.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
+				PRODUCT_NAME = SaneSalesWatchWidgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = "Release-AppStore";
 		};
 		94811CAB9A27D9B07408481E /* Release-AppStore */ = {
 			isa = XCBuildConfiguration;
@@ -1186,6 +1426,31 @@
 				VALID_ARCHS = arm64;
 			};
 			name = Debug;
+		};
+		A01B3DACC07AE21801F2D42F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/WidgetInfo.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
+				PRODUCT_NAME = SaneSalesWatchWidgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
 		};
 		A0F70DA1769EBD166E891FD9 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1289,6 +1554,27 @@
 			};
 			name = Debug;
 		};
+		CBDB13A25052976576864C89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/Info.plist;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
+				PRODUCT_NAME = SaneSalesWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		D07E87214718C82F5777E518 /* Release-AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1303,6 +1589,8 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
+				INFOPLIST_KEY_SUFeedURL = "";
+				INFOPLIST_KEY_SUPublicEDKey = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -1358,6 +1646,27 @@
 			};
 			name = Debug;
 		};
+		FEC1641114F183E153D82EF2 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				INFOPLIST_FILE = Watch/Info.plist;
+				MARKETING_VERSION = 1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
+				PRODUCT_NAME = SaneSalesWatch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = "Release-AppStore";
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1381,12 +1690,32 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		7A4033FD203F60820030D253 /* Build configuration list for PBXNativeTarget "SaneSalesWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4B4A8C13E7E1D34E13B98434 /* Debug */,
+				A01B3DACC07AE21801F2D42F /* Release */,
+				929DAE2D4CD2DAA646A0B9FC /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		8F5E42A62106205039187134 /* Build configuration list for PBXNativeTarget "SaneSalesTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D8A0357037CA16AFE4F8DAE1 /* Debug */,
 				570DCAB7E6C39AB82C7067C2 /* Release */,
 				94811CAB9A27D9B07408481E /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		ADDF386F8E468E20FEA426D5 /* Build configuration list for PBXNativeTarget "SaneSalesWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				17C4B78670AF4BC35ED5FDEA /* Debug */,
+				CBDB13A25052976576864C89 /* Release */,
+				FEC1641114F183E153D82EF2 /* Release-AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

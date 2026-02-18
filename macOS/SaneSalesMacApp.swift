@@ -73,9 +73,11 @@ import SwiftUI
 
             menu.addItem(.separator())
 
-            let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(dockCheckForUpdates), keyEquivalent: "")
-            updateItem.target = self
-            menu.addItem(updateItem)
+            #if !APP_STORE
+                let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(dockCheckForUpdates), keyEquivalent: "")
+                updateItem.target = self
+                menu.addItem(updateItem)
+            #endif
 
             let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(dockOpenSettings), keyEquivalent: "")
             settingsItem.target = self
@@ -145,12 +147,10 @@ import SwiftUI
                         setupMenuBar()
                     }
                     .task {
-                        #if DEBUG
-                            if CommandLine.arguments.contains("--demo") ||
-                                UserDefaults.standard.bool(forKey: "loadDemoData") {
-                                DemoData.loadInto(manager: manager)
-                            }
-                        #endif
+                        if CommandLine.arguments.contains("--demo") ||
+                            UserDefaults.standard.bool(forKey: "loadDemoData") {
+                            DemoData.loadInto(manager: manager)
+                        }
                     }
             }
             .defaultSize(width: 800, height: 600)
@@ -174,11 +174,13 @@ import SwiftUI
                     }
                     .keyboardShortcut(",", modifiers: .command)
                 }
-                CommandGroup(after: .appInfo) {
-                    Button("Check for Updates\u{2026}") {
-                        UpdateService.shared.checkForUpdates()
+                #if !APP_STORE
+                    CommandGroup(after: .appInfo) {
+                        Button("Check for Updates\u{2026}") {
+                            UpdateService.shared.checkForUpdates()
+                        }
                     }
-                }
+                #endif
             }
         }
 

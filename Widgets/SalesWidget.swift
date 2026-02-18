@@ -19,9 +19,13 @@ struct SalesWidget: Widget {
         .configurationDisplayName("Sales Today")
         .description("See today's revenue and order count.")
         .supportedFamilies({
-            var families: [WidgetFamily] = [.systemSmall, .systemMedium]
             #if os(iOS)
-                families.append(.accessoryRectangular)
+                var families: [WidgetFamily] = [.systemSmall, .systemMedium]
+                families.append(contentsOf: [.accessoryInline, .accessoryCircular, .accessoryRectangular])
+            #elseif os(watchOS)
+                let families: [WidgetFamily] = [.accessoryInline, .accessoryCircular, .accessoryRectangular]
+            #else
+                let families: [WidgetFamily] = [.systemSmall, .systemMedium]
             #endif
             return families
         }())
@@ -43,11 +47,42 @@ struct SalesWidgetEntry: TimelineEntry {
         formatCents(monthRevenue)
     }
 
+    var todayRevenueCompact: String {
+        formatCompactCents(todayRevenue)
+    }
+
     private func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
+    }
+
+    private func formatCompactCents(_ cents: Int) -> String {
+        let amount = Double(cents) / 100
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currency
+        formatter.maximumFractionDigits = 0
+
+        guard amount >= 1000 else {
+            return formatter.string(from: NSNumber(value: amount)) ?? formatCents(cents)
+        }
+
+        let symbol = formatter.currencySymbol ?? "$"
+        let compactValue: String
+        if amount >= 1_000_000 {
+            compactValue = compactNumber(amount / 1_000_000, suffix: "M")
+        } else {
+            compactValue = compactNumber(amount / 1000, suffix: "K")
+        }
+        return "\(symbol)\(compactValue)"
+    }
+
+    private func compactNumber(_ value: Double, suffix: String) -> String {
+        let text = String(format: "%.1f", value)
+        let cleaned = text.hasSuffix(".0") ? String(text.dropLast(2)) : text
+        return cleaned + suffix
     }
 
     static let placeholder = SalesWidgetEntry(
@@ -69,16 +104,16 @@ struct SalesWidgetView: View {
             smallWidget
         case .systemMedium:
             mediumWidget
+        #if os(iOS) || os(watchOS)
+        case .accessoryInline:
+            inlineAccessoryWidget
+        case .accessoryCircular:
+            circularAccessoryWidget
+        case .accessoryRectangular:
+            rectangularWidget
+        #endif
         default:
-            #if os(iOS)
-                if family == .accessoryRectangular {
-                    rectangularWidget
-                } else {
-                    smallWidget
-                }
-            #else
-                smallWidget
-            #endif
+            smallWidget
         }
     }
 
@@ -130,5 +165,22 @@ struct SalesWidgetView: View {
             Text("\(entry.todayOrders) orders")
                 .font(.caption2)
         }
+    }
+
+    private var circularAccessoryWidget: some View {
+        VStack(spacing: 2) {
+            Text(entry.todayRevenueCompact)
+                .font(.system(size: 14, weight: .bold, design: .rounded))
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text("\(entry.todayOrders) orders")
+                .font(.caption2)
+                .lineLimit(1)
+        }
+    }
+
+    private var inlineAccessoryWidget: some View {
+        Text("Today \(entry.todayRevenueCompact) · \(entry.todayOrders)")
+            .lineLimit(1)
     }
 }

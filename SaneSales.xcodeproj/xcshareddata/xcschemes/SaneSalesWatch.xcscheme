@@ -15,23 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "11F92A0BDD7FD9F39613C6C0"
-               BuildableName = "SaneSales.app"
-               BlueprintName = "SaneSales"
-               ReferencedContainer = "container:SaneSales.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4DF8CAE39C290BCE75EDC12F"
-               BuildableName = "SaneSalesTests.xctest"
-               BlueprintName = "SaneSalesTests"
+               BlueprintIdentifier = "B43EC054FF0424D1792495B8"
+               BuildableName = "SaneSalesWatch.app"
+               BlueprintName = "SaneSalesWatch"
                ReferencedContainer = "container:SaneSales.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,9 +29,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "372D646238F964199D574608"
-               BuildableName = "SaneSalesWidgets.appex"
-               BlueprintName = "SaneSalesWidgets"
+               BlueprintIdentifier = "265F0DA8DB254C48C0EA1CB9"
+               BuildableName = "SaneSalesWatchWidgets.appex"
+               BlueprintName = "SaneSalesWatchWidgets"
                ReferencedContainer = "container:SaneSales.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,27 +46,14 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "11F92A0BDD7FD9F39613C6C0"
-            BuildableName = "SaneSales.app"
-            BlueprintName = "SaneSales"
+            BlueprintIdentifier = "B43EC054FF0424D1792495B8"
+            BuildableName = "SaneSalesWatch.app"
+            BlueprintName = "SaneSalesWatch"
             ReferencedContainer = "container:SaneSales.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4DF8CAE39C290BCE75EDC12F"
-               BuildableName = "SaneSalesTests.xctest"
-               BlueprintName = "SaneSalesTests"
-               ReferencedContainer = "container:SaneSales.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <CommandLineArguments>
-      </CommandLineArguments>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -96,9 +69,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "11F92A0BDD7FD9F39613C6C0"
-            BuildableName = "SaneSales.app"
-            BlueprintName = "SaneSales"
+            BlueprintIdentifier = "B43EC054FF0424D1792495B8"
+            BuildableName = "SaneSalesWatch.app"
+            BlueprintName = "SaneSalesWatch"
             ReferencedContainer = "container:SaneSales.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -115,9 +88,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "11F92A0BDD7FD9F39613C6C0"
-            BuildableName = "SaneSales.app"
-            BlueprintName = "SaneSales"
+            BlueprintIdentifier = "B43EC054FF0424D1792495B8"
+            BuildableName = "SaneSalesWatch.app"
+            BlueprintName = "SaneSalesWatch"
             ReferencedContainer = "container:SaneSales.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

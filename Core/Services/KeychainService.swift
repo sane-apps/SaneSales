@@ -3,7 +3,7 @@ import Security
 
 /// Keychain storage for API keys. Thread-safe, static-only.
 struct KeychainService: Sendable {
-    static let service = "com.sanesales.app"
+    static let service = Bundle.main.bundleIdentifier ?? "com.sanesales.app"
 
     static let lemonSqueezyAPIKey = "lemonsqueezy-api-key"
     static let gumroadAPIKey = "gumroad-api-key"

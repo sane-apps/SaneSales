@@ -6,14 +6,7 @@ actor CacheService {
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
-    private enum Keys {
-        static let orders = "cached_orders"
-        static let products = "cached_products"
-        static let store = "cached_store"
-        static let lastUpdated = "cache_last_updated"
-    }
-
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = SharedStore.userDefaults()) {
         self.defaults = defaults
     }
 
@@ -21,12 +14,12 @@ actor CacheService {
 
     func cacheOrders(_ orders: [Order]) {
         guard let data = try? encoder.encode(orders) else { return }
-        defaults.set(data, forKey: Keys.orders)
-        defaults.set(Date().timeIntervalSince1970, forKey: Keys.lastUpdated)
+        defaults.set(data, forKey: SharedStore.cachedOrdersKey)
+        defaults.set(Date().timeIntervalSince1970, forKey: SharedStore.cacheLastUpdatedKey)
     }
 
     func loadCachedOrders() -> [Order]? {
-        guard let data = defaults.data(forKey: Keys.orders) else { return nil }
+        guard let data = defaults.data(forKey: SharedStore.cachedOrdersKey) else { return nil }
         return try? decoder.decode([Order].self, from: data)
     }
 
@@ -34,11 +27,11 @@ actor CacheService {
 
     func cacheProducts(_ products: [Product]) {
         guard let data = try? encoder.encode(products) else { return }
-        defaults.set(data, forKey: Keys.products)
+        defaults.set(data, forKey: SharedStore.cachedProductsKey)
     }
 
     func loadCachedProducts() -> [Product]? {
-        guard let data = defaults.data(forKey: Keys.products) else { return nil }
+        guard let data = defaults.data(forKey: SharedStore.cachedProductsKey) else { return nil }
         return try? decoder.decode([Product].self, from: data)
     }
 
@@ -46,18 +39,18 @@ actor CacheService {
 
     func cacheStore(_ store: Store) {
         guard let data = try? encoder.encode(store) else { return }
-        defaults.set(data, forKey: Keys.store)
+        defaults.set(data, forKey: SharedStore.cachedStoreKey)
     }
 
     func loadCachedStore() -> Store? {
-        guard let data = defaults.data(forKey: Keys.store) else { return nil }
+        guard let data = defaults.data(forKey: SharedStore.cachedStoreKey) else { return nil }
         return try? decoder.decode(Store.self, from: data)
     }
 
     // MARK: - Metadata
 
     var lastUpdated: Date? {
-        let ts = defaults.double(forKey: Keys.lastUpdated)
+        let ts = defaults.double(forKey: SharedStore.cacheLastUpdatedKey)
         guard ts > 0 else { return nil }
         return Date(timeIntervalSince1970: ts)
     }
@@ -70,9 +63,9 @@ actor CacheService {
     }
 
     func clearCache() {
-        defaults.removeObject(forKey: Keys.orders)
-        defaults.removeObject(forKey: Keys.products)
-        defaults.removeObject(forKey: Keys.store)
-        defaults.removeObject(forKey: Keys.lastUpdated)
+        defaults.removeObject(forKey: SharedStore.cachedOrdersKey)
+        defaults.removeObject(forKey: SharedStore.cachedProductsKey)
+        defaults.removeObject(forKey: SharedStore.cachedStoreKey)
+        defaults.removeObject(forKey: SharedStore.cacheLastUpdatedKey)
     }
 }

@@ -34,6 +34,7 @@ build/
 .build/
 .build-logs/
 .build-minimal/
+.swiftlint-cache/
 *.backup*
 vendor/
 .bundle/
