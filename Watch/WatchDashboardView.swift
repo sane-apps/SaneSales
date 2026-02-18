@@ -248,32 +248,33 @@ struct WatchDashboardView: View {
 
                     if !snapshot.recentRows.isEmpty {
                         WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.salesGreenSoft) {
-                            VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text("Recent Sales")
                                     .font(.system(size: 12, weight: .semibold))
                                     .foregroundStyle(WatchPalette.salesGreenSoft)
                                 ForEach(snapshot.recentRows) { row in
-                                    HStack(spacing: 6) {
-                                        RoundedRectangle(cornerRadius: 2, style: .continuous)
+                                    HStack(alignment: .lastTextBaseline, spacing: 6) {
+                                        Circle()
                                             .fill(providerColor(row.provider))
-                                            .frame(width: 3, height: 26)
+                                            .frame(width: 5, height: 5)
 
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(row.productName)
-                                                .font(.system(size: 11, weight: .semibold))
-                                                .foregroundStyle(.white)
-                                                .lineLimit(1)
-                                        }
-                                        Spacer()
-                                        VStack(alignment: .trailing, spacing: 1) {
-                                            Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
-                                                .font(.system(size: 11, weight: .bold, design: .rounded))
-                                                .foregroundStyle(.white)
-                                            Text(row.createdAt, style: .time)
-                                                .font(.system(size: 10, weight: .medium))
-                                                .foregroundStyle(.white.opacity(0.9))
-                                        }
+                                        Text(row.productName)
+                                            .font(.system(size: 11, weight: .semibold))
+                                            .foregroundStyle(.white)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.85)
+
+                                        Spacer(minLength: 4)
+
+                                        Text(row.createdAt, style: .time)
+                                            .font(.system(size: 10, weight: .medium))
+                                            .foregroundStyle(.white.opacity(0.92))
+
+                                        Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
+                                            .font(.system(size: 11, weight: .bold, design: .rounded))
+                                            .foregroundStyle(.white)
                                     }
+                                    .padding(.vertical, 1)
                                 }
                             }
                         }
