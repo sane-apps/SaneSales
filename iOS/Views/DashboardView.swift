@@ -16,15 +16,26 @@ struct DashboardView: View {
     @State private var animateCards = false
     @Namespace private var pickerNamespace
 
+    private enum DashboardLayout {
+        static let sectionSpacing: CGFloat = 21
+        static let cardSpacing: CGFloat = 13
+        static let horizontalPadding: CGFloat = 21
+        static let cardMinHeight: CGFloat = 168
+        static let contentPadding: CGFloat = 13
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
                 ScrollView {
-                    VStack(spacing: 24) {
+                    VStack(spacing: DashboardLayout.sectionSpacing) {
                         if let error = manager.error {
                             errorBanner(error)
                         }
+
+                        // Brand header
+                        dashboardBrandHeader
 
                         // Hero revenue
                         heroRevenue
@@ -47,8 +58,8 @@ struct DashboardView: View {
                         // Top products
                         topProductsSection
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
+                    .padding(.horizontal, DashboardLayout.horizontalPadding)
+                    .padding(.bottom, DashboardLayout.sectionSpacing)
                 }
             }
             .navigationTitle("Dashboard")
@@ -70,6 +81,9 @@ struct DashboardView: View {
                     }
                 }
             }
+            #if os(iOS)
+                .navigationBarTitleDisplayMode(.inline)
+            #endif
             .refreshable {
                 await manager.refresh()
             }
@@ -89,6 +103,29 @@ struct DashboardView: View {
 
 private extension DashboardView {
     // MARK: - Hero Revenue
+
+    private var dashboardBrandHeader: some View {
+        HStack(spacing: DashboardLayout.cardSpacing) {
+            Image("CoinColor")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("SaneSales")
+                    .font(.system(.title3, design: .rounded).weight(.bold))
+                    .foregroundStyle(.white)
+                Text("Revenue Dashboard")
+                    .font(.saneCallout)
+                    .foregroundStyle(Color.textMuted)
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 4)
+    }
 
     private var heroRevenue: some View {
         VStack(spacing: 6) {
@@ -148,7 +185,7 @@ private extension DashboardView {
     // MARK: - Comparison Row
 
     private var comparisonRow: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: DashboardLayout.cardSpacing) {
             comparisonPill(
                 label: "vs prev",
                 value: comparisonText,
@@ -213,15 +250,16 @@ private extension DashboardView {
     // MARK: - Revenue Cards
 
     private var revenueCards: some View {
-        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: 16) {
+        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
             SalesCard(
                 title: "Today",
                 value: formatCents(manager.metrics.todayRevenue),
                 subtitle: pluralize(manager.metrics.todayOrders, "order"),
                 icon: "clock.fill",
-                iconColor: .salesGreen,
+                iconColor: .metricToday,
                 trend: todayTrend
             )
+            .frame(minHeight: DashboardLayout.cardMinHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
@@ -231,8 +269,9 @@ private extension DashboardView {
                 value: formatCents(manager.metrics.monthRevenue),
                 subtitle: pluralize(manager.metrics.monthOrders, "order"),
                 icon: "calendar",
-                iconColor: .blue
+                iconColor: .metricMonth
             )
+            .frame(minHeight: DashboardLayout.cardMinHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
@@ -242,13 +281,15 @@ private extension DashboardView {
                 value: formatCents(manager.metrics.allTimeRevenue),
                 subtitle: pluralize(manager.metrics.allTimeOrders, "order"),
                 iconAssetName: "CoinTemplate",
-                iconColor: .salesGold
+                iconColor: .metricAllTime
             )
+            .frame(minHeight: DashboardLayout.cardMinHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
             storeCard
+                .frame(minHeight: DashboardLayout.cardMinHeight)
                 .offset(y: animateCards ? 0 : 20)
                 .opacity(animateCards ? 1 : 0)
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15), value: animateCards)
@@ -257,14 +298,14 @@ private extension DashboardView {
 
     private var storeCard: some View {
         Group {
-            let providerNames = manager.connectedProviders.map(\.displayName).joined(separator: ", ")
-            let subtitle = providerNames.isEmpty ? "Not connected" : providerNames
+            let providerCount = manager.connectedProviders.count
+            let subtitle = providerCount == 0 ? "Not connected" : "\(providerCount) connected providers"
             SalesCard(
                 title: "30-Day",
                 value: formatCents(manager.metrics.thirtyDayRevenue),
                 subtitle: subtitle,
                 icon: "calendar.badge.clock",
-                iconColor: .orange
+                iconColor: .metricRolling30
             )
         }
     }
@@ -284,7 +325,7 @@ private extension DashboardView {
     // MARK: - Chart
 
     private var chartSection: some View {
-        GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .salesGreen) {
+        GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
             if manager.metrics.dailyBreakdown.isEmpty {
                 ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
                                        description: Text("Sales data will appear here after your first order."))
@@ -294,7 +335,7 @@ private extension DashboardView {
                     .padding(.top, 8)
                     .frame(height: 220)
                     .clipped()
-                    .padding(14)
+                    .padding(DashboardLayout.contentPadding)
             }
         }
     }
