@@ -16,6 +16,7 @@ struct KeychainService: Sendable {
             return true
         }
 
+        fallbackDefaults.removeObject(forKey: fallbackKey(account))
         delete(account: account)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -47,8 +48,10 @@ struct KeychainService: Sendable {
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        guard status == errSecSuccess else { return nil }
-        return result as? Data
+        if status == errSecSuccess {
+            return result as? Data
+        }
+        return migrateFallbackToKeychainIfNeeded(account: account)
     }
 
     @discardableResult
@@ -65,6 +68,7 @@ struct KeychainService: Sendable {
             kSecAttrSynchronizable as String: true
         ]
         let status = SecItemDelete(query as CFDictionary)
+        fallbackDefaults.removeObject(forKey: fallbackKey(account))
         return status == errSecSuccess || status == errSecItemNotFound
     }
 
@@ -93,8 +97,10 @@ struct KeychainService: Sendable {
             return false
         }
 
-        // Default debug behavior: bypass Keychain to avoid prompts during local simulator/UI testing.
-        return true
+        // Debug default now uses real Keychain. Bypass only when explicitly requested.
+        return processInfo.environment["SANEAPPS_DISABLE_KEYCHAIN"] == "1"
+            || processInfo.environment["SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG"] == "1"
+            || processInfo.arguments.contains("--sane-no-keychain")
 #else
         // Production builds always use Keychain. No bypass path in App Store/TestFlight binaries.
         return false
@@ -107,5 +113,19 @@ struct KeychainService: Sendable {
 
     private static func fallbackKey(_ account: String) -> String {
         "sane.no-keychain.\(service).\(account)"
+    }
+
+    private static func migrateFallbackToKeychainIfNeeded(account: String) -> Data? {
+        guard let encoded = fallbackDefaults.string(forKey: fallbackKey(account)),
+              let data = Data(base64Encoded: encoded)
+        else { return nil }
+
+        // Best-effort migration from old debug fallback storage to real Keychain.
+        let saved = save(data: data, account: account)
+        if saved {
+            fallbackDefaults.removeObject(forKey: fallbackKey(account))
+            return data
+        }
+        return nil
     }
 }
