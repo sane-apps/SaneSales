@@ -239,6 +239,11 @@ struct SalesCard: View {
     var iconColor: Color = .salesGreen
     var trend: Trend?
 
+    // Keep card internals optically consistent across all KPI cards.
+    private let headerRowHeight: CGFloat = 38
+    private let trendBadgeHeight: CGFloat = 30
+    private let trendBadgeWidth: CGFloat = 58
+
     init(
         title: String,
         value: String,
@@ -275,26 +280,32 @@ struct SalesCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
+            HStack(spacing: 8) {
                 iconView
                 Text(title)
                     .font(.saneSubheadline)
                     .foregroundStyle(Color.textMuted)
-                Spacer()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.9)
+                    .layoutPriority(1)
+                Spacer(minLength: 0)
                 if let trend {
                     trendBadge(trend)
                 }
             }
+            .frame(height: headerRowHeight)
 
             Text(value)
                 .font(.saneCardValue())
                 .lineLimit(1)
                 .minimumScaleFactor(0.6)
                 .foregroundStyle(.primary)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             Text(subtitle)
                 .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
         .background(cardBackground)
@@ -360,22 +371,17 @@ struct SalesCard: View {
 
     @ViewBuilder
     private func trendBadge(_ trend: Trend) -> some View {
-        let badgeHeight: CGFloat = 30
-        let badgeMinWidth: CGFloat = badgeHeight * 1.618 // Golden ratio keeps icon + value balanced.
-
         HStack(spacing: 4) {
             Image(systemName: trend.isPositive ? "arrow.up.right" : "arrow.down.right")
-                .font(.system(size: 11, weight: .bold))
+                .font(.system(size: 10, weight: .bold))
             Text(trend.label)
-                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .font(.system(size: 14, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
                 .fixedSize(horizontal: true, vertical: false)
         }
-        .frame(minWidth: badgeMinWidth, minHeight: badgeHeight)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
+        .frame(width: trendBadgeWidth, height: trendBadgeHeight)
         .background(trend.isPositive ? Color.salesSuccess.opacity(0.15) : Color.salesError.opacity(0.15))
         .foregroundStyle(trend.isPositive ? Color.salesSuccess : Color.salesError)
         .clipShape(Capsule())
