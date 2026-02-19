@@ -76,6 +76,7 @@ schemes:
     test:
       targets:
         - SaneSalesIOSTests
+        - SaneSalesIOSUITests
     profile:
       config: Release
     run:
@@ -362,6 +363,29 @@ targets:
         EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
         TEST_HOST: "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales"
         BUNDLE_LOADER: "$(BUILT_PRODUCTS_DIR)/SaneSales.app/SaneSales"
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "Apple Development"
+        Release:
+          CODE_SIGN_IDENTITY: "Apple Development"
+
+  # iOS UI Tests
+  SaneSalesIOSUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    bundleId: com.sanesales.appUITests.ios
+    deploymentTarget:
+      iOS: 17.0
+    testTarget: SaneSalesIOS
+    sources:
+      - SaneSalesUITests
+    dependencies:
+      - target: SaneSalesIOS
+    settings:
+      base:
+        DEVELOPMENT_TEAM: M78L6FXD48
+        CODE_SIGN_STYLE: Manual
+        EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
       configs:
         Debug:
           CODE_SIGN_IDENTITY: "Apple Development"
