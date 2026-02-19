@@ -1005,7 +1005,7 @@
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1015,7 +1015,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1032,11 +1032,11 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.dev;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1055,11 +1055,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1074,14 +1074,14 @@
 			buildSettings = {
 				ARCHS = arm64;
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1180,7 +1180,7 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1188,7 +1188,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1206,7 +1206,7 @@
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1216,7 +1216,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1321,9 +1321,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1333,7 +1333,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1413,7 +1413,7 @@
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1423,7 +1423,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1436,9 +1436,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1446,7 +1446,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1487,7 +1487,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1496,7 +1496,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1511,7 +1511,7 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1519,7 +1519,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1540,7 +1540,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1549,7 +1549,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1564,7 +1564,7 @@
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1574,7 +1574,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1588,9 +1588,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1600,7 +1600,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1637,11 +1637,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1658,11 +1658,11 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1679,11 +1679,11 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1694,7 +1694,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1789,13 +1789,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
