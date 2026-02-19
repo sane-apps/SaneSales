@@ -13,6 +13,7 @@ struct DashboardView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("selectedTimeRange") private var selectedRange: TimeRange = .today
+    @State private var selectedProviderFilter: SalesProviderType?
     @State private var animateCards = false
     @Namespace private var pickerNamespace
 
@@ -20,7 +21,7 @@ struct DashboardView: View {
         static let sectionSpacing: CGFloat = 21
         static let cardSpacing: CGFloat = 13
         static let horizontalPadding: CGFloat = 21
-        static let cardMinHeight: CGFloat = 168
+        static let cardHeight: CGFloat = 168
         static let contentPadding: CGFloat = 13
     }
 
@@ -68,8 +69,18 @@ struct DashboardView: View {
                     if manager.isLoading {
                         ProgressView()
                             .tint(.salesGreen)
-                    } else if let date = manager.lastUpdated {
-                        Text(date, style: .relative)
+                    } else {
+                        Button {
+                            Task { await manager.refresh() }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.clockwise")
+                                if let date = manager.lastUpdated {
+                                    Text(date, style: .relative)
+                                } else {
+                                    Text("Refresh")
+                                }
+                            }
                             .font(.saneCallout)
                             .foregroundStyle(Color.textMuted)
                             .padding(.horizontal, 10)
@@ -78,6 +89,9 @@ struct DashboardView: View {
                                 Capsule()
                                     .fill(AnyShapeStyle(.ultraThinMaterial))
                             )
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!manager.isConnected)
                     }
                 }
             }
@@ -109,17 +123,17 @@ private extension DashboardView {
             Image("CoinColor")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .frame(width: 52, height: 52)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .accessibilityHidden(true)
 
             Text("SaneSales")
-                .font(.system(.title3, design: .rounded).weight(.bold))
+                .font(.system(size: 34, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 4)
+        .padding(.top, 8)
     }
 
     private var heroRevenue: some View {
@@ -230,15 +244,32 @@ private extension DashboardView {
     // MARK: - Connected Badges
 
     private var connectedBadges: some View {
-        Group {
-            if manager.connectedProviders.count > 1 {
-                HStack(spacing: 8) {
-                    ForEach(manager.connectedProviders, id: \.self) { provider in
-                        ProviderBadge(provider: provider)
+        HStack(spacing: 8) {
+            ForEach(SalesProviderType.allCases, id: \.self) { provider in
+                let isConnected = isProviderConnected(provider)
+                let isSelected = selectedProviderFilter == nil || selectedProviderFilter == provider
+
+                Button {
+                    guard isConnected else { return }
+                    withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                        selectedProviderFilter = selectedProviderFilter == provider ? nil : provider
                     }
-                    Spacer()
+                } label: {
+                    ProviderBadge(provider: provider)
+                        .opacity(isConnected ? 1.0 : 0.35)
+                        .overlay(
+                            Capsule()
+                                .stroke(
+                                    isSelected ? provider.brandColor.opacity(0.7) : Color.clear,
+                                    lineWidth: isSelected ? 1.2 : 0
+                                )
+                        )
                 }
+                .buttonStyle(.plain)
+                .disabled(!isConnected)
+                .accessibilityHint(isConnected ? "Filters dashboard by \(provider.displayName)" : "\(provider.displayName) not connected")
             }
+            Spacer()
         }
     }
 
@@ -248,43 +279,43 @@ private extension DashboardView {
         LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
             SalesCard(
                 title: "Today",
-                value: formatCents(manager.metrics.todayRevenue),
-                subtitle: pluralize(manager.metrics.todayOrders, "order"),
+                value: formatCents(dashboardMetrics.todayRevenue),
+                subtitle: pluralize(dashboardMetrics.todayOrders, "order"),
                 icon: "clock.fill",
                 iconColor: .metricToday,
                 trend: todayTrend
             )
-            .frame(minHeight: DashboardLayout.cardMinHeight)
+            .frame(height: DashboardLayout.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
 
             SalesCard(
                 title: "This Month",
-                value: formatCents(manager.metrics.monthRevenue),
-                subtitle: pluralize(manager.metrics.monthOrders, "order"),
+                value: formatCents(dashboardMetrics.monthRevenue),
+                subtitle: pluralize(dashboardMetrics.monthOrders, "order"),
                 icon: "calendar",
                 iconColor: .metricMonth
             )
-            .frame(minHeight: DashboardLayout.cardMinHeight)
+            .frame(height: DashboardLayout.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
 
             SalesCard(
                 title: "All Time",
-                value: formatCents(manager.metrics.allTimeRevenue),
-                subtitle: pluralize(manager.metrics.allTimeOrders, "order"),
+                value: formatCents(dashboardMetrics.allTimeRevenue),
+                subtitle: pluralize(dashboardMetrics.allTimeOrders, "order"),
                 iconAssetName: "CoinTemplate",
                 iconColor: .metricAllTime
             )
-            .frame(minHeight: DashboardLayout.cardMinHeight)
+            .frame(height: DashboardLayout.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
             storeCard
-                .frame(minHeight: DashboardLayout.cardMinHeight)
+                .frame(height: DashboardLayout.cardHeight)
                 .offset(y: animateCards ? 0 : 20)
                 .opacity(animateCards ? 1 : 0)
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15), value: animateCards)
@@ -293,12 +324,10 @@ private extension DashboardView {
 
     private var storeCard: some View {
         Group {
-            let providerCount = manager.connectedProviders.count
-            let subtitle = providerCount == 0 ? "Not connected" : "\(providerCount) connected providers"
             SalesCard(
                 title: "30-Day",
-                value: formatCents(manager.metrics.thirtyDayRevenue),
-                subtitle: subtitle,
+                value: formatCents(dashboardMetrics.thirtyDayRevenue),
+                subtitle: pluralize(dashboardMetrics.thirtyDayOrders, "order"),
                 icon: "calendar.badge.clock",
                 iconColor: .metricRolling30
             )
@@ -306,7 +335,7 @@ private extension DashboardView {
     }
 
     private var todayTrend: Trend? {
-        let daily = manager.metrics.dailyBreakdown
+        let daily = dashboardMetrics.dailyBreakdown
         guard daily.count >= 2 else { return nil }
         let today = daily.first(where: { Calendar.current.isDateInToday($0.date) })?.revenue ?? 0
         let yesterday = daily.first(where: { Calendar.current.isDateInYesterday($0.date) })?.revenue ?? 0
@@ -321,7 +350,7 @@ private extension DashboardView {
 
     private var chartSection: some View {
         GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-            if manager.metrics.dailyBreakdown.isEmpty {
+            if dashboardMetrics.dailyBreakdown.isEmpty {
                 ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
                                        description: Text("Sales data will appear here after your first order."))
                     .frame(height: 200)
@@ -340,23 +369,23 @@ private extension DashboardView {
         case .today: 7
         case .sevenDays: 7
         case .thirtyDays: 30
-        case .allTime: manager.metrics.dailyBreakdown.count
+        case .allTime: dashboardMetrics.dailyBreakdown.count
         }
-        return Array(manager.metrics.dailyBreakdown.prefix(days).reversed())
+        return Array(dashboardMetrics.dailyBreakdown.prefix(days).reversed())
     }
 
     // MARK: - Top Products
 
     private var topProductsSection: some View {
         GlassSection("Top Products", icon: "star.fill", iconColor: .salesWarning) {
-            if manager.metrics.productBreakdown.isEmpty {
+            if dashboardMetrics.productBreakdown.isEmpty {
                 Text("No products yet")
                     .foregroundStyle(Color.textMuted)
                     .frame(maxWidth: .infinity)
                     .padding()
             } else {
                 VStack(spacing: 0) {
-                    ForEach(Array(manager.metrics.productBreakdown.prefix(5).enumerated()), id: \.element.id) { index, product in
+                    ForEach(Array(dashboardMetrics.productBreakdown.prefix(5).enumerated()), id: \.element.id) { index, product in
                         if index > 0 { GlassDivider() }
                         HStack(spacing: 12) {
                             // Product thumbnail or rank fallback
@@ -449,21 +478,30 @@ private extension DashboardView {
 private extension DashboardView {
     // MARK: - Computed Data
 
+    private var dashboardOrders: [Order] {
+        guard let selectedProviderFilter else { return manager.orders }
+        return manager.orders.filter { $0.provider == selectedProviderFilter }
+    }
+
+    private var dashboardMetrics: SalesMetrics {
+        SalesMetrics.compute(from: dashboardOrders)
+    }
+
     private var revenueForRange: Int {
         switch selectedRange {
-        case .today: manager.metrics.todayRevenue
+        case .today: dashboardMetrics.todayRevenue
         case .sevenDays: revenueForDays(7)
         case .thirtyDays: revenueForDays(30)
-        case .allTime: manager.metrics.allTimeRevenue
+        case .allTime: dashboardMetrics.allTimeRevenue
         }
     }
 
     private var ordersForRange: Int {
         switch selectedRange {
-        case .today: manager.metrics.todayOrders
+        case .today: dashboardMetrics.todayOrders
         case .sevenDays: ordersForDays(7)
         case .thirtyDays: ordersForDays(30)
-        case .allTime: manager.metrics.allTimeOrders
+        case .allTime: dashboardMetrics.allTimeOrders
         }
     }
 
@@ -490,7 +528,7 @@ private extension DashboardView {
     }
 
     private var previousPeriodRevenue: Int {
-        let daily = manager.metrics.dailyBreakdown
+        let daily = dashboardMetrics.dailyBreakdown
         let cal = Calendar.current
         switch selectedRange {
         case .today:
@@ -510,7 +548,7 @@ private extension DashboardView {
         case .today: 1
         case .sevenDays: 7
         case .thirtyDays: 30
-        case .allTime: max(1, manager.metrics.dailyBreakdown.count)
+        case .allTime: max(1, dashboardMetrics.dailyBreakdown.count)
         }
         return revenueForRange / max(1, days)
     }
@@ -520,30 +558,38 @@ private extension DashboardView {
         case .today: 1
         case .sevenDays: 7
         case .thirtyDays: 30
-        case .allTime: max(1, Double(manager.metrics.dailyBreakdown.count))
+        case .allTime: max(1, Double(dashboardMetrics.dailyBreakdown.count))
         }
         return Double(ordersForRange) / days
     }
 
     private func revenueForDays(_ days: Int) -> Int {
         let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
-        return manager.orders
+        return dashboardOrders
             .filter { $0.status == .paid && $0.createdAt >= cutoff }
             .reduce(0) { $0 + $1.total }
     }
 
     private func ordersForDays(_ days: Int) -> Int {
         let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
-        return manager.orders.filter { $0.status == .paid && $0.createdAt >= cutoff }.count
+        return dashboardOrders.filter { $0.status == .paid && $0.createdAt >= cutoff }.count
     }
 
     private func revenueInRange(daysAgo: Int, daysUntil: Int) -> Int {
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -daysAgo, to: Date())!
         let end = cal.date(byAdding: .day, value: -daysUntil, to: Date())!
-        return manager.orders
+        return dashboardOrders
             .filter { $0.status == .paid && $0.createdAt >= start && $0.createdAt < end }
             .reduce(0) { $0 + $1.total }
+    }
+
+    private func isProviderConnected(_ provider: SalesProviderType) -> Bool {
+        switch provider {
+        case .lemonSqueezy: manager.isLemonSqueezyConnected
+        case .gumroad: manager.isGumroadConnected
+        case .stripe: manager.isStripeConnected
+        }
     }
 
     // MARK: - Helpers

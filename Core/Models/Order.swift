@@ -101,7 +101,7 @@ enum OrderStatus: String, Codable, Sendable {
     }
 }
 
-enum SalesProviderType: String, Codable, Sendable {
+enum SalesProviderType: String, Codable, Sendable, CaseIterable {
     case lemonSqueezy = "lemonsqueezy"
     case gumroad
     case stripe
