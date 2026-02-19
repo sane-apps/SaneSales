@@ -163,7 +163,7 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                Button("Add Credential") {
+                Button("Connect Account") {
                     editingProvider = provider
                     showingKeyEntry = true
                 }
@@ -185,7 +185,7 @@ struct SettingsView: View {
                     .foregroundStyle(editingProvider?.brandColor ?? .salesGreen)
                     .padding(.top, 20)
 
-                Text("Add \(editingProvider?.displayName ?? "Provider") Credential")
+                Text("Connect \(editingProvider?.displayName ?? "Provider") Account")
                     .font(.title3.weight(.semibold))
 
                 VStack(alignment: .leading, spacing: 8) {
@@ -198,7 +198,7 @@ struct SettingsView: View {
                         .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
 
-                    Text("Used only to read your existing merchant data. No purchases or feature unlocks.")
+                    Text("Used only to read your existing merchant data. No purchases or paid feature unlocks.")
                         .font(.saneFootnote)
                         .foregroundStyle(Color.textMuted)
                 }
@@ -214,6 +214,7 @@ struct SettingsView: View {
                     Button("Cancel") {
                         showingKeyEntry = false
                         newAPIKey = ""
+                        editingProvider = nil
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
@@ -224,7 +225,7 @@ struct SettingsView: View {
                         Button("Save") {
                             saveKey()
                         }
-                        .disabled(newAPIKey.isEmpty)
+                        .disabled(newAPIKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         .tint(.salesGreen)
                     }
                 }
@@ -399,6 +400,7 @@ struct SettingsView: View {
             if success {
                 showingKeyEntry = false
                 newAPIKey = ""
+                editingProvider = nil
             } else {
                 switch manager.error {
                 case .invalidAPIKey:

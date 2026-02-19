@@ -157,7 +157,7 @@ struct OrderRow: View {
                     .foregroundStyle(order.isRefunded ? Color.salesWarning : Color.primary)
                 Text(order.createdAt, style: .date)
                     .font(.saneFootnote)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textMuted)
             }
         }
         .padding(.vertical, 8)
