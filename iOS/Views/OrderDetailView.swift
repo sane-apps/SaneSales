@@ -30,7 +30,9 @@ struct OrderDetailView: View {
     private var amountHeader: some View {
         VStack(spacing: 8) {
             Text(order.displayTotal)
-                .font(.system(size: 42, weight: .bold, design: .rounded))
+                .font(.system(.largeTitle, design: .rounded).weight(.bold))
+                .minimumScaleFactor(0.75)
+                .lineLimit(1)
 
             HStack(spacing: 8) {
                 SalesBadge(order.status.displayName, color: statusColor, icon: order.status.icon)

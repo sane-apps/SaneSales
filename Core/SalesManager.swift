@@ -365,6 +365,33 @@ final class SalesManager {
         }
     }
 
+    func resetForUITests() {
+        UserDefaults.standard.set(false, forKey: "demo_mode")
+
+        KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
+        KeychainService.delete(account: KeychainService.gumroadAPIKey)
+        KeychainService.delete(account: KeychainService.stripeAPIKey)
+
+        lemonSqueezyProvider = nil
+        gumroadProvider = nil
+        stripeProvider = nil
+
+        isLemonSqueezyConnected = false
+        isGumroadConnected = false
+        isStripeConnected = false
+
+        orders = []
+        products = []
+        stores = []
+        metrics = .empty
+        lastUpdated = nil
+        error = nil
+        isLoading = false
+
+        Task { await cache.clearCache() }
+        reloadWidgets()
+    }
+
     private func reloadWidgets() {
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()

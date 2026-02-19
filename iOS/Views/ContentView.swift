@@ -39,6 +39,7 @@ struct MainTabView: View {
                 .tag(3)
         }
         .tint(.salesGreen)
+        .accessibilityIdentifier("main.tabView")
         #if os(macOS)
             .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
                 selectedTab = 3
@@ -87,6 +88,7 @@ struct OnboardingView: View {
                     .scrollDismissesKeyboard(.interactively)
                 }
             }
+            .accessibilityIdentifier("onboarding.view")
             .alert("Invalid API Key", isPresented: $showError) {
                 Button("OK") {}
             } message: {
@@ -110,7 +112,7 @@ struct OnboardingView: View {
                 .padding(.bottom, 4)
 
             Text("SaneSales")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(.system(.largeTitle, design: .rounded).weight(.bold))
 
             Text("Track sales from your existing\nLemon Squeezy, Gumroad, and Stripe accounts.")
                 .font(.body)
@@ -166,6 +168,7 @@ struct OnboardingView: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(isValidating)
+                    .accessibilityIdentifier("onboarding.provider.\(provider.rawValue)")
                 }
             }
             .background(
@@ -193,6 +196,7 @@ struct OnboardingView: View {
                 .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
+                .accessibilityIdentifier("onboarding.apiKeyLabel")
 
             SecureField("Paste your API key", text: $apiKey)
                 .textFieldStyle(.roundedBorder)
@@ -202,11 +206,13 @@ struct OnboardingView: View {
                 .textInputAutocapitalization(.never)
                 .keyboardType(.asciiCapable)
 #endif
+                .accessibilityIdentifier("onboarding.apiKeyField")
 
             Text(keyHelpText)
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
+                .accessibilityIdentifier("onboarding.apiKeyHelp")
 
             Text("Read-only connection. No checkout links and no in-app purchasing.")
                 .font(.saneFootnote)
@@ -244,6 +250,7 @@ struct OnboardingView: View {
         .controlSize(.large)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .disabled(normalizedAPIKey.isEmpty || isValidating)
+        .accessibilityIdentifier("onboarding.connectButton")
     }
 
     private var demoButton: some View {
@@ -253,6 +260,7 @@ struct OnboardingView: View {
         .buttonStyle(.bordered)
         .tint(.salesGreen)
         .controlSize(.large)
+        .accessibilityIdentifier("onboarding.demoButton")
     }
 
     private func validateAndSave() {

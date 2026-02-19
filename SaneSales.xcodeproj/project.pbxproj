@@ -79,6 +79,7 @@
 		B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
 		B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
+		BD3E96B34E9F733F19248519 /* SaneSalesIOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1E76BF88688A954972719 /* SaneSalesIOSUITests.swift */; };
 		BE88B4FA6C81AFB6D3CBADFA /* SalesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2701F2BA6C71F0B71FD529AC /* SalesCard.swift */; };
 		C3A3F63D3D0A637878568B41 /* SalesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56337DF07E23B45D4BAE3B34 /* SalesManager.swift */; };
 		C513A25CCBEA94EBA6491F17 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
@@ -115,6 +116,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 265F0DA8DB254C48C0EA1CB9;
 			remoteInfo = SaneSalesWatchWidgets;
+		};
+		87B3813FB71FCC19AB01527E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CCDB83FD7D77153A3CB27D1E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7B1B7BA7CE15C47720B6A092;
+			remoteInfo = SaneSalesIOS;
 		};
 		915365306BA1A04AA77E6BA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -184,6 +192,7 @@
 
 /* Begin PBXFileReference section */
 		05ECA4E43A25E62261523FA0 /* OrderDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailView.swift; sourceTree = "<group>"; };
+		0D11F0EC1E2E78801E4AED3D /* SaneSalesIOSUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SaneSalesIOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = WidgetInfo.plist; sourceTree = "<group>"; };
 		115482D088C746CEDDA697C2 /* SaneSalesWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesWatchWidgets.entitlements; sourceTree = "<group>"; };
 		12DB36C6C9F5B1AF67F6F2CF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -206,6 +215,7 @@
 		48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SaneSalesIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4943CC9097853664B1BED54C /* SaneSalesIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaneSalesIOS.entitlements; sourceTree = "<group>"; };
 		4F0A867795AED3A6485996C6 /* SaneSalesApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesApp.swift; sourceTree = "<group>"; };
+		50E1E76BF88688A954972719 /* SaneSalesIOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesIOSUITests.swift; sourceTree = "<group>"; };
 		56337DF07E23B45D4BAE3B34 /* SalesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalesManager.swift; sourceTree = "<group>"; };
 		677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaneSalesWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C618B676662B450F13B5F6 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
@@ -316,6 +326,7 @@
 				80619310AA709860F4051D2D /* iOS */,
 				8771E2D98F18E8BD187FF5C0 /* macOS */,
 				C37468C565F3990D9B84E6EF /* Resources */,
+				EC145FA7E8E04CD9BD8B46B2 /* SaneSalesUITests */,
 				8DBB8D7E9F8B182D9EAE622A /* shared */,
 				61DBB3C84EC3FE34543A1186 /* Tests */,
 				B7488814C6C47093BA9375E1 /* Watch */,
@@ -439,6 +450,7 @@
 				9E95D67F37D405DC015BD613 /* SaneSales.app */,
 				48ED76C9A16308D9F8189717 /* SaneSalesIOS.app */,
 				E2F48DD046E6433396D7D8BD /* SaneSalesIOSTests.xctest */,
+				0D11F0EC1E2E78801E4AED3D /* SaneSalesIOSUITests.xctest */,
 				1468F617EECB2D621BBF52A5 /* SaneSalesIOSWidgets.appex */,
 				D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */,
 				BCC6B84ED900A1B059633227 /* SaneSalesWatch.app */,
@@ -446,6 +458,14 @@
 				677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		EC145FA7E8E04CD9BD8B46B2 /* SaneSalesUITests */ = {
+			isa = PBXGroup;
+			children = (
+				50E1E76BF88688A954972719 /* SaneSalesIOSUITests.swift */,
+			);
+			path = SaneSalesUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -526,6 +546,24 @@
 			productName = SaneSalesTests;
 			productReference = D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		626A8BE7ADCAD83802631E5F /* SaneSalesIOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A91666675E61280B1FEA98B /* Build configuration list for PBXNativeTarget "SaneSalesIOSUITests" */;
+			buildPhases = (
+				B66B0988F3745AE9B42E1583 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5536E3EB56073992E420BA92 /* PBXTargetDependency */,
+			);
+			name = SaneSalesIOSUITests;
+			packageProductDependencies = (
+			);
+			productName = SaneSalesIOSUITests;
+			productReference = 0D11F0EC1E2E78801E4AED3D /* SaneSalesIOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 		7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */ = {
 			isa = PBXNativeTarget;
@@ -627,6 +665,11 @@
 						DevelopmentTeam = M78L6FXD48;
 						ProvisioningStyle = Manual;
 					};
+					626A8BE7ADCAD83802631E5F = {
+						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
+						TestTargetID = 7B1B7BA7CE15C47720B6A092;
+					};
 					7B1B7BA7CE15C47720B6A092 = {
 						DevelopmentTeam = M78L6FXD48;
 						ProvisioningStyle = Automatic;
@@ -665,6 +708,7 @@
 				11F92A0BDD7FD9F39613C6C0 /* SaneSales */,
 				7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */,
 				FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */,
+				626A8BE7ADCAD83802631E5F /* SaneSalesIOSUITests */,
 				9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */,
 				4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */,
 				B43EC054FF0424D1792495B8 /* SaneSalesWatch */,
@@ -880,6 +924,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B66B0988F3745AE9B42E1583 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BD3E96B34E9F733F19248519 /* SaneSalesIOSUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FA534080C1CE818C1B56D0D5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -898,6 +950,11 @@
 			isa = PBXTargetDependency;
 			target = 265F0DA8DB254C48C0EA1CB9 /* SaneSalesWatchWidgets */;
 			targetProxy = 1F3426D6BF60C6A5961D4789 /* PBXContainerItemProxy */;
+		};
+		5536E3EB56073992E420BA92 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */;
+			targetProxy = 87B3813FB71FCC19AB01527E /* PBXContainerItemProxy */;
 		};
 		881AB296FDA61EE34C84183D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1553,6 +1610,25 @@
 			};
 			name = "Release-AppStore";
 		};
+		C18D0EA996BA57039758F6C1 /* Release-AppStore */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SaneSalesIOS;
+			};
+			name = "Release-AppStore";
+		};
 		C3874D62A04CCFF247396421 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1668,6 +1744,46 @@
 			};
 			name = Debug;
 		};
+		E0B537E4B2900F9B92800B11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SaneSalesIOS;
+			};
+			name = Release;
+		};
+		F4D2EF1A9DD4C5ABE095E9E8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = M78L6FXD48;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.SaneSalesIOSUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SaneSalesIOS;
+			};
+			name = Debug;
+		};
 		FEC1641114F183E153D82EF2 /* Release-AppStore */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1709,6 +1825,16 @@
 				C3874D62A04CCFF247396421 /* Debug */,
 				201B2675F998CD6AAEE43A42 /* Release */,
 				2845EC76172F6AE4052F4845 /* Release-AppStore */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5A91666675E61280B1FEA98B /* Build configuration list for PBXNativeTarget "SaneSalesIOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4D2EF1A9DD4C5ABE095E9E8 /* Debug */,
+				E0B537E4B2900F9B92800B11 /* Release */,
+				C18D0EA996BA57039758F6C1 /* Release-AppStore */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
