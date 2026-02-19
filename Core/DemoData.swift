@@ -100,65 +100,44 @@ enum DemoData {
             let now = Date()
             let cal = Calendar.current
 
-            // --- Today's orders (5 orders = $226) ---
-            orders.append(makeOrder(id: counter, product: "PixelSnap", total: 2900, provider: .lemonSqueezy,
-                                    customer: "Emma Wilson", email: "emma.w@gmail.com",
-                                    date: cal.date(byAdding: .hour, value: -1, to: now)!))
-            counter += 1
-            orders.append(makeOrder(id: counter, product: "ScreenFlow Pro", total: 4900, provider: .gumroad,
-                                    customer: "Carlos Mendez", email: "carlos@mendez.dev",
-                                    date: cal.date(byAdding: .hour, value: -3, to: now)!))
-            counter += 1
-            orders.append(makeOrder(id: counter, product: "IconForge", total: 7900, provider: .lemonSqueezy,
-                                    customer: "Aisha Patel", email: "aisha@pixelworks.io",
-                                    date: cal.date(byAdding: .hour, value: -5, to: now)!))
-            counter += 1
-            orders.append(makeOrder(id: counter, product: "ColorKit", total: 1900, provider: .stripe,
-                                    customer: "James O'Brien", email: "james.ob@proton.me",
-                                    date: cal.date(byAdding: .hour, value: -7, to: now)!))
-            counter += 1
-            orders.append(makeOrder(id: counter, product: "PixelSnap", total: 2900, provider: .lemonSqueezy,
-                                    customer: "Yuki Tanaka", email: "yuki.t@icloud.com",
-                                    date: cal.date(byAdding: .hour, value: -9, to: now)!))
-            counter += 1
-
-            // --- This month (spread across ~25 days) ---
-            let monthStart = cal.date(from: cal.dateComponents([.year, .month], from: now))!
-            for day in 1 ..< cal.component(.day, from: now) {
-                guard let dayDate = cal.date(byAdding: .day, value: day - 1, to: monthStart) else { continue }
-                let ordersThisDay = Int.random(in: 4 ... 12)
-                for _ in 0 ..< ordersThisDay {
-                    let (product, total, provider) = randomProduct()
-                    let (name, email) = randomCustomer()
-                    let hour = Int.random(in: 8 ... 22)
-                    let minute = Int.random(in: 0 ... 59)
-                    var comps = cal.dateComponents([.year, .month, .day], from: dayDate)
-                    comps.hour = hour
-                    comps.minute = minute
-                    let orderDate = cal.date(from: comps) ?? dayDate
-
-                    // Skip if this would be in the future
-                    guard orderDate < now else { continue }
-
-                    orders.append(makeOrder(id: counter, product: product, total: total, provider: provider,
-                                            customer: name, email: email, date: orderDate))
-                    counter += 1
-                }
+            // Strong positive recent momentum for screenshots and onboarding demo:
+            // today > yesterday, last 7 days > prior 7 days, last 30 days > prior 30 days.
+            for sale in featuredRecentSales(now: now, calendar: cal) {
+                orders.append(makeOrder(
+                    id: counter,
+                    product: sale.product.name,
+                    total: sale.product.total,
+                    provider: sale.product.provider,
+                    customer: sale.customer.name,
+                    email: sale.customer.email,
+                    date: sale.date
+                ))
+                counter += 1
             }
 
-            // --- Older orders (past 90 days, sparser) ---
-            for daysAgo in 31 ... 90 {
+            // Deterministic history over the prior 90 days, gradually ramping up.
+            for daysAgo in 2 ... 90 {
                 guard let dayDate = cal.date(byAdding: .day, value: -daysAgo, to: now) else { continue }
-                let ordersThisDay = Int.random(in: 2 ... 8)
-                for _ in 0 ..< ordersThisDay {
-                    let (product, total, provider) = randomProduct()
-                    let (name, email) = randomCustomer()
-                    let hour = Int.random(in: 8 ... 22)
+                let ordersThisDay = 2 + ((90 - daysAgo) / 12) // 2...9, higher near present
+
+                for slot in 0 ..< ordersThisDay {
+                    let product = demoProducts[(daysAgo + slot) % demoProducts.count]
+                    let customer = demoCustomers[(counter + slot) % demoCustomers.count]
+
                     var comps = cal.dateComponents([.year, .month, .day], from: dayDate)
-                    comps.hour = hour
+                    comps.hour = 9 + ((daysAgo + slot * 3) % 11) // 9am...7pm
+                    comps.minute = (daysAgo * 7 + slot * 11) % 60
                     let orderDate = cal.date(from: comps) ?? dayDate
-                    orders.append(makeOrder(id: counter, product: product, total: total, provider: provider,
-                                            customer: name, email: email, date: orderDate))
+
+                    orders.append(makeOrder(
+                        id: counter,
+                        product: product.name,
+                        total: product.total,
+                        provider: product.provider,
+                        customer: customer.name,
+                        email: customer.email,
+                        date: orderDate
+                    ))
                     counter += 1
                 }
             }
@@ -189,40 +168,82 @@ enum DemoData {
             )
         }
 
-        private static func randomProduct() -> (name: String, total: Int, provider: SalesProviderType) {
-            let products: [(String, Int, SalesProviderType)] = [
-                ("PixelSnap", 2900, .lemonSqueezy),
-                ("ScreenFlow Pro", 4900, .gumroad),
-                ("ColorKit", 1900, .stripe),
-                ("IconForge", 7900, .lemonSqueezy)
-            ]
-            return products.randomElement()!
+        private struct DemoProductTemplate {
+            let name: String
+            let total: Int
+            let provider: SalesProviderType
         }
 
-        private static func randomCustomer() -> (name: String, email: String) {
-            let customers = [
-                ("Alex Johnson", "alex.j@gmail.com"),
-                ("Sarah Chen", "sarah.chen@outlook.com"),
-                ("Marcus Rivera", "marcus@rivera.dev"),
-                ("Priya Sharma", "priya.s@yahoo.com"),
-                ("James O'Brien", "james.ob@proton.me"),
-                ("Yuki Tanaka", "yuki.t@icloud.com"),
-                ("Fatima Hassan", "fatima.h@gmail.com"),
-                ("Lucas Schmidt", "lucas@schmidt.io"),
-                ("Olivia Park", "olivia.park@gmail.com"),
-                ("Noah Williams", "noah.w@hey.com"),
-                ("Mia Anderson", "mia.a@fastmail.com"),
-                ("Ethan Brown", "ethan.b@gmail.com"),
-                ("Sofia Garcia", "sofia.g@outlook.com"),
-                ("Liam Davis", "liam.d@proton.me"),
-                ("Isabella Martinez", "isabella.m@gmail.com"),
-                ("Benjamin Lee", "ben.lee@icloud.com"),
-                ("Charlotte Wang", "charlotte.w@hey.com"),
-                ("Daniel Kim", "daniel.k@gmail.com"),
-                ("Amelia Taylor", "amelia.t@fastmail.com"),
-                ("Oliver White", "oliver.w@gmail.com")
+        private struct DemoCustomer {
+            let name: String
+            let email: String
+        }
+
+        private struct FeaturedSale {
+            let product: DemoProductTemplate
+            let customer: DemoCustomer
+            let date: Date
+        }
+
+        private static let demoProducts: [DemoProductTemplate] = [
+            DemoProductTemplate(name: "PixelSnap", total: 2900, provider: .lemonSqueezy),
+            DemoProductTemplate(name: "ScreenFlow Pro", total: 4900, provider: .gumroad),
+            DemoProductTemplate(name: "ColorKit", total: 1900, provider: .stripe),
+            DemoProductTemplate(name: "IconForge", total: 7900, provider: .lemonSqueezy)
+        ]
+
+        private static let demoCustomers: [DemoCustomer] = [
+            DemoCustomer(name: "Alex Johnson", email: "alex.j@gmail.com"),
+            DemoCustomer(name: "Sarah Chen", email: "sarah.chen@outlook.com"),
+            DemoCustomer(name: "Marcus Rivera", email: "marcus@rivera.dev"),
+            DemoCustomer(name: "Priya Sharma", email: "priya.s@yahoo.com"),
+            DemoCustomer(name: "James O'Brien", email: "james.ob@proton.me"),
+            DemoCustomer(name: "Yuki Tanaka", email: "yuki.t@icloud.com"),
+            DemoCustomer(name: "Fatima Hassan", email: "fatima.h@gmail.com"),
+            DemoCustomer(name: "Lucas Schmidt", email: "lucas@schmidt.io"),
+            DemoCustomer(name: "Olivia Park", email: "olivia.park@gmail.com"),
+            DemoCustomer(name: "Noah Williams", email: "noah.w@hey.com"),
+            DemoCustomer(name: "Mia Anderson", email: "mia.a@fastmail.com"),
+            DemoCustomer(name: "Ethan Brown", email: "ethan.b@gmail.com"),
+            DemoCustomer(name: "Sofia Garcia", email: "sofia.g@outlook.com"),
+            DemoCustomer(name: "Liam Davis", email: "liam.d@proton.me"),
+            DemoCustomer(name: "Isabella Martinez", email: "isabella.m@gmail.com"),
+            DemoCustomer(name: "Benjamin Lee", email: "ben.lee@icloud.com"),
+            DemoCustomer(name: "Charlotte Wang", email: "charlotte.w@hey.com"),
+            DemoCustomer(name: "Daniel Kim", email: "daniel.k@gmail.com"),
+            DemoCustomer(name: "Amelia Taylor", email: "amelia.t@fastmail.com"),
+            DemoCustomer(name: "Oliver White", email: "oliver.w@gmail.com")
+        ]
+
+        private static func featuredRecentSales(now: Date, calendar: Calendar) -> [FeaturedSale] {
+            func dated(_ daysAgo: Int, _ hour: Int, _ minute: Int) -> Date {
+                let base = calendar.date(byAdding: .day, value: -daysAgo, to: now) ?? now
+                var comps = calendar.dateComponents([.year, .month, .day], from: base)
+                comps.hour = hour
+                comps.minute = minute
+                return calendar.date(from: comps) ?? base
+            }
+
+            // Keep recent demo data obviously positive.
+            return [
+                // Today (8 orders)
+                FeaturedSale(product: demoProducts[3], customer: demoCustomers[0], date: dated(0, 9, 20)),
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[1], date: dated(0, 10, 12)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[2], date: dated(0, 11, 5)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[3], date: dated(0, 12, 40)),
+                FeaturedSale(product: demoProducts[3], customer: demoCustomers[4], date: dated(0, 14, 15)),
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[5], date: dated(0, 15, 28)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[6], date: dated(0, 17, 9)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[7], date: dated(0, 18, 32)),
+
+                // Yesterday (6 orders, intentionally lower than today)
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[8], date: dated(1, 9, 44)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[9], date: dated(1, 11, 2)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[10], date: dated(1, 12, 19)),
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[11], date: dated(1, 14, 7)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[12], date: dated(1, 15, 33)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[13], date: dated(1, 17, 25))
             ]
-            return customers.randomElement()!
         }
 
         private static func formatCents(_ cents: Int) -> String {
