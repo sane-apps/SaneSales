@@ -113,14 +113,9 @@ private extension DashboardView {
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text("SaneSales")
-                    .font(.system(.title3, design: .rounded).weight(.bold))
-                    .foregroundStyle(.white)
-                Text("Revenue Dashboard")
-                    .font(.saneCallout)
-                    .foregroundStyle(Color.textMuted)
-            }
+            Text("SaneSales")
+                .font(.system(.title3, design: .rounded).weight(.bold))
+                .foregroundStyle(.white)
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
