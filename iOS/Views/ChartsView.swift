@@ -49,10 +49,14 @@ struct ChartsView: View {
                 }
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day, count: xAxisStride)) { _ in
-                    AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        .font(.callout)
-                        .foregroundStyle(.primary)
+                AxisMarks(values: xAxisDates) { value in
+                    AxisValueLabel {
+                        if let date = value.as(Date.self) {
+                            Text(xAxisLabel(for: date))
+                                .font(.callout)
+                                .foregroundStyle(.primary)
+                        }
+                    }
                 }
             }
 
@@ -88,6 +92,19 @@ struct ChartsView: View {
         if dailySales.count <= 7 { return 1 }
         if dailySales.count <= 14 { return 2 }
         return 5
+    }
+
+    private var xAxisDates: [Date] {
+        guard !dailySales.isEmpty else { return [] }
+        let step = max(1, xAxisStride)
+        return stride(from: 0, to: dailySales.count, by: step).map { dailySales[$0].date }
+    }
+
+    private func xAxisLabel(for date: Date) -> String {
+        if dailySales.count <= 7 {
+            return date.formatted(.dateTime.weekday(.abbreviated))
+        }
+        return date.formatted(.dateTime.month(.abbreviated).day())
     }
 
     private func formatCents(_ cents: Int) -> String {

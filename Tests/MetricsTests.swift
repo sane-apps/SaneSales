@@ -187,4 +187,29 @@ struct MetricsTests {
         #expect(metrics.productBreakdown.count == 1)
         #expect(metrics.productBreakdown.first?.orderCount == 2)
     }
+
+    @Test("Demo data trends positive for previews")
+    func demoDataHasPositiveMomentum() {
+        let now = Date()
+        let cal = Calendar.current
+        let orders = DemoData.allOrders
+        let metrics = SalesMetrics.compute(from: orders)
+
+        let todayRevenue = metrics.dailyBreakdown.first(where: { cal.isDateInToday($0.date) })?.revenue ?? 0
+        let yesterdayRevenue = metrics.dailyBreakdown.first(where: { cal.isDateInYesterday($0.date) })?.revenue ?? 0
+
+        #expect(todayRevenue > yesterdayRevenue)
+        #expect(revenue(from: orders, daysBack: 7, now: now) > revenue(from: orders, daysBack: 14, untilDaysBack: 7, now: now))
+        #expect(revenue(from: orders, daysBack: 30, now: now) > revenue(from: orders, daysBack: 60, untilDaysBack: 30, now: now))
+    }
+
+    private func revenue(from orders: [Order], daysBack: Int, untilDaysBack: Int = 0, now: Date) -> Int {
+        let cal = Calendar.current
+        let start = cal.date(byAdding: .day, value: -daysBack, to: now) ?? now
+        let end = untilDaysBack == 0 ? now : (cal.date(byAdding: .day, value: -untilDaysBack, to: now) ?? now)
+
+        return orders
+            .filter { $0.status == .paid && $0.createdAt >= start && $0.createdAt < end }
+            .reduce(0) { $0 + $1.netTotal }
+    }
 }
