@@ -152,7 +152,7 @@ struct ProductsView: View {
 
     private func chartColor(for product: ProductSales) -> Color {
         guard let index = manager.metrics.productBreakdown.firstIndex(where: { $0.id == product.id }) else {
-            return .gray
+            return .salesGreen
         }
         return chartColorPalette[index % chartColorPalette.count]
     }
