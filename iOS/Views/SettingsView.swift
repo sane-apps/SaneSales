@@ -193,6 +193,10 @@ struct SettingsView: View {
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
                         .autocorrectionDisabled()
+#if os(iOS)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.asciiCapable)
+#endif
 
                     Text(keyHelpText)
                         .font(.saneCallout)
