@@ -253,7 +253,7 @@ struct OrderDetailView: View {
         case .refunded: .salesWarning
         case .pending: .salesWarning
         case .failed: .salesError
-        case .unknown: .gray
+        case .unknown: .textMuted
         }
     }
 
