@@ -99,8 +99,26 @@ extension Color {
     // Brand blue for glows (matches SaneBackground ambient)
     static let brandBlueGlow = Color(red: 0.31, green: 0.56, blue: 0.98)
 
-    // Muted text (replaces .secondary for readability)
-    static let textMuted: Color = .primary.opacity(0.85)
+    // Muted text tuned for high contrast in dark mode.
+    static var textMuted: Color {
+        #if os(iOS) || os(tvOS) || os(watchOS)
+            Color(UIColor { trait in
+                if trait.userInterfaceStyle == .dark {
+                    return UIColor.white.withAlphaComponent(0.92)
+                }
+                return UIColor.label.withAlphaComponent(0.88)
+            })
+        #elseif os(macOS)
+            Color(NSColor(name: nil) { appearance in
+                if appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
+                    return NSColor.white.withAlphaComponent(0.92)
+                }
+                return NSColor.labelColor.withAlphaComponent(0.88)
+            })
+        #else
+            .primary.opacity(0.9)
+        #endif
+    }
 
     // Platform background
     static var saneBackground: Color {
@@ -336,11 +354,20 @@ struct SalesCard: View {
 
     @ViewBuilder
     private func trendBadge(_ trend: Trend) -> some View {
-        HStack(spacing: 3) {
+        let badgeHeight: CGFloat = 30
+        let badgeMinWidth: CGFloat = badgeHeight * 1.618 // Golden ratio keeps icon + value balanced.
+
+        HStack(spacing: 4) {
             Image(systemName: trend.isPositive ? "arrow.up.right" : "arrow.down.right")
+                .font(.system(size: 11, weight: .bold))
             Text(trend.label)
+                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .fixedSize(horizontal: true, vertical: false)
         }
-        .font(.footnote.bold())
+        .frame(minWidth: badgeMinWidth, minHeight: badgeHeight)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(trend.isPositive ? Color.salesSuccess.opacity(0.15) : Color.salesError.opacity(0.15))

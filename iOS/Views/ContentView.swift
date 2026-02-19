@@ -50,6 +50,8 @@ struct MainTabView: View {
 // MARK: - Onboarding
 
 struct OnboardingView: View {
+    private let phi: CGFloat = 1.618
+    private let providerOptions: [SalesProviderType] = [.lemonSqueezy, .gumroad, .stripe]
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
     @State private var selectedProvider: SalesProviderType = .lemonSqueezy
@@ -61,17 +63,28 @@ struct OnboardingView: View {
         NavigationStack {
             ZStack {
                 backgroundGradient
-                ScrollView {
-                    VStack(spacing: 32) {
-                        Spacer(minLength: 40)
-                        heroSection
-                        providerPicker
-                        keyEntrySection
-                        connectButton
-                        demoButton
-                        Spacer()
+                GeometryReader { proxy in
+                    let baseUnit = max(8, min(16, proxy.size.height / 56))
+                    let sectionSpacing = baseUnit * phi
+                    let horizontalPadding = max(18, proxy.size.width / 19)
+
+                    ScrollView {
+                        VStack(spacing: sectionSpacing) {
+                            heroSection
+                            providerPicker
+                            keyEntrySection
+                            connectButton
+                            demoButton
+                        }
+                        .padding(.horizontal, horizontalPadding)
+                        .padding(.top, max(8, proxy.safeAreaInsets.top * 0.38))
+                        .padding(.bottom, max(baseUnit, proxy.safeAreaInsets.bottom + baseUnit * 0.6))
+                        .frame(
+                            minHeight: proxy.size.height - proxy.safeAreaInsets.top - proxy.safeAreaInsets.bottom,
+                            alignment: .top
+                        )
                     }
-                    .padding(.horizontal, 24)
+                    .scrollDismissesKeyboard(.interactively)
                 }
             }
             .alert("Invalid API Key", isPresented: $showError) {
@@ -99,7 +112,7 @@ struct OnboardingView: View {
             Text("SaneSales")
                 .font(.system(size: 34, weight: .bold, design: .rounded))
 
-            Text("Read-only sales tracking for your existing\nLemon Squeezy, Gumroad, and Stripe accounts.")
+            Text("Track sales from your existing\nLemon Squeezy, Gumroad, and Stripe accounts.")
                 .font(.body)
                 .foregroundStyle(Color.textMuted)
                 .multilineTextAlignment(.center)
@@ -115,11 +128,14 @@ struct OnboardingView: View {
                 .padding(.leading, 4)
 
             VStack(spacing: 0) {
-                ForEach([SalesProviderType.lemonSqueezy, .gumroad, .stripe], id: \.self) { provider in
-                    if provider != .lemonSqueezy { Divider().padding(.leading, 48) }
+                ForEach(Array(providerOptions.enumerated()), id: \.element) { index, provider in
+                    if index > 0 { Divider().padding(.leading, 48) }
                     Button {
+                        guard !isValidating else { return }
                         selectedProvider = provider
+                        apiKey = ""
                     } label: {
+                        let isSelected = selectedProvider == provider
                         HStack(spacing: 12) {
                             Image(systemName: provider.icon)
                                 .foregroundStyle(provider.brandColor)
@@ -135,10 +151,21 @@ struct OnboardingView: View {
                                     .font(.body)
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 14)
+                        .padding(.vertical, 13)
+                        .contentShape(Rectangle())
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(isSelected ? provider.brandColor.opacity(0.12) : .clear)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(isSelected ? provider.brandColor.opacity(0.45) : .clear, lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
+                    .disabled(isValidating)
                 }
             }
             .background(
@@ -162,7 +189,7 @@ struct OnboardingView: View {
 
     private var keyEntrySection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(selectedProvider.displayName) API Credential (existing merchant account)")
+            Text("\(selectedProvider.displayName) API Key")
                 .font(.saneSubheadline)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -177,7 +204,7 @@ struct OnboardingView: View {
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
 
-            Text("Read-only analytics only. No in-app purchases, no external checkout, and no feature unlocks based on payments.")
+            Text("Read-only connection. No checkout links and no in-app purchasing.")
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -201,18 +228,18 @@ struct OnboardingView: View {
                     ProgressView()
                         .tint(.white)
                 } else {
-                    Text("Add Read-Only Credential")
+                    Text("Connect Account")
                         .fontWeight(.semibold)
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 22)
+            .frame(minHeight: 52)
         }
         .buttonStyle(.borderedProminent)
         .tint(.salesGreen)
         .controlSize(.large)
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .disabled(apiKey.isEmpty || isValidating)
+        .disabled(normalizedAPIKey.isEmpty || isValidating)
     }
 
     private var demoButton: some View {
@@ -225,8 +252,12 @@ struct OnboardingView: View {
     }
 
     private func validateAndSave() {
+        guard !normalizedAPIKey.isEmpty else {
+            showError = true
+            return
+        }
         isValidating = true
-        let key = apiKey
+        let key = normalizedAPIKey
         let provider = selectedProvider
         Task {
             let success: Bool = switch provider {
@@ -240,5 +271,9 @@ struct OnboardingView: View {
             isValidating = false
             if !success { showError = true }
         }
+    }
+
+    private var normalizedAPIKey: String {
+        apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

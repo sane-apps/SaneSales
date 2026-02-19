@@ -8,6 +8,7 @@ struct SaneSalesApp: App {
         WindowGroup {
             ContentView()
                 .environment(manager)
+                .preferredColorScheme(.dark)
                 .task {
                     if CommandLine.arguments.contains("--demo") {
                         DemoData.loadInto(manager: manager)

@@ -121,14 +121,14 @@ struct SalesWidgetView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Today")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.92))
             Text(entry.todayRevenueFormatted)
                 .font(.title.bold())
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text("\(entry.todayOrders) orders")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white.opacity(0.92))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -138,18 +138,18 @@ struct SalesWidgetView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Today")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.92))
                 Text(entry.todayRevenueFormatted)
                     .font(.title.bold())
                 Text("\(entry.todayOrders) orders")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.92))
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
                 Text("This Month")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.92))
                 Text(entry.monthRevenueFormatted)
                     .font(.title2.bold())
             }

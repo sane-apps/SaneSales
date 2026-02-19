@@ -1,5 +1,8 @@
 import Foundation
 import SwiftUI
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 /// Central state manager for all sales data. Coordinates providers, caching, and UI state.
 @MainActor
@@ -111,6 +114,7 @@ final class SalesManager {
         lemonSqueezyProvider = nil
         isLemonSqueezyConnected = false
         removeProviderData(for: .lemonSqueezy)
+        reloadWidgets()
     }
 
     // MARK: - Gumroad Key Management
@@ -145,6 +149,7 @@ final class SalesManager {
         gumroadProvider = nil
         isGumroadConnected = false
         removeProviderData(for: .gumroad)
+        reloadWidgets()
     }
 
     // MARK: - Stripe Key Management
@@ -179,6 +184,7 @@ final class SalesManager {
         stripeProvider = nil
         isStripeConnected = false
         removeProviderData(for: .stripe)
+        reloadWidgets()
     }
 
     // MARK: - Data Loading (Multi-Provider)
@@ -237,6 +243,7 @@ final class SalesManager {
         }
 
         isLoading = false
+        reloadWidgets()
     }
 
     /// Fetch all data from a single provider. Runs off MainActor.
@@ -331,6 +338,7 @@ final class SalesManager {
     func enableDemoMode() {
         UserDefaults.standard.set(true, forKey: "demo_mode")
         DemoData.loadInto(manager: self)
+        reloadWidgets()
     }
 
     func disableDemoMode() {
@@ -347,7 +355,20 @@ final class SalesManager {
         isStripeConnected = KeychainService.exists(account: KeychainService.stripeAPIKey)
         configureProviders()
 
-        Task { await cache.clearCache() }
+        Task {
+            await cache.clearCache()
+            if isAnyConnected {
+                await refresh()
+            } else {
+                reloadWidgets()
+            }
+        }
+    }
+
+    private func reloadWidgets() {
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
     }
 }
 

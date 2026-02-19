@@ -123,7 +123,7 @@ private extension DashboardView {
                 } label: {
                     Text(range.rawValue)
                         .font(.saneSubheadline)
-                        .foregroundStyle(selectedRange == range ? .white : .secondary)
+                        .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
                         .frame(maxWidth: .infinity)
                         .frame(minHeight: 40)
                         .contentShape(Rectangle())
@@ -315,7 +315,7 @@ private extension DashboardView {
         GlassSection("Top Products", icon: "star.fill", iconColor: .salesWarning) {
             if manager.metrics.productBreakdown.isEmpty {
                 Text("No products yet")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.textMuted)
                     .frame(maxWidth: .infinity)
                     .padding()
             } else {
@@ -516,7 +516,10 @@ private extension DashboardView {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = manager.primaryCurrency
-        return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
+        if let formatted = formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) {
+            return formatted
+        }
+        return String(format: "$%.2f", Double(cents) / 100.0)
     }
 
     private func pluralize(_ count: Int, _ word: String) -> String {
