@@ -256,6 +256,7 @@ private extension DashboardView {
                     }
                 } label: {
                     ProviderBadge(provider: provider)
+                        .saturation(isConnected ? 1.0 : 0.0)
                         .opacity(isConnected ? 1.0 : 0.35)
                         .overlay(
                             Capsule()
