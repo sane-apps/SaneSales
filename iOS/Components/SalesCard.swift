@@ -96,6 +96,12 @@ extension Color {
     static let salesError = Color(red: 0.937, green: 0.267, blue: 0.267) // #ef4444
     static let salesGold = Color(red: 0.85, green: 0.65, blue: 0.13) // Accumulated value / All Time
 
+    // Dashboard metric semantic colors (kept distinct from provider colors).
+    static let metricToday = salesSuccess
+    static let metricMonth = Color(red: 0.122, green: 0.620, blue: 0.973) // Sky blue
+    static let metricRolling30 = Color(red: 0.698, green: 0.498, blue: 0.988) // Violet
+    static let metricAllTime = Color(red: 0.243, green: 0.875, blue: 0.827) // Aqua
+
     // Brand blue for glows (matches SaneBackground ambient)
     static let brandBlueGlow = Color(red: 0.31, green: 0.56, blue: 0.98)
 
