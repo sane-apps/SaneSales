@@ -166,7 +166,7 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
           INFOPLIST_KEY_SUFeedURL: ""
           INFOPLIST_KEY_SUPublicEDKey: ""
@@ -272,7 +272,7 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
 
   # iOS App
   SaneSalesIOS:
@@ -341,7 +341,7 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
 
   # iOS Tests
@@ -442,7 +442,7 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
 
   # watchOS App (read-only companion)
   SaneSalesWatch:
@@ -500,7 +500,7 @@ targets:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
           INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
 
   # watchOS Widget extension (Smart Stack)
   SaneSalesWatchWidgets:
@@ -551,4 +551,4 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
           CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          CODE_SIGN_IDENTITY: "Apple Distribution"
