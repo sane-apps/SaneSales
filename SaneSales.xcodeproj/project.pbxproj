@@ -651,6 +651,7 @@
 				TargetAttributes = {
 					11F92A0BDD7FD9F39613C6C0 = {
 						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Automatic;
 					};
 					265F0DA8DB254C48C0EA1CB9 = {
 						DevelopmentTeam = M78L6FXD48;
@@ -658,6 +659,7 @@
 					};
 					372D646238F964199D574608 = {
 						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Automatic;
 					};
 					4DF8CAE39C290BCE75EDC12F = {
 						DevelopmentTeam = M78L6FXD48;
@@ -1050,8 +1052,8 @@
 			buildSettings = {
 				ARCHS = arm64;
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1060,7 +1062,6 @@
 				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
-				PROVISIONING_PROFILE_SPECIFIER = "Mac Team Provisioning Profile: com.sanesales.app.widgets";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 6.0;
@@ -1535,9 +1536,9 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SaneSales/SaneSales.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1001;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1551,7 +1552,6 @@
 				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
-				PROVISIONING_PROFILE_SPECIFIER = "Mac Team Direct Provisioning Profile: com.sanesales.app";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 6.0;
 				VALID_ARCHS = arm64;
