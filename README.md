@@ -7,7 +7,7 @@
 **LemonSqueezy + Gumroad + Stripe — finally unified**
 
 [![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneSales?style=flat-square)](https://github.com/sane-apps/SaneSales/stargazers)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0)
+[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg?style=flat-square)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
 [![Price](https://img.shields.io/badge/Price-$6.99_one--time-green?style=flat-square)](https://sanesales.com)
@@ -80,7 +80,7 @@ SaneSales is the opposite:
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
 | **No subscription** | **$6.99 once** | $29+/mo | $99+/mo | Free |
-| **Open source** | AGPL v3 | ❌ | ❌ | N/A |
+| **Open source** | PolyForm Shield | ❌ | ❌ | N/A |
 
 > **$6.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
 
@@ -96,7 +96,7 @@ Also coming to the iOS & Mac App Store (submitted, awaiting review).
 
 > *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
 
-Or [build from source](#development) — it's AGPL v3 licensed, always will be.
+Or [build from source](#development) — it's PolyForm Shield licensed, always will be.
 
 **Requirements:** iOS 17+ / macOS 14+ &middot; Apple Silicon (arm64) only
 
@@ -196,7 +196,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventi
 
 ## License
 
-AGPL v3 — see [LICENSE](LICENSE) for details.
+[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) — free for any use except building a competing product. See [LICENSE](LICENSE) for details.
 
 ---
 
