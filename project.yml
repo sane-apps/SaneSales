@@ -161,9 +161,8 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "Developer ID Application"
-          PROVISIONING_PROFILE_SPECIFIER: "Mac Team Direct Provisioning Profile: com.sanesales.app"
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
@@ -268,9 +267,8 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
-          CODE_SIGN_STYLE: Manual
-          CODE_SIGN_IDENTITY: "Developer ID Application"
-          PROVISIONING_PROFILE_SPECIFIER: "Mac Team Provisioning Profile: com.sanesales.app.widgets"
+          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
           CODE_SIGN_STYLE: Automatic
