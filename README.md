@@ -12,7 +12,7 @@
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
 [![Price](https://img.shields.io/badge/Price-$6.99_one--time-green?style=flat-square)](https://sanesales.com)
 [![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](docs/privacy.html)
-[![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-blueviolet?style=flat-square)](https://claude.ai)
+[![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
 > **Star this repo if you find it useful!** &middot; **[Buy — $6.99](https://sanesales.com)** &middot; Keeps development alive
 
