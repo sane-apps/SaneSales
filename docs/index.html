@@ -83,7 +83,7 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server. Zero analytics, zero telemetry."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. $6.99 one-time. You own it forever. All future updates included. Or build from source for free — it's AGPL v3 licensed."}},
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. $6.99 one-time. You own it forever. All future updates included. Or build from source for free — it's PolyForm Shield licensed."}},
         {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales includes a demo mode with realistic sample data so you can explore every feature. Or clone the repo from GitHub and build it yourself."}}
       ]
     }
@@ -1466,7 +1466,7 @@
             <p class="subtitle animate-in delay-3"><em>LemonSqueezy</em> + <em>Gumroad</em> + <em>Stripe</em> — finally unified.<br>Revenue, orders, charts — all on your device.</p>
             <div class="trust-badges animate-in delay-3">
                 <span>&#128187; Used by Indie Developers Daily</span>
-                <span>&#128274; 100% On-Device &middot; Open Source</span>
+                <span>&#128274; 100% On-Device &middot; 100% Transparent Code</span>
                 <span>&#128176; No Subscription</span>
             </div>
             <div class="cta-buttons animate-in delay-4">
@@ -1623,7 +1623,7 @@
                             <path d="M9 12l2 2 4-4"/>
                         </svg>
                     </div>
-                    <h3>Open Source & Private</h3>
+                    <h3>100% Transparent Code & Private</h3>
                     <p>100% on-device. Zero analytics. No telemetry. API keys in Keychain with hardware encryption. Audit the code yourself on GitHub.</p>
                 </div>
             </div>
@@ -1633,21 +1633,22 @@
     <section class="screenshot-gallery" id="screenshots">
         <div class="container">
             <h2 class="section-title">See It in Action</h2>
-            <p class="section-subtitle">Mac + iPhone. Dark mode. All your sales data in one place.</p>
+            <p class="section-subtitle">Mac + iPhone + widgets. Dark mode. All your sales data in one place.</p>
             <div class="screenshot-tabs">
                 <button class="screenshot-tab active" onclick="showScreen('dashboard')">Dashboard</button>
-                <button class="screenshot-tab" onclick="showScreen('charts')">Charts</button>
+                <button class="screenshot-tab" onclick="showScreen('charts')">Onboarding</button>
                 <button class="screenshot-tab" onclick="showScreen('orders')">Orders</button>
                 <button class="screenshot-tab" onclick="showScreen('products')">Products</button>
                 <button class="screenshot-tab" onclick="showScreen('settings')">Settings</button>
+                <button class="screenshot-tab" onclick="showScreen('widgets')">Widgets</button>
             </div>
             <div class="screenshot-pair active" data-screen="dashboard">
                 <div class="mac-shot"><img src="images/screenshot-mac-dashboard.png" alt="SaneSales Mac dashboard" loading="lazy"></div>
                 <div class="iphone-shot"><img src="images/screenshot-iphone-dashboard.png" alt="SaneSales iPhone dashboard" loading="lazy"></div>
             </div>
             <div class="screenshot-pair" data-screen="charts">
-                <div class="mac-shot"><img src="images/screenshot-mac-charts.png" alt="SaneSales Mac revenue charts" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-charts.png" alt="SaneSales iPhone revenue charts" loading="lazy"></div>
+                <div class="mac-shot"><img src="images/screenshot-mac-onboarding.png" alt="SaneSales Mac onboarding" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-onboarding.png" alt="SaneSales iPhone onboarding" loading="lazy"></div>
             </div>
             <div class="screenshot-pair" data-screen="orders">
                 <div class="mac-shot"><img src="images/screenshot-mac-orders.png" alt="SaneSales Mac order list" loading="lazy"></div>
@@ -1660,6 +1661,10 @@
             <div class="screenshot-pair" data-screen="settings">
                 <div class="mac-shot"><img src="images/screenshot-mac-settings.png" alt="SaneSales Mac settings" loading="lazy"></div>
                 <div class="iphone-shot"><img src="images/screenshot-iphone-settings.png" alt="SaneSales iPhone settings" loading="lazy"></div>
+            </div>
+            <div class="screenshot-pair" data-screen="widgets">
+                <div class="mac-shot"><img src="images/screenshot-mac-dashboard.png" alt="SaneSales Mac dashboard with widgets support" loading="lazy"></div>
+                <div class="iphone-shot"><img src="images/screenshot-iphone-widget.png" alt="SaneSales iPhone home screen widget" loading="lazy"></div>
             </div>
         </div>
     </section>
@@ -1784,10 +1789,10 @@
                         </tr>
                         <tr>
                             <td class="feature-name">
-                                <span class="feature-label">Open Source</span>
+                                <span class="feature-label">100% Transparent Code</span>
                                 <span class="feature-desc">Audit the code yourself</span>
                             </td>
-                            <td class="highlight-col"><span class="check">AGPL v3</span></td>
+                            <td class="highlight-col"><span class="check">PolyForm Shield</span></td>
                             <td><span class="cross">&#10007;</span></td>
                             <td><span class="cross">&#10007;</span></td>
                             <td><span class="cross">N/A</span></td>
@@ -1847,7 +1852,7 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. $6.99 one-time. You own it forever. All future updates included. No recurring charges, no tiers, no upsells. Or build from source for free — it's AGPL v3 licensed.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. $6.99 one-time. You own it forever. All future updates included. No recurring charges, no tiers, no upsells. Or build from source for free — it's PolyForm Shield licensed.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -1861,7 +1866,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales includes a demo mode with realistic sample data so you can explore every feature before connecting your own API keys. Or clone the repo from GitHub and build it yourself — it's fully open source.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales includes a demo mode with realistic sample data so you can explore every feature before connecting your own API keys. Or clone the repo from GitHub and build it yourself — it's 100% transparent code.</div></div>
                 </div>
             </div>
         </div>
@@ -1946,13 +1951,13 @@
     <section class="sustainability">
         <div class="container">
             <div class="sustainability-card">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">Open Source ≠ Free</h2>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">100% Transparent Code ≠ Free</h2>
                 <div class="sustainability-body">
-                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great open-source tools die when developers can't sustain them. $6.99 keeps SaneSales alive and actively maintained.</p>
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great transparent-code tools die when developers can't sustain them. $6.99 keeps SaneSales alive and actively maintained.</p>
                     <div class="sustainability-options">
                         <a href="https://github.com/sane-apps/SaneSales" class="sustainability-option">
                             <h4>Build It Yourself</h4>
-                            <p>Clone the repo. AGPL v3 Licensed. Build from source for free.</p>
+                            <p>Clone the repo. PolyForm Shield Licensed. Build from source for free.</p>
                         </a>
                         <a href="https://go.saneapps.com/buy/sanesales" class="sustainability-option featured">
                             <h4>Buy — $6.99</h4>
@@ -2034,7 +2039,7 @@
                 <a href="privacy.html">Privacy</a>
                 <a href="https://github.com/sane-apps/SaneSales/issues">Help</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
-                <a href="https://github.com/sane-apps/SaneSales/blob/main/LICENSE">AGPL v3 License</a>
+                <a href="https://polyformproject.org/licenses/shield/1.0.0">PolyForm Shield License</a>
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
