@@ -80,7 +80,7 @@ SaneSales is the opposite:
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
 | **No subscription** | **$6.99 once** | $29+/mo | $99+/mo | Free |
-| **Open source** | PolyForm Shield | ❌ | ❌ | N/A |
+| **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
 
 > **$6.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
 
@@ -121,7 +121,7 @@ API keys are stored in the device Keychain with hardware encryption. Sales data 
 - API keys stored in device Keychain (hardware-encrypted)
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only
-- Open source — [verify yourself](https://github.com/sane-apps/SaneSales)
+- 100% transparent code — [verify yourself](https://github.com/sane-apps/SaneSales)
 
 Full policy: [sanesales.com/privacy](https://sanesales.com/privacy.html)
 
