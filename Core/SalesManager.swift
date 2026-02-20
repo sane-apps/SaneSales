@@ -56,6 +56,10 @@ final class SalesManager {
     private let cache = CacheService()
 
     init() {
+        if CommandLine.arguments.contains("--force-onboarding") {
+            return
+        }
+
         if CommandLine.arguments.contains("--demo")
             || UserDefaults.standard.bool(forKey: "demo_mode") {
             DemoData.loadInto(manager: self)

@@ -64,9 +64,9 @@ appstore:
   support_url: "https://sanesales.com/support"
   review_notes: "SaneSales is read-only analytics software for existing merchants. Users bring their own LemonSqueezy, Gumroad, or Stripe API credentials only to authenticate and fetch their own historical order data. These credentials are not sold by SaneSales, are not used to unlock paid app features, and do not grant any in-app digital content. The iOS app has no purchase flow, no external checkout links, and no account signup. For review without credentials: tap Try Demo Data on onboarding, or open Settings > Data > Enable Demo Mode."
   screenshots:
-    macos: Screenshots/*-light-mac.png
-    ios: Screenshots/*-light-6.7.png
-    ipad: docs/images/screenshot-ipad-*.png
+    macos: Screenshots/appstore-*-dark-mac.png
+    ios: Screenshots/appstore-*-dark-6.7.png
+    ipad: Screenshots/appstore-*-dark-ipad.png
   contact:
     name: "Stephan Joseph"
     phone: "+17277589785"

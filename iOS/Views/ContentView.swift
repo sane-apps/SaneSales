@@ -13,7 +13,11 @@ struct ContentView: View {
 }
 
 struct MainTabView: View {
-    @State private var selectedTab = 0
+    @State private var selectedTab: Int
+
+    init() {
+        _selectedTab = State(initialValue: Self.initialTabSelection)
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -45,6 +49,37 @@ struct MainTabView: View {
                 selectedTab = 3
             }
         #endif
+    }
+
+    private static var initialTabSelection: Int {
+        let args = CommandLine.arguments
+
+        if let inlineValue = args.first(where: { $0.hasPrefix("--screenshot-tab=") })?
+            .split(separator: "=", maxSplits: 1).last {
+            return tabIndex(for: String(inlineValue))
+        }
+
+        if let index = args.firstIndex(of: "--screenshot-tab"),
+           args.indices.contains(index + 1) {
+            return tabIndex(for: args[index + 1])
+        }
+
+        return 0
+    }
+
+    private static func tabIndex(for name: String) -> Int {
+        switch name.lowercased() {
+        case "dashboard":
+            return 0
+        case "orders":
+            return 1
+        case "products":
+            return 2
+        case "settings":
+            return 3
+        default:
+            return 0
+        }
     }
 }
 
