@@ -55,6 +55,7 @@ import SwiftUI
         weak var salesManager: SalesManager?
 
         func applicationDidFinishLaunching(_: Notification) {
+            NSApp.appearance = NSAppearance(named: .darkAqua)
             #if !DEBUG
                 SaneAppMover.moveToApplicationsFolderIfNeeded()
             #endif
@@ -141,6 +142,7 @@ import SwiftUI
             WindowGroup {
                 ContentView()
                     .environment(manager)
+                    .preferredColorScheme(.dark)
                     .frame(minWidth: 600, minHeight: 400)
                     .onAppear {
                         appDelegate.salesManager = manager

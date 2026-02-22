@@ -18,11 +18,19 @@ struct DashboardView: View {
     @Namespace private var pickerNamespace
 
     private enum DashboardLayout {
-        static let sectionSpacing: CGFloat = 21
-        static let cardSpacing: CGFloat = 13
-        static let horizontalPadding: CGFloat = 21
-        static let cardHeight: CGFloat = 168
-        static let contentPadding: CGFloat = 13
+        #if os(macOS)
+            static let sectionSpacing: CGFloat = 16
+            static let cardSpacing: CGFloat = 10
+            static let horizontalPadding: CGFloat = 16
+            static let cardHeight: CGFloat = 152
+            static let contentPadding: CGFloat = 10
+        #else
+            static let sectionSpacing: CGFloat = 21
+            static let cardSpacing: CGFloat = 13
+            static let horizontalPadding: CGFloat = 21
+            static let cardHeight: CGFloat = 168
+            static let contentPadding: CGFloat = 13
+        #endif
     }
 
     var body: some View {
@@ -128,12 +136,12 @@ private extension DashboardView {
                 .accessibilityHidden(true)
 
             Text("SaneSales")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .font(.system(size: 30, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 8)
+        .padding(.top, 4)
     }
 
     private var heroRevenue: some View {
@@ -143,7 +151,7 @@ private extension DashboardView {
                 .foregroundStyle(Color.textMuted)
 
             Text(formatCents(revenueForRange))
-                .font(.saneCardValue(size: 48))
+                .font(.saneCardValue(size: 42))
                 .foregroundStyle(.primary)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
                 .animation(.spring(response: 0.4), value: revenueForRange)
@@ -153,8 +161,8 @@ private extension DashboardView {
                 .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
+        .padding(.top, 4)
+        .padding(.bottom, 2)
     }
 
     // MARK: - Time Range Picker

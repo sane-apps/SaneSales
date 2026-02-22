@@ -386,56 +386,262 @@
         }
 
         .hero-devices {
-            display: flex;
-            align-items: center;
+            display: grid;
+            grid-template-columns: 350px 140px 220px 105px;
+            gap: 18px;
+            max-width: 980px;
+            align-items: end;
             justify-content: center;
-            gap: 40px;
-            max-width: 960px;
             margin: 0 auto;
+            padding-inline: 8px;
+        }
+
+        .hero-device {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .hero-device-label {
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0.95;
+            margin: 0;
+            line-height: 1.15;
+        }
+
+        .hero-device-subheading {
+            margin: -8px auto 14px;
+            text-align: center;
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: lowercase;
+        }
+
+        .hero-platform-note {
+            color: var(--text-muted);
+            font-size: 0.85em;
+            margin: 16px auto 0;
+            text-align: center;
         }
 
         .hero-device-mac {
-            flex: 0 1 600px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: var(--bg-card);
-            box-shadow:
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                0 0 0 1px var(--border);
+            width: 350px;
         }
 
-        .hero-device-mac img {
+        .macbook-lid {
+            position: relative;
+            padding: 3px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #8e9ab0 0%, #5f6a7f 42%, #465164 100%);
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.28);
+        }
+
+        .macbook-lid::before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #1b2431;
+            opacity: 0.95;
+            z-index: 3;
+        }
+
+        .macbook-lid img {
             width: 100%;
-            height: auto;
+            height: 100%;
             display: block;
+            aspect-ratio: 1280 / 900;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 7px;
+            border: none;
+        }
+
+        .macbook-base {
+            width: 102%;
+            height: 14px;
+            margin: -1px -1% 0;
+            border-radius: 0 0 22px 22px;
+            background: linear-gradient(180deg, #aab4c7 0%, #727e94 55%, #586477 100%);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-top: none;
+            position: relative;
+            box-shadow: 0 10px 14px rgba(0, 0, 0, 0.24);
+        }
+
+        .macbook-base::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 1px;
+            transform: translateX(-50%);
+            width: 72px;
+            height: 5px;
+            border-radius: 0 0 8px 8px;
+            background: #4a5568;
+            opacity: 0.85;
         }
 
         .hero-device-iphone {
-            flex: 0 0 220px;
-            border-radius: 28px;
-            overflow: hidden;
-            background: var(--bg-card);
+            width: 140px;
+            padding: 8px;
+            border-radius: 30px;
+            background: linear-gradient(180deg, #1a1e27 0%, #090d13 100%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             box-shadow:
                 0 25px 50px -12px rgba(0, 0, 0, 0.5),
                 0 0 0 1px var(--border);
+            position: relative;
+        }
+
+        .hero-device-iphone::before {
+            content: none;
         }
 
         .hero-device-iphone img {
             width: 100%;
-            height: auto;
+            height: 282px;
             display: block;
+            border-radius: 22px;
+            object-fit: cover;
+            object-position: top center;
         }
 
-        .screenshot-gallery {
-            padding: 80px 0;
+        .hero-device-ipad {
+            width: 220px;
+            padding: 9px;
+            border-radius: 24px;
+            background: linear-gradient(180deg, #1a1e27 0%, #0b1017 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+            position: relative;
         }
+
+        .hero-device-ipad img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 2064 / 2752;
+            display: block;
+            border-radius: 18px;
+            object-fit: contain;
+            object-position: center;
+            background: #05070c;
+        }
+
+        .hero-device-watch {
+            width: 105px;
+            padding: 8px;
+            border-radius: 32px;
+            background: linear-gradient(180deg, #1a1e27 0%, #0b1118 100%);
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+            position: relative;
+        }
+
+        .hero-device-watch::before,
+        .hero-device-watch::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 20px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #2e3646 0%, #1c2430 100%);
+        }
+
+        .hero-device-watch::before {
+            top: -14px;
+        }
+
+        .hero-device-watch::after {
+            bottom: -14px;
+        }
+
+        .hero-device-watch img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 416 / 496;
+            display: block;
+            border-radius: 26px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .hero-device-watch-wrap {
+            transform: translateY(-40px);
+        }
+
+        .hero-device-watch-wrap .hero-device-label {
+            transform: translateY(-12px);
+        }
+
+    .screenshot-gallery {
+        padding: 80px 0;
+    }
+
+    .screenshot-gallery .hero-devices {
+        align-items: flex-start;
+    }
+
+    .screenshot-gallery .hero-device {
+        justify-content: flex-start;
+    }
+
+    .screenshot-gallery .hero-device-watch-wrap {
+        align-self: center;
+        transform: translateY(34px);
+    }
+
+    .screenshot-gallery .hero-device-watch-wrap .hero-device-label {
+        transform: translateY(0);
+    }
+
+    .screenshot-gallery .hero-platform-note {
+        margin: 12px auto 36px;
+    }
 
         .screenshot-tabs {
             display: flex;
             justify-content: center;
             gap: 12px;
-            margin-bottom: 40px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
+        }
+
+        .hero .hero-carousel-subtitle {
+            max-width: none;
+            margin: 0 auto 24px;
+            font-size: 1.02rem;
+            line-height: 1.35;
+        }
+
+        @media (min-width: 769px) {
+            .hero .hero-carousel-subtitle {
+                white-space: nowrap;
+            }
         }
 
         .screenshot-tab {
@@ -456,12 +662,21 @@
             background: rgba(79, 143, 250, 0.08);
         }
 
+        .screenshot-carousel-note {
+            margin: -18px auto 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
         .screenshot-pair {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            gap: 32px;
-            max-width: 960px;
+            gap: 20px;
+            max-width: 1080px;
             margin: 0 auto;
         }
 
@@ -470,20 +685,105 @@
         }
 
         .screenshot-pair .mac-shot {
-            flex: 0 1 600px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            flex: 1 1 520px;
+            max-width: 560px;
+        }
+
+        .screenshot-pair .mac-shot .shot-label {
+            margin-bottom: 8px;
         }
 
         .screenshot-pair .iphone-shot {
-            flex: 0 0 200px;
-            border-radius: 24px;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 0 0 165px;
+        }
+
+        .screenshot-pair .ipad-shot {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 0 0 220px;
+        }
+
+        .screenshot-pair .iphone-shot .hero-device-iphone,
+        .screenshot-pair .ipad-shot .hero-device-ipad {
+            width: 100%;
+        }
+
+        .screenshot-pair .iphone-shot .hero-device-iphone img {
+            height: clamp(250px, 30vw, 330px);
+        }
+
+        .screenshot-pair .ipad-shot .hero-device-ipad img {
+            height: auto;
+            aspect-ratio: 2064 / 2752;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .screenshot-pair .mac-shot .macbook-lid {
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border);
         }
 
-        .screenshot-pair img {
+        .screenshot-pair .mac-shot .macbook-base {
+            height: 12px;
+            margin-top: -1px;
+        }
+
+        .shot-label {
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.74rem;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .watch-showcase {
+            margin-top: 28px;
+            max-width: 540px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .watch-grid {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+    .watch-shot {
+        width: 130px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .watch-shot .shot-label {
+        margin: 0 0 20px;
+    }
+
+        .watch-shot .hero-device-watch {
+            width: 100%;
+        }
+
+        .watch-shot .hero-device-watch img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 416 / 496;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .screenshot-pair img,
+        .watch-shot img {
             width: 100%;
             height: auto;
             display: block;
@@ -1379,33 +1679,66 @@
             }
 
             .hero-devices {
-                flex-direction: column;
-                gap: 24px;
+                gap: 14px;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                max-width: 100%;
             }
 
             .hero-device-mac {
-                flex: 0 1 auto;
                 width: 100%;
+                max-width: 340px;
             }
 
             .hero-device-iphone {
-                flex: 0 0 auto;
-                width: 180px;
+                width: 100%;
+                max-width: 170px;
+            }
+
+            .hero-device-ipad {
+                width: 100%;
+                max-width: 220px;
+            }
+
+            .hero-device-watch {
+                width: 100%;
+                max-width: 118px;
+                padding: 8px;
+            }
+
+            .hero-device-watch-wrap {
+                transform: none;
             }
 
             .screenshot-pair {
-                flex-direction: column;
-                gap: 20px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
             }
 
             .screenshot-pair .mac-shot {
                 flex: 0 1 auto;
                 width: 100%;
+                max-width: 100%;
+                grid-column: 1 / -1;
             }
 
             .screenshot-pair .iphone-shot {
                 flex: 0 0 auto;
-                width: 160px;
+                width: 100%;
+                max-width: 170px;
+                margin: 0 auto;
+            }
+
+            .screenshot-pair .ipad-shot {
+                flex: 0 0 auto;
+                width: 100%;
+                max-width: 190px;
+                margin: 0 auto;
+            }
+
+            .watch-shot {
+                width: 110px;
             }
         }
     </style>
@@ -1458,16 +1791,17 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://go.saneapps.com/buy/sanesales" class="mobile-nav-cta">Download &mdash; $6.99</a>
+        <a href="https://go.saneapps.com/buy/sanesales" class="mobile-nav-cta">Buy Now - $6.99</a>
     </div>
 
-    <section class="hero">
+    <section class="hero" id="screenshots">
         <div class="container">
             <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Sales Tracking</h1>
-            <p class="subtitle animate-in delay-3"><em>LemonSqueezy</em> + <em>Gumroad</em> + <em>Stripe</em> — finally unified.<br>Revenue, orders, charts — all on your device.</p>
+            <p class="subtitle animate-in delay-3"><em>LemonSqueezy</em> + <em>Gumroad</em> + <em>Stripe</em> — finally unified.</p>
             <div class="trust-badges animate-in delay-3">
                 <span>&#128187; Used by Indie Developers Daily</span>
-                <span>&#128274; 100% On-Device &middot; 100% Transparent Code</span>
+                <span>&#128274; 100% On-Device</span>
+                <span>&#128269; 100% Transparent Code</span>
                 <span>&#128176; No Subscription</span>
             </div>
             <div class="cta-buttons animate-in delay-4">
@@ -1477,16 +1811,53 @@
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Download — $6.99
+                    Buy Now - $6.99
                 </a><span class="price-note">*</span>
             </div>
-            <p class="animate-in delay-4" style="color: var(--text-muted); font-size: 0.85em; margin-top: -20px; margin-bottom: 24px;">iOS 17+ / macOS 14+ &middot; Apple Silicon &middot; Also coming to the App Store</p>
-            <div class="hero-devices animate-in delay-5">
-                <div class="hero-device-mac">
-                    <img src="images/screenshot-mac-dashboard.webp" alt="SaneSales on Mac — Revenue dashboard showing today's sales, monthly totals, and provider breakdown" loading="eager">
-                </div>
-                <div class="hero-device-iphone">
-                    <img src="images/screenshot-iphone-dashboard.webp" alt="SaneSales on iPhone — Revenue dashboard with LemonSqueezy, Gumroad, and Stripe totals" loading="eager">
+            <h2 class="section-title animate-in delay-4">See It in Action</h2>
+            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Revenue, orders, charts &mdash; on all devices.</p>
+            <div class="screenshot-tabs animate-in delay-5">
+                <button class="screenshot-tab active" data-screen="charts" onclick="showScreen('charts', this)">Onboarding</button>
+                <button class="screenshot-tab" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
+                <button class="screenshot-tab" data-screen="orders" onclick="showScreen('orders', this)">Orders</button>
+                <button class="screenshot-tab" data-screen="products" onclick="showScreen('products', this)">Products</button>
+                <button class="screenshot-tab" data-screen="settings" onclick="showScreen('settings', this)">Settings</button>
+            </div>
+            <div class="screenshot-pair animate-in delay-5" data-screen="dashboard">
+                <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-dashboard.png" alt="SaneSales macOS dashboard" loading="eager"></div><div class="macbook-base" aria-hidden="true"></div></div>
+                <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-dashboard.png" alt="SaneSales iPhone dashboard" loading="eager"></div></div>
+                <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-dashboard.png" alt="SaneSales iPad dashboard" loading="eager"></div></div>
+            </div>
+            <div class="screenshot-pair active animate-in delay-5" data-screen="charts">
+                <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-onboarding.png" alt="SaneSales macOS onboarding" loading="lazy"></div><div class="macbook-base" aria-hidden="true"></div></div>
+                <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-onboarding.png" alt="SaneSales iPhone onboarding" loading="lazy"></div></div>
+                <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-onboarding.png" alt="SaneSales iPad onboarding" loading="lazy"></div></div>
+            </div>
+            <div class="screenshot-pair animate-in delay-5" data-screen="orders">
+                <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-orders.png" alt="SaneSales macOS order list" loading="lazy"></div><div class="macbook-base" aria-hidden="true"></div></div>
+                <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-orders.png" alt="SaneSales iPhone order list" loading="lazy"></div></div>
+                <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-orders.png" alt="SaneSales iPad order list" loading="lazy"></div></div>
+            </div>
+            <div class="screenshot-pair animate-in delay-5" data-screen="products">
+                <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-products.png" alt="SaneSales macOS product breakdown" loading="lazy"></div><div class="macbook-base" aria-hidden="true"></div></div>
+                <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-products.png" alt="SaneSales iPhone product breakdown" loading="lazy"></div></div>
+                <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-products.png" alt="SaneSales iPad product breakdown" loading="lazy"></div></div>
+            </div>
+            <div class="screenshot-pair animate-in delay-5" data-screen="settings">
+                <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-settings.png" alt="SaneSales macOS settings" loading="lazy"></div><div class="macbook-base" aria-hidden="true"></div></div>
+                <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-settings.png" alt="SaneSales iPhone settings" loading="lazy"></div></div>
+                <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-settings.png" alt="SaneSales iPad settings" loading="lazy"></div></div>
+            </div>
+            <div class="watch-showcase animate-in delay-5">
+                <div class="watch-grid">
+                    <div class="watch-shot">
+                        <p class="shot-label">Apple Watch Dashboard</p>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-dashboard.png" alt="SaneSales Apple Watch dashboard" loading="lazy"></div>
+                    </div>
+                    <div class="watch-shot">
+                        <p class="shot-label">Apple Watch Recent Sales</p>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-recent.png" alt="SaneSales Apple Watch recent sales" loading="lazy"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1495,7 +1866,7 @@
     <!-- How It Works -->
     <section class="how-it-works">
         <div class="container">
-            <h2 class="section-title">Three Steps. That's It.</h2>
+            <h2 class="section-title">Simple Setup</h2>
             <p class="section-subtitle">No accounts, no sign-up, no email. Just paste your API key and go.</p>
             <div class="steps-grid">
                 <div class="step-card">
@@ -1631,41 +2002,38 @@
         </div>
     </section>
 
-    <section class="screenshot-gallery" id="screenshots">
+    <section class="screenshot-gallery">
         <div class="container">
-            <h2 class="section-title">See It in Action</h2>
-            <p class="section-subtitle">Mac + iPhone + widgets. Dark mode. All your sales data in one place.</p>
-            <div class="screenshot-tabs">
-                <button class="screenshot-tab active" onclick="showScreen('dashboard')">Dashboard</button>
-                <button class="screenshot-tab" onclick="showScreen('charts')">Onboarding</button>
-                <button class="screenshot-tab" onclick="showScreen('orders')">Orders</button>
-                <button class="screenshot-tab" onclick="showScreen('products')">Products</button>
-                <button class="screenshot-tab" onclick="showScreen('settings')">Settings</button>
-                <button class="screenshot-tab" onclick="showScreen('widgets')">Widgets</button>
-            </div>
-            <div class="screenshot-pair active" data-screen="dashboard">
-                <div class="mac-shot"><img src="images/screenshot-mac-dashboard.webp" alt="SaneSales Mac dashboard" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-dashboard.webp" alt="SaneSales iPhone dashboard" loading="lazy"></div>
-            </div>
-            <div class="screenshot-pair" data-screen="charts">
-                <div class="mac-shot"><img src="images/screenshot-mac-onboarding.webp" alt="SaneSales Mac onboarding" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-onboarding.webp" alt="SaneSales iPhone onboarding" loading="lazy"></div>
-            </div>
-            <div class="screenshot-pair" data-screen="orders">
-                <div class="mac-shot"><img src="images/screenshot-mac-orders.webp" alt="SaneSales Mac order list" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-orders.webp" alt="SaneSales iPhone order list" loading="lazy"></div>
-            </div>
-            <div class="screenshot-pair" data-screen="products">
-                <div class="mac-shot"><img src="images/screenshot-mac-products.webp" alt="SaneSales Mac product breakdown" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-products.webp" alt="SaneSales iPhone product breakdown" loading="lazy"></div>
-            </div>
-            <div class="screenshot-pair" data-screen="settings">
-                <div class="mac-shot"><img src="images/screenshot-mac-settings.webp" alt="SaneSales Mac settings" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-settings.webp" alt="SaneSales iPhone settings" loading="lazy"></div>
-            </div>
-            <div class="screenshot-pair" data-screen="widgets">
-                <div class="mac-shot"><img src="images/screenshot-mac-dashboard.webp" alt="SaneSales Mac dashboard with widgets support" loading="lazy"></div>
-                <div class="iphone-shot"><img src="images/screenshot-iphone-widget.webp" alt="SaneSales iPhone home screen widget" loading="lazy"></div>
+            <h2 class="section-title">One Price, All Devices</h2>
+            <p class="hero-platform-note">iOS 17+ / iPadOS 17+ / watchOS 10+ / macOS 14+ &middot; Apple Silicon &middot; App Store submission in progress</p>
+            <div class="hero-devices">
+                <div class="hero-device">
+                    <p class="hero-device-label">Mac</p>
+                    <div class="hero-device-mac">
+                        <div class="macbook-lid">
+                            <img src="images/screenshot-mac-dashboard.png" alt="SaneSales revenue dashboard on macOS" loading="lazy">
+                        </div>
+                        <div class="macbook-base" aria-hidden="true"></div>
+                    </div>
+                </div>
+                <div class="hero-device">
+                    <p class="hero-device-label">iPhone</p>
+                    <div class="hero-device-iphone">
+                        <img src="images/screenshot-iphone-dashboard.png" alt="SaneSales on iPhone — Revenue dashboard with LemonSqueezy, Gumroad, and Stripe totals" loading="lazy">
+                    </div>
+                </div>
+                <div class="hero-device">
+                    <p class="hero-device-label">iPad</p>
+                    <div class="hero-device-ipad">
+                        <img src="images/screenshot-ipad-dashboard.png" alt="SaneSales on iPad — Revenue dashboard with cross-platform analytics" loading="lazy">
+                    </div>
+                </div>
+                <div class="hero-device hero-device-watch-wrap">
+                    <p class="hero-device-label">Apple Watch</p>
+                    <div class="hero-device-watch">
+                        <img src="images/screenshot-watch-dashboard.png" alt="SaneSales on Apple Watch — Revenue dashboard on wrist" loading="lazy">
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -2052,7 +2420,7 @@
 
     <!-- Sticky Mobile CTA -->
     <div class="sticky-cta">
-        <a href="https://go.saneapps.com/buy/sanesales?ref=sticky">Download SaneSales — $6.99</a>
+        <a href="https://go.saneapps.com/buy/sanesales?ref=sticky">Buy Now - $6.99</a>
     </div>
 
     <script>
@@ -2076,12 +2444,52 @@
             setTimeout(function() { el.textContent = orig; }, 1500);
         }
 
-        function showScreen(name) {
+        var screenshotOrder = ['charts', 'dashboard', 'orders', 'products', 'settings'];
+        var screenshotIndex = 0;
+        var screenshotTimer = null;
+
+        function showScreen(name, triggerEl) {
+            var pair = document.querySelector('.screenshot-pair[data-screen="' + name + '"]');
+            if (!pair) return;
+
             document.querySelectorAll('.screenshot-pair').forEach(function(p) { p.classList.remove('active'); });
             document.querySelectorAll('.screenshot-tab').forEach(function(t) { t.classList.remove('active'); });
-            document.querySelector('.screenshot-pair[data-screen="' + name + '"]').classList.add('active');
-            event.target.classList.add('active');
+            pair.classList.add('active');
+
+            var targetTab = triggerEl || document.querySelector('.screenshot-tab[data-screen="' + name + '"]');
+            if (targetTab) targetTab.classList.add('active');
+
+            var idx = screenshotOrder.indexOf(name);
+            if (idx >= 0) screenshotIndex = idx;
         }
+
+        function nextScreen() {
+            screenshotIndex = (screenshotIndex + 1) % screenshotOrder.length;
+            showScreen(screenshotOrder[screenshotIndex]);
+        }
+
+        function startScreenshotCarousel() {
+            if (screenshotTimer) clearInterval(screenshotTimer);
+            screenshotTimer = setInterval(nextScreen, 6000);
+        }
+
+        function stopScreenshotCarousel() {
+            if (screenshotTimer) {
+                clearInterval(screenshotTimer);
+                screenshotTimer = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.screenshot-tab').forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    stopScreenshotCarousel();
+                    startScreenshotCarousel();
+                });
+            });
+
+            startScreenshotCarousel();
+        });
     </script>
 </body>
 </html>

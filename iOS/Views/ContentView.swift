@@ -249,7 +249,7 @@ struct OnboardingView: View {
                 .padding(.leading, 4)
                 .accessibilityIdentifier("onboarding.apiKeyHelp")
 
-            Text("Read-only connection. No checkout links and no in-app purchasing.")
+            Text("Read-only connection. No checkout links.")
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
