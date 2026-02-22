@@ -247,6 +247,9 @@ struct WatchDashboardView: View {
                     }
 
                     if !snapshot.recentRows.isEmpty {
+                        let compactRecent = contentWidth < 172
+                        let timeWidth = max(30, min(40, contentWidth * 0.19))
+                        let amountWidth = max(52, min(68, contentWidth * 0.30))
                         WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.salesGreenSoft) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Recent Sales")
@@ -262,17 +265,29 @@ struct WatchDashboardView: View {
                                             .font(.system(size: 11, weight: .semibold))
                                             .foregroundStyle(.white)
                                             .lineLimit(1)
-                                            .minimumScaleFactor(0.85)
+                                            .minimumScaleFactor(0.74)
+                                            .layoutPriority(1)
 
                                         Spacer(minLength: 4)
 
-                                        Text(row.createdAt, style: .time)
-                                            .font(.system(size: 10, weight: .medium))
-                                            .foregroundStyle(.white.opacity(0.92))
+                                        if !compactRecent {
+                                            Text(row.createdAt, style: .time)
+                                                .font(.system(size: 10, weight: .medium))
+                                                .monospacedDigit()
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.8)
+                                                .frame(width: timeWidth, alignment: .trailing)
+                                                .foregroundStyle(.white.opacity(0.92))
+                                                .layoutPriority(2)
+                                        }
 
                                         Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
                                             .font(.system(size: 11, weight: .bold, design: .rounded))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.78)
+                                            .frame(width: amountWidth, alignment: .trailing)
                                             .foregroundStyle(.white)
+                                            .layoutPriority(3)
                                     }
                                     .padding(.vertical, 1)
                                 }

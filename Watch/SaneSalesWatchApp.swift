@@ -7,6 +7,7 @@ struct SaneSalesWatchApp: App {
     var body: some Scene {
         WindowGroup {
             WatchDashboardView(viewModel: viewModel)
+                .preferredColorScheme(.dark)
                 .task {
                     viewModel.refresh(useDemoIfEmpty: CommandLine.arguments.contains("--demo"))
                 }

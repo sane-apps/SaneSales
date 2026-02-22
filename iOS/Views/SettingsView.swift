@@ -202,7 +202,7 @@ struct SettingsView: View {
                         .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
 
-                    Text("Used only to read your existing merchant data. No purchases or paid feature unlocks.")
+                    Text("Used only to read your existing merchant data.")
                         .font(.saneFootnote)
                         .foregroundStyle(Color.textMuted)
                 }
