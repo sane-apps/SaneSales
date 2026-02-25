@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(macOS)
+    import SaneUI
+#endif
 
 struct SettingsView: View {
     @Environment(SalesManager.self) private var manager
@@ -15,6 +18,11 @@ struct SettingsView: View {
     @State private var showExportSheet = false
     @State private var exportURL: URL?
     @AppStorage("demo_mode") private var demoMode = false
+    #if os(macOS)
+        @State private var proUpsellFeature: ProFeature?
+        @State private var showingLicenseEntrySheet = false
+        @Environment(LicenseService.self) private var licenseService
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -24,6 +32,7 @@ struct SettingsView: View {
                     VStack(spacing: 24) {
                         #if os(macOS)
                             macOSAppearanceSection
+                            licenseSection
                         #endif
                         providersSection
                         dataSection
@@ -50,6 +59,14 @@ struct SettingsView: View {
             } message: {
                 Text("This will remove the API key and cached data for this provider.")
             }
+            #if os(macOS)
+            .sheet(item: $proUpsellFeature) { feature in
+                ProUpsellView(feature: feature, licenseService: licenseService)
+            }
+            .sheet(isPresented: $showingLicenseEntrySheet) {
+                LicenseEntryView(licenseService: licenseService)
+            }
+            #endif
         }
     }
 
@@ -63,22 +80,78 @@ struct SettingsView: View {
         private var macOSAppearanceSection: some View {
             GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
                 VStack(spacing: 0) {
-                    Toggle(isOn: Binding(
-                        get: { showInMenuBar },
-                        set: { newValue in
-                            if !newValue, !showInDock { showInDock = true }
-                            showInMenuBar = newValue
+                    if licenseService.isPro {
+                        Toggle(isOn: Binding(
+                            get: { showInMenuBar },
+                            set: { newValue in
+                                if !newValue, !showInDock { showInDock = true }
+                                showInMenuBar = newValue
+                            }
+                        )) {
+                            GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
+                                EmptyView()
+                            }
                         }
-                    )) {
-                        GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
-                            EmptyView()
-                        }
-                    }
-                    .toggleStyle(.switch)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                        .toggleStyle(.switch)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
 
-                    GlassDivider()
+                        if showInMenuBar {
+                            GlassDivider()
+
+                            Toggle(isOn: $showRevenueInMenuBar) {
+                                GlassRow("Show Revenue in Menu Bar", iconAssetName: "CoinTemplate", iconColor: .salesGreen) {
+                                    EmptyView()
+                                }
+                            }
+                            .toggleStyle(.switch)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 12)
+                        }
+
+                        GlassDivider()
+                        GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .purple) {
+                            Text("Enabled")
+                                .font(.saneCallout)
+                                .foregroundStyle(.white.opacity(0.9))
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                        GlassDivider()
+                    } else {
+                        // Menu Bar — Pro locked
+                        Button {
+                            proUpsellFeature = .menuBar
+                        } label: {
+                            GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 10))
+                                    Text("Pro")
+                                        .font(.system(size: 11, weight: .semibold))
+                                }
+                                .foregroundStyle(.teal)
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        GlassDivider()
+                        Button {
+                            proUpsellFeature = .widgets
+                        } label: {
+                            GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .purple) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 10))
+                                    Text("Pro")
+                                        .font(.system(size: 11, weight: .semibold))
+                                }
+                                .foregroundStyle(.teal)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        GlassDivider()
+                    }
 
                     Toggle(isOn: Binding(
                         get: { showInDock },
@@ -94,16 +167,83 @@ struct SettingsView: View {
                     .toggleStyle(.switch)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 12)
+                }
+            }
+        }
+    #endif
 
-                    if showInMenuBar {
-                        GlassDivider()
+    // MARK: - License Section (macOS only)
 
-                        Toggle(isOn: $showRevenueInMenuBar) {
-                            GlassRow("Show Revenue in Menu Bar", iconAssetName: "CoinTemplate", iconColor: .salesGreen) {
-                                EmptyView()
+    #if os(macOS)
+        private var licenseSection: some View {
+            GlassSection("License", icon: "key.fill", iconColor: .teal) {
+                VStack(spacing: 0) {
+                    if licenseService.isPro {
+                        // Pro badge
+                        HStack(spacing: 10) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundStyle(.teal)
+                                .font(.system(size: 16))
+                            Text("Pro")
+                                .font(.saneSubheadlineBold)
+                                .foregroundStyle(.teal)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Color.teal.opacity(0.15)))
+                            Spacer()
+                            if let email = licenseService.licenseEmail {
+                                Text(email)
+                                    .font(.saneFootnote)
+                                    .foregroundStyle(.white.opacity(0.9))
                             }
                         }
-                        .toggleStyle(.switch)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+
+                        GlassDivider()
+
+                        Button("Deactivate License") {
+                            licenseService.deactivate()
+                        }
+                        .font(.saneSubheadline)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+                    } else {
+                        // Free badge + upgrade CTA
+                        HStack(spacing: 10) {
+                            Image(systemName: "person.fill")
+                                .foregroundStyle(.white.opacity(0.6))
+                                .font(.system(size: 14))
+                            Text("Free")
+                                .font(.saneSubheadline)
+                                .foregroundStyle(.white.opacity(0.7))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Color.white.opacity(0.1)))
+                            Spacer()
+                            Button {
+                                NSWorkspace.shared.open(licenseService.checkoutURL)
+                            } label: {
+                                Text("Unlock Pro \u{2014} $6.99")
+                                    .font(.system(size: 12, weight: .semibold))
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.teal)
+                            .controlSize(.small)
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+
+                        GlassDivider()
+
+                        Button("I Have a License Key") {
+                            showingLicenseEntrySheet = true
+                        }
+                        .font(.saneSubheadline)
+                        .foregroundStyle(.teal)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
                     }
@@ -163,12 +303,37 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                Button("Connect Account") {
-                    editingProvider = provider
-                    showingKeyEntry = true
-                }
-                .font(.saneSubheadlineBold)
-                .foregroundStyle(Color.salesGreen)
+                // Gate: free users can connect exactly 1 provider
+                #if os(macOS)
+                    if manager.needsProForAdditionalProvider {
+                        Button {
+                            proUpsellFeature = .multipleProviders
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 10))
+                                Text("Pro")
+                                    .font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundStyle(.teal)
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        Button("Connect Account") {
+                            editingProvider = provider
+                            showingKeyEntry = true
+                        }
+                        .font(.saneSubheadlineBold)
+                        .foregroundStyle(Color.salesGreen)
+                    }
+                #else
+                    Button("Connect Account") {
+                        editingProvider = provider
+                        showingKeyEntry = true
+                    }
+                    .font(.saneSubheadlineBold)
+                    .foregroundStyle(Color.salesGreen)
+                #endif
             }
         }
         .padding(.horizontal, 14)
@@ -193,10 +358,10 @@ struct SettingsView: View {
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
                         .autocorrectionDisabled()
-#if os(iOS)
+                    #if os(iOS)
                         .textInputAutocapitalization(.never)
                         .keyboardType(.asciiCapable)
-#endif
+                    #endif
 
                     Text(keyHelpText)
                         .font(.saneCallout)
@@ -299,15 +464,44 @@ struct SettingsView: View {
                 }
                 if !manager.orders.isEmpty {
                     GlassDivider()
-                    Button {
-                        exportURL = exportOrdersCSV(manager.orders)
-                        if exportURL != nil { showExportSheet = true }
-                    } label: {
-                        GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
-                            Image(systemName: "tablecells")
-                                .foregroundStyle(Color.textMuted)
+                    #if os(macOS)
+                        if !manager.isPro {
+                            // Locked CSV export — show Pro badge
+                            Button {
+                                proUpsellFeature = .csvExport
+                            } label: {
+                                GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "lock.fill")
+                                            .font(.system(size: 10))
+                                        Text("Pro")
+                                            .font(.system(size: 11, weight: .semibold))
+                                    }
+                                    .foregroundStyle(.teal)
+                                }
+                            }
+                        } else {
+                            Button {
+                                exportURL = exportOrdersCSV(manager.orders)
+                                if exportURL != nil { showExportSheet = true }
+                            } label: {
+                                GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
+                                    Image(systemName: "tablecells")
+                                        .foregroundStyle(Color.textMuted)
+                                }
+                            }
                         }
-                    }
+                    #else
+                        Button {
+                            exportURL = exportOrdersCSV(manager.orders)
+                            if exportURL != nil { showExportSheet = true }
+                        } label: {
+                            GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
+                                Image(systemName: "tablecells")
+                                    .foregroundStyle(Color.textMuted)
+                            }
+                        }
+                    #endif
                 }
             }
         }

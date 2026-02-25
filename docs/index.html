@@ -84,8 +84,8 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server. Zero analytics, zero telemetry."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. $6.99 one-time. You own it forever. All future updates included. Or build from source for free — it's PolyForm Shield licensed."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales includes a demo mode with realistic sample data so you can explore every feature. Or clone the repo from GitHub and build it yourself."}}
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. The Basic tier is free forever. Pro is $6.99 one-time — you own it forever with all future updates included. No recurring charges, no subscriptions. Or build from source for free — it's PolyForm Shield licensed."}},
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes! SaneSales is free to download with 1 provider and today's revenue — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock all features. A demo mode with realistic sample data is also included."}}
       ]
     }
     </script>
@@ -106,6 +106,11 @@
 
     <style>
         :root {
+            --phi-xs: 8px;
+            --phi-sm: 13px;
+            --phi-md: 21px;
+            --phi-lg: 34px;
+            --phi-xl: 55px;
             --bg-primary: #08080c;
             --bg-secondary: #0f0f16;
             --bg-card: #16161f;
@@ -1741,6 +1746,149 @@
                 width: 110px;
             }
         }
+
+        /* Pricing Grid */
+        .hero-pricing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--phi-lg);
+            max-width: 700px;
+            margin: 0 auto var(--phi-xxl, 55px);
+            text-align: left;
+            align-items: start;
+        }
+
+        .pricing-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: var(--phi-xl) var(--phi-lg);
+            text-align: left;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            border-color: rgba(79, 143, 250, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 13px 34px rgba(0, 0, 0, 0.3);
+        }
+
+        .pricing-card.featured {
+            background:
+                radial-gradient(ellipse at 80% 20%, rgba(79, 143, 250, 0.12) 0%, transparent 50%),
+                linear-gradient(160deg, #0d1830 0%, #0a1225 100%);
+            border-color: rgba(79, 143, 250, 0.35);
+            box-shadow: 0 8px 34px rgba(79, 143, 250, 0.1);
+        }
+
+        .pricing-card.featured:hover {
+            box-shadow: 0 13px 55px rgba(79, 143, 250, 0.15);
+        }
+
+        .pricing-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: var(--phi-sm);
+        }
+
+        .pricing-card.featured .pricing-label {
+            color: var(--accent);
+        }
+
+        .pricing-price {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.618rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--phi-xs);
+            line-height: 1.1;
+        }
+
+        .pricing-price-note {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: var(--phi-lg);
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: var(--phi-lg);
+        }
+
+        .pricing-features li {
+            padding: var(--phi-xs) 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--phi-xs);
+        }
+
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 3px;
+        }
+
+        .pricing-card.featured .pricing-features li.extra::before {
+            color: var(--accent);
+            content: '★';
+        }
+
+        .pricing-cta {
+            display: block;
+            text-align: center;
+            padding: var(--phi-sm) var(--phi-md);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-cta-free {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .pricing-cta-free:hover {
+            border-color: var(--accent);
+            background: var(--accent-subtle);
+        }
+
+        .pricing-cta-pro {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 21px var(--accent-glow);
+        }
+
+        .pricing-cta-pro:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 34px var(--accent-glow);
+            filter: brightness(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .hero-pricing-grid {
+                grid-template-columns: 1fr;
+                gap: var(--phi-md);
+                max-width: 340px;
+            }
+            .pricing-card {
+                padding: var(--phi-lg) var(--phi-md);
+            }
+            .pricing-price {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1763,11 +1911,11 @@
                 <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
-                <a href="#support" class="btn btn-primary btn-donate">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ffffff" stroke-width="1.5">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Donate
+                    Download Free
                 </a>
             </div>
             <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
@@ -1791,7 +1939,7 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://go.saneapps.com/buy/sanesales" class="mobile-nav-cta">Buy Now - $6.99</a>
+        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="mobile-nav-cta">Download Free</a>
     </div>
 
     <section class="hero" id="screenshots">
@@ -1804,15 +1952,40 @@
                 <span>&#128269; 100% Transparent Code</span>
                 <span>&#128176; No Subscription</span>
             </div>
-            <div class="cta-buttons animate-in delay-4">
-                <a href="https://go.saneapps.com/buy/sanesales?ref=website" class="btn btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Buy Now - $6.99
-                </a><span class="price-note">*</span>
+            <div class="hero-pricing-grid animate-in delay-4" id="pricing">
+                <div class="pricing-card">
+                    <p class="pricing-label">Basic</p>
+                    <p class="pricing-price">Free</p>
+                    <p class="pricing-price-note">Forever — no catch</p>
+                    <ul class="pricing-features">
+                        <li>Connect 1 sales provider</li>
+                        <li>Today's revenue at a glance</li>
+                        <li>Demo mode to explore</li>
+                        <li>iOS companion app (free)</li>
+                        <li>100% on-device privacy</li>
+                    </ul>
+                    <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="pricing-cta pricing-cta-free">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Free
+                    </a>
+                </div>
+                <div class="pricing-card featured">
+                    <p class="pricing-label">Pro</p>
+                    <p class="pricing-price">$6.99<span class="price-note">*</span></p>
+                    <p class="pricing-price-note">One-time — yours forever</p>
+                    <ul class="pricing-features">
+                        <li>Everything in Basic, plus:</li>
+                        <li class="extra">Multiple providers simultaneously</li>
+                        <li class="extra">Revenue charts &amp; trends</li>
+                        <li class="extra">Full order history &amp; search</li>
+                        <li class="extra">CSV export for accounting</li>
+                        <li class="extra">macOS menu bar revenue</li>
+                        <li class="extra">Home Screen &amp; Watch widgets</li>
+                    </ul>
+                    <a href="https://go.saneapps.com/buy/sanesales?ref=website-hero" class="pricing-cta pricing-cta-pro">Buy Pro</a>
+                </div>
             </div>
             <h2 class="section-title animate-in delay-4">See It in Action</h2>
             <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Revenue, orders, charts &mdash; on all devices.</p>
@@ -2221,7 +2394,7 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. $6.99 one-time. You own it forever. All future updates included. No recurring charges, no tiers, no upsells. Or build from source for free — it's PolyForm Shield licensed.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. The Basic tier is free forever. Pro is $6.99 one-time — you own it forever with all future updates included. No recurring charges, no subscriptions. Or build from source for free — it's PolyForm Shield licensed.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2235,7 +2408,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales includes a demo mode with realistic sample data so you can explore every feature before connecting your own API keys. Or clone the repo from GitHub and build it yourself — it's 100% transparent code.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes! SaneSales is free to download with 1 provider and today's revenue — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock multiple providers, charts, full order history, CSV export, and widgets. A demo mode with realistic sample data is also included so you can explore Pro features before connecting your own API keys.</div></div>
                 </div>
             </div>
         </div>
@@ -2322,15 +2495,15 @@
             <div class="sustainability-card">
                 <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">100% Transparent Code ≠ Free</h2>
                 <div class="sustainability-body">
-                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great transparent-code tools die when developers can't sustain them. $6.99 keeps SaneSales alive and actively maintained.</p>
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great transparent-code tools die when developers can't sustain them. Upgrading to Pro keeps SaneSales alive and actively maintained.</p>
                     <div class="sustainability-options">
-                        <a href="https://github.com/sane-apps/SaneSales" class="sustainability-option">
-                            <h4>Build It Yourself</h4>
-                            <p>Clone the repo. PolyForm Shield Licensed. Build from source for free.</p>
+                        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="sustainability-option">
+                            <h4>Download Free</h4>
+                            <p>Free forever. Connect 1 provider, today's revenue, demo mode included.</p>
                         </a>
-                        <a href="https://go.saneapps.com/buy/sanesales" class="sustainability-option featured">
-                            <h4>Buy — $6.99</h4>
-                            <p>One-time purchase. macOS + iOS. Support development.</p>
+                        <a href="https://go.saneapps.com/buy/sanesales?ref=sustainability" class="sustainability-option featured">
+                            <h4>Upgrade to Pro — $6.99</h4>
+                            <p>One-time purchase. Multiple providers, charts, history, export &amp; widgets.</p>
                         </a>
                     </div>
                 </div>
@@ -2420,7 +2593,7 @@
 
     <!-- Sticky Mobile CTA -->
     <div class="sticky-cta">
-        <a href="https://go.saneapps.com/buy/sanesales?ref=sticky">Buy Now - $6.99</a>
+        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg">Download Free</a>
     </div>
 
     <script>

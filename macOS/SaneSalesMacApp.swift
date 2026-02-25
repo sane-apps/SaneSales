@@ -1,3 +1,4 @@
+import SaneUI
 import SwiftUI
 #if !APP_STORE
     import Sparkle
@@ -127,10 +128,15 @@ import SwiftUI
         @NSApplicationDelegateAdaptor(SaneSalesAppDelegate.self) private var appDelegate
         @State private var manager = SalesManager()
         @State private var menuBarManager: MenuBarManager?
+        @State private var licenseService = LicenseService(
+            appName: "SaneSales",
+            checkoutURL: URL(string: "https://go.saneapps.com/buy/sanesales")!
+        )
 
         @AppStorage("showInMenuBar") private var showInMenuBar = true
         @AppStorage("showInDock") private var showInDock = true
         @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
+        @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
 
         init() {
             // Apply initial activation policy
@@ -142,17 +148,71 @@ import SwiftUI
             WindowGroup {
                 ContentView()
                     .environment(manager)
+                    .environment(licenseService)
                     .preferredColorScheme(.dark)
                     .frame(minWidth: 600, minHeight: 400)
                     .onAppear {
                         appDelegate.salesManager = manager
-                        setupMenuBar()
+                        licenseService.checkCachedLicense()
+
+                        // Sync license state into manager for Pro gating
+                        manager.isPro = licenseService.isPro
+
+                        // Fire launch event based on tier
+                        let tier = licenseService.isPro ? "pro" : "free"
+                        let isFirstLaunch = !hasSeenWelcome
+                        Task.detached {
+                            await EventTracker.log("app_launch_\(tier)", app: "sanesales")
+                            if isFirstLaunch, tier == "free" {
+                                await EventTracker.log("new_free_user", app: "sanesales")
+                            }
+                        }
+
+                        // Only set up menu bar if Pro
+                        if licenseService.isPro {
+                            setupMenuBar()
+                        }
                     }
                     .task {
                         if CommandLine.arguments.contains("--demo") ||
                             UserDefaults.standard.bool(forKey: "loadDemoData") {
                             DemoData.loadInto(manager: manager)
                         }
+                    }
+                    .sheet(isPresented: Binding(
+                        get: { !hasSeenWelcome },
+                        set: { isShowing in
+                            if !isShowing {
+                                hasSeenWelcome = true
+                                // Set up menu bar now that welcome is done, if Pro
+                                if licenseService.isPro, showInMenuBar, menuBarManager == nil {
+                                    menuBarManager = MenuBarManager(
+                                        salesManager: manager,
+                                        showRevenue: showRevenueInMenuBar
+                                    )
+                                }
+                            }
+                        }
+                    )) {
+                        WelcomeGateView(
+                            appName: "SaneSales",
+                            appIcon: "dollarsign.circle.fill",
+                            freeFeatures: [
+                                (icon: "link", text: "Connect 1 sales provider"),
+                                (icon: "dollarsign.circle", text: "Today's revenue number"),
+                                (icon: "play.circle", text: "Demo mode to explore")
+                            ],
+                            proFeatures: [
+                                (icon: "checkmark", text: "Everything in Free, plus:"),
+                                (icon: "link.badge.plus", text: "Multiple providers at once"),
+                                (icon: "chart.line.uptrend.xyaxis", text: "Revenue charts & trends"),
+                                (icon: "list.bullet.rectangle", text: "Full order history"),
+                                (icon: "tablecells", text: "CSV export"),
+                                (icon: "menubar.rectangle", text: "Menu bar quick glance"),
+                                (icon: "widget.small", text: "Desktop & Watch widgets")
+                            ],
+                            licenseService: licenseService
+                        )
                     }
             }
             .defaultSize(width: 800, height: 600)
@@ -166,8 +226,16 @@ import SwiftUI
                 menuBarManager?.setShowRevenue(newValue)
             }
             .onChange(of: manager.metrics) { _, _ in
-                // Update menu bar when metrics change
                 menuBarManager?.updateTitle()
+            }
+            .onChange(of: licenseService.isPro) { _, isPro in
+                manager.isPro = isPro
+                if isPro, showInMenuBar, menuBarManager == nil {
+                    menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
+                } else if !isPro {
+                    menuBarManager?.tearDown()
+                    menuBarManager = nil
+                }
             }
             .commands {
                 CommandGroup(replacing: .appSettings) {
@@ -187,9 +255,8 @@ import SwiftUI
         }
 
         private func setupMenuBar() {
-            if showInMenuBar {
-                menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
-            }
+            guard showInMenuBar, menuBarManager == nil else { return }
+            menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
         }
 
         private func showSettingsTab() {
@@ -205,6 +272,7 @@ import SwiftUI
         }
 
         private func handleMenuBarToggle(_ show: Bool) {
+            guard licenseService.isPro else { return }
             if show {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
             } else {

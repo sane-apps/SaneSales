@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(macOS)
+    import SaneUI
+#endif
 
 // MARK: - Time Range
 
@@ -16,6 +19,10 @@ struct DashboardView: View {
     @State private var selectedProviderFilter: SalesProviderType?
     @State private var animateCards = false
     @Namespace private var pickerNamespace
+    #if os(macOS)
+        @State private var proUpsellFeature: ProFeature?
+        @Environment(LicenseService.self) private var licenseService
+    #endif
 
     private enum DashboardLayout {
         #if os(macOS)
@@ -104,7 +111,7 @@ struct DashboardView: View {
                 }
             }
             #if os(iOS)
-                .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.inline)
             #endif
             .refreshable {
                 await manager.refresh()
@@ -119,6 +126,11 @@ struct DashboardView: View {
                     animateCards = true
                 }
             }
+            #if os(macOS)
+            .sheet(item: $proUpsellFeature) { feature in
+                ProUpsellView(feature: feature, licenseService: licenseService)
+            }
+            #endif
         }
     }
 }
@@ -357,20 +369,88 @@ private extension DashboardView {
 private extension DashboardView {
     // MARK: - Chart
 
+    @ViewBuilder
     private var chartSection: some View {
-        GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-            if dashboardMetrics.dailyBreakdown.isEmpty {
-                ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
-                                       description: Text("Sales data will appear here after your first order."))
+        #if os(macOS)
+            if !manager.isPro {
+                // Pro-locked chart: show blurred placeholder + upsell button
+                GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
+                    ZStack {
+                        // Blurred placeholder bars
+                        HStack(alignment: .bottom, spacing: 6) {
+                            ForEach([0.4, 0.6, 0.3, 0.8, 0.5, 0.9, 0.7], id: \.self) { height in
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.salesGreen.opacity(0.3))
+                                    .frame(maxWidth: .infinity, minHeight: 20)
+                                    .frame(height: 160 * height)
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                        .frame(height: 200)
+                        .blur(radius: 8)
+
+                        // Pro overlay
+                        VStack(spacing: 10) {
+                            Image(systemName: "chart.line.uptrend.xyaxis")
+                                .font(.system(size: 28))
+                                .foregroundStyle(.teal)
+                            Text("Revenue Charts")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Text("See daily trends and filter by time range.")
+                                .font(.system(size: 12))
+                                .foregroundStyle(.white.opacity(0.92))
+                                .multilineTextAlignment(.center)
+                            Button {
+                                proUpsellFeature = .charts
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 10))
+                                    Text("Unlock Pro")
+                                        .font(.system(size: 12, weight: .semibold))
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(Capsule().fill(Color.teal))
+                                .foregroundStyle(.white)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .padding()
+                    }
                     .frame(height: 200)
+                }
             } else {
-                ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
-                    .padding(.top, 8)
-                    .frame(height: 220)
-                    .clipped()
-                    .padding(DashboardLayout.contentPadding)
+                GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
+                    if dashboardMetrics.dailyBreakdown.isEmpty {
+                        ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
+                                               description: Text("Sales data will appear here after your first order."))
+                            .frame(height: 200)
+                    } else {
+                        ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
+                            .padding(.top, 8)
+                            .frame(height: 220)
+                            .clipped()
+                            .padding(DashboardLayout.contentPadding)
+                    }
+                }
             }
-        }
+        #else
+            GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
+                if dashboardMetrics.dailyBreakdown.isEmpty {
+                    ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
+                                           description: Text("Sales data will appear here after your first order."))
+                        .frame(height: 200)
+                } else {
+                    ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
+                        .padding(.top, 8)
+                        .frame(height: 220)
+                        .clipped()
+                        .padding(DashboardLayout.contentPadding)
+                }
+            }
+        #endif
     }
 
     private var chartData: [DailySales] {

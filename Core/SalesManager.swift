@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 #if canImport(WidgetKit)
-import WidgetKit
+    import WidgetKit
 #endif
 
 /// Central state manager for all sales data. Coordinates providers, caching, and UI state.
@@ -24,6 +24,18 @@ final class SalesManager {
     var isGumroadConnected = false
     var isStripeConnected = false
 
+    /// Set by the app entry point — used for Pro feature gating on macOS.
+    /// Not set on iOS/watchOS (no licensing on those platforms).
+    var isPro: Bool = false {
+        didSet {
+            #if os(macOS)
+                let defaults = SharedStore.userDefaults()
+                defaults.set(isPro, forKey: SharedStore.macOSWidgetsProEnabledKey)
+            #endif
+            reloadWidgets()
+        }
+    }
+
     var isAnyConnected: Bool {
         isLemonSqueezyConnected || isGumroadConnected || isStripeConnected
     }
@@ -43,6 +55,12 @@ final class SalesManager {
         if isGumroadConnected { result.append(.gumroad) }
         if isStripeConnected { result.append(.stripe) }
         return result
+    }
+
+    /// True when a free-tier user tries to add a second provider.
+    /// Used by the UI to show the Pro upsell instead of connecting.
+    var needsProForAdditionalProvider: Bool {
+        !isPro && connectedProviders.count >= 1
     }
 
     /// Convenience for backward compat (onboarding checks this)
@@ -398,7 +416,7 @@ final class SalesManager {
 
     private func reloadWidgets() {
         #if canImport(WidgetKit)
-        WidgetCenter.shared.reloadAllTimelines()
+            WidgetCenter.shared.reloadAllTimelines()
         #endif
     }
 }

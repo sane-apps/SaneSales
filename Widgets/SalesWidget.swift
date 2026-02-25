@@ -38,6 +38,7 @@ struct SalesWidgetEntry: TimelineEntry {
     let todayOrders: Int
     let monthRevenue: Int
     let currency: String
+    var isLocked: Bool = false
 
     var todayRevenueFormatted: String {
         formatCents(todayRevenue)
@@ -70,11 +71,10 @@ struct SalesWidgetEntry: TimelineEntry {
         }
 
         let symbol = formatter.currencySymbol ?? "$"
-        let compactValue: String
-        if amount >= 1_000_000 {
-            compactValue = compactNumber(amount / 1_000_000, suffix: "M")
+        let compactValue: String = if amount >= 1_000_000 {
+            compactNumber(amount / 1_000_000, suffix: "M")
         } else {
-            compactValue = compactNumber(amount / 1000, suffix: "K")
+            compactNumber(amount / 1000, suffix: "K")
         }
         return "\(symbol)\(compactValue)"
     }
@@ -92,6 +92,15 @@ struct SalesWidgetEntry: TimelineEntry {
         monthRevenue: 15000,
         currency: "USD"
     )
+
+    static let locked = SalesWidgetEntry(
+        date: Date(),
+        todayRevenue: 0,
+        todayOrders: 0,
+        monthRevenue: 0,
+        currency: "USD",
+        isLocked: true
+    )
 }
 
 struct SalesWidgetView: View {
@@ -105,12 +114,12 @@ struct SalesWidgetView: View {
         case .systemMedium:
             mediumWidget
         #if os(iOS) || os(watchOS)
-        case .accessoryInline:
-            inlineAccessoryWidget
-        case .accessoryCircular:
-            circularAccessoryWidget
-        case .accessoryRectangular:
-            rectangularWidget
+            case .accessoryInline:
+                inlineAccessoryWidget
+            case .accessoryCircular:
+                circularAccessoryWidget
+            case .accessoryRectangular:
+                rectangularWidget
         #endif
         default:
             smallWidget
@@ -118,40 +127,52 @@ struct SalesWidgetView: View {
     }
 
     private var smallWidget: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Today")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.92))
-            Text(entry.todayRevenueFormatted)
-                .font(.title.bold())
-                .lineLimit(1)
-                .minimumScaleFactor(0.7)
-            Text("\(entry.todayOrders) orders")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.92))
+        Group {
+            if entry.isLocked {
+                lockedWidgetView
+            } else {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Today")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.92))
+                    Text(entry.todayRevenueFormatted)
+                        .font(.title.bold())
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Text("\(entry.todayOrders) orders")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.92))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var mediumWidget: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Today")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.92))
-                Text(entry.todayRevenueFormatted)
-                    .font(.title.bold())
-                Text("\(entry.todayOrders) orders")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.92))
-            }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 4) {
-                Text("This Month")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.92))
-                Text(entry.monthRevenueFormatted)
-                    .font(.title2.bold())
+        Group {
+            if entry.isLocked {
+                lockedWidgetView
+            } else {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Today")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.92))
+                        Text(entry.todayRevenueFormatted)
+                            .font(.title.bold())
+                        Text("\(entry.todayOrders) orders")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.92))
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text("This Month")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.92))
+                        Text(entry.monthRevenueFormatted)
+                            .font(.title2.bold())
+                    }
+                }
             }
         }
     }
@@ -182,5 +203,20 @@ struct SalesWidgetView: View {
     private var inlineAccessoryWidget: some View {
         Text("Today \(entry.todayRevenueCompact) · \(entry.todayOrders)")
             .lineLimit(1)
+    }
+
+    private var lockedWidgetView: some View {
+        VStack(spacing: 4) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.teal)
+            Text("SaneSales Pro")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+            Text("Unlock widgets")
+                .font(.caption2)
+                .foregroundStyle(.white.opacity(0.92))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
