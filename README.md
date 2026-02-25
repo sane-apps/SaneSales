@@ -210,6 +210,10 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventi
 
 </div>
 
+## Third-Party Notices
+
+Third-party open-source attributions are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 <!-- SANEAPPS_AI_CONTRIB_START -->
 ### Become a Contributor (Even if You Don't Code)
 
