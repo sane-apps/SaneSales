@@ -20,6 +20,12 @@ struct SalesWidgetProvider: TimelineProvider {
 
     private func loadCachedEntry() -> SalesWidgetEntry? {
         let defaults = SharedStore.userDefaults()
+        #if os(macOS)
+            // macOS widgets are a Pro feature.
+            guard defaults.bool(forKey: SharedStore.macOSWidgetsProEnabledKey) else {
+                return .locked
+            }
+        #endif
         guard let data = defaults.data(forKey: SharedStore.cachedOrdersKey) else { return nil }
         guard let orders = try? JSONDecoder().decode([Order].self, from: data) else { return nil }
 

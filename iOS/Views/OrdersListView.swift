@@ -1,10 +1,17 @@
 import SwiftUI
+#if os(macOS)
+    import SaneUI
+#endif
 
 struct OrdersListView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
     @State private var searchText = ""
     @State private var providerFilter: SalesProviderType?
+    #if os(macOS)
+        @State private var proUpsellFeature: ProFeature?
+        @Environment(LicenseService.self) private var licenseService
+    #endif
 
     private var displayedOrders: [Order] {
         manager.filteredOrders(search: searchText, provider: providerFilter)
@@ -24,52 +31,15 @@ struct OrdersListView: View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
-                Group {
-                    if displayedOrders.isEmpty, !manager.isLoading {
-                        if searchText.isEmpty {
-                            ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
-                                                   description: Text("Orders will appear here once you make your first sale."))
-                        } else {
-                            ContentUnavailableView.search(text: searchText)
-                        }
+                #if os(macOS)
+                    if !manager.isPro {
+                        proLockedOrdersView
                     } else {
-                        List {
-                            ForEach(groupedOrders, id: \.0) { section, orders in
-                                Section {
-                                    ForEach(orders) { order in
-                                        NavigationLink(value: order.id) {
-                                            OrderRow(order: order)
-                                        }
-                                        .listRowBackground(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .fill(AnyShapeStyle(.ultraThinMaterial))
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: 10)
-                                                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
-                                                )
-                                                .shadow(
-                                                    color: colorScheme == .dark
-                                                        ? Color.brandBlueGlow.opacity(0.12)
-                                                        : Color.brandBlueGlow.opacity(0.06),
-                                                    radius: 6,
-                                                    x: 0,
-                                                    y: 2
-                                                )
-                                                .padding(.vertical, 2)
-                                        )
-                                    }
-                                } header: {
-                                    Text(section.rawValue)
-                                        .font(.saneSectionHeader)
-                                        .foregroundStyle(Color.textMuted)
-                                        .textCase(nil)
-                                }
-                            }
-                        }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
+                        ordersContent
                     }
-                }
+                #else
+                    ordersContent
+                #endif
             }
             .navigationTitle("Orders")
             .searchable(text: $searchText, prompt: "Search by name, email, product, or order ID")
@@ -86,8 +56,106 @@ struct OrdersListView: View {
                     OrderDetailView(order: order)
                 }
             }
+            #if os(macOS)
+            .sheet(item: $proUpsellFeature) { feature in
+                ProUpsellView(feature: feature, licenseService: licenseService)
+            }
+            #endif
         }
     }
+
+    // MARK: - Orders Content (shared)
+
+    private var ordersContent: some View {
+        Group {
+            if displayedOrders.isEmpty, !manager.isLoading {
+                if searchText.isEmpty {
+                    ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
+                                           description: Text("Orders will appear here once you make your first sale."))
+                } else {
+                    ContentUnavailableView.search(text: searchText)
+                }
+            } else {
+                List {
+                    ForEach(groupedOrders, id: \.0) { section, orders in
+                        Section {
+                            ForEach(orders) { order in
+                                NavigationLink(value: order.id) {
+                                    OrderRow(order: order)
+                                }
+                                .listRowBackground(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(AnyShapeStyle(.ultraThinMaterial))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                                        )
+                                        .shadow(
+                                            color: colorScheme == .dark
+                                                ? Color.brandBlueGlow.opacity(0.12)
+                                                : Color.brandBlueGlow.opacity(0.06),
+                                            radius: 6,
+                                            x: 0,
+                                            y: 2
+                                        )
+                                        .padding(.vertical, 2)
+                                )
+                            }
+                        } header: {
+                            Text(section.rawValue)
+                                .font(.saneSectionHeader)
+                                .foregroundStyle(Color.textMuted)
+                                .textCase(nil)
+                        }
+                    }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+            }
+        }
+    }
+
+    // MARK: - Pro Locked Orders View (macOS only)
+
+    #if os(macOS)
+        private var proLockedOrdersView: some View {
+            VStack(spacing: 20) {
+                Spacer()
+
+                Image(systemName: "list.bullet.rectangle")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.teal)
+
+                Text("Order History")
+                    .font(.system(size: 22, weight: .bold))
+                    .foregroundStyle(.white)
+
+                Text("Browse, search, and filter all your orders\nacross every connected provider.")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.92))
+                    .multilineTextAlignment(.center)
+
+                Button {
+                    proUpsellFeature = .orderHistory
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 12))
+                        Text("Unlock with Pro")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(Capsule().fill(Color.teal))
+                    .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    #endif
 
     private var providerFilterMenu: some View {
         Menu {
