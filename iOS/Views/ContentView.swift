@@ -4,11 +4,7 @@ struct ContentView: View {
     @Environment(SalesManager.self) private var manager
 
     var body: some View {
-        if manager.isConnected {
-            MainTabView()
-        } else {
-            OnboardingView()
-        }
+        MainTabView()
     }
 }
 
