@@ -224,7 +224,9 @@ struct SettingsView: View {
                                 .background(Capsule().fill(Color.white.opacity(0.1)))
                             Spacer()
                             Button {
-                                NSWorkspace.shared.open(licenseService.checkoutURL)
+                                if let url = licenseService.checkoutURL {
+                                    NSWorkspace.shared.open(url)
+                                }
                             } label: {
                                 Text("Unlock Pro \u{2014} $6.99")
                                     .font(.system(size: 12, weight: .semibold))

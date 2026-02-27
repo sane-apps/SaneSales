@@ -118,7 +118,6 @@ targets:
           - "Info.plist"
           - "SaneSalesApp.swift"
           - "**/CLAUDE.md"
-      - path: ../../infra/SaneProcess/shared/MoveToApplications.swift
       - Resources
     dependencies:
       - package: Sparkle
