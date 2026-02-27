@@ -110,7 +110,7 @@ struct SettingsView: View {
                         }
 
                         GlassDivider()
-                        GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .purple) {
+                        GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .teal) {
                             Text("Enabled")
                                 .font(.saneCallout)
                                 .foregroundStyle(.white.opacity(0.9))
@@ -139,7 +139,7 @@ struct SettingsView: View {
                         Button {
                             proUpsellFeature = .widgets
                         } label: {
-                            GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .purple) {
+                            GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .teal) {
                                 HStack(spacing: 4) {
                                     Image(systemName: "lock.fill")
                                         .font(.system(size: 10))
@@ -446,7 +446,7 @@ struct SettingsView: View {
                     GlassRow(
                         demoMode ? "Disable Demo Mode" : "Enable Demo Mode",
                         icon: demoMode ? "sparkles.slash" : "sparkles",
-                        iconColor: demoMode ? .orange : .purple
+                        iconColor: demoMode ? .orange : .teal
                     ) {
                         Text(demoMode ? "On" : "Off")
                             .font(.saneSubheadlineBold)
