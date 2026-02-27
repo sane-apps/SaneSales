@@ -141,7 +141,7 @@ import SwiftUI
         init() {
             // Apply initial activation policy
             let showDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? true
-            ActivationPolicyManager.applyPolicy(showDockIcon: showDock)
+            SaneActivationPolicy.applyPolicy(showDockIcon: showDock)
         }
 
         var body: some Scene {
@@ -220,7 +220,7 @@ import SwiftUI
                 handleMenuBarToggle(newValue)
             }
             .onChange(of: showInDock) { _, newValue in
-                ActivationPolicyManager.applyPolicy(showDockIcon: newValue)
+                SaneActivationPolicy.applyPolicy(showDockIcon: newValue)
             }
             .onChange(of: showRevenueInMenuBar) { _, newValue in
                 menuBarManager?.setShowRevenue(newValue)
