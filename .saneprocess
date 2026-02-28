@@ -55,6 +55,7 @@ mcps:
 appstore:
   enabled: true
   app_id: "6759010976"
+  product_id: "com.sanesales.app.pro.unlock"
   configuration: Release-AppStore
   platforms: [macos, ios]
   ios_scheme: SaneSalesIOS
