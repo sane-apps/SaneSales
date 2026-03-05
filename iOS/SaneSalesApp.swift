@@ -36,15 +36,15 @@ struct SaneSalesApp: App {
                         appIcon: "dollarsign.circle.fill",
                         freeFeatures: [
                             (icon: "link", text: "Connect 1 sales provider"),
-                            (icon: "dollarsign.circle", text: "Today's revenue number"),
+                            (icon: "clock.badge.checkmark", text: "Today's revenue and orders"),
                             (icon: "play.circle", text: "Demo mode to explore")
                         ],
                         proFeatures: [
                             (icon: "checkmark", text: "Everything in Free, plus:"),
-                            (icon: "link.badge.plus", text: "Multiple providers at once"),
-                            (icon: "chart.line.uptrend.xyaxis", text: "Revenue charts & trends"),
+                            (icon: "chart.line.uptrend.xyaxis", text: "Yesterday, 7-day, and 30-day trends"),
                             (icon: "list.bullet.rectangle", text: "Full order history"),
                             (icon: "tablecells", text: "CSV export"),
+                            (icon: "link.badge.plus", text: "Multiple providers at once"),
                             (icon: "menubar.rectangle", text: "Menu bar quick glance")
                         ],
                         licenseService: licenseService
