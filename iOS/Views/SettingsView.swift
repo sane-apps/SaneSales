@@ -21,6 +21,8 @@ struct SettingsView: View {
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
         @State private var showingLicenseEntrySheet = false
+        @State private var automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
+        @State private var updateCheckFrequency = UpdateService.shared.updateCheckFrequency
         @Environment(LicenseService.self) private var licenseService
     #endif
 
@@ -32,6 +34,7 @@ struct SettingsView: View {
                     VStack(spacing: 24) {
                         #if os(macOS)
                             macOSAppearanceSection
+                            softwareUpdatesSection
                             licenseSection
                         #endif
                         providersSection
@@ -76,6 +79,28 @@ struct SettingsView: View {
         @AppStorage("showInMenuBar") private var showInMenuBar = true
         @AppStorage("showInDock") private var showInDock = true
         @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
+
+        private var softwareUpdatesSection: some View {
+            GlassSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .teal) {
+                VStack(spacing: 0) {
+                    SaneSparkleRow(
+                        automaticallyChecks: $automaticallyChecksForUpdates,
+                        checkFrequency: $updateCheckFrequency,
+                        onCheckNow: { UpdateService.shared.checkForUpdates() }
+                    )
+                }
+            }
+            .onAppear {
+                automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
+                updateCheckFrequency = UpdateService.shared.updateCheckFrequency
+            }
+            .onChange(of: automaticallyChecksForUpdates) { _, newValue in
+                UpdateService.shared.automaticallyChecksForUpdates = newValue
+            }
+            .onChange(of: updateCheckFrequency) { _, newValue in
+                UpdateService.shared.updateCheckFrequency = newValue
+            }
+        }
 
         private var macOSAppearanceSection: some View {
             GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
@@ -309,6 +334,9 @@ struct SettingsView: View {
                 #if os(macOS)
                     if manager.needsProForAdditionalProvider {
                         Button {
+                            Task.detached {
+                                await EventTracker.log("multiple_providers_locked_tap", app: "sanesales")
+                            }
                             proUpsellFeature = .multipleProviders
                         } label: {
                             HStack(spacing: 4) {
@@ -539,7 +567,7 @@ struct SettingsView: View {
                     }
                 }
                 GlassDivider()
-                if let url = URL(string: "https://github.com/sane-apps/SaneSales/issues") {
+                if let url = URL(string: "https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md") {
                     Link(destination: url) {
                         GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
                             Image(systemName: "arrow.up.forward.square")

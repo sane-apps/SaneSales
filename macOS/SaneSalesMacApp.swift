@@ -24,6 +24,7 @@ import SwiftUI
                     updaterDelegate: nil,
                     userDriverDelegate: nil
                 )
+                normalizeUpdateCheckFrequency()
             #endif
         }
 
@@ -47,6 +48,29 @@ import SwiftUI
                 #endif
             }
         }
+
+        var updateCheckFrequency: SaneSparkleCheckFrequency {
+            get {
+                #if !APP_STORE
+                    let interval = updaterController?.updater.updateCheckInterval ?? SaneSparkleCheckFrequency.daily.interval
+                    return SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
+                #else
+                    return .daily
+                #endif
+            }
+            set {
+                #if !APP_STORE
+                    updaterController?.updater.updateCheckInterval = newValue.interval
+                #endif
+            }
+        }
+
+        private func normalizeUpdateCheckFrequency() {
+            #if !APP_STORE
+                guard let updater = updaterController?.updater else { return }
+                updater.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
+            #endif
+        }
     }
 
     // MARK: - App Delegate
@@ -58,7 +82,7 @@ import SwiftUI
         func applicationDidFinishLaunching(_: Notification) {
             NSApp.appearance = NSAppearance(named: .darkAqua)
             #if !DEBUG
-                SaneAppMover.moveToApplicationsFolderIfNeeded()
+                if SaneAppMover.moveToApplicationsFolderIfNeeded() { return }
             #endif
         }
 
@@ -199,15 +223,15 @@ import SwiftUI
                             appIcon: "dollarsign.circle.fill",
                             freeFeatures: [
                                 (icon: "link", text: "Connect 1 sales provider"),
-                                (icon: "dollarsign.circle", text: "Today's revenue number"),
+                                (icon: "clock.badge.checkmark", text: "Today's revenue and orders"),
                                 (icon: "play.circle", text: "Demo mode to explore")
                             ],
                             proFeatures: [
                                 (icon: "checkmark", text: "Everything in Free, plus:"),
-                                (icon: "link.badge.plus", text: "Multiple providers at once"),
-                                (icon: "chart.line.uptrend.xyaxis", text: "Revenue charts & trends"),
+                                (icon: "chart.line.uptrend.xyaxis", text: "Yesterday, 7-day, and 30-day trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
+                                (icon: "link.badge.plus", text: "Multiple providers at once"),
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
                                 (icon: "widget.small", text: "Desktop & Watch widgets")
                             ],
