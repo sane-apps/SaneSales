@@ -163,9 +163,9 @@ import SwiftUI
         @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
 
         init() {
-            // Apply initial activation policy
+            // Defer Dock/accessory policy until NSApp exists.
             let showDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? true
-            SaneActivationPolicy.applyPolicy(showDockIcon: showDock)
+            SaneActivationPolicy.applyInitialPolicy(showDockIcon: showDock)
         }
 
         var body: some Scene {
@@ -227,13 +227,13 @@ import SwiftUI
                                 (icon: "play.circle", text: "Demo mode to explore")
                             ],
                             proFeatures: [
-                                (icon: "checkmark", text: "Everything in Free, plus:"),
+                                (icon: "checkmark", text: "Everything in Basic, plus:"),
                                 (icon: "chart.line.uptrend.xyaxis", text: "Yesterday, 7-day, and 30-day trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
                                 (icon: "link.badge.plus", text: "Multiple providers at once"),
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
-                                (icon: "widget.small", text: "Desktop & Watch widgets")
+                                (icon: "widget.small", text: "Desktop widgets")
                             ],
                             licenseService: licenseService
                         )

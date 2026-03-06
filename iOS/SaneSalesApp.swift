@@ -40,12 +40,13 @@ struct SaneSalesApp: App {
                             (icon: "play.circle", text: "Demo mode to explore")
                         ],
                         proFeatures: [
-                            (icon: "checkmark", text: "Everything in Free, plus:"),
+                            (icon: "checkmark", text: "Everything in Basic, plus:"),
                             (icon: "chart.line.uptrend.xyaxis", text: "Yesterday, 7-day, and 30-day trends"),
                             (icon: "list.bullet.rectangle", text: "Full order history"),
                             (icon: "tablecells", text: "CSV export"),
                             (icon: "link.badge.plus", text: "Multiple providers at once"),
-                            (icon: "menubar.rectangle", text: "Menu bar quick glance")
+                            (icon: "rectangle.stack.badge.person.crop", text: "iPhone widgets"),
+                            (icon: "applewatch", text: "Apple Watch quick glance")
                         ],
                         licenseService: licenseService
                     )
