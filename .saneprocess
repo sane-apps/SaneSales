@@ -22,6 +22,9 @@ release:
   min_system_version: "14.0"
   export:
     options_plist: ExportOptions-DevID.plist
+    profiles:
+      - "com.sanesales.app:SaneSales Developer ID"
+      - "com.sanesales.app.widgets:SaneSales Widgets Developer ID"
   archive_extra_args:
     - "-allowProvisioningUpdates"
   dmg:
