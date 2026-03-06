@@ -7,6 +7,15 @@
 	<key>teamID</key>
 	<string>M78L6FXD48</string>
 	<key>signingStyle</key>
-	<string>automatic</string>
+	<string>manual</string>
+	<key>signingCertificate</key>
+	<string>Developer ID Application</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.sanesales.app</key>
+		<string>SaneSales Developer ID</string>
+		<key>com.sanesales.app.widgets</key>
+		<string>SaneSales Widgets Developer ID</string>
+	</dict>
 </dict>
 </plist>
