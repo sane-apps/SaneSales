@@ -21,6 +21,7 @@ struct DashboardView: View {
     @Namespace private var pickerNamespace
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
+        @State private var didLogChartGateView = false
         @Environment(LicenseService.self) private var licenseService
     #endif
 
@@ -122,9 +123,13 @@ struct DashboardView: View {
                 }
             }
             .onAppear {
+                enforceFreeTierRange()
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     animateCards = true
                 }
+            }
+            .onChange(of: manager.isPro) { _, _ in
+                enforceFreeTierRange()
             }
             #if os(macOS)
             .sheet(item: $proUpsellFeature) { feature in
@@ -183,23 +188,27 @@ private extension DashboardView {
         HStack(spacing: 0) {
             ForEach(TimeRange.allCases, id: \.self) { range in
                 Button {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                        selectedRange = range
-                    }
+                    handleRangeSelection(range)
                 } label: {
-                    Text(range.rawValue)
-                        .font(.saneSubheadline)
-                        .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
-                        .frame(maxWidth: .infinity)
-                        .frame(minHeight: 40)
-                        .contentShape(Rectangle())
-                        .background {
-                            if selectedRange == range {
-                                Capsule()
-                                    .fill(Color.salesGreen)
-                                    .matchedGeometryEffect(id: "picker", in: pickerNamespace)
-                            }
+                    HStack(spacing: 4) {
+                        Text(range.rawValue)
+                        if isLockedRange(range) {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 9, weight: .bold))
                         }
+                    }
+                    .font(.saneSubheadline)
+                    .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 40)
+                    .contentShape(Rectangle())
+                    .background {
+                        if selectedRange == range {
+                            Capsule()
+                                .fill(Color.salesGreen)
+                                .matchedGeometryEffect(id: "picker", in: pickerNamespace)
+                        }
+                    }
                 }
                 .buttonStyle(.plain)
             }
@@ -213,7 +222,24 @@ private extension DashboardView {
 
     // MARK: - Comparison Row
 
+    @ViewBuilder
     private var comparisonRow: some View {
+        #if os(macOS)
+            if !manager.isPro {
+                HStack(spacing: DashboardLayout.cardSpacing) {
+                    lockedComparisonPill(label: "vs yesterday", value: "Pro")
+                    lockedComparisonPill(label: "7-day avg", value: "Pro")
+                    lockedComparisonPill(label: "daily trend", value: "Pro")
+                }
+            } else {
+                proComparisonRow
+            }
+        #else
+            proComparisonRow
+        #endif
+    }
+
+    private var proComparisonRow: some View {
         HStack(spacing: DashboardLayout.cardSpacing) {
             comparisonPill(
                 label: "vs prev",
@@ -296,7 +322,20 @@ private extension DashboardView {
 
     // MARK: - Revenue Cards
 
+    @ViewBuilder
     private var revenueCards: some View {
+        #if os(macOS)
+            if !manager.isPro {
+                freeTierRevenueCards
+            } else {
+                proRevenueCards
+            }
+        #else
+            proRevenueCards
+        #endif
+    }
+
+    private var proRevenueCards: some View {
         LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
             SalesCard(
                 title: "Today",
@@ -342,6 +381,49 @@ private extension DashboardView {
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15), value: animateCards)
         }
     }
+
+    #if os(macOS)
+        private var freeTierRevenueCards: some View {
+            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
+                SalesCard(
+                    title: "Today",
+                    value: formatCents(dashboardMetrics.todayRevenue),
+                    subtitle: pluralize(dashboardMetrics.todayOrders, "order"),
+                    icon: "clock.fill",
+                    iconColor: .metricToday,
+                    trend: todayTrend
+                )
+                .frame(height: DashboardLayout.cardHeight)
+                .offset(y: animateCards ? 0 : 20)
+                .opacity(animateCards ? 1 : 0)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
+
+                lockedRevenueCard(
+                    title: "Yesterday",
+                    subtitle: "Compare today vs yesterday",
+                    icon: "arrow.left.circle.fill",
+                    iconColor: .metricMonth,
+                    delay: 0.05
+                )
+
+                lockedRevenueCard(
+                    title: "7-Day",
+                    subtitle: "Spot weekly momentum",
+                    icon: "chart.line.uptrend.xyaxis",
+                    iconColor: .metricRolling30,
+                    delay: 0.10
+                )
+
+                lockedRevenueCard(
+                    title: "Full History",
+                    subtitle: "See the bigger revenue picture",
+                    iconAssetName: "CoinTemplate",
+                    iconColor: .metricAllTime,
+                    delay: 0.15
+                )
+            }
+        }
+    #endif
 
     private var storeCard: some View {
         Group {
@@ -397,7 +479,7 @@ private extension DashboardView {
                             Text("Revenue Charts")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundStyle(.white)
-                            Text("See daily trends and filter by time range.")
+                            Text("Unlock yesterday, 7-day, 30-day, and all-time revenue trends.")
                                 .font(.system(size: 12))
                                 .foregroundStyle(.white.opacity(0.92))
                                 .multilineTextAlignment(.center)
@@ -420,6 +502,13 @@ private extension DashboardView {
                         .padding()
                     }
                     .frame(height: 200)
+                    .onAppear {
+                        guard manager.isConnected, !didLogChartGateView else { return }
+                        didLogChartGateView = true
+                        Task.detached {
+                            await EventTracker.log("chart_locked_viewed", app: "sanesales")
+                        }
+                    }
                 }
             } else {
                 GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
@@ -696,4 +785,118 @@ private extension DashboardView {
     private func pluralize(_ count: Int, _ word: String) -> String {
         "\(count) \(word)\(count == 1 ? "" : "s")"
     }
+
+    private func handleRangeSelection(_ range: TimeRange) {
+        #if os(macOS)
+            if !manager.isPro, range != .today {
+                showChartsUpsell(event: "trend_range_locked_tap")
+                return
+            }
+        #endif
+
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            selectedRange = range
+        }
+    }
+
+    private func enforceFreeTierRange() {
+        #if os(macOS)
+            if !manager.isPro, selectedRange != .today {
+                selectedRange = .today
+            }
+        #endif
+    }
+
+    private func isLockedRange(_ range: TimeRange) -> Bool {
+        #if os(macOS)
+            !manager.isPro && range != .today
+        #else
+            false
+        #endif
+    }
+
+    #if os(macOS)
+        private func showChartsUpsell(event: String) {
+            Task.detached {
+                await EventTracker.log(event, app: "sanesales")
+            }
+            proUpsellFeature = .charts
+        }
+
+        private func lockedComparisonPill(label: String, value: String) -> some View {
+            Button {
+                showChartsUpsell(event: "trend_summary_locked_tap")
+            } label: {
+                VStack(spacing: 4) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 10, weight: .bold))
+                        Text(value)
+                            .font(.saneSubheadline)
+                            .fontWeight(.bold)
+                    }
+                    .foregroundStyle(.teal)
+
+                    Text(label)
+                        .font(.saneCallout)
+                        .foregroundStyle(Color.textMuted)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(.ultraThinMaterial)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                        )
+                )
+            }
+            .buttonStyle(.plain)
+        }
+
+        private func lockedRevenueCard(
+            title: String,
+            subtitle: String,
+            icon: String? = nil,
+            iconAssetName: String? = nil,
+            iconColor: Color,
+            delay: Double
+        ) -> some View {
+            Button {
+                showChartsUpsell(event: "revenue_card_locked_tap")
+            } label: {
+                Group {
+                    if let icon {
+                        SalesCard(
+                            title: title,
+                            value: "Unlock",
+                            subtitle: subtitle,
+                            icon: icon,
+                            iconColor: iconColor
+                        )
+                    } else if let iconAssetName {
+                        SalesCard(
+                            title: title,
+                            value: "Unlock",
+                            subtitle: subtitle,
+                            iconAssetName: iconAssetName,
+                            iconColor: iconColor
+                        )
+                    }
+                }
+                .overlay(alignment: .topTrailing) {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.teal)
+                        .padding(10)
+                }
+            }
+            .buttonStyle(.plain)
+            .frame(height: DashboardLayout.cardHeight)
+            .offset(y: animateCards ? 0 : 20)
+            .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(delay), value: animateCards)
+        }
+    #endif
 }

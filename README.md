@@ -189,7 +189,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventi
 ## Support
 
 - **Email:** [hi@saneapps.com](mailto:hi@saneapps.com)
-- **Bugs:** [GitHub Issues](https://github.com/sane-apps/SaneSales/issues)
+- **Bugs:** [Report a Bug](https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md)
 - **Discussions:** [GitHub Discussions](https://github.com/sane-apps/SaneSales/discussions)
 
 ---
@@ -238,7 +238,7 @@ Please do this for me:
 2) Make the smallest safe fix.
 3) Open a pull request to https://github.com/sane-apps/SaneSales
 4) Give me the pull request link.
-5) Open a GitHub issue in https://github.com/sane-apps/SaneSales/issues that includes:
+5) Open a GitHub issue in https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md that includes:
    - the pull request link
    - a short summary of what changed and why
 6) Also give me the exact issue link.

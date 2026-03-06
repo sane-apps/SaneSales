@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaneSales - Bring Sanity to Your Sales Tracking</title>
-    <meta name="description" content="Track your sales from LemonSqueezy, Gumroad, and Stripe in one beautiful app. Revenue charts, order tracking, CSV export. 100% on-device, no analytics.">
+    <meta name="description" content="Track today's sales free, then unlock yesterday, 7-day trends, full order history, and CSV export for $6.99. 100% on-device.">
     <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
     <meta name="author" content="Mr. Sane">
     <meta name="robots" content="index, follow">
@@ -85,7 +85,8 @@
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server. Zero analytics, zero telemetry."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
         {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. The Basic tier is free forever. Pro is $6.99 one-time — you own it forever with all future updates included. No recurring charges, no subscriptions. Or build from source for free — it's PolyForm Shield licensed."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes! SaneSales is free to download with 1 provider and today's revenue — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock all features. A demo mode with realistic sample data is also included."}}
+        {"@type": "Question", "name": "What happens after I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Send $6.99 (or more) to any listed address, then email hi@saneapps.com with your transaction ID or screenshot. I verify it and reply with your Pro download link."}},
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales is free to download with 1 provider plus today's revenue and orders. Upgrade to Pro for $6.99 to unlock yesterday, 7-day and 30-day trends, full order history, CSV export, and multi-provider tracking. Demo mode is included."}}
       ]
     }
     </script>
@@ -1028,7 +1029,7 @@
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid var(--border);
-            min-width: 700px;
+            min-width: 640px;
         }
 
         .comparison-table th,
@@ -1251,39 +1252,6 @@
             max-height: 300px;
         }
 
-        /* Sticky Mobile CTA */
-        .sticky-cta {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 12px 16px;
-            background: rgba(8, 8, 12, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            z-index: 99;
-            text-align: center;
-        }
-
-        .sticky-cta a {
-            display: block;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-            color: #fff;
-            padding: 14px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0 4px 16px var(--accent-glow);
-        }
-
-        @media (max-width: 768px) {
-            .sticky-cta { display: block; }
-            footer { padding-bottom: 80px !important; }
-        }
-
         /* Support Section */
         .support {
             padding: 80px 0;
@@ -1393,6 +1361,25 @@
             font-weight: 500;
             margin-top: 12px;
         }
+
+.crypto-how {
+    margin-top: 14px;
+    text-align: left;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+}
+
+.crypto-how strong { color: var(--text-primary); }
+.crypto-how ol { margin: 12px 0 0; padding-left: 20px; }
+.crypto-how li { margin-bottom: 6px; }
+.crypto-how a { color: var(--accent); text-decoration: none; }
+.crypto-how a:hover { text-decoration: underline; }
+
 
         /* Cross-Sell Section */
         .more-apps {
@@ -1911,11 +1898,11 @@
                 <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
-                <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="btn btn-primary">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                <a href="https://github.com/sponsors/MrSaneApps" class="btn btn-primary btn-donate">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ffffff" stroke-width="1.5">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                     </svg>
-                    Download Free
+                    Donate
                 </a>
             </div>
             <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
@@ -1939,7 +1926,7 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="mobile-nav-cta">Download Free</a>
+        <a href="https://dist.sanesales.com/updates/SaneSales-1.2.zip" class="mobile-nav-cta" data-cta="download_free">Download Free</a>
     </div>
 
     <section class="hero" id="screenshots">
@@ -1949,22 +1936,22 @@
             <div class="trust-badges animate-in delay-3">
                 <span>&#128187; Used by Indie Developers Daily</span>
                 <span>&#128274; 100% On-Device</span>
-                <span>&#128269; 100% Transparent Code</span>
-                <span>&#128176; No Subscription</span>
+                <span>&#128176; No Subscriptions</span>
+                <span>&#128269; 100% Public Code</span>
             </div>
             <div class="hero-pricing-grid animate-in delay-4" id="pricing">
                 <div class="pricing-card">
                     <p class="pricing-label">Basic</p>
                     <p class="pricing-price">Free</p>
-                    <p class="pricing-price-note">Forever — no catch</p>
+                    <p class="pricing-price-note">Forever — start with today</p>
                     <ul class="pricing-features">
                         <li>Connect 1 sales provider</li>
-                        <li>Today's revenue at a glance</li>
+                        <li>Today's revenue and orders</li>
                         <li>Demo mode to explore</li>
                         <li>iOS companion app (free)</li>
-                        <li>100% on-device privacy</li>
+                        <li>100% On-Device privacy</li>
                     </ul>
-                    <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="pricing-cta pricing-cta-free">
+                    <a href="https://dist.sanesales.com/updates/SaneSales-1.2.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                         </svg>
@@ -1977,14 +1964,14 @@
                     <p class="pricing-price-note">One-time — yours forever</p>
                     <ul class="pricing-features">
                         <li>Everything in Basic, plus:</li>
-                        <li class="extra">Multiple providers simultaneously</li>
-                        <li class="extra">Revenue charts &amp; trends</li>
+                        <li class="extra">Yesterday, 7-day, and 30-day trends</li>
                         <li class="extra">Full order history &amp; search</li>
                         <li class="extra">CSV export for accounting</li>
+                        <li class="extra">Multiple providers simultaneously</li>
                         <li class="extra">macOS menu bar revenue</li>
                         <li class="extra">Home Screen &amp; Watch widgets</li>
                     </ul>
-                    <a href="https://go.saneapps.com/buy/sanesales?ref=website-hero" class="pricing-cta pricing-cta-pro">Buy Pro</a>
+                    <a href="https://go.saneapps.com/buy/sanesales?ref=website-hero" class="pricing-cta pricing-cta-pro" data-cta="buy_pro">Buy Pro</a>
                 </div>
             </div>
             <h2 class="section-title animate-in delay-4">See It in Action</h2>
@@ -2168,8 +2155,8 @@
                             <path d="M9 12l2 2 4-4"/>
                         </svg>
                     </div>
-                    <h3>100% Transparent Code & Private</h3>
-                    <p>100% on-device. Zero analytics. No telemetry. API keys in Keychain with hardware encryption. Audit the code yourself on GitHub.</p>
+                    <h3>&#128269; 100% Public Code & On-Device</h3>
+                    <p>100% On-Device. Zero analytics. No telemetry. API keys in Keychain with hardware encryption. Audit the code yourself on GitHub.</p>
                 </div>
             </div>
         </div>
@@ -2331,7 +2318,7 @@
                         </tr>
                         <tr>
                             <td class="feature-name">
-                                <span class="feature-label">100% Transparent Code</span>
+                                <span class="feature-label">&#128269; 100% Public Code</span>
                                 <span class="feature-desc">Audit the code yourself</span>
                             </td>
                             <td class="highlight-col"><span class="check">PolyForm Shield</span></td>
@@ -2398,6 +2385,13 @@
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
+                        What happens after I pay with crypto?
+                        <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-answer"><div class="faq-answer-inner">Send $6.99 (or more) to one of the addresses below, then email hi@saneapps.com with your transaction ID or screenshot. I verify it and reply with your Pro download link.</div></div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
                         Does it track subscriptions and recurring revenue?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
@@ -2408,7 +2402,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes! SaneSales is free to download with 1 provider and today's revenue — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock multiple providers, charts, full order history, CSV export, and widgets. A demo mode with realistic sample data is also included so you can explore Pro features before connecting your own API keys.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. SaneSales is free to download with 1 provider plus today's revenue and orders — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock yesterday, 7-day and 30-day trends, full order history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
                 </div>
             </div>
         </div>
@@ -2434,23 +2428,32 @@
                 <div class="crypto-grid">
                     <div class="crypto-item crypto-btc">
                         <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg" alt="BTC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
+                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="BTC">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
                     </div>
                     <div class="crypto-item crypto-eth">
                         <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
+                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="ETH">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
                     </div>
                     <div class="crypto-item crypto-sol">
-                        <img class="crypto-logo" src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
+                        <img class="crypto-logo" src="https://solana.com/src/img/branding/solanaLogoMark.svg" alt="SOL" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="SOL">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
                     </div>
                     <div class="crypto-item crypto-zec">
                         <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
+                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="ZEC">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
                     </div>
                 </div>
                 <p class="crypto-hint">Click any address to copy</p>
-            </div>
+            
+<div class="crypto-how">
+    <strong>How it works:</strong>
+    <ol>
+        <li>Send $6.99 (or more) to any address above</li>
+        <li>Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot</li>
+        <li>I'll verify and reply with your download link</li>
+    </ol>
+</div>
+</div>
         </div>
     </section>
 
@@ -2493,17 +2496,17 @@
     <section class="sustainability">
         <div class="container">
             <div class="sustainability-card">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">100% Transparent Code ≠ Free</h2>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">&#128269; 100% Public Code ≠ Free</h2>
                 <div class="sustainability-body">
-                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great transparent-code tools die when developers can't sustain them. Upgrading to Pro keeps SaneSales alive and actively maintained.</p>
+                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great public-code tools die when developers can't sustain them. Upgrading to Pro keeps SaneSales alive and actively maintained.</p>
                     <div class="sustainability-options">
-                        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg" class="sustainability-option">
+                        <a href="https://dist.sanesales.com/updates/SaneSales-1.2.zip" class="sustainability-option">
                             <h4>Download Free</h4>
-                            <p>Free forever. Connect 1 provider, today's revenue, demo mode included.</p>
+                            <p>Free forever. Connect 1 provider, see today's revenue and orders, demo mode included.</p>
                         </a>
                         <a href="https://go.saneapps.com/buy/sanesales?ref=sustainability" class="sustainability-option featured">
                             <h4>Upgrade to Pro — $6.99</h4>
-                            <p>One-time purchase. Multiple providers, charts, history, export &amp; widgets.</p>
+                            <p>One-time purchase. Trends, history, export, widgets, and multi-provider tracking.</p>
                         </a>
                     </div>
                 </div>
@@ -2516,61 +2519,89 @@
             <h2 class="section-title">Built by an Indie Dev, for Indie Devs</h2>
             <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px;">SaneSales was built because I needed it. Now thousands of Mac users trust SaneApps daily.</p>
         </div>
-        <div style="overflow: hidden; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
-            <div style="display: flex; gap: 20px; animation: testimonialScroll 20s linear infinite; width: max-content;" onmouseenter="this.style.animationPlayState='paused'" onmouseleave="this.style.animationPlayState='running'">
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this, cool, will check it."</p>
+        <div class="testimonial-mask" style="overflow: hidden; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
+            <div class="testimonial-track" style="display: flex; gap: 20px; animation: testimonialScroll 20s linear infinite; width: max-content;" onmouseenter="this.style.animationPlayState='paused'" onmouseleave="this.style.animationPlayState='running'">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@manuotel (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"I really think your app deserves much more recognition. I'm rooting for you!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@3ryooo (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Made by a cool dev @MrSaneApps"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@codepinedev (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"This is awesome! Congrats man!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@dyoburon (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"We all appreciate your rapid attention to all these recent concerns."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">MartySkinner (GitHub)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Damn! This looks great. I have been desperately looking for a FOSS alternative."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">u/JustABro_2321 (Reddit)</div>
                 </div>
                 <!-- Duplicated for seamless loop -->
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this, cool, will check it."</p>
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@manuotel (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"I really think your app deserves much more recognition. I'm rooting for you!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@3ryooo (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Made by a cool dev @MrSaneApps"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@codepinedev (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"This is awesome! Congrats man!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@dyoburon (X)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"We all appreciate your rapid attention to all these recent concerns."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">MartySkinner (GitHub)</div>
                 </div>
-                <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
+                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Damn! This looks great. I have been desperately looking for a FOSS alternative."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">u/JustABro_2321 (Reddit)</div>
                 </div>
             </div>
         </div>
     </section>
-    <style>@keyframes testimonialScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }</style>
+    <style>
+        @keyframes testimonialScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-mask {
+                overflow-x: auto !important;
+                overflow-y: hidden;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                mask-image: none !important;
+                -webkit-mask-image: none !important;
+                padding: 0 16px 8px;
+            }
+
+            .testimonial-track {
+                animation: none !important;
+                gap: 14px !important;
+            }
+
+            .testimonial-card {
+                min-width: 82vw !important;
+                max-width: 82vw !important;
+                scroll-snap-align: start;
+            }
+        }
+    </style>
 
     <footer>
         <div class="container">
@@ -2579,22 +2610,16 @@
             <div class="footer-links">
                 <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
                 <a href="privacy.html">Privacy</a>
-                <a href="https://github.com/sane-apps/SaneSales/issues">Help</a>
+                <a href="https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md">Help</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
                 <a href="https://polyformproject.org/licenses/shield/1.0.0">PolyForm Shield License</a>
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
-            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 0.7; margin-bottom: 12px;">*I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane</p>
-            <p class="footer-copy">Made with care by Mr. Sane &nbsp;&bull;&nbsp; &copy; 2026 SaneSales</p>
+            <p class="footer-copy">Made with ❤️ in America by Mr. Sane &middot; &copy; 2026 SaneApps</p>
             <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 12px;">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-secondary);">saneapps.com</a></p>
         </div>
     </footer>
-
-    <!-- Sticky Mobile CTA -->
-    <div class="sticky-cta">
-        <a href="https://dist.sanesales.com/updates/SaneSales-1.1.0.dmg">Download Free</a>
-    </div>
 
     <script>
         // FAQ Toggle
@@ -2610,8 +2635,32 @@
             document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
         }
 
+        const APP_ID = 'sanesales';
+
+        function trackCta(eventName, metadata) {
+            const detail = Object.assign({ app: APP_ID, event: eventName }, metadata || {});
+            if (typeof window.plausible === 'function') {
+                window.plausible(eventName, { props: detail });
+            }
+            if (typeof window.sa_event === 'function') {
+                window.sa_event(eventName, detail);
+            }
+            window.dispatchEvent(new CustomEvent('saneapps:cta', { detail }));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-cta]').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    trackCta(el.getAttribute('data-cta'), { href: el.getAttribute('href') || '' });
+                });
+            });
+        });
+
         function copyToClipboard(el) {
             navigator.clipboard.writeText(el.textContent);
+            if (el.closest('.crypto-item')) {
+                trackCta('crypto_copy', { asset: el.getAttribute('data-asset') || 'UNKNOWN' });
+            }
             var orig = el.textContent;
             el.textContent = 'Copied!';
             setTimeout(function() { el.textContent = orig; }, 1500);

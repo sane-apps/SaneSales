@@ -9,6 +9,7 @@ struct OrdersListView: View {
     @State private var searchText = ""
     @State private var providerFilter: SalesProviderType?
     #if os(macOS)
+        @State private var didLogOrderHistoryGate = false
         @State private var proUpsellFeature: ProFeature?
         @Environment(LicenseService.self) private var licenseService
     #endif
@@ -27,19 +28,21 @@ struct OrdersListView: View {
         }
     }
 
+    #if os(macOS)
+        private var todayOrders: [Order] {
+            displayedOrders.filter(\.isToday)
+        }
+
+        private var lockedHistoryPreview: [Order] {
+            Array(displayedOrders.filter { !$0.isToday }.prefix(3))
+        }
+    #endif
+
     var body: some View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
-                #if os(macOS)
-                    if !manager.isPro {
-                        proLockedOrdersView
-                    } else {
-                        ordersContent
-                    }
-                #else
-                    ordersContent
-                #endif
+                ordersContent
             }
             .navigationTitle("Orders")
             .searchable(text: $searchText, prompt: "Search by name, email, product, or order ID")
@@ -66,7 +69,20 @@ struct OrdersListView: View {
 
     // MARK: - Orders Content (shared)
 
+    @ViewBuilder
     private var ordersContent: some View {
+        #if os(macOS)
+            if !manager.isPro {
+                freeTierOrdersContent
+            } else {
+                fullOrdersContent
+            }
+        #else
+            fullOrdersContent
+        #endif
+    }
+
+    private var fullOrdersContent: some View {
         Group {
             if displayedOrders.isEmpty, !manager.isLoading {
                 if searchText.isEmpty {
@@ -83,23 +99,7 @@ struct OrdersListView: View {
                                 NavigationLink(value: order.id) {
                                     OrderRow(order: order)
                                 }
-                                .listRowBackground(
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(AnyShapeStyle(.ultraThinMaterial))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
-                                        )
-                                        .shadow(
-                                            color: colorScheme == .dark
-                                                ? Color.brandBlueGlow.opacity(0.12)
-                                                : Color.brandBlueGlow.opacity(0.06),
-                                            radius: 6,
-                                            x: 0,
-                                            y: 2
-                                        )
-                                        .padding(.vertical, 2)
-                                )
+                                .listRowBackground(orderRowBackground)
                             }
                         } header: {
                             Text(section.rawValue)
@@ -115,47 +115,125 @@ struct OrdersListView: View {
         }
     }
 
-    // MARK: - Pro Locked Orders View (macOS only)
-
     #if os(macOS)
-        private var proLockedOrdersView: some View {
-            VStack(spacing: 20) {
-                Spacer()
-
-                Image(systemName: "list.bullet.rectangle")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.teal)
-
-                Text("Order History")
-                    .font(.system(size: 22, weight: .bold))
-                    .foregroundStyle(.white)
-
-                Text("Browse, search, and filter all your orders\nacross every connected provider.")
-                    .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.92))
-                    .multilineTextAlignment(.center)
-
-                Button {
-                    proUpsellFeature = .orderHistory
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 12))
-                        Text("Unlock with Pro")
-                            .font(.system(size: 14, weight: .semibold))
+        private var freeTierOrdersContent: some View {
+            Group {
+                if displayedOrders.isEmpty, !manager.isLoading {
+                    if searchText.isEmpty {
+                        ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
+                                               description: Text("Today's orders will appear here after your first sale."))
+                    } else {
+                        ContentUnavailableView.search(text: searchText)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                    .background(Capsule().fill(Color.teal))
-                    .foregroundStyle(.white)
-                }
-                .buttonStyle(.plain)
+                } else {
+                    List {
+                        if todayOrders.isEmpty {
+                            Section {
+                                ContentUnavailableView(
+                                    "Today's Orders",
+                                    systemImage: "clock.badge.checkmark",
+                                    description: Text("Free shows today's orders. Unlock Pro to browse yesterday and older sales.")
+                                )
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 18)
+                            }
+                        } else {
+                            Section {
+                                ForEach(todayOrders) { order in
+                                    NavigationLink(value: order.id) {
+                                        OrderRow(order: order)
+                                    }
+                                    .listRowBackground(orderRowBackground)
+                                }
+                            } header: {
+                                Text("Today")
+                                    .font(.saneSectionHeader)
+                                    .foregroundStyle(Color.textMuted)
+                                    .textCase(nil)
+                            }
+                        }
 
-                Spacer()
+                        if !lockedHistoryPreview.isEmpty || !displayedOrders.isEmpty {
+                            Section {
+                                ForEach(lockedHistoryPreview) { order in
+                                    Button {
+                                        showOrderHistoryUpsell(event: "order_history_locked_tap")
+                                    } label: {
+                                        OrderRow(order: order)
+                                            .blur(radius: 4)
+                                            .overlay(alignment: .trailing) {
+                                                Image(systemName: "lock.fill")
+                                                    .font(.system(size: 11, weight: .bold))
+                                                    .foregroundStyle(.teal)
+                                                    .padding(.trailing, 4)
+                                            }
+                                    }
+                                    .buttonStyle(.plain)
+                                    .listRowBackground(orderRowBackground)
+                                }
+
+                                Button {
+                                    showOrderHistoryUpsell(event: "order_history_locked_tap")
+                                } label: {
+                                    HStack(spacing: 10) {
+                                        Image(systemName: "lock.fill")
+                                            .foregroundStyle(.teal)
+                                        VStack(alignment: .leading, spacing: 2) {
+                                            Text("Unlock full order history")
+                                                .font(.saneSubheadlineBold)
+                                                .foregroundStyle(.primary)
+                                            Text("Browse yesterday and older sales, plus search and filters.")
+                                                .font(.saneCallout)
+                                                .foregroundStyle(Color.textMuted)
+                                        }
+                                        Spacer()
+                                        Text("$6.99")
+                                            .font(.saneSubheadlineBold)
+                                            .foregroundStyle(.teal)
+                                    }
+                                    .padding(.vertical, 8)
+                                }
+                                .buttonStyle(.plain)
+                                .listRowBackground(orderRowBackground)
+                            } header: {
+                                Text("Earlier • Pro")
+                                    .font(.saneSectionHeader)
+                                    .foregroundStyle(Color.textMuted)
+                                    .textCase(nil)
+                            }
+                        }
+                    }
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    .onAppear {
+                        guard manager.isConnected, !didLogOrderHistoryGate else { return }
+                        didLogOrderHistoryGate = true
+                        Task.detached {
+                            await EventTracker.log("order_history_gate_seen", app: "sanesales")
+                        }
+                    }
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     #endif
+
+    private var orderRowBackground: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .fill(AnyShapeStyle(.ultraThinMaterial))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+            )
+            .shadow(
+                color: colorScheme == .dark
+                    ? Color.brandBlueGlow.opacity(0.12)
+                    : Color.brandBlueGlow.opacity(0.06),
+                radius: 6,
+                x: 0,
+                y: 2
+            )
+            .padding(.vertical, 2)
+    }
 
     private var providerFilterMenu: some View {
         Menu {
@@ -184,6 +262,15 @@ struct OrdersListView: View {
                     : "Filter providers")
         }
     }
+
+    #if os(macOS)
+        private func showOrderHistoryUpsell(event: String) {
+            Task.detached {
+                await EventTracker.log(event, app: "sanesales")
+            }
+            proUpsellFeature = .orderHistory
+        }
+    #endif
 }
 
 // MARK: - Order Row

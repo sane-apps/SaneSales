@@ -63,11 +63,42 @@ appstore:
   age_rating: "4+"
   privacy_policy_url: "https://sanesales.com/privacy"
   support_url: "https://sanesales.com/support"
+  marketing_url: "https://sanesales.com"
+  metadata:
+    macos:
+      subtitle: "Unified Revenue Dashboard"
+      promotional_text: "Track LemonSqueezy, Gumroad, and Stripe revenue in one native dashboard with charts, filters, exports, and menu bar totals."
+      description: >-
+        SaneSales unifies your LemonSqueezy, Gumroad, and Stripe data in one native dashboard so you can track real performance without juggling tabs.
+        Monitor revenue trends, orders, products, and refunds with fast filters, clear charts, and CSV export for accounting workflows.
+        API keys stay in Keychain and data stays on-device, so your business analytics remain private and under your control.
+      keywords: "sales,revenue,analytics,lemonsqueezy,gumroad,stripe,dashboard,business"
+      whats_new: "Improved sync reliability, faster dashboard updates, and cleaner chart performance across providers."
+      marketing_url: "https://sanesales.com"
+    ios:
+      subtitle: "Sales Dashboard on the Go"
+      promotional_text: "Track LemonSqueezy, Gumroad, and Stripe revenue on iPhone and iPad with widgets, charts, and offline-friendly sync."
+      description: >-
+        SaneSales brings your core revenue metrics to iPhone and iPad so you can check real performance anywhere.
+        Connect LemonSqueezy, Gumroad, and Stripe to view orders, products, refunds, and trends in one clean native app.
+        Use widgets for quick snapshots, drill into details with fast filters, and keep your data private with on-device storage.
+      keywords: "sales,revenue,analytics,lemonsqueezy,gumroad,stripe,widgets,business"
+      whats_new: "Faster provider sync, smoother chart interactions, and reliability improvements for daily tracking."
+      marketing_url: "https://sanesales.com"
   review_notes: "SaneSales is read-only analytics software for existing merchants. Users bring their own LemonSqueezy, Gumroad, or Stripe API credentials only to authenticate and fetch their own historical order data. These credentials are not sold by SaneSales, are not used to unlock paid app features, and do not grant any in-app digital content. The iOS app has no purchase flow, no external checkout links, and no account signup. For review without credentials: tap Try Demo Data on onboarding, or open Settings > Data > Enable Demo Mode."
+  accessibility_declarations:
+    publish: true
+    mac:
+      supports_dark_interface: true
+    iphone:
+      supports_dark_interface: true
+    ipad:
+      supports_dark_interface: true
   screenshots:
     macos: Screenshots/appstore-*-dark-mac.png
     ios: Screenshots/appstore-*-dark-6.7.png
     ipad: Screenshots/appstore-*-dark-ipad.png
+    watch: Screenshots/appstore-*-dark-watch.png
   strip_frameworks:
     - Sparkle.framework
   contact:
