@@ -140,14 +140,17 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.finance"
         CFBundleDisplayName: SaneSales
+        AppStoreProductID: "com.sanesales.app.pro.unlock"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         SUFeedURL: "https://sanesales.com/appcast.xml"
         SUPublicEDKey: "7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU="
     settings:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -169,6 +172,7 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_IDENTITY: "Apple Distribution"
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
           INFOPLIST_KEY_SUFeedURL: ""
           INFOPLIST_KEY_SUPublicEDKey: ""
@@ -248,14 +252,16 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: SaneSales Widgets
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
         PRODUCT_NAME: SaneSalesWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: M78L6FXD48
         ARCHS: arm64
@@ -292,6 +298,10 @@ targets:
           - "**/CLAUDE.md"
       - Resources
     dependencies:
+      - package: SaneUI
+      - target: SaneSalesWatch
+        embed: true
+        codeSign: true
       - target: SaneSalesIOSWidgets
         embed: true
         codeSign: true
@@ -306,6 +316,9 @@ targets:
       path: iOS/Info.plist
       properties:
         CFBundleDisplayName: SaneSales
+        AppStoreProductID: "com.sanesales.app.pro.unlock"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.finance"
         UILaunchScreen: {}
@@ -322,8 +335,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -342,7 +355,9 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales iOS App Store"
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
 
   # iOS Tests
@@ -417,14 +432,16 @@ targets:
       path: Widgets/Info.plist
       properties:
         CFBundleDisplayName: SaneSales Widgets
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
         PRODUCT_NAME: SaneSalesIOSWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ioswidgets
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
         SWIFT_VERSION: 6.0
         IPHONEOS_DEPLOYMENT_TARGET: 17.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -442,7 +459,9 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ioswidgets
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales iOS Widgets App Store"
 
   # watchOS App (read-only companion)
   SaneSalesWatch:
@@ -459,9 +478,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
-      - Resources/Assets.xcassets/CoinTemplate.imageset/CoinTemplate_2x.png
-      - Resources/Assets.xcassets/CoinTemplate.imageset/CoinTemplate_3x.png
-      - Resources/Assets.xcassets/CoinColor.imageset/CoinColor_3x.png
+      - Resources/Assets.xcassets
     dependencies:
       - target: SaneSalesWatchWidgets
         embed: true
@@ -475,16 +492,20 @@ targets:
       path: Watch/Info.plist
       properties:
         CFBundleDisplayName: SaneSales
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
     settings:
       base:
         PRODUCT_NAME: SaneSalesWatch
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
+        ASSETCATALOG_COMPILER_APPICON_NAME: WatchAppIcon
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         TARGETED_DEVICE_FAMILY: "4"
         DEVELOPMENT_TEAM: M78L6FXD48
+        INFOPLIST_KEY_CFBundleIconName: WatchAppIcon
       configs:
         Debug:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.watch
@@ -499,7 +520,9 @@ targets:
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
           INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sanesales.app
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Watch App Store"
 
   # watchOS Widget extension (Smart Stack)
   SaneSalesWatchWidgets:
@@ -525,14 +548,16 @@ targets:
       path: Watch/WidgetInfo.plist
       properties:
         CFBundleDisplayName: SaneSales Watch Widgets
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
     settings:
       base:
         PRODUCT_NAME: SaneSalesWatchWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
-        MARKETING_VERSION: "1.2.1"
-        CURRENT_PROJECT_VERSION: "1201"
+        MARKETING_VERSION: "1.2.2"
+        CURRENT_PROJECT_VERSION: "1203"
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         TARGETED_DEVICE_FAMILY: "4"
@@ -549,4 +574,6 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Development"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Watch Widgets App Store"

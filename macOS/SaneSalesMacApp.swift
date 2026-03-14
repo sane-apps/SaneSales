@@ -6,6 +6,37 @@ import SwiftUI
 
 #if os(macOS)
 
+    @MainActor
+    final class WindowActionStorage {
+        static let shared = WindowActionStorage()
+        var openWindow: ((String) -> Void)?
+
+        func capture(_ action: OpenWindowAction) {
+            openWindow = { id in
+                action(id: id)
+            }
+        }
+
+        func showMainWindow() {
+            let mainWindow = NSApp.windows.first(where: {
+                $0.canBecomeMain &&
+                    !$0.isSheet &&
+                    $0.identifier?.rawValue.contains("main") == true
+            })
+
+            if let mainWindow {
+                if mainWindow.isMiniaturized {
+                    mainWindow.deminiaturize(nil)
+                }
+                mainWindow.makeKeyAndOrderFront(nil)
+            } else {
+                openWindow?("main")
+            }
+
+            NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
     // MARK: - Update Service
 
     @MainActor
@@ -81,7 +112,7 @@ import SwiftUI
 
         func applicationDidFinishLaunching(_: Notification) {
             NSApp.appearance = NSAppearance(named: .darkAqua)
-            #if !DEBUG
+            #if !DEBUG && !APP_STORE
                 if SaneAppMover.moveToApplicationsFolderIfNeeded() { return }
             #endif
         }
@@ -113,12 +144,7 @@ import SwiftUI
         }
 
         @objc private func dockShowWindow() {
-            NSApp.activate(ignoringOtherApps: true)
-            if let mainWindow = NSApp.windows.first(where: {
-                !$0.isSheet && $0.className != "NSStatusBarWindow"
-            }) {
-                mainWindow.makeKeyAndOrderFront(nil)
-            }
+            WindowActionStorage.shared.showMainWindow()
         }
 
         @objc private func dockRefresh() {
@@ -128,17 +154,14 @@ import SwiftUI
             }
         }
 
-        @objc private func dockCheckForUpdates() {
-            UpdateService.shared.checkForUpdates()
-        }
+        #if !APP_STORE
+            @objc private func dockCheckForUpdates() {
+                UpdateService.shared.checkForUpdates()
+            }
+        #endif
 
         @objc private func dockOpenSettings() {
-            NSApp.activate(ignoringOtherApps: true)
-            if let mainWindow = NSApp.windows.first(where: {
-                !$0.isSheet && $0.className != "NSStatusBarWindow"
-            }) {
-                mainWindow.makeKeyAndOrderFront(nil)
-            }
+            WindowActionStorage.shared.showMainWindow()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 NotificationCenter.default.post(name: .showSettingsTab, object: nil)
             }
@@ -152,27 +175,41 @@ import SwiftUI
         @NSApplicationDelegateAdaptor(SaneSalesAppDelegate.self) private var appDelegate
         @State private var manager = SalesManager()
         @State private var menuBarManager: MenuBarManager?
-        @State private var licenseService = LicenseService(
-            appName: "SaneSales",
-            checkoutURL: URL(string: "https://go.saneapps.com/buy/sanesales")!
-        )
+        #if APP_STORE
+            @State private var licenseService = LicenseService(
+                appName: "SaneSales",
+                purchaseBackend: .appStore(productID: "com.sanesales.app.pro.unlock")
+            )
+        #else
+            @State private var licenseService = LicenseService(
+                appName: "SaneSales",
+                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanesales")
+            )
+        #endif
 
         @AppStorage("showInMenuBar") private var showInMenuBar = true
-        @AppStorage("showInDock") private var showInDock = true
+        @AppStorage("showInDock") private var showInDock = SaneBackgroundAppDefaults.showDockIcon
         @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
         @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
 
         init() {
             // Defer Dock/accessory policy until NSApp exists.
-            let showDock = UserDefaults.standard.object(forKey: "showInDock") as? Bool ?? true
+            let showDock = Self.defaultShowDockPreference()
             SaneActivationPolicy.applyInitialPolicy(showDockIcon: showDock)
         }
 
+        nonisolated static func defaultShowDockPreference(
+            userDefaults: UserDefaults = .standard
+        ) -> Bool {
+            userDefaults.object(forKey: "showInDock") as? Bool ?? SaneBackgroundAppDefaults.showDockIcon
+        }
+
         var body: some Scene {
-            WindowGroup {
+            WindowGroup(id: "main") {
                 ContentView()
                     .environment(manager)
                     .environment(licenseService)
+                    .modifier(WindowActionCapture())
                     .preferredColorScheme(.dark)
                     .frame(minWidth: 600, minHeight: 400)
                     .onAppear {
@@ -185,6 +222,9 @@ import SwiftUI
                         // Fire launch event based on tier
                         let tier = licenseService.isPro ? "pro" : "free"
                         let isFirstLaunch = !hasSeenWelcome
+                        if SaneBackgroundAppDefaults.launchAtLogin {
+                            _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
+                        }
                         Task.detached {
                             await EventTracker.log("app_launch_\(tier)", app: "sanesales")
                             if isFirstLaunch, tier == "free" {
@@ -235,7 +275,12 @@ import SwiftUI
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
                                 (icon: "widget.small", text: "Desktop widgets")
                             ],
-                            licenseService: licenseService
+                            licenseService: licenseService,
+                            secondaryCompletionActionLabel: "Try Demo Data",
+                            secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
+                            onSecondaryCompletion: {
+                                manager.enableDemoMode()
+                            }
                         )
                     }
             }
@@ -284,12 +329,7 @@ import SwiftUI
         }
 
         private func showSettingsTab() {
-            NSApp.activate(ignoringOtherApps: true)
-            if let mainWindow = NSApp.windows.first(where: {
-                !$0.isSheet && $0.className != "NSStatusBarWindow"
-            }) {
-                mainWindow.makeKeyAndOrderFront(nil)
-            }
+            WindowActionStorage.shared.showMainWindow()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 NotificationCenter.default.post(name: .showSettingsTab, object: nil)
             }
@@ -303,6 +343,17 @@ import SwiftUI
                 menuBarManager?.tearDown()
                 menuBarManager = nil
             }
+        }
+    }
+
+    struct WindowActionCapture: ViewModifier {
+        @Environment(\.openWindow) private var openWindow
+
+        func body(content: Content) -> some View {
+            content
+                .onAppear {
+                    WindowActionStorage.shared.capture(openWindow)
+                }
         }
     }
 

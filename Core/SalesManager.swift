@@ -4,6 +4,40 @@ import SwiftUI
     import WidgetKit
 #endif
 
+enum SalesSetupFlowPolicy {
+    static func shouldShowInitialSetup(
+        hasSeenWelcome: Bool,
+        demoModeEnabled: Bool,
+        hasConnectedProviders: Bool,
+        hasAnyData: Bool,
+        hasError: Bool,
+        arguments: [String] = CommandLine.arguments,
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Bool {
+        if arguments.contains("--force-onboarding") {
+            return true
+        }
+
+        if arguments.contains("--skip-onboarding") || environment["SANEAPPS_SKIP_ONBOARDING"] == "1" {
+            return false
+        }
+
+        if arguments.contains("--demo") || demoModeEnabled {
+            return false
+        }
+
+        if !hasSeenWelcome || !hasConnectedProviders {
+            return true
+        }
+
+        if hasError && !hasAnyData {
+            return true
+        }
+
+        return false
+    }
+}
+
 /// Central state manager for all sales data. Coordinates providers, caching, and UI state.
 @MainActor
 @Observable
@@ -74,6 +108,8 @@ final class SalesManager {
     private let cache = CacheService()
 
     init() {
+        applyDebugLaunchBootstrapIfNeeded()
+
         if CommandLine.arguments.contains("--force-onboarding") {
             return
         }
@@ -88,6 +124,40 @@ final class SalesManager {
         isStripeConnected = KeychainService.exists(account: KeychainService.stripeAPIKey)
         loadCachedData()
         configureProviders()
+    }
+
+    private func applyDebugLaunchBootstrapIfNeeded() {
+        #if DEBUG
+            let environment = ProcessInfo.processInfo.environment
+
+            if environment["SANEAPPS_SKIP_ONBOARDING"] == "1"
+                || CommandLine.arguments.contains("--skip-onboarding") {
+                UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
+            }
+
+            seedProviderKey(
+                from: environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"],
+                account: KeychainService.lemonSqueezyAPIKey
+            )
+            seedProviderKey(
+                from: environment["SANEAPPS_TEST_GUMROAD_API_KEY_B64"],
+                account: KeychainService.gumroadAPIKey
+            )
+            seedProviderKey(
+                from: environment["SANEAPPS_TEST_STRIPE_API_KEY_B64"],
+                account: KeychainService.stripeAPIKey
+            )
+        #endif
+    }
+
+    private func seedProviderKey(from encodedValue: String?, account: String) {
+        guard let encodedValue,
+              let data = Data(base64Encoded: encodedValue),
+              let decoded = String(data: data, encoding: .utf8),
+              !decoded.isEmpty
+        else { return }
+
+        KeychainService.save(string: decoded, account: account)
     }
 
     // MARK: - Configuration

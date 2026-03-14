@@ -200,19 +200,23 @@ struct ProviderTests {
 private final class MockURLProtocol: URLProtocol {
     typealias Handler = (URLRequest) throws -> (HTTPURLResponse, Data)
 
-    private static var handlers: [String: Handler] = [:]
-    private static let lock = NSLock()
+    private final class HandlerStore {
+        let lock = NSLock()
+        var handlers: [String: Handler] = [:]
+    }
+
+    private static let store = HandlerStore()
 
     static func withHandler(sessionID: String, _ handler: @escaping Handler) {
-        lock.lock()
-        handlers[sessionID] = handler
-        lock.unlock()
+        store.lock.lock()
+        store.handlers[sessionID] = handler
+        store.lock.unlock()
     }
 
     static func removeHandler(sessionID: String) {
-        lock.lock()
-        handlers.removeValue(forKey: sessionID)
-        lock.unlock()
+        store.lock.lock()
+        store.handlers.removeValue(forKey: sessionID)
+        store.lock.unlock()
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
@@ -229,9 +233,9 @@ private final class MockURLProtocol: URLProtocol {
         let sessionID = request.value(forHTTPHeaderField: "X-Mock-Session") ?? ""
         let handler: Handler?
 
-        Self.lock.lock()
-        handler = Self.handlers[sessionID]
-        Self.lock.unlock()
+        Self.store.lock.lock()
+        handler = Self.store.handlers[sessionID]
+        Self.store.lock.unlock()
 
         guard let handler else {
             client.urlProtocol(self, didFailWithError: URLError(.unsupportedURL))

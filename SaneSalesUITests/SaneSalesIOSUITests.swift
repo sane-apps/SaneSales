@@ -1,5 +1,6 @@
 import XCTest
 
+@MainActor
 final class SaneSalesIOSUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -65,11 +66,57 @@ final class SaneSalesIOSUITests: XCTestCase {
         }
     }
 
+    func testSeededLemonSqueezyKeySkipsOnboarding() throws {
+        let apiKeyB64 = try loadSeededLemonSqueezyKeyBase64()
+
+        let app = XCUIApplication()
+        app.launchArguments += ["--sane-no-keychain", "--skip-onboarding"]
+        app.launchEnvironment["SANEAPPS_DISABLE_KEYCHAIN"] = "1"
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"] = apiKeyB64
+        app.launch()
+
+        let tabView = app.tabBars.firstMatch
+        XCTAssertTrue(tabView.waitForExistence(timeout: 8))
+        XCTAssertFalse(app.otherElements["onboarding.view"].exists)
+    }
+
+    func testSeededLemonSqueezyKeyLoadsDashboardWithoutParseError() throws {
+        let apiKeyB64 = try loadSeededLemonSqueezyKeyBase64()
+
+        let app = XCUIApplication()
+        app.launchArguments += ["--sane-no-keychain", "--skip-onboarding"]
+        app.launchEnvironment["SANEAPPS_DISABLE_KEYCHAIN"] = "1"
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"] = apiKeyB64
+        app.launch()
+
+        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 8))
+        XCTAssertFalse(app.staticTexts["Failed to parse response from server."].waitForExistence(timeout: 8))
+    }
+
     @discardableResult
     private func launchOnboarding() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += ["--uitest-reset"]
         app.launch()
         return app
+    }
+
+    private func loadSeededLemonSqueezyKeyBase64() throws -> String {
+        if let apiKeyB64 = ProcessInfo.processInfo.environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"]?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+           !apiKeyB64.isEmpty {
+            return apiKeyB64
+        }
+
+        let fallbackURL = URL(fileURLWithPath: "/tmp/saneapps_test_lemonsqueezy_api_key.b64")
+        if let fallback = try? String(contentsOf: fallbackURL, encoding: .utf8)
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+           !fallback.isEmpty {
+            return fallback
+        }
+
+        throw XCTSkip("No seeded LemonSqueezy test key found")
     }
 }
