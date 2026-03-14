@@ -30,5 +30,7 @@
 	<string>https://sanesales.com/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 </dict>
 </plist>
