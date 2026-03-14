@@ -71,13 +71,7 @@ final class MenuBarManager: NSObject {
     }
 
     private func activateWindow() {
-        NSApp.activate(ignoringOtherApps: true)
-
-        if let mainWindow = NSApp.windows.first(where: {
-            !$0.isSheet && $0.className != "NSStatusBarWindow"
-        }) {
-            mainWindow.makeKeyAndOrderFront(nil)
-        }
+        WindowActionStorage.shared.showMainWindow()
     }
 
     private func showMenu() {
@@ -95,9 +89,11 @@ final class MenuBarManager: NSObject {
 
         menu.addItem(.separator())
 
-        let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(menuCheckForUpdates), keyEquivalent: "")
-        updateItem.target = self
-        menu.addItem(updateItem)
+        #if !APP_STORE
+            let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(menuCheckForUpdates), keyEquivalent: "")
+            updateItem.target = self
+            menu.addItem(updateItem)
+        #endif
 
         let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(menuOpenSettings), keyEquivalent: ",")
         settingsItem.target = self
@@ -118,7 +114,7 @@ final class MenuBarManager: NSObject {
     // MARK: - Menu Actions
 
     @objc private func menuShowWindow() {
-        activateWindow()
+        WindowActionStorage.shared.showMainWindow()
     }
 
     @objc private func menuRefresh() {
@@ -126,12 +122,14 @@ final class MenuBarManager: NSObject {
         Task { await manager.refresh() }
     }
 
-    @objc private func menuCheckForUpdates() {
-        UpdateService.shared.checkForUpdates()
-    }
+    #if !APP_STORE
+        @objc private func menuCheckForUpdates() {
+            UpdateService.shared.checkForUpdates()
+        }
+    #endif
 
     @objc private func menuOpenSettings() {
-        activateWindow()
+        WindowActionStorage.shared.showMainWindow()
         // Switch to Settings tab after window is visible
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
             NotificationCenter.default.post(name: .showSettingsTab, object: nil)

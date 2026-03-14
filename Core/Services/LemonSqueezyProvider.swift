@@ -36,6 +36,9 @@ actor LemonSqueezyProvider: SalesProvider {
 
         let orders = response.data.map { item -> Order in
             let attrs = item.attributes
+            let customerEmail = attrs.userEmail?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let customerName = attrs.userName?.trimmingCharacters(in: .whitespacesAndNewlines)
+
             return Order(
                 id: item.id,
                 orderNumber: attrs.orderNumber,
@@ -45,8 +48,10 @@ actor LemonSqueezyProvider: SalesProvider {
                 tax: attrs.tax,
                 discountTotal: attrs.discountTotal,
                 currency: attrs.currency,
-                customerEmail: attrs.userEmail,
-                customerName: attrs.userName,
+                customerEmail: customerEmail,
+                customerName: customerName?.isEmpty == false
+                    ? customerName!
+                    : (customerEmail.isEmpty ? "Unknown Customer" : customerEmail),
                 productName: attrs.firstOrderItem?.productName ?? "Unknown",
                 variantName: attrs.firstOrderItem?.variantName,
                 createdAt: attrs.createdAt,
@@ -238,8 +243,8 @@ private struct LSOrderAttributes: Decodable {
     let tax: Int
     let discountTotal: Int
     let currency: String
-    let userEmail: String
-    let userName: String
+    let userEmail: String?
+    let userName: String?
     let taxName: String?
     let taxRate: String?
     let taxInclusive: Bool
@@ -362,13 +367,7 @@ extension JSONDecoder {
         decoder.dateDecodingStrategy = .custom { decoder in
             let container = try decoder.singleValueContainer()
             let string = try container.decode(String.self)
-            let formatter = ISO8601DateFormatter()
-            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            if let date = formatter.date(from: string) {
-                return date
-            }
-            formatter.formatOptions = [.withInternetDateTime]
-            if let date = formatter.date(from: string) {
+            if let date = LemonSqueezyDateParser.parse(string) {
                 return date
             }
             throw DecodingError.dataCorruptedError(
@@ -378,4 +377,44 @@ extension JSONDecoder {
         }
         return decoder
     }()
+}
+
+private enum LemonSqueezyDateParser {
+    private static func fractionalFormatter() -> ISO8601DateFormatter {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }
+
+    private static func plainFormatter() -> ISO8601DateFormatter {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter
+    }
+
+    static func parse(_ string: String) -> Date? {
+        if let date = fractionalFormatter().date(from: string) ?? plainFormatter().date(from: string) {
+            return date
+        }
+
+        guard let normalized = normalizedFractionalSeconds(in: string) else {
+            return nil
+        }
+        return fractionalFormatter().date(from: normalized) ?? plainFormatter().date(from: normalized)
+    }
+
+    private static func normalizedFractionalSeconds(in string: String) -> String? {
+        guard let dotIndex = string.firstIndex(of: ".") else { return nil }
+        let suffixStart = string[dotIndex...].firstIndex(where: { $0 == "Z" || $0 == "+" || $0 == "-" })
+        guard let suffixStart else { return nil }
+
+        let prefix = string[..<dotIndex]
+        let fractionStart = string.index(after: dotIndex)
+        let fraction = string[fractionStart..<suffixStart]
+        guard !fraction.isEmpty else { return nil }
+
+        let digits = String(fraction.prefix(3)).padding(toLength: 3, withPad: "0", startingAt: 0)
+        let suffix = string[suffixStart...]
+        return "\(prefix).\(digits)\(suffix)"
+    }
 }

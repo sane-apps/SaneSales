@@ -1,4 +1,7 @@
 import SwiftUI
+#if os(iOS)
+    import UIKit
+#endif
 #if os(macOS)
     import SaneUI
 #endif
@@ -6,6 +9,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.openURL) private var openURL
     @State private var showingKeyEntry = false
     @State private var editingProvider: SalesProviderType?
     @State private var newAPIKey = ""
@@ -227,7 +231,7 @@ struct SettingsView: View {
 
                         GlassDivider()
 
-                        Button("Deactivate License") {
+                        Button(LicenseService.deactivateLicenseLabel()) {
                             licenseService.deactivate()
                         }
                         .font(.saneSubheadline)
@@ -248,31 +252,58 @@ struct SettingsView: View {
                                 .padding(.vertical, 2)
                                 .background(Capsule().fill(Color.white.opacity(0.1)))
                             Spacer()
-                            Button {
-                                if let url = licenseService.checkoutURL {
-                                    NSWorkspace.shared.open(url)
+                            if licenseService.usesAppStorePurchase {
+                                Button {
+                                    Task { await licenseService.purchasePro() }
+                                } label: {
+                                    Text(licenseService.isPurchasing
+                                        ? "Processing..."
+                                        : "Unlock Pro \u{2014} \(licenseService.appStoreDisplayPrice ?? "$6.99")")
+                                        .font(.system(size: 12, weight: .semibold))
                                 }
-                            } label: {
-                                Text("Unlock Pro \u{2014} $6.99")
-                                    .font(.system(size: 12, weight: .semibold))
+                                .buttonStyle(.borderedProminent)
+                                .tint(.teal)
+                                .controlSize(.small)
+                                .disabled(licenseService.isPurchasing)
+                            } else {
+                                Button {
+                                    if let url = licenseService.checkoutURL {
+                                        NSWorkspace.shared.open(url)
+                                    }
+                                } label: {
+                                    Text("Unlock Pro \u{2014} $6.99")
+                                        .font(.system(size: 12, weight: .semibold))
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.teal)
+                                .controlSize(.small)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.teal)
-                            .controlSize(.small)
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
 
                         GlassDivider()
 
-                        Button("I Have a License Key") {
-                            showingLicenseEntrySheet = true
+                        if licenseService.usesAppStorePurchase {
+                            Button("Restore Purchases") {
+                                Task { await licenseService.restorePurchases() }
+                            }
+                            .font(.saneSubheadline)
+                            .foregroundStyle(.teal)
+                            .disabled(licenseService.isPurchasing)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 12)
+                        } else {
+                            Button(LicenseService.usePurchaseKeyLabel()) {
+                                showingLicenseEntrySheet = true
+                            }
+                            .font(.saneSubheadline)
+                            .foregroundStyle(.teal)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 12)
                         }
-                        .font(.saneSubheadline)
-                        .foregroundStyle(.teal)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
                     }
                 }
             }
@@ -567,15 +598,16 @@ struct SettingsView: View {
                     }
                 }
                 GlassDivider()
-                if let url = URL(string: "https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md") {
-                    Link(destination: url) {
-                        GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
-                            Image(systemName: "arrow.up.forward.square")
-                                .foregroundStyle(Color.textMuted)
-                                .font(.saneSubheadline)
-                        }
+                Button {
+                    openBugReport()
+                } label: {
+                    GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
+                        Image(systemName: "arrow.up.forward.square")
+                            .foregroundStyle(Color.textMuted)
+                            .font(.saneSubheadline)
                     }
                 }
+                .buttonStyle(.plain)
                 GlassDivider()
                 if let url = URL(string: "https://saneapps.com/privacy") {
                     Link(destination: url) {
@@ -668,6 +700,111 @@ struct SettingsView: View {
             manager.enableDemoMode()
             demoMode = true
         }
+    }
+
+    private func openBugReport() {
+        let draft = BugReportComposer.makeDraft(from: .init(
+            appName: "SaneSales",
+            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown",
+            buildNumber: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown",
+            platformDescription: BugReportComposer.currentPlatformDescription(),
+            deviceDescription: BugReportComposer.currentDeviceDescription(),
+            demoModeEnabled: demoMode,
+            connectedProviders: manager.connectedProviders.map(\.displayName),
+            isProUnlocked: manager.isPro,
+            currentError: manager.error?.localizedDescription
+        ))
+
+        if let url = draft.issueURL(githubRepo: "SaneSales") {
+            openURL(url)
+        }
+    }
+}
+
+struct BugReportDraft {
+    let title: String
+    let body: String
+
+    func issueURL(githubRepo: String) -> URL? {
+        var components = URLComponents(string: "https://github.com/sane-apps/\(githubRepo)/issues/new")
+        components?.queryItems = [
+            URLQueryItem(name: "labels", value: "bug"),
+            URLQueryItem(name: "title", value: title),
+            URLQueryItem(name: "body", value: body)
+        ]
+        return components?.url
+    }
+}
+
+struct BugReportContext {
+    let appName: String
+    let appVersion: String
+    let buildNumber: String
+    let platformDescription: String
+    let deviceDescription: String
+    let demoModeEnabled: Bool
+    let connectedProviders: [String]
+    let isProUnlocked: Bool
+    let currentError: String?
+}
+
+enum BugReportComposer {
+    static func makeDraft(from context: BugReportContext) -> BugReportDraft {
+        let providers = context.connectedProviders.isEmpty ? "None" : context.connectedProviders.joined(separator: ", ")
+        let errorLine = context.currentError?.isEmpty == false ? context.currentError! : "None"
+
+        let body = """
+        ## What happened?
+        <describe what happened>
+
+        ## What did you expect to happen?
+        <what should have happened instead>
+
+        ## Steps to reproduce
+        1.
+        2.
+        3.
+
+        ## App + device details
+        - App: \(context.appName)
+        - App version: \(context.appVersion) (\(context.buildNumber))
+        - Platform: \(context.platformDescription)
+        - Device: \(context.deviceDescription)
+        - Demo mode: \(context.demoModeEnabled ? "On" : "Off")
+        - Connected providers: \(providers)
+        - Pro unlocked: \(context.isProUnlocked ? "Yes" : "No")
+
+        ## Optional diagnostics
+        - Current in-app error: \(errorLine)
+        - Add screenshots or screen recordings if helpful.
+        """
+
+        return BugReportDraft(
+            title: "[Bug]: describe the problem",
+            body: body
+        )
+    }
+
+    static func currentPlatformDescription() -> String {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        #if os(iOS)
+            return "iOS \(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        #elseif os(macOS)
+            return "macOS \(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        #else
+            return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
+        #endif
+    }
+
+    @MainActor
+    static func currentDeviceDescription() -> String {
+        #if os(iOS)
+            UIDevice.current.model
+        #elseif os(macOS)
+            ProcessInfo.processInfo.hostName
+        #else
+            "Unknown"
+        #endif
     }
 }
 

@@ -1,56 +1,45 @@
 import SwiftUI
-import SaneUI
+import Foundation
 
 @main
 struct SaneSalesApp: App {
     @State private var manager = SalesManager()
-    @State private var licenseService = LicenseService(
-        appName: "SaneSales",
-        checkoutURL: URL(string: "https://go.saneapps.com/buy/sanesales")!
-    )
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
+    @AppStorage("demo_mode") private var demoModeEnabled = false
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Group {
+                if shouldShowInitialSetup {
+                    OnboardingView()
+                } else {
+                    ContentView()
+                }
+            }
                 .environment(manager)
-                .environment(licenseService)
                 .preferredColorScheme(.dark)
-                .onAppear {
-                    licenseService.checkCachedLicense()
-                    manager.isPro = licenseService.isPro
-                }
-                .onChange(of: licenseService.isPro) { _, isPro in
-                    manager.isPro = isPro
-                }
-                .sheet(isPresented: Binding(
-                    get: { !hasSeenWelcome },
-                    set: { isShowing in
-                        if !isShowing {
-                            hasSeenWelcome = true
-                        }
+                .overlay(alignment: .bottomLeading) {
+                    if shouldShowDebugStartupOverlay {
+                        debugStartupOverlay
                     }
-                )) {
-                    WelcomeGateView(
-                        appName: "SaneSales",
-                        appIcon: "dollarsign.circle.fill",
-                        freeFeatures: [
-                            (icon: "link", text: "Connect 1 sales provider"),
-                            (icon: "clock.badge.checkmark", text: "Today's revenue and orders"),
-                            (icon: "play.circle", text: "Demo mode to explore")
-                        ],
-                        proFeatures: [
-                            (icon: "checkmark", text: "Everything in Basic, plus:"),
-                            (icon: "chart.line.uptrend.xyaxis", text: "Yesterday, 7-day, and 30-day trends"),
-                            (icon: "list.bullet.rectangle", text: "Full order history"),
-                            (icon: "tablecells", text: "CSV export"),
-                            (icon: "link.badge.plus", text: "Multiple providers at once"),
-                            (icon: "rectangle.stack.badge.person.crop", text: "iPhone widgets"),
-                            (icon: "applewatch", text: "Apple Watch quick glance")
-                        ],
-                        licenseService: licenseService
-                    )
-                    .preferredColorScheme(.dark)
+                }
+                .onAppear {
+                    debugLogStartupState(reason: "appear")
+                }
+                .onChange(of: hasSeenWelcome) { _, _ in
+                    debugLogStartupState(reason: "hasSeenWelcome")
+                }
+                .onChange(of: demoModeEnabled) { _, _ in
+                    debugLogStartupState(reason: "demoMode")
+                }
+                .onChange(of: manager.isAnyConnected) { _, _ in
+                    debugLogStartupState(reason: "connectedProviders")
+                }
+                .onChange(of: manager.error?.localizedDescription) { _, _ in
+                    debugLogStartupState(reason: "error")
+                }
+                .onChange(of: manager.orders.count) { _, _ in
+                    debugLogStartupState(reason: "orders")
                 }
                 .task {
                     if CommandLine.arguments.contains("--uitest-reset") {
@@ -61,5 +50,55 @@ struct SaneSalesApp: App {
                     }
                 }
         }
+    }
+
+    private var shouldShowInitialSetup: Bool {
+        SalesSetupFlowPolicy.shouldShowInitialSetup(
+            hasSeenWelcome: hasSeenWelcome,
+            demoModeEnabled: demoModeEnabled,
+            hasConnectedProviders: manager.isAnyConnected,
+            hasAnyData: !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty,
+            hasError: manager.error != nil
+        )
+    }
+
+    private func debugLogStartupState(reason: String) {
+        #if DEBUG
+            let hasAnyData = !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty
+            NSLog(
+                "%@",
+                "[SaneSales iOS startup] reason=\(reason) bundle=\(Bundle.main.bundleIdentifier ?? "unknown") " +
+                    "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
+                    "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
+                    "hasAnyData=\(hasAnyData) error=\(manager.error?.localizedDescription ?? "none") " +
+                    "showSetup=\(shouldShowInitialSetup)"
+            )
+        #endif
+    }
+
+    private var shouldShowDebugStartupOverlay: Bool {
+        #if DEBUG
+            CommandLine.arguments.contains("--debug-startup-overlay")
+        #else
+            false
+        #endif
+    }
+
+    @ViewBuilder
+    private var debugStartupOverlay: some View {
+        #if DEBUG
+            let hasAnyData = !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty
+            Text(
+                "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
+                    "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
+                    "data=\(hasAnyData) error=\(manager.error == nil ? "none" : "yes") " +
+                    "setup=\(shouldShowInitialSetup)"
+            )
+            .font(.system(size: 10, weight: .medium, design: .monospaced))
+            .foregroundStyle(.white)
+            .padding(8)
+            .background(.black.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
+            .padding(12)
+        #endif
     }
 }

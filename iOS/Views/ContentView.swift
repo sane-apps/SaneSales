@@ -86,6 +86,7 @@ struct OnboardingView: View {
     private let providerOptions: [SalesProviderType] = [.lemonSqueezy, .gumroad, .stripe]
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var selectedProvider: SalesProviderType = .lemonSqueezy
     @State private var apiKey = ""
     @State private var isValidating = false
@@ -286,6 +287,7 @@ struct OnboardingView: View {
 
     private var demoButton: some View {
         Button("Try Demo Data") {
+            hasSeenWelcome = true
             manager.enableDemoMode()
         }
         .buttonStyle(.bordered)
@@ -312,7 +314,11 @@ struct OnboardingView: View {
                 await manager.setStripeAPIKey(key)
             }
             isValidating = false
-            if !success { showError = true }
+            if success {
+                hasSeenWelcome = true
+            } else {
+                showError = true
+            }
         }
     }
 
