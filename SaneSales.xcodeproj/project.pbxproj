@@ -1019,7 +1019,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1041,7 +1041,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.dev;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1064,7 +1064,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Widgets Developer ID";
@@ -1086,7 +1086,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1193,7 +1193,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1221,7 +1221,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1338,7 +1338,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1429,7 +1429,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1452,7 +1452,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Watch Widgets App Store";
@@ -1503,7 +1503,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1526,7 +1526,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1556,7 +1556,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Developer ID";
@@ -1582,7 +1582,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1608,7 +1608,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales iOS Widgets App Store";
@@ -1650,7 +1650,7 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1672,7 +1672,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1703,7 +1703,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1805,7 +1805,7 @@
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Watch App Store";
