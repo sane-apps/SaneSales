@@ -12,6 +12,32 @@ enum TimeRange: String, CaseIterable {
     case allTime = "All"
 }
 
+enum SaneSalesFreeTierPolicy {
+    static let unlockedDashboardRanges: [TimeRange] = [.today, .sevenDays, .thirtyDays]
+    static let recentOrderPreviewLimit = 20
+
+    static func locksDashboardRange(_ range: TimeRange, isPro: Bool) -> Bool {
+        !isPro && !unlockedDashboardRanges.contains(range)
+    }
+
+    static func preferredDashboardRange(
+        currentRange: TimeRange,
+        isPro: Bool,
+        todayOrders: Int,
+        thirtyDayOrders: Int
+    ) -> TimeRange {
+        if locksDashboardRange(currentRange, isPro: isPro) {
+            return .sevenDays
+        }
+
+        if !isPro, currentRange == .today, todayOrders == 0, thirtyDayOrders > 0 {
+            return .sevenDays
+        }
+
+        return currentRange
+    }
+}
+
 struct DashboardView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
@@ -56,6 +82,9 @@ struct DashboardView: View {
 
                         // Hero revenue
                         heroRevenue
+
+                        // Context note
+                        dashboardContextNote
 
                         // Time range picker
                         timeRangePicker
@@ -129,6 +158,9 @@ struct DashboardView: View {
                 }
             }
             .onChange(of: manager.isPro) { _, _ in
+                enforceFreeTierRange()
+            }
+            .onChange(of: manager.orders.count) { _, _ in
                 enforceFreeTierRange()
             }
             #if os(macOS)
@@ -225,15 +257,7 @@ private extension DashboardView {
     @ViewBuilder
     private var comparisonRow: some View {
         #if os(macOS)
-            if !manager.isPro {
-                HStack(spacing: DashboardLayout.cardSpacing) {
-                    lockedComparisonPill(label: "vs yesterday", value: "Pro")
-                    lockedComparisonPill(label: "7-day avg", value: "Pro")
-                    lockedComparisonPill(label: "daily trend", value: "Pro")
-                }
-            } else {
-                proComparisonRow
-            }
+            proComparisonRow
         #else
             proComparisonRow
         #endif
@@ -398,25 +422,33 @@ private extension DashboardView {
                 .opacity(animateCards ? 1 : 0)
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
 
-                lockedRevenueCard(
-                    title: "Yesterday",
-                    subtitle: "Compare today vs yesterday",
-                    icon: "arrow.left.circle.fill",
+                SalesCard(
+                    title: "7 Days",
+                    value: formatCents(revenueForDays(7)),
+                    subtitle: pluralize(ordersForDays(7), "order"),
+                    icon: "calendar",
                     iconColor: .metricMonth,
-                    delay: 0.05
                 )
+                .frame(height: DashboardLayout.cardHeight)
+                .offset(y: animateCards ? 0 : 20)
+                .opacity(animateCards ? 1 : 0)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
+
+                SalesCard(
+                    title: "30 Days",
+                    value: formatCents(dashboardMetrics.thirtyDayRevenue),
+                    subtitle: pluralize(dashboardMetrics.thirtyDayOrders, "order"),
+                    icon: "calendar.badge.clock",
+                    iconColor: .metricRolling30
+                )
+                .frame(height: DashboardLayout.cardHeight)
+                .offset(y: animateCards ? 0 : 20)
+                .opacity(animateCards ? 1 : 0)
+                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
                 lockedRevenueCard(
-                    title: "7-Day",
-                    subtitle: "Spot weekly momentum",
-                    icon: "chart.line.uptrend.xyaxis",
-                    iconColor: .metricRolling30,
-                    delay: 0.10
-                )
-
-                lockedRevenueCard(
-                    title: "Full History",
-                    subtitle: "See the bigger revenue picture",
+                    title: "All Time",
+                    subtitle: "Unlock your full revenue history",
                     iconAssetName: "CoinTemplate",
                     iconColor: .metricAllTime,
                     delay: 0.15
@@ -479,7 +511,7 @@ private extension DashboardView {
                             Text("Revenue Charts")
                                 .font(.system(size: 15, weight: .semibold))
                                 .foregroundStyle(.white)
-                            Text("Unlock yesterday, 7-day, 30-day, and all-time revenue trends.")
+                            Text("Unlock interactive charts, all-time trends, and deeper comparisons.")
                                 .font(.system(size: 12))
                                 .foregroundStyle(.white.opacity(0.92))
                                 .multilineTextAlignment(.center)
@@ -788,7 +820,7 @@ private extension DashboardView {
 
     private func handleRangeSelection(_ range: TimeRange) {
         #if os(macOS)
-            if !manager.isPro, range != .today {
+            if SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro) {
                 showChartsUpsell(event: "trend_range_locked_tap")
                 return
             }
@@ -801,15 +833,55 @@ private extension DashboardView {
 
     private func enforceFreeTierRange() {
         #if os(macOS)
-            if !manager.isPro, selectedRange != .today {
-                selectedRange = .today
-            }
+            selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
+                currentRange: selectedRange,
+                isPro: manager.isPro,
+                todayOrders: dashboardMetrics.todayOrders,
+                thirtyDayOrders: dashboardMetrics.thirtyDayOrders
+            )
         #endif
     }
 
     private func isLockedRange(_ range: TimeRange) -> Bool {
         #if os(macOS)
-            !manager.isPro && range != .today
+            SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
+        #else
+            false
+        #endif
+    }
+
+    @ViewBuilder
+    private var dashboardContextNote: some View {
+        #if os(macOS)
+            if shouldShowRecentSnapshotNote {
+                HStack(spacing: 10) {
+                    Image(systemName: "info.circle.fill")
+                        .foregroundStyle(.teal)
+                    Text("No sales yet today. Your recent sales snapshot is still loaded below.")
+                        .font(.saneCallout)
+                        .foregroundStyle(.white.opacity(0.96))
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(AnyShapeStyle(.ultraThinMaterial))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(Color.teal.opacity(0.24), lineWidth: 1)
+                        )
+                )
+            }
+        #endif
+    }
+
+    private var shouldShowRecentSnapshotNote: Bool {
+        #if os(macOS)
+            !manager.isPro
+                && selectedRange == .sevenDays
+                && dashboardMetrics.todayOrders == 0
+                && dashboardMetrics.thirtyDayOrders > 0
         #else
             false
         #endif
@@ -821,38 +893,6 @@ private extension DashboardView {
                 await EventTracker.log(event, app: "sanesales")
             }
             proUpsellFeature = .charts
-        }
-
-        private func lockedComparisonPill(label: String, value: String) -> some View {
-            Button {
-                showChartsUpsell(event: "trend_summary_locked_tap")
-            } label: {
-                VStack(spacing: 4) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 10, weight: .bold))
-                        Text(value)
-                            .font(.saneSubheadline)
-                            .fontWeight(.bold)
-                    }
-                    .foregroundStyle(.teal)
-
-                    Text(label)
-                        .font(.saneCallout)
-                        .foregroundStyle(Color.textMuted)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
-                        )
-                )
-            }
-            .buttonStyle(.plain)
         }
 
         private func lockedRevenueCard(
