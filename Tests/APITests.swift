@@ -1,4 +1,5 @@
 import Foundation
+import SaneUI
 import Testing
 
 @testable import SaneSales
@@ -171,34 +172,32 @@ struct APITests {
         #expect(response.data[0].attributes.createdAt != nil)
     }
 
-    @Test("Bug report draft includes environment details")
-    func bugReportDraftIncludesEnvironmentDetails() throws {
-        let draft = BugReportComposer.makeDraft(from: .init(
+    @Test("Diagnostics issue URL uses GitHub bug template and clipboard hint")
+    @MainActor
+    func diagnosticsIssueURLUsesGitHubTemplate() throws {
+        let report = SaneDiagnosticReport(
             appName: "SaneSales",
-            appVersion: "1.2.1",
-            buildNumber: "1210",
+            appVersion: "1.2.2",
+            buildNumber: "1203",
             platformDescription: "iOS 26.0",
             deviceDescription: "iPhone",
-            demoModeEnabled: true,
-            connectedProviders: ["LemonSqueezy"],
-            isProUnlocked: false,
-            currentError: "Failed to parse response from server."
-        ))
+            recentLogs: [],
+            settingsSummary: "demoMode: true\nconnectedProviders: LemonSqueezy",
+            collectedAt: Date(timeIntervalSince1970: 0)
+        )
 
-        #expect(draft.title == "[Bug]: describe the problem")
-        #expect(draft.body.contains("Platform: iOS 26.0"))
-        #expect(draft.body.contains("Device: iPhone"))
-        #expect(draft.body.contains("Demo mode: On"))
-        #expect(draft.body.contains("Connected providers: LemonSqueezy"))
-        #expect(draft.body.contains("Current in-app error: Failed to parse response from server."))
-        let issueURL = try #require(draft.issueURL(githubRepo: "SaneSales"))
+        let issueURL = try #require(report.gitHubIssueURL(
+            title: "[Bug]: blank report",
+            userDescription: "Report body",
+            githubRepo: "SaneSales"
+        ))
         let components = try #require(URLComponents(url: issueURL, resolvingAgainstBaseURL: false))
         let items = Dictionary(uniqueKeysWithValues: (components.queryItems ?? []).map { ($0.name, $0.value ?? "") })
 
-        #expect(items["labels"] == "bug")
-        #expect(items["template"] == nil)
-        #expect(items["title"] == "[Bug]: describe the problem")
-        #expect(items["body"]?.contains("Current in-app error: Failed to parse response from server.") == true)
+        #expect(items["template"] == "bug_report.md")
+        #expect(items["title"] == "[Bug]: blank report")
+        #expect(items["body"]?.contains("Full diagnostics were copied to your clipboard.") == true)
+        #expect(items["body"]?.contains("| OS | iOS 26.0 |") == true)
     }
 
     @Test("Live LemonSqueezy provider loads real SaneApps data when a test key is available")
@@ -320,6 +319,53 @@ struct AppStartupPolicyTests {
             #expect(source.contains("Check for Updates"))
         }
     #endif
+}
+
+struct FreeTierPolicyTests {
+    @Test("Free tier keeps recent dashboard ranges open")
+    func freeTierDashboardRangesStayUseful() {
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: false))
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
+        #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: false))
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: true))
+    }
+
+    @Test("Free tier order preview stays capped to a small recent slice")
+    func freeTierOrderPreviewLimitStaysSmall() {
+        #expect(SaneSalesFreeTierPolicy.recentOrderPreviewLimit == 20)
+    }
+
+    @Test("Free tier defaults to a recent snapshot when today is empty")
+    func freeTierPreferredDashboardRangeAvoidsDeadFirstImpression() {
+        #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: .today,
+            isPro: false,
+            todayOrders: 0,
+            thirtyDayOrders: 12
+        ) == .sevenDays)
+
+        #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: .today,
+            isPro: false,
+            todayOrders: 2,
+            thirtyDayOrders: 12
+        ) == .today)
+
+        #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: .allTime,
+            isPro: false,
+            todayOrders: 0,
+            thirtyDayOrders: 12
+        ) == .sevenDays)
+
+        #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: .allTime,
+            isPro: true,
+            todayOrders: 0,
+            thirtyDayOrders: 12
+        ) == .allTime)
+    }
 }
 
 // MARK: - Test-visible LS types (mirror private types for parsing tests)

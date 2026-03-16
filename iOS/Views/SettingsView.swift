@@ -1,15 +1,12 @@
 import SwiftUI
+import SaneUI
 #if os(iOS)
     import UIKit
-#endif
-#if os(macOS)
-    import SaneUI
 #endif
 
 struct SettingsView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.openURL) private var openURL
     @State private var showingKeyEntry = false
     @State private var editingProvider: SalesProviderType?
     @State private var newAPIKey = ""
@@ -21,6 +18,7 @@ struct SettingsView: View {
     @State private var removingProvider: SalesProviderType?
     @State private var showExportSheet = false
     @State private var exportURL: URL?
+    @State private var showFeedback = false
     @AppStorage("demo_mode") private var demoMode = false
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
@@ -53,6 +51,9 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .sheet(isPresented: $showingKeyEntry) {
                 apiKeySheet
+            }
+            .sheet(isPresented: $showFeedback) {
+                SaneFeedbackView(diagnosticsService: .shared)
             }
             .confirmationDialog(
                 "Disconnect \(removingProvider?.displayName ?? "Provider")?",
@@ -279,6 +280,23 @@ struct SettingsView: View {
                                 .controlSize(.small)
                             }
                         }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 12)
+
+                        GlassDivider()
+
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Basic includes 1 provider, a recent sales snapshot, recent orders, and the full product catalog.")
+                                .font(.saneCallout)
+                                .foregroundStyle(.white.opacity(0.96))
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Text("Pro adds full order history, CSV export, menu bar quick glance, desktop widgets, and multiple providers.")
+                                .font(.saneFootnote)
+                                .foregroundStyle(.white.opacity(0.9))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
 
@@ -599,9 +617,9 @@ struct SettingsView: View {
                 }
                 GlassDivider()
                 Button {
-                    openBugReport()
+                    showFeedback = true
                 } label: {
-                    GlassRow("Report Bug", icon: "ladybug", iconColor: .orange) {
+                    GlassRow("Report a Bug", icon: "ladybug", iconColor: .orange) {
                         Image(systemName: "arrow.up.forward.square")
                             .foregroundStyle(Color.textMuted)
                             .font(.saneSubheadline)
@@ -633,7 +651,7 @@ struct SettingsView: View {
     }
 
     private var trustTagline: some View {
-        Text("Made with love in the USA \u{00B7} 100% On-Device \u{00B7} No Analytics")
+        Text("Made with love in the USA \u{00B7} Read-only merchant data \u{00B7} 100% On-Device")
             .font(.saneCallout)
             .foregroundStyle(Color.textMuted)
             .multilineTextAlignment(.center)
@@ -702,110 +720,6 @@ struct SettingsView: View {
         }
     }
 
-    private func openBugReport() {
-        let draft = BugReportComposer.makeDraft(from: .init(
-            appName: "SaneSales",
-            appVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown",
-            buildNumber: Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown",
-            platformDescription: BugReportComposer.currentPlatformDescription(),
-            deviceDescription: BugReportComposer.currentDeviceDescription(),
-            demoModeEnabled: demoMode,
-            connectedProviders: manager.connectedProviders.map(\.displayName),
-            isProUnlocked: manager.isPro,
-            currentError: manager.error?.localizedDescription
-        ))
-
-        if let url = draft.issueURL(githubRepo: "SaneSales") {
-            openURL(url)
-        }
-    }
-}
-
-struct BugReportDraft {
-    let title: String
-    let body: String
-
-    func issueURL(githubRepo: String) -> URL? {
-        var components = URLComponents(string: "https://github.com/sane-apps/\(githubRepo)/issues/new")
-        components?.queryItems = [
-            URLQueryItem(name: "labels", value: "bug"),
-            URLQueryItem(name: "title", value: title),
-            URLQueryItem(name: "body", value: body)
-        ]
-        return components?.url
-    }
-}
-
-struct BugReportContext {
-    let appName: String
-    let appVersion: String
-    let buildNumber: String
-    let platformDescription: String
-    let deviceDescription: String
-    let demoModeEnabled: Bool
-    let connectedProviders: [String]
-    let isProUnlocked: Bool
-    let currentError: String?
-}
-
-enum BugReportComposer {
-    static func makeDraft(from context: BugReportContext) -> BugReportDraft {
-        let providers = context.connectedProviders.isEmpty ? "None" : context.connectedProviders.joined(separator: ", ")
-        let errorLine = context.currentError?.isEmpty == false ? context.currentError! : "None"
-
-        let body = """
-        ## What happened?
-        <describe what happened>
-
-        ## What did you expect to happen?
-        <what should have happened instead>
-
-        ## Steps to reproduce
-        1.
-        2.
-        3.
-
-        ## App + device details
-        - App: \(context.appName)
-        - App version: \(context.appVersion) (\(context.buildNumber))
-        - Platform: \(context.platformDescription)
-        - Device: \(context.deviceDescription)
-        - Demo mode: \(context.demoModeEnabled ? "On" : "Off")
-        - Connected providers: \(providers)
-        - Pro unlocked: \(context.isProUnlocked ? "Yes" : "No")
-
-        ## Optional diagnostics
-        - Current in-app error: \(errorLine)
-        - Add screenshots or screen recordings if helpful.
-        """
-
-        return BugReportDraft(
-            title: "[Bug]: describe the problem",
-            body: body
-        )
-    }
-
-    static func currentPlatformDescription() -> String {
-        let version = ProcessInfo.processInfo.operatingSystemVersion
-        #if os(iOS)
-            return "iOS \(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-        #elseif os(macOS)
-            return "macOS \(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-        #else
-            return "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)"
-        #endif
-    }
-
-    @MainActor
-    static func currentDeviceDescription() -> String {
-        #if os(iOS)
-            UIDevice.current.model
-        #elseif os(macOS)
-            ProcessInfo.processInfo.hostName
-        #else
-            "Unknown"
-        #endif
-    }
 }
 
 private extension SettingsView {
@@ -889,3 +803,53 @@ private extension SettingsView {
         }
     }
 #endif
+
+extension SaneDiagnosticsService {
+    static let shared = SaneDiagnosticsService(
+        appName: "SaneSales",
+        subsystem: Bundle.main.bundleIdentifier ?? "com.sanesales.app",
+        githubRepo: "SaneSales",
+        settingsCollector: { await collectSaneSalesSettings() }
+    )
+}
+
+@MainActor
+private func collectSaneSalesSettings() -> String {
+    let defaults = UserDefaults.standard
+    let connectedProviders = [
+        KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey) ? "LemonSqueezy" : nil,
+        KeychainService.exists(account: KeychainService.gumroadAPIKey) ? "Gumroad" : nil,
+        KeychainService.exists(account: KeychainService.stripeAPIKey) ? "Stripe" : nil
+    ].compactMap { $0 }
+    let providersSummary = connectedProviders.isEmpty ? "None" : connectedProviders.joined(separator: ", ")
+    let demoMode = defaults.bool(forKey: "demo_mode")
+    let hasSeenWelcome = defaults.bool(forKey: "hasSeenWelcome")
+
+    #if os(macOS)
+        let sharedDefaults = SharedStore.userDefaults()
+        let showInMenuBar = defaults.object(forKey: "showInMenuBar") as? Bool ?? true
+        let showInDock = defaults.object(forKey: "showInDock") as? Bool ?? true
+        let showRevenueInMenuBar = defaults.object(forKey: "showRevenueInMenuBar") as? Bool ?? false
+        let widgetsEnabled = sharedDefaults.bool(forKey: SharedStore.macOSWidgetsProEnabledKey)
+
+        return """
+        demoMode: \(demoMode)
+        hasSeenWelcome: \(hasSeenWelcome)
+        connectedProviders: \(providersSummary)
+
+        settings:
+          showInMenuBar: \(showInMenuBar)
+          showRevenueInMenuBar: \(showRevenueInMenuBar)
+          showInDock: \(showInDock)
+          widgetsEnabled: \(widgetsEnabled)
+        """
+    #else
+        return """
+        demoMode: \(demoMode)
+        hasSeenWelcome: \(hasSeenWelcome)
+        connectedProviders: \(providersSummary)
+        settings:
+          platform: iOS
+        """
+    #endif
+}

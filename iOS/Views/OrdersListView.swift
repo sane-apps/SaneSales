@@ -29,12 +29,18 @@ struct OrdersListView: View {
     }
 
     #if os(macOS)
-        private var todayOrders: [Order] {
-            displayedOrders.filter(\.isToday)
+        private var freeTierPreviewOrders: [Order] {
+            Array(displayedOrders.prefix(SaneSalesFreeTierPolicy.recentOrderPreviewLimit))
         }
 
-        private var lockedHistoryPreview: [Order] {
-            Array(displayedOrders.filter { !$0.isToday }.prefix(3))
+        private var freeTierPreviewGroups: [(DateSection, [Order])] {
+            let grouped = Dictionary(grouping: freeTierPreviewOrders) { order in
+                DateSection.from(order.createdAt)
+            }
+            return DateSection.allCases.compactMap { section in
+                guard let orders = grouped[section], !orders.isEmpty else { return nil }
+                return (section, orders)
+            }
         }
     #endif
 
@@ -118,60 +124,33 @@ struct OrdersListView: View {
     #if os(macOS)
         private var freeTierOrdersContent: some View {
             Group {
-                if displayedOrders.isEmpty, !manager.isLoading {
+                if freeTierPreviewOrders.isEmpty, !manager.isLoading {
                     if searchText.isEmpty {
                         ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
-                                               description: Text("Today's orders will appear here after your first sale."))
+                                               description: Text("Recent orders will appear here after your first sale."))
                     } else {
                         ContentUnavailableView.search(text: searchText)
                     }
                 } else {
                     List {
-                        if todayOrders.isEmpty {
+                        ForEach(freeTierPreviewGroups, id: \.0) { section, orders in
                             Section {
-                                ContentUnavailableView(
-                                    "Today's Orders",
-                                    systemImage: "clock.badge.checkmark",
-                                    description: Text("Free shows today's orders. Unlock Pro to browse yesterday and older sales.")
-                                )
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 18)
-                            }
-                        } else {
-                            Section {
-                                ForEach(todayOrders) { order in
+                                ForEach(orders) { order in
                                     NavigationLink(value: order.id) {
                                         OrderRow(order: order)
                                     }
                                     .listRowBackground(orderRowBackground)
                                 }
                             } header: {
-                                Text("Today")
+                                Text(section.rawValue)
                                     .font(.saneSectionHeader)
                                     .foregroundStyle(Color.textMuted)
                                     .textCase(nil)
                             }
                         }
 
-                        if !lockedHistoryPreview.isEmpty || !displayedOrders.isEmpty {
+                        if displayedOrders.count > freeTierPreviewOrders.count {
                             Section {
-                                ForEach(lockedHistoryPreview) { order in
-                                    Button {
-                                        showOrderHistoryUpsell(event: "order_history_locked_tap")
-                                    } label: {
-                                        OrderRow(order: order)
-                                            .blur(radius: 4)
-                                            .overlay(alignment: .trailing) {
-                                                Image(systemName: "lock.fill")
-                                                    .font(.system(size: 11, weight: .bold))
-                                                    .foregroundStyle(.teal)
-                                                    .padding(.trailing, 4)
-                                            }
-                                    }
-                                    .buttonStyle(.plain)
-                                    .listRowBackground(orderRowBackground)
-                                }
-
                                 Button {
                                     showOrderHistoryUpsell(event: "order_history_locked_tap")
                                 } label: {
@@ -179,10 +158,10 @@ struct OrdersListView: View {
                                         Image(systemName: "lock.fill")
                                             .foregroundStyle(.teal)
                                         VStack(alignment: .leading, spacing: 2) {
-                                            Text("Unlock full order history")
+                                            Text("Showing recent \(freeTierPreviewOrders.count) of \(displayedOrders.count) orders")
                                                 .font(.saneSubheadlineBold)
                                                 .foregroundStyle(.primary)
-                                            Text("Browse yesterday and older sales, plus search and filters.")
+                                            Text("Unlock Pro for full history, deeper search, and older sales.")
                                                 .font(.saneCallout)
                                                 .foregroundStyle(Color.textMuted)
                                         }
@@ -196,11 +175,11 @@ struct OrdersListView: View {
                                 .buttonStyle(.plain)
                                 .listRowBackground(orderRowBackground)
                             } header: {
-                                Text("Earlier • Pro")
+                                Text("More Orders • Pro")
                                     .font(.saneSectionHeader)
                                     .foregroundStyle(Color.textMuted)
                                     .textCase(nil)
-                            }
+                                }
                         }
                     }
                     .listStyle(.plain)
