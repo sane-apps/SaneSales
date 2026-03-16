@@ -6,7 +6,26 @@
     <description>SaneSales updates</description>
     <language>en</language>
 
-            <item>
+                    <item>
+            <title>1.2.3</title>
+            <pubDate>Mon, 16 Mar 2026 15:12:00 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Makes Basic mode more useful with real recent sales snapshots, improves order previews, and adds diagnostics-backed bug reporting.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanesales.com/updates/SaneSales-1.2.3.zip"
+                       sparkle:version="1203"
+                       sparkle:shortVersionString="1.2.3"
+                       length="7446150"
+                       type="application/octet-stream"
+                       sparkle:edSignature="B/NsKeqZlleUWuY6EHuO+Pi8DG5UJsbDqT4d48daQq9F/IXY0FvmpepqM7gOW66tAwjlyCaFwvyKZHLaXJseDA=="/>
+        </item>
+<item>
             <title>1.2.1</title>
             <pubDate>Fri, 06 Mar 2026 13:42:40 -0500</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
