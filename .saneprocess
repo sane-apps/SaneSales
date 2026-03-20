@@ -61,6 +61,7 @@ appstore:
   enabled: true
   app_id: "6759010976"
   product_id: "com.sanesales.app.pro.unlock"
+  scheme: SaneSales-AppStore
   configuration: Release-AppStore
   platforms: [macos, ios]
   ios_scheme: SaneSalesIOS
@@ -98,6 +99,7 @@ appstore:
       1. Launch SaneSales.
       2. On the final onboarding screen, click “Try Demo Data”.
       3. Review the dashboard, orders, products, widgets, and menu bar totals using the fictional local demo data.
+      4. To review the optional Pro unlock, open Settings > License and click “Unlock Pro”.
       Business model answers:
       1. Users are merchants and creators who already sell through LemonSqueezy, Gumroad, or Stripe.
       2. Those external merchant services are purchased directly from LemonSqueezy, Gumroad, or Stripe, outside this app.
@@ -118,6 +120,7 @@ appstore:
       1. Launch SaneSales on iPhone or iPad.
       2. On the onboarding screen, tap “Try Demo Data”. If onboarding has already been dismissed, go to Settings > Data > Enable Demo Mode.
       3. Review the dashboard, orders, products, widgets, and provider filters using the fictional local demo data.
+      4. To review the optional Pro unlock, open Settings > License and tap “Unlock Pro”.
       Apple Watch companion:
       - Open the companion watch app after enabling demo mode on iPhone, or tap “Show Demo Data” directly on Apple Watch.
       Business model answers:

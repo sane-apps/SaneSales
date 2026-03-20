@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AppStoreProductID</key>
+	<string>com.sanesales.app.pro.unlock</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -16,8 +18,6 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>AppStoreProductID</key>
-	<string>com.sanesales.app.pro.unlock</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
@@ -26,11 +26,5 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.finance</string>
-	<key>SUFeedURL</key>
-	<string>https://sanesales.com/appcast.xml</string>
-	<key>SUPublicEDKey</key>
-	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
-	<key>SUEnableInstallerLauncherService</key>
-	<true/>
 </dict>
 </plist>
