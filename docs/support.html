@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneSales Support & FAQ</title>
+    <meta name="description" content="SaneSales support center with setup help, licensing guidance, and answers for Lemon Squeezy, Gumroad, Stripe, widgets, and App Store builds.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://sanesales.com/support">
+    <meta name="theme-color" content="#8b5cf6">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sanesales.com/support">
+    <meta property="og:title" content="SaneSales Support & FAQ">
+    <meta property="og:description" content="Get help with setup, licensing, widgets, providers, and App Store questions for SaneSales.">
+    <meta property="og:image" content="https://sanesales.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="SaneSales">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaneSales Support & FAQ">
+    <meta name="twitter:description" content="Get help with setup, licensing, widgets, providers, and App Store questions for SaneSales.">
+    <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
+    <meta name="twitter:site" content="@saneapps">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050816;
+            --surface: rgba(16, 22, 40, 0.88);
+            --surface-strong: rgba(24, 32, 58, 0.98);
+            --text: #f8fafc;
+            --text-soft: rgba(226, 232, 240, 0.82);
+            --accent: #8b5cf6;
+            --accent-soft: rgba(139, 92, 246, 0.18);
+            --accent-border: rgba(139, 92, 246, 0.32);
+            --border: rgba(148, 163, 184, 0.16);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(139, 92, 246, 0.28), transparent 34%),
+                radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 28%),
+                linear-gradient(180deg, #050816 0%, #090d1d 100%);
+            line-height: 1.7;
+        }
+        .shell {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px 72px;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .logo img {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .nav-links a,
+        a {
+            color: #c4b5fd;
+            text-decoration: none;
+        }
+        .nav-links a:hover,
+        a:hover {
+            text-decoration: underline;
+        }
+        .hero,
+        .card,
+        .faq {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 20px 60px rgba(5, 8, 22, 0.28);
+        }
+        .hero {
+            padding: 40px;
+            margin-bottom: 28px;
+        }
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-border);
+            color: #ddd6fe;
+            font-size: 0.92rem;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            line-height: 1.05;
+            margin-bottom: 14px;
+        }
+        .subtitle {
+            color: var(--text-soft);
+            font-size: 1.06rem;
+            max-width: 640px;
+        }
+        .card {
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+        .card h2,
+        .faq h2 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+        }
+        .card p,
+        .faq p,
+        .faq li {
+            color: var(--text-soft);
+        }
+        .cta-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+        .btn:hover {
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .faq {
+            padding: 28px;
+        }
+        .faq-item + .faq-item {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+        .faq-item h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        footer {
+            margin-top: 32px;
+            text-align: center;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+        @media (max-width: 640px) {
+            .shell {
+                padding: 20px 16px 56px;
+            }
+            .hero,
+            .card,
+            .faq {
+                padding: 22px;
+                border-radius: 20px;
+            }
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <nav>
+            <a href="/" class="logo">
+                <img src="images/icon.png" alt="SaneSales">
+                <span>SaneSales</span>
+            </a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="eyebrow">Support</div>
+            <h1>Get help without digging through noise.</h1>
+            <p class="subtitle">If SaneSales is not behaving the way you expect, send me the details and I will sort it out. I care about the product, and I use this page as the real support route for the site and App Store metadata.</p>
+        </section>
+
+        <section class="card">
+            <h2>Fastest way to reach me</h2>
+            <p>Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with what happened, what provider you were using, and what version you are on. If it is a bug, a GitHub report is also welcome.</p>
+            <div class="cta-row">
+                <a class="btn btn-primary" href="mailto:hi@saneapps.com">Email Support</a>
+                <a class="btn btn-secondary" href="https://github.com/sane-apps/SaneSales/issues/new?template=bug_report.md">Report a Bug</a>
+            </div>
+        </section>
+
+        <section class="faq">
+            <h2>Common questions</h2>
+
+            <div class="faq-item">
+                <h3>Which providers does SaneSales support?</h3>
+                <p>SaneSales supports Lemon Squeezy, Gumroad, and Stripe. You can connect one provider in Basic, or multiple providers in Pro.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Do I need to upload my sales data anywhere?</h3>
+                <p>No. The app talks directly to the providers you connect. SaneApps does not receive your API keys or your sales data.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What does the App Store version use for upgrades?</h3>
+                <p>The App Store build unlocks Pro with an in-app purchase through Apple. The direct website build uses a direct license flow instead.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What should I include in a bug report?</h3>
+                <p>Tell me the provider, the platform, what you expected, what actually happened, and whether it affects the dashboard, orders, products, widgets, or menu bar. Screenshots are useful when something looks wrong.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Where can I read more about privacy?</h3>
+                <p>The privacy policy is at <a href="privacy.html">sanesales.com/privacy</a>. It explains what stays on-device and what outside services are contacted when you connect provider accounts.</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>Need something else? Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> or use <a href="https://github.com/sane-apps/SaneSales/issues">GitHub Issues</a>.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -23,8 +23,10 @@ struct SettingsView: View {
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
         @State private var showingLicenseEntrySheet = false
-        @State private var automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
-        @State private var updateCheckFrequency = UpdateService.shared.updateCheckFrequency
+        #if !APP_STORE
+            @State private var automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
+            @State private var updateCheckFrequency = UpdateService.shared.updateCheckFrequency
+        #endif
         @Environment(LicenseService.self) private var licenseService
     #endif
 
@@ -36,7 +38,9 @@ struct SettingsView: View {
                     VStack(spacing: 24) {
                         #if os(macOS)
                             macOSAppearanceSection
+                            #if !APP_STORE
                             softwareUpdatesSection
+                            #endif
                             licenseSection
                         #endif
                         providersSection
@@ -85,27 +89,39 @@ struct SettingsView: View {
         @AppStorage("showInDock") private var showInDock = true
         @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
 
-        private var softwareUpdatesSection: some View {
-            GlassSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .teal) {
-                VStack(spacing: 0) {
-                    SaneSparkleRow(
-                        automaticallyChecks: $automaticallyChecksForUpdates,
-                        checkFrequency: $updateCheckFrequency,
-                        onCheckNow: { UpdateService.shared.checkForUpdates() }
-                    )
+        #if !APP_STORE
+            private var softwareUpdatesSection: some View {
+                GlassSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .teal) {
+                    VStack(spacing: 0) {
+                        SaneSparkleRow(
+                            automaticallyChecks: $automaticallyChecksForUpdates,
+                            checkFrequency: $updateCheckFrequency,
+                            labels: .init(
+                                automaticCheckLabel: "Check for updates automatically",
+                                automaticCheckHelp: "Periodically check for new versions",
+                                checkFrequencyLabel: "Check frequency",
+                                checkFrequencyHelp: "Choose how often automatic update checks run",
+                                actionsLabel: "Actions",
+                                checkingLabel: "Checking…",
+                                checkNowLabel: "Check Now",
+                                checkNowHelp: "Check for updates right now"
+                            ),
+                            onCheckNow: { UpdateService.shared.checkForUpdates() }
+                        )
+                    }
+                }
+                .onAppear {
+                    automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
+                    updateCheckFrequency = UpdateService.shared.updateCheckFrequency
+                }
+                .onChange(of: automaticallyChecksForUpdates) { _, newValue in
+                    UpdateService.shared.automaticallyChecksForUpdates = newValue
+                }
+                .onChange(of: updateCheckFrequency) { _, newValue in
+                    UpdateService.shared.updateCheckFrequency = newValue
                 }
             }
-            .onAppear {
-                automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
-                updateCheckFrequency = UpdateService.shared.updateCheckFrequency
-            }
-            .onChange(of: automaticallyChecksForUpdates) { _, newValue in
-                UpdateService.shared.automaticallyChecksForUpdates = newValue
-            }
-            .onChange(of: updateCheckFrequency) { _, newValue in
-                UpdateService.shared.updateCheckFrequency = newValue
-            }
-        }
+        #endif
 
         private var macOSAppearanceSection: some View {
             GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
@@ -232,7 +248,7 @@ struct SettingsView: View {
 
                         GlassDivider()
 
-                        Button(LicenseService.deactivateLicenseLabel()) {
+                        Button(licenseService.accessManagementLabel) {
                             licenseService.deactivate()
                         }
                         .font(.saneSubheadline)
@@ -313,7 +329,7 @@ struct SettingsView: View {
                             .padding(.horizontal, 14)
                             .padding(.vertical, 12)
                         } else {
-                            Button(LicenseService.usePurchaseKeyLabel()) {
+                            Button(licenseService.alternateUnlockLabel) {
                                 showingLicenseEntrySheet = true
                             }
                             .font(.saneSubheadline)

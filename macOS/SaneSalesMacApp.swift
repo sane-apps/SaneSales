@@ -39,70 +39,51 @@ import SwiftUI
 
     // MARK: - Update Service
 
-    @MainActor
-    class UpdateService: NSObject, ObservableObject {
-        static let shared = UpdateService()
-
-        #if !APP_STORE
+    #if !APP_STORE
+        @MainActor
+        class UpdateService: NSObject, ObservableObject {
+            static let shared = UpdateService()
             private var updaterController: SPUStandardUpdaterController?
-        #endif
 
-        override init() {
-            super.init()
-            #if !APP_STORE
+            override init() {
+                super.init()
                 updaterController = SPUStandardUpdaterController(
                     startingUpdater: true,
                     updaterDelegate: nil,
                     userDriverDelegate: nil
                 )
                 normalizeUpdateCheckFrequency()
-            #endif
-        }
+            }
 
-        func checkForUpdates() {
-            #if !APP_STORE
+            func checkForUpdates() {
                 updaterController?.checkForUpdates(nil)
-            #endif
-        }
-
-        var automaticallyChecksForUpdates: Bool {
-            get {
-                #if !APP_STORE
-                    return updaterController?.updater.automaticallyChecksForUpdates ?? false
-                #else
-                    return false
-                #endif
             }
-            set {
-                #if !APP_STORE
+
+            var automaticallyChecksForUpdates: Bool {
+                get {
+                    updaterController?.updater.automaticallyChecksForUpdates ?? false
+                }
+                set {
                     updaterController?.updater.automaticallyChecksForUpdates = newValue
-                #endif
+                }
             }
-        }
 
-        var updateCheckFrequency: SaneSparkleCheckFrequency {
-            get {
-                #if !APP_STORE
+            var updateCheckFrequency: SaneSparkleCheckFrequency {
+                get {
                     let interval = updaterController?.updater.updateCheckInterval ?? SaneSparkleCheckFrequency.daily.interval
                     return SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
-                #else
-                    return .daily
-                #endif
-            }
-            set {
-                #if !APP_STORE
+                }
+                set {
                     updaterController?.updater.updateCheckInterval = newValue.interval
-                #endif
+                }
             }
-        }
 
-        private func normalizeUpdateCheckFrequency() {
-            #if !APP_STORE
+            private func normalizeUpdateCheckFrequency() {
                 guard let updater = updaterController?.updater else { return }
                 updater.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
-            #endif
+            }
         }
-    }
+    #endif
 
     // MARK: - App Delegate
 
@@ -113,7 +94,12 @@ import SwiftUI
         func applicationDidFinishLaunching(_: Notification) {
             NSApp.appearance = NSAppearance(named: .darkAqua)
             #if !DEBUG && !APP_STORE
-                if SaneAppMover.moveToApplicationsFolderIfNeeded() { return }
+                if SaneAppMover.moveToApplicationsFolderIfNeeded(prompt: .init(
+                    messageText: "Move to Applications?",
+                    informativeText: "{appName} works best from your Applications folder. Move it there now? You may be asked for your password.",
+                    moveButtonTitle: "Move to Applications",
+                    cancelButtonTitle: "Not Now"
+                )) { return }
             #endif
         }
 
@@ -183,7 +169,8 @@ import SwiftUI
         #else
             @State private var licenseService = LicenseService(
                 appName: "SaneSales",
-                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanesales")
+                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanesales"),
+                directCopy: LicenseService.DirectCopy.saneSales
             )
         #endif
 
