@@ -1,9 +1,14 @@
-import SwiftUI
 import Foundation
+import SaneUI
+import SwiftUI
 
 @main
 struct SaneSalesApp: App {
     @State private var manager = SalesManager()
+    @State private var licenseService = LicenseService(
+        appName: "SaneSales",
+        purchaseBackend: .appStore(productID: "com.sanesales.app.pro.unlock.v2")
+    )
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("demo_mode") private var demoModeEnabled = false
 
@@ -17,6 +22,7 @@ struct SaneSalesApp: App {
                 }
             }
                 .environment(manager)
+                .environment(licenseService)
                 .preferredColorScheme(.dark)
                 .overlay(alignment: .bottomLeading) {
                     if shouldShowDebugStartupOverlay {
@@ -42,6 +48,7 @@ struct SaneSalesApp: App {
                     debugLogStartupState(reason: "orders")
                 }
                 .task {
+                    licenseService.checkCachedLicense()
                     if CommandLine.arguments.contains("--uitest-reset") {
                         manager.resetForUITests()
                     }

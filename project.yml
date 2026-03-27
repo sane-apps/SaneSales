@@ -12,8 +12,7 @@ packages:
     url: https://github.com/sparkle-project/Sparkle
     from: 2.6.0
   SaneUI:
-    url: https://github.com/sane-apps/SaneUI.git
-    branch: main
+    path: ../../infra/SaneUI
 
 configs:
   Debug: debug
@@ -156,7 +155,7 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.finance"
         CFBundleDisplayName: SaneSales
-        AppStoreProductID: "com.sanesales.app.pro.unlock"
+        AppStoreProductID: "com.sanesales.app.pro.unlock.v2"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         SUEnableInstallerLauncherService: true
@@ -167,7 +166,7 @@ targets:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -188,7 +187,9 @@ targets:
           PROVISIONING_PROFILE_SPECIFIER: "SaneSales Developer ID"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Mac App Store"
           CODE_SIGN_ENTITLEMENTS: SaneSales/SaneSales-AppStore.entitlements
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
           INFOPLIST_KEY_SUFeedURL: ""
@@ -242,7 +243,7 @@ targets:
         ITSAppUsesNonExemptEncryption: false
         LSApplicationCategoryType: "public.app-category.finance"
         CFBundleDisplayName: SaneSales
-        AppStoreProductID: "com.sanesales.app.pro.unlock"
+        AppStoreProductID: "com.sanesales.app.pro.unlock.v2"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
     settings:
@@ -250,7 +251,7 @@ targets:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -273,7 +274,9 @@ targets:
           CODE_SIGN_ENTITLEMENTS: SaneSales/SaneSales-AppStore.entitlements
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Mac App Store"
           CODE_SIGN_ENTITLEMENTS: SaneSales/SaneSales-AppStore.entitlements
 
   # macOS Tests
@@ -333,7 +336,7 @@ targets:
         PRODUCT_NAME: SaneSalesWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: M78L6FXD48
         ARCHS: arm64
@@ -352,7 +355,9 @@ targets:
           PROVISIONING_PROFILE_SPECIFIER: "SaneSales Widgets Developer ID"
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
-          CODE_SIGN_STYLE: Automatic
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Apple Distribution"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Widgets Mac App Store"
 
   # iOS App
   SaneSalesIOS:
@@ -388,7 +393,7 @@ targets:
       path: iOS/Info.plist
       properties:
         CFBundleDisplayName: SaneSales
-        AppStoreProductID: "com.sanesales.app.pro.unlock"
+        AppStoreProductID: "com.sanesales.app.pro.unlock.v2"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         ITSAppUsesNonExemptEncryption: false
@@ -408,7 +413,7 @@ targets:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -513,7 +518,7 @@ targets:
         PRODUCT_NAME: SaneSalesIOSWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ioswidgets
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         SWIFT_VERSION: 6.0
         IPHONEOS_DEPLOYMENT_TARGET: 17.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -571,7 +576,7 @@ targets:
         PRODUCT_NAME: SaneSalesWatch
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         ASSETCATALOG_COMPILER_APPICON_NAME: WatchAppIcon
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
@@ -629,7 +634,7 @@ targets:
         PRODUCT_NAME: SaneSalesWatchWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
         MARKETING_VERSION: "1.2.3"
-        CURRENT_PROJECT_VERSION: "1203"
+        CURRENT_PROJECT_VERSION: "1204"
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         TARGETED_DEVICE_FAMILY: "4"

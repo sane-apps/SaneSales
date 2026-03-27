@@ -1,3 +1,4 @@
+import SaneUI
 import SwiftUI
 
 struct ContentView: View {
@@ -85,6 +86,7 @@ struct OnboardingView: View {
     private let phi: CGFloat = 1.618
     private let providerOptions: [SalesProviderType] = [.lemonSqueezy, .gumroad, .stripe]
     @Environment(SalesManager.self) private var manager
+    @Environment(LicenseService.self) private var licenseService
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var selectedProvider: SalesProviderType = .lemonSqueezy
@@ -104,10 +106,10 @@ struct OnboardingView: View {
                     ScrollView {
                         VStack(spacing: sectionSpacing) {
                             heroSection
+                            quickStartSection
                             providerPicker
                             keyEntrySection
                             connectButton
-                            demoButton
                         }
                         .padding(.horizontal, horizontalPadding)
                         .padding(.top, max(8, proxy.safeAreaInsets.top * 0.38))
@@ -125,6 +127,11 @@ struct OnboardingView: View {
                 Button("OK") {}
             } message: {
                 Text("Could not connect with that key. Check it and try again.")
+            }
+            .task {
+                if licenseService.usesAppStorePurchase {
+                    await licenseService.preloadAppStoreProduct()
+                }
             }
         }
     }
@@ -150,6 +157,66 @@ struct OnboardingView: View {
                 .font(.body)
                 .foregroundStyle(Color.textMuted)
                 .multilineTextAlignment(.center)
+        }
+    }
+
+    private var quickStartSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("START FREE OR UPGRADE")
+                .font(.saneSectionHeader)
+                .foregroundStyle(Color.textMuted)
+                .tracking(0.5)
+                .padding(.leading, 4)
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Choose how you want to start")
+                    .font(.saneSubheadlineBold)
+                    .foregroundStyle(.white)
+
+                Text("Try demo data right away, unlock Pro now, or connect your existing store below.")
+                    .font(.saneFootnote)
+                    .foregroundStyle(Color.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                demoButton
+
+                if licenseService.usesAppStorePurchase {
+                    Button {
+                        Task { await licenseService.purchasePro() }
+                    } label: {
+                        Text(
+                            licenseService.isPurchasing
+                                ? "Processing..."
+                                : "Unlock Pro — " + (licenseService.appStoreDisplayPrice ?? "$6.99")
+                        )
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.teal)
+                    .controlSize(.large)
+                    .disabled(licenseService.isPurchasing)
+                    .accessibilityIdentifier("onboarding.unlockProButton")
+
+                    Button("Restore Purchases") {
+                        Task { await licenseService.restorePurchases() }
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.teal)
+                    .controlSize(.large)
+                    .disabled(licenseService.isPurchasing)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("onboarding.restorePurchasesButton")
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Color.teal.opacity(colorScheme == .dark ? 0.38 : 0.22), lineWidth: 1)
+                    )
+            )
         }
     }
 
@@ -293,6 +360,7 @@ struct OnboardingView: View {
         .buttonStyle(.bordered)
         .tint(.salesGreen)
         .controlSize(.large)
+        .frame(maxWidth: .infinity)
         .accessibilityIdentifier("onboarding.demoButton")
     }
 

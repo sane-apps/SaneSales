@@ -6,6 +6,8 @@ import SaneUI
 
 struct SettingsView: View {
     @Environment(SalesManager.self) private var manager
+    @Environment(LicenseService.self) private var licenseService
+    @Environment(\.openURL) private var openURL
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingKeyEntry = false
     @State private var editingProvider: SalesProviderType?
@@ -20,14 +22,13 @@ struct SettingsView: View {
     @State private var exportURL: URL?
     @State private var showFeedback = false
     @AppStorage("demo_mode") private var demoMode = false
+    @State private var showingLicenseEntrySheet = false
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
-        @State private var showingLicenseEntrySheet = false
         #if !APP_STORE
             @State private var automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
             @State private var updateCheckFrequency = UpdateService.shared.updateCheckFrequency
         #endif
-        @Environment(LicenseService.self) private var licenseService
     #endif
 
     var body: some View {
@@ -41,8 +42,8 @@ struct SettingsView: View {
                             #if !APP_STORE
                             softwareUpdatesSection
                             #endif
-                            licenseSection
                         #endif
+                        licenseSection
                         providersSection
                         dataSection
                         aboutSection
@@ -58,6 +59,9 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $showFeedback) {
                 SaneFeedbackView(diagnosticsService: .shared)
+            }
+            .sheet(isPresented: $showingLicenseEntrySheet) {
+                LicenseEntryView(licenseService: licenseService)
             }
             .confirmationDialog(
                 "Disconnect \(removingProvider?.displayName ?? "Provider")?",
@@ -75,10 +79,12 @@ struct SettingsView: View {
             .sheet(item: $proUpsellFeature) { feature in
                 ProUpsellView(feature: feature, licenseService: licenseService)
             }
-            .sheet(isPresented: $showingLicenseEntrySheet) {
-                LicenseEntryView(licenseService: licenseService)
-            }
             #endif
+            .task {
+                if licenseService.usesAppStorePurchase {
+                    await licenseService.preloadAppStoreProduct()
+                }
+            }
         }
     }
 
@@ -218,9 +224,8 @@ struct SettingsView: View {
         }
     #endif
 
-    // MARK: - License Section (macOS only)
+    // MARK: - License Section
 
-    #if os(macOS)
         private var licenseSection: some View {
             GlassSection("License", icon: "key.fill", iconColor: .teal) {
                 VStack(spacing: 0) {
@@ -282,10 +287,11 @@ struct SettingsView: View {
                                 .tint(.teal)
                                 .controlSize(.small)
                                 .disabled(licenseService.isPurchasing)
+                                .accessibilityIdentifier("settings.license.unlockProButton")
                             } else {
                                 Button {
                                     if let url = licenseService.checkoutURL {
-                                        NSWorkspace.shared.open(url)
+                                        openURL(url)
                                     }
                                 } label: {
                                     Text("Unlock Pro \u{2014} $6.99")
@@ -294,6 +300,7 @@ struct SettingsView: View {
                                 .buttonStyle(.borderedProminent)
                                 .tint(.teal)
                                 .controlSize(.small)
+                                .accessibilityIdentifier("settings.license.unlockProButton")
                             }
                         }
                         .padding(.horizontal, 14)
@@ -328,6 +335,7 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 12)
+                            .accessibilityIdentifier("settings.license.restorePurchasesButton")
                         } else {
                             Button(licenseService.alternateUnlockLabel) {
                                 showingLicenseEntrySheet = true
@@ -342,7 +350,6 @@ struct SettingsView: View {
                 }
             }
         }
-    #endif
 
     // MARK: - Providers Section
 

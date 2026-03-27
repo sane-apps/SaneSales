@@ -321,6 +321,56 @@ struct AppStartupPolicyTests {
     #endif
 }
 
+struct AppStoreReviewPathTests {
+    @Test("SaneSales App Store IAP metadata is explicit")
+    func saneSalesIapMetadataIsExplicit() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
+
+        #expect(manifest.contains("display_name: \"SaneSales Pro Unlock\""))
+        #expect(manifest.contains("description: \"Unlock Pro analytics with one purchase.\""))
+        #expect(manifest.localizedCaseInsensitiveContains("one-time non-consumable StoreKit purchase"))
+    }
+
+    @Test("iOS review notes match real Pro entry points")
+    func saneSalesIosReviewNotesMatchCode() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
+        let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
+        let onboardingSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"), encoding: .utf8)
+
+        #expect(manifest.localizedCaseInsensitiveContains("Settings tab and use the License section"))
+        #expect(manifest.localizedCaseInsensitiveContains("tap “Unlock Pro” on the setup screen") || manifest.localizedCaseInsensitiveContains("tap \"Unlock Pro\" on the setup screen"))
+        #expect(settingsSource.contains("GlassSection(\"License\""))
+        #expect(settingsSource.contains("settings.license.unlockProButton"))
+        #expect(onboardingSource.contains("onboarding.unlockProButton"))
+    }
+
+    @Test("macOS review notes match the real welcome-screen Pro entry point")
+    func saneSalesMacReviewNotesMatchCode() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let workspaceRoot = projectRoot
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
+        let macAppSource = try String(contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesMacApp.swift"), encoding: .utf8)
+        let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
+        let welcomeGateSource = try String(contentsOf: workspaceRoot.appendingPathComponent("infra/SaneUI/Sources/SaneUI/License/WelcomeGateView.swift"), encoding: .utf8)
+
+        #expect(manifest.localizedCaseInsensitiveContains("click “Unlock Pro” on the welcome screen") || manifest.localizedCaseInsensitiveContains("click \"Unlock Pro\" on the welcome screen"))
+        #expect(manifest.localizedCaseInsensitiveContains("open Settings and select the License tab"))
+        #expect(macAppSource.contains("WelcomeGateView("))
+        #expect(settingsSource.contains("GlassSection(\"License\""))
+        #expect(welcomeGateSource.contains("Text(licenseService.isPurchasing ? \"Processing...\" : \"Unlock Pro\")"))
+    }
+}
+
 struct FreeTierPolicyTests {
     @Test("Free tier keeps recent dashboard ranges open")
     func freeTierDashboardRangesStayUseful() {

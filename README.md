@@ -11,7 +11,7 @@
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
 [![Price](https://img.shields.io/badge/Price-$6.99_one--time-green?style=flat-square)](https://sanesales.com)
-[![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](docs/privacy.html)
+[![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](PRIVACY.md)
 [![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
 > **Star this repo if you find it useful!** &middot; **[Buy — $6.99](https://sanesales.com)** &middot; Keeps development alive
@@ -43,7 +43,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 | **CSV Export** | Export your full order history for accounting or email marketing |
 | **Widgets + Watch Glance** | Glance at today's revenue from Home Screen, Lock Screen, or Apple Watch Smart Stack |
 | **macOS Menu Bar** | See today's revenue in the menu bar. Right-click for quick actions |
-| **100% On-Device** | API keys in Keychain. Data cached locally. No analytics. No servers |
+| **100% On-Device** | API keys in Keychain. Data cached locally. No SaneApps server in the middle |
 
 ---
 
@@ -114,10 +114,10 @@ API keys are stored in the device Keychain with hardware encryption. Sales data 
 
 ## Privacy
 
-**SaneSales does not collect, transmit, or store any personal data.**
+**SaneSales does not upload your sales data or API keys to SaneApps servers.**
 
 - No accounts, no sign-up, no email required
-- No analytics, no telemetry, no crash reports
+- A few simple anonymous app counts may be sent, such as Basic vs Pro launches or locked-feature views
 - API keys stored in device Keychain (hardware-encrypted)
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only
@@ -183,6 +183,19 @@ Tests/             Swift Testing (API parsing, metrics, cache, providers)
 - Swift 6 strict concurrency
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventions.
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [README.md](README.md) | Product overview and doc map |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | App structure and provider model |
+| [DEVELOPMENT.md](DEVELOPMENT.md) | Build, test, and workflow SOP |
+| [PRIVACY.md](PRIVACY.md) | Canonical privacy policy for the app |
+| [SECURITY.md](SECURITY.md) | Security policy and reporting |
+| [`docs/`](docs/) | Public website, privacy page, and guide pages |
 
 ---
 

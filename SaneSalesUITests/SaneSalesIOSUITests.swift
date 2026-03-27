@@ -66,6 +66,32 @@ final class SaneSalesIOSUITests: XCTestCase {
         }
     }
 
+    func testOnboardingShowsAppStoreUpgradePath() {
+        let app = launchOnboarding()
+
+        let unlockButton = app.buttons["onboarding.unlockProButton"]
+        let restoreButton = app.buttons["onboarding.restorePurchasesButton"]
+
+        XCTAssertTrue(unlockButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(restoreButton.exists)
+    }
+
+    func testSettingsShowsLicenseSectionAndButtons() {
+        let app = launchOnboarding()
+
+        let demoButton = app.buttons["onboarding.demoButton"]
+        XCTAssertTrue(demoButton.waitForExistence(timeout: 5))
+        demoButton.tap()
+
+        let settingsTab = app.tabBars.firstMatch.buttons["Settings"]
+        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
+        settingsTab.tap()
+
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["settings.license.unlockProButton"].exists)
+        XCTAssertTrue(app.buttons["settings.license.restorePurchasesButton"].exists)
+    }
+
     func testSeededLemonSqueezyKeySkipsOnboarding() throws {
         let apiKeyB64 = try loadSeededLemonSqueezyKeyBase64()
 
