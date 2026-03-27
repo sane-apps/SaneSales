@@ -19,6 +19,7 @@ REQUIRE_WATCH="${REQUIRE_WATCH:-0}"
 MINI_HOST="${MINI_HOST:-mini}"
 ALLOW_LOCAL_CAPTURE="${ALLOW_LOCAL_CAPTURE:-0}"
 PRUNE_STALE_SCREENSHOTS="${PRUNE_STALE_SCREENSHOTS:-1}"
+SCHEME_CACHE=""
 
 mkdir -p "${OUT_DIR}"
 CAPTURE_MANIFEST="${OUT_DIR}/.capture_manifest"
@@ -62,9 +63,13 @@ enforce_mini_first() {
 
 has_scheme() {
   local scheme_name="$1"
-  xcodebuild -project "${ROOT_DIR}/SaneSales.xcodeproj" -list 2>/dev/null \
-    | awk '/Schemes:/{flag=1;next} flag && NF{print $1}' \
-    | grep -Fxq "${scheme_name}"
+  if [[ -z "${SCHEME_CACHE}" ]]; then
+    SCHEME_CACHE="$(
+      xcodebuild -project "${ROOT_DIR}/SaneSales.xcodeproj" -list 2>/dev/null \
+        | awk '/Schemes:/{flag=1;next} flag && NF{print $1}'
+    )"
+  fi
+  grep -Fxq "${scheme_name}" <<<"${SCHEME_CACHE}"
 }
 
 resolve_flag() {
@@ -213,6 +218,7 @@ restore_mac_focus_state() {
 
 SUPPORTS_WATCH=0
 enforce_mini_first
+xcodegen generate --project "${ROOT_DIR}/project.yml" >/dev/null 2>&1 || true
 if has_scheme "${WATCH_SCHEME}"; then
   SUPPORTS_WATCH=1
 fi

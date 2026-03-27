@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AppStoreProductID</key>
-	<string>com.sanesales.app.pro.unlock</string>
+	<string>com.sanesales.app.pro.unlock.v2</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

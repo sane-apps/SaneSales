@@ -136,35 +136,6 @@ extension Color {
     }
 }
 
-// MARK: - macOS Visual Effect Background
-
-#if os(macOS)
-    struct VisualEffectBackground: NSViewRepresentable {
-        let material: NSVisualEffectView.Material
-        let blendingMode: NSVisualEffectView.BlendingMode
-
-        init(material: NSVisualEffectView.Material = .sidebar,
-             blendingMode: NSVisualEffectView.BlendingMode = .behindWindow) {
-            self.material = material
-            self.blendingMode = blendingMode
-        }
-
-        func makeNSView(context _: Context) -> NSVisualEffectView {
-            let view = NSVisualEffectView()
-            view.material = material
-            view.blendingMode = blendingMode
-            view.state = .active
-            return view
-        }
-
-        func updateNSView(_ view: NSVisualEffectView, context _: Context) {
-            view.material = material
-            view.blendingMode = blendingMode
-        }
-    }
-
-#endif
-
 struct SaneBackground: View {
     @Environment(\.colorScheme) private var colorScheme
 

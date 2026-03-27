@@ -1,5 +1,7 @@
 # SaneSales Development Guide
 
+> [README](README.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DEVELOPMENT](DEVELOPMENT.md) · [PRIVACY](PRIVACY.md) · [SECURITY](SECURITY.md)
+
 ## Build
 
 ```bash

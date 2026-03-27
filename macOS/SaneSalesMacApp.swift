@@ -10,6 +10,7 @@ import SwiftUI
     final class WindowActionStorage {
         static let shared = WindowActionStorage()
         var openWindow: ((String) -> Void)?
+        weak var mainWindow: NSWindow?
 
         func capture(_ action: OpenWindowAction) {
             openWindow = { id in
@@ -17,18 +18,24 @@ import SwiftUI
             }
         }
 
+        func captureMainWindow(_ window: NSWindow?) {
+            guard let window, window.canBecomeMain, !window.isSheet else { return }
+            mainWindow = window
+        }
+
         func showMainWindow() {
-            let mainWindow = NSApp.windows.first(where: {
+            let candidateWindow = mainWindow ?? NSApp.windows.first(where: {
                 $0.canBecomeMain &&
                     !$0.isSheet &&
-                    $0.identifier?.rawValue.contains("main") == true
+                    ($0.identifier?.rawValue.contains("main") == true || !$0.title.isEmpty)
             })
 
-            if let mainWindow {
-                if mainWindow.isMiniaturized {
-                    mainWindow.deminiaturize(nil)
+            if let candidateWindow {
+                if candidateWindow.isMiniaturized {
+                    candidateWindow.deminiaturize(nil)
                 }
-                mainWindow.makeKeyAndOrderFront(nil)
+                candidateWindow.makeKeyAndOrderFront(nil)
+                mainWindow = candidateWindow
             } else {
                 openWindow?("main")
             }
@@ -164,7 +171,7 @@ import SwiftUI
         #if APP_STORE
             @State private var licenseService = LicenseService(
                 appName: "SaneSales",
-                purchaseBackend: .appStore(productID: "com.sanesales.app.pro.unlock")
+                purchaseBackend: .appStore(productID: "com.sanesales.app.pro.unlock.v2")
             )
         #else
             @State private var licenseService = LicenseService(
@@ -197,6 +204,7 @@ import SwiftUI
                     .environment(manager)
                     .environment(licenseService)
                     .modifier(WindowActionCapture())
+                    .background(MainWindowCaptureView())
                     .preferredColorScheme(.dark)
                     .frame(minWidth: 600, minHeight: 400)
                     .onAppear {
@@ -342,6 +350,22 @@ import SwiftUI
                 .onAppear {
                     WindowActionStorage.shared.capture(openWindow)
                 }
+        }
+    }
+
+    struct MainWindowCaptureView: NSViewRepresentable {
+        func makeNSView(context: Context) -> NSView {
+            let view = NSView()
+            DispatchQueue.main.async {
+                WindowActionStorage.shared.captureMainWindow(view.window)
+            }
+            return view
+        }
+
+        func updateNSView(_ nsView: NSView, context: Context) {
+            DispatchQueue.main.async {
+                WindowActionStorage.shared.captureMainWindow(nsView.window)
+            }
         }
     }
 
