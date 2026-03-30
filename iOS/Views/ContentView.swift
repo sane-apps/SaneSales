@@ -1,5 +1,8 @@
 import SaneUI
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
 struct ContentView: View {
     @Environment(SalesManager.self) private var manager
@@ -11,6 +14,9 @@ struct ContentView: View {
 
 struct MainTabView: View {
     @State private var selectedTab: Int
+    #if os(macOS)
+    @State private var previousNonSettingsContentSize: NSSize?
+    #endif
 
     init() {
         _selectedTab = State(initialValue: Self.initialTabSelection)
@@ -41,9 +47,15 @@ struct MainTabView: View {
         }
         .tint(.salesGreen)
         .accessibilityIdentifier("main.tabView")
+        .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
+            selectedTab = 3
+        }
         #if os(macOS)
-            .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
-                selectedTab = 3
+            .onAppear {
+                applyWindowSize(for: selectedTab, previousTab: nil)
+            }
+            .onChange(of: selectedTab) { oldValue, newValue in
+                applyWindowSize(for: newValue, previousTab: oldValue)
             }
         #endif
     }
@@ -78,6 +90,123 @@ struct MainTabView: View {
             return 0
         }
     }
+
+    #if os(macOS)
+    private func applyWindowSize(for selectedTab: Int, previousTab: Int?) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            guard let window = currentWindow() else { return }
+
+            let currentContentSize = window.contentRect(forFrameRect: window.frame).size
+            let isSettingsTab = selectedTab == 3
+            let wasSettingsTab = previousTab == 3
+            let metrics = SaneSalesWindowSizing.metrics(for: selectedTab)
+            let minimumSize = metrics.minimum
+
+            window.contentMinSize = minimumSize
+
+            if isSettingsTab {
+                if !wasSettingsTab, previousTab != nil {
+                    previousNonSettingsContentSize = currentContentSize
+                }
+
+                if currentContentSize.width < metrics.minimum.width ||
+                    currentContentSize.height < metrics.minimum.height {
+                    window.setContentSize(metrics.preferred)
+                    return
+                }
+
+                if !wasSettingsTab,
+                   currentContentSize.width > metrics.preferred.width + 140 ||
+                    currentContentSize.height > metrics.preferred.height + 120 {
+                    window.setContentSize(metrics.preferred)
+                    return
+                }
+
+                return
+            }
+
+            if previousTab == nil,
+               currentContentSize.width < metrics.preferred.width ||
+                currentContentSize.height < metrics.preferred.height {
+                window.setContentSize(metrics.preferred)
+                return
+            }
+
+            if currentContentSize.width < metrics.minimum.width
+                || currentContentSize.height < metrics.minimum.height {
+                window.setContentSize(metrics.minimum)
+                return
+            }
+
+            guard wasSettingsTab, let previousNonSettingsContentSize else { return }
+            let restoredSize = NSSize(
+                width: max(previousNonSettingsContentSize.width, metrics.minimum.width),
+                height: max(previousNonSettingsContentSize.height, metrics.minimum.height)
+            )
+            guard abs(currentContentSize.width - restoredSize.width) > 1 ||
+                abs(currentContentSize.height - restoredSize.height) > 1 else {
+                return
+            }
+
+            window.setContentSize(restoredSize)
+        }
+    }
+
+    private func currentWindow() -> NSWindow? {
+        if let mainWindow = WindowActionStorage.shared.mainWindow {
+            return mainWindow
+        }
+
+        return NSApp.keyWindow ?? NSApp.windows.first(where: { $0.canBecomeMain && !$0.isSheet })
+    }
+    #endif
+}
+
+#if os(macOS)
+private enum SaneSalesWindowSizing {
+    struct Metrics {
+        let minimum: NSSize
+        let preferred: NSSize
+    }
+
+    static let dashboard = Metrics(
+        minimum: NSSize(width: 820, height: 560),
+        preferred: NSSize(width: 1020, height: 700)
+    )
+
+    static let orders = Metrics(
+        minimum: NSSize(width: 900, height: 560),
+        preferred: NSSize(width: 1080, height: 700)
+    )
+
+    static let products = Metrics(
+        minimum: NSSize(width: 860, height: 540),
+        preferred: NSSize(width: 980, height: 680)
+    )
+
+    static let settings = Metrics(
+        minimum: NSSize(width: 640, height: 460),
+        preferred: NSSize(width: 700, height: 500)
+    )
+
+    static func metrics(for tab: Int) -> Metrics {
+        switch tab {
+        case 1:
+            orders
+        case 2:
+            products
+        case 3:
+            settings
+        default:
+            dashboard
+        }
+    }
+}
+#endif
+
+extension Notification.Name {
+    static let showSettingsTab = Notification.Name("com.sanesales.showSettingsTab")
+    static let showSettingsProviderSetup = Notification.Name("com.sanesales.showSettingsProviderSetup")
 }
 
 // MARK: - Onboarding
@@ -93,6 +222,8 @@ struct OnboardingView: View {
     @State private var apiKey = ""
     @State private var isValidating = false
     @State private var showError = false
+    @State private var errorTitle = "Connection Failed"
+    @State private var errorMessage = "Could not connect with that key. Check it and try again."
 
     var body: some View {
         NavigationStack {
@@ -123,10 +254,10 @@ struct OnboardingView: View {
                 }
             }
             .accessibilityIdentifier("onboarding.view")
-            .alert("Invalid API Key", isPresented: $showError) {
+            .alert(errorTitle, isPresented: $showError) {
                 Button("OK") {}
             } message: {
-                Text("Could not connect with that key. Check it and try again.")
+                Text(errorMessage)
             }
             .task {
                 if licenseService.usesAppStorePurchase {
@@ -189,20 +320,18 @@ struct OnboardingView: View {
                                 ? "Processing..."
                                 : "Unlock Pro — " + (licenseService.appStoreDisplayPrice ?? "$6.99")
                         )
-                            .frame(maxWidth: .infinity)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.teal)
-                    .controlSize(.large)
+                    .buttonStyle(SaneActionButtonStyle(prominent: true))
                     .disabled(licenseService.isPurchasing)
                     .accessibilityIdentifier("onboarding.unlockProButton")
 
                     Button("Restore Purchases") {
                         Task { await licenseService.restorePurchases() }
                     }
-                    .buttonStyle(.bordered)
-                    .tint(.teal)
-                    .controlSize(.large)
+                    .buttonStyle(SaneActionButtonStyle())
                     .disabled(licenseService.isPurchasing)
                     .frame(maxWidth: .infinity)
                     .accessibilityIdentifier("onboarding.restorePurchasesButton")
@@ -313,7 +442,7 @@ struct OnboardingView: View {
                 .padding(.leading, 4)
                 .accessibilityIdentifier("onboarding.apiKeyHelp")
 
-            Text("Read-only connection. No checkout links.")
+            Text("Reads your existing sales data. Nothing is modified.")
                 .font(.saneFootnote)
                 .foregroundStyle(Color.textMuted)
                 .padding(.leading, 4)
@@ -344,10 +473,7 @@ struct OnboardingView: View {
             .frame(maxWidth: .infinity)
             .frame(minHeight: 52)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(.salesGreen)
-        .controlSize(.large)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .buttonStyle(SaneActionButtonStyle(prominent: true))
         .disabled(normalizedAPIKey.isEmpty || isValidating)
         .accessibilityIdentifier("onboarding.connectButton")
     }
@@ -357,9 +483,7 @@ struct OnboardingView: View {
             hasSeenWelcome = true
             manager.enableDemoMode()
         }
-        .buttonStyle(.bordered)
-        .tint(.salesGreen)
-        .controlSize(.large)
+        .buttonStyle(SaneActionButtonStyle())
         .frame(maxWidth: .infinity)
         .accessibilityIdentifier("onboarding.demoButton")
     }
@@ -385,6 +509,26 @@ struct OnboardingView: View {
             if success {
                 hasSeenWelcome = true
             } else {
+                switch manager.error {
+                case .invalidAPIKey:
+                    errorTitle = "Invalid API Key"
+                    errorMessage = "The server rejected this key. Check it and try again."
+                case .networkError:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Couldn't reach the server. Check your connection and try again."
+                case .rateLimited:
+                    errorTitle = "Rate Limited"
+                    errorMessage = "Too many requests. Wait a moment and try again."
+                case let .serverError(code):
+                    errorTitle = "Server Error"
+                    errorMessage = "The server returned an error (\(code)). Try again later."
+                case .decodingError:
+                    errorTitle = "Provider Response Changed"
+                    errorMessage = "The key worked, but the provider returned data this build could not read. Try again from Settings or wait for the next update."
+                default:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Could not connect with that key. Check it and try again."
+                }
                 showError = true
             }
         }

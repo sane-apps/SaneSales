@@ -554,8 +554,12 @@ struct SalesBadge: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
-        .background(color.opacity(0.12))
-        .foregroundStyle(color)
+        .background(color.opacity(0.18))
+        .overlay(
+            Capsule()
+                .stroke(color.opacity(0.42), lineWidth: 1)
+        )
+        .foregroundStyle(.white)
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(text)
@@ -566,19 +570,31 @@ struct SalesBadge: View {
 
 struct ProviderBadge: View {
     let provider: SalesProviderType
+    var fillsAvailableWidth = false
+    var allowsWrappedTitle = false
 
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 5) {
             Image(systemName: provider.icon)
-                .font(.footnote)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(provider.brandColor)
                 .accessibilityHidden(true)
             Text(provider.displayName)
-                .font(.footnote.weight(.semibold))
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(.white)
+                .lineLimit(allowsWrappedTitle ? 2 : 1)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.64)
         }
+        .frame(maxWidth: fillsAvailableWidth ? .infinity : nil)
+        .frame(minHeight: allowsWrappedTitle ? 36 : 32)
         .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(provider.brandColor.opacity(0.12))
-        .foregroundStyle(provider.brandColor)
+        .padding(.vertical, 6)
+        .background(provider.brandColor.opacity(0.18))
+        .overlay(
+            Capsule()
+                .stroke(provider.brandColor.opacity(0.72), lineWidth: 1)
+        )
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(provider.displayName) provider")

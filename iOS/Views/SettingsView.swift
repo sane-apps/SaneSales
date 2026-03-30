@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import SwiftUI
 import SaneUI
 #if os(iOS)
@@ -11,52 +12,54 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingKeyEntry = false
     @State private var editingProvider: SalesProviderType?
-    @State private var newAPIKey = ""
-    @State private var isValidating = false
-    @State private var showError = false
-    @State private var errorTitle = ""
-    @State private var errorMessage = ""
     @State private var showRemoveConfirmation = false
     @State private var removingProvider: SalesProviderType?
     @State private var showExportSheet = false
     @State private var exportURL: URL?
     @State private var showFeedback = false
     @AppStorage("demo_mode") private var demoMode = false
+    @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var showingLicenseEntrySheet = false
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
-        #if !APP_STORE
-            @State private var automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
-            @State private var updateCheckFrequency = UpdateService.shared.updateCheckFrequency
-        #endif
     #endif
 
     var body: some View {
+        #if os(macOS)
+            SaneSalesMacSettingsView()
+        #else
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: 24) {
-                        #if os(macOS)
-                            macOSAppearanceSection
-                            #if !APP_STORE
-                            softwareUpdatesSection
-                            #endif
-                        #endif
+                GeometryReader { proxy in
+                    ScrollView {
+                    VStack(spacing: 20) {
                         licenseSection
                         providersSection
                         dataSection
                         aboutSection
-                        trustTagline
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 16)
+                    .padding(.horizontal, 18)
+                    .padding(.top, 14)
+                    .padding(.bottom, settingsBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
+                    }
                 }
             }
             .navigationTitle("Settings")
-            .sheet(isPresented: $showingKeyEntry) {
-                apiKeySheet
-            }
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .sheet(
+                isPresented: $showingKeyEntry,
+                onDismiss: {
+                    editingProvider = nil
+                },
+                content: {
+                if let provider = editingProvider {
+                    ProviderConnectionSheet(provider: provider)
+                }
+                }
+            )
             .sheet(isPresented: $showFeedback) {
                 SaneFeedbackView(diagnosticsService: .shared)
             }
@@ -75,277 +78,88 @@ struct SettingsView: View {
             } message: {
                 Text("This will remove the API key and cached data for this provider.")
             }
-            #if os(macOS)
-            .sheet(item: $proUpsellFeature) { feature in
-                ProUpsellView(feature: feature, licenseService: licenseService)
-            }
-            #endif
             .task {
                 if licenseService.usesAppStorePurchase {
                     await licenseService.preloadAppStoreProduct()
                 }
             }
-        }
-    }
+            .onAppear {
+                consumePendingSettingsRoute()
+            }
+            .onChange(of: pendingSettingsRoute) { _, _ in
+                consumePendingSettingsRoute()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .showSettingsProviderSetup)) { notification in
+                guard let rawValue = notification.object as? String,
+                      let provider = SalesProviderType(rawValue: rawValue)
+                else { return }
 
-    // MARK: - macOS Appearance Section
-
-    #if os(macOS)
-        @AppStorage("showInMenuBar") private var showInMenuBar = true
-        @AppStorage("showInDock") private var showInDock = true
-        @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
-
-        #if !APP_STORE
-            private var softwareUpdatesSection: some View {
-                GlassSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .teal) {
-                    VStack(spacing: 0) {
-                        SaneSparkleRow(
-                            automaticallyChecks: $automaticallyChecksForUpdates,
-                            checkFrequency: $updateCheckFrequency,
-                            labels: .init(
-                                automaticCheckLabel: "Check for updates automatically",
-                                automaticCheckHelp: "Periodically check for new versions",
-                                checkFrequencyLabel: "Check frequency",
-                                checkFrequencyHelp: "Choose how often automatic update checks run",
-                                actionsLabel: "Actions",
-                                checkingLabel: "Checking…",
-                                checkNowLabel: "Check Now",
-                                checkNowHelp: "Check for updates right now"
-                            ),
-                            onCheckNow: { UpdateService.shared.checkForUpdates() }
-                        )
-                    }
-                }
-                .onAppear {
-                    automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
-                    updateCheckFrequency = UpdateService.shared.updateCheckFrequency
-                }
-                .onChange(of: automaticallyChecksForUpdates) { _, newValue in
-                    UpdateService.shared.automaticallyChecksForUpdates = newValue
-                }
-                .onChange(of: updateCheckFrequency) { _, newValue in
-                    UpdateService.shared.updateCheckFrequency = newValue
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    editingProvider = provider
+                    showingKeyEntry = true
                 }
             }
+        }
         #endif
-
-        private var macOSAppearanceSection: some View {
-            GlassSection("Appearance", icon: "macwindow", iconColor: .blue) {
-                VStack(spacing: 0) {
-                    if licenseService.isPro {
-                        Toggle(isOn: Binding(
-                            get: { showInMenuBar },
-                            set: { newValue in
-                                if !newValue, !showInDock { showInDock = true }
-                                showInMenuBar = newValue
-                            }
-                        )) {
-                            GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
-                                EmptyView()
-                            }
-                        }
-                        .toggleStyle(.switch)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-
-                        if showInMenuBar {
-                            GlassDivider()
-
-                            Toggle(isOn: $showRevenueInMenuBar) {
-                                GlassRow("Show Revenue in Menu Bar", iconAssetName: "CoinTemplate", iconColor: .salesGreen) {
-                                    EmptyView()
-                                }
-                            }
-                            .toggleStyle(.switch)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                        }
-
-                        GlassDivider()
-                        GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .teal) {
-                            Text("Enabled")
-                                .font(.saneCallout)
-                                .foregroundStyle(.white.opacity(0.9))
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-                        GlassDivider()
-                    } else {
-                        // Menu Bar — Pro locked
-                        Button {
-                            proUpsellFeature = .menuBar
-                        } label: {
-                            GlassRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .salesGreen) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 10))
-                                    Text("Pro")
-                                        .font(.system(size: 11, weight: .semibold))
-                                }
-                                .foregroundStyle(.teal)
-                            }
-                        }
-                        .buttonStyle(.plain)
-
-                        GlassDivider()
-                        Button {
-                            proUpsellFeature = .widgets
-                        } label: {
-                            GlassRow("Desktop Widgets", icon: "widget.small", iconColor: .teal) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 10))
-                                    Text("Pro")
-                                        .font(.system(size: 11, weight: .semibold))
-                                }
-                                .foregroundStyle(.teal)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        GlassDivider()
-                    }
-
-                    Toggle(isOn: Binding(
-                        get: { showInDock },
-                        set: { newValue in
-                            if !newValue, !showInMenuBar { showInMenuBar = true }
-                            showInDock = newValue
-                        }
-                    )) {
-                        GlassRow("Show in Dock", icon: "dock.rectangle", iconColor: .blue) {
-                            EmptyView()
-                        }
-                    }
-                    .toggleStyle(.switch)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
-                }
-            }
-        }
-    #endif
+    }
 
     // MARK: - License Section
 
         private var licenseSection: some View {
-            GlassSection("License", icon: "key.fill", iconColor: .teal) {
+            GlassSection("License", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
                 VStack(spacing: 0) {
-                    if licenseService.isPro {
-                        // Pro badge
-                        HStack(spacing: 10) {
-                            Image(systemName: "checkmark.seal.fill")
-                                .foregroundStyle(.teal)
-                                .font(.system(size: 16))
-                            Text("Pro")
-                                .font(.saneSubheadlineBold)
-                                .foregroundStyle(.teal)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.teal.opacity(0.15)))
-                            Spacer()
-                            if let email = licenseService.licenseEmail {
-                                Text(email)
-                                    .font(.saneFootnote)
-                                    .foregroundStyle(.white.opacity(0.9))
-                            }
+                    HStack(spacing: 10) {
+                        Image(systemName: licenseService.isPro ? "checkmark.seal.fill" : "lock.open")
+                            .foregroundStyle(licenseService.isPro ? Color.salesSuccess : .white)
+                            .font(.system(size: 15, weight: .semibold))
+
+                        licenseTierBadge(
+                            title: licenseService.isPro ? "Pro" : "Basic",
+                            color: licenseService.isPro ? Color.salesSuccess : .white
+                        )
+
+                        Spacer()
+
+                        if let email = licenseService.licenseEmail, licenseService.isPro {
+                            Text(email)
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.white)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+
+                    GlassDivider()
+
+                    Text(
+                        licenseService.isPro
+                            ? "Pro unlocks multiple providers, full order history, CSV export, menu bar quick glance, and widgets."
+                            : "Basic includes 1 provider, recent sales, recent orders, and the full product catalog."
+                    )
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+
+                    GlassDivider()
+
+                    ViewThatFits(in: .horizontal) {
+                        HStack(spacing: 8) {
+                            primaryLicenseAction
+                            secondaryLicenseAction
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
 
-                        GlassDivider()
-
-                        Button(licenseService.accessManagementLabel) {
-                            licenseService.deactivate()
-                        }
-                        .font(.saneSubheadline)
-                        .foregroundStyle(.red)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-                    } else {
-                        // Free badge + upgrade CTA
-                        HStack(spacing: 10) {
-                            Image(systemName: "person.fill")
-                                .foregroundStyle(.white.opacity(0.6))
-                                .font(.system(size: 14))
-                            Text("Free")
-                                .font(.saneSubheadline)
-                                .foregroundStyle(.white.opacity(0.7))
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.white.opacity(0.1)))
-                            Spacer()
-                            if licenseService.usesAppStorePurchase {
-                                Button {
-                                    Task { await licenseService.purchasePro() }
-                                } label: {
-                                    Text(licenseService.isPurchasing
-                                        ? "Processing..."
-                                        : "Unlock Pro \u{2014} \(licenseService.appStoreDisplayPrice ?? "$6.99")")
-                                        .font(.system(size: 12, weight: .semibold))
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.teal)
-                                .controlSize(.small)
-                                .disabled(licenseService.isPurchasing)
-                                .accessibilityIdentifier("settings.license.unlockProButton")
-                            } else {
-                                Button {
-                                    if let url = licenseService.checkoutURL {
-                                        openURL(url)
-                                    }
-                                } label: {
-                                    Text("Unlock Pro \u{2014} $6.99")
-                                        .font(.system(size: 12, weight: .semibold))
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.teal)
-                                .controlSize(.small)
-                                .accessibilityIdentifier("settings.license.unlockProButton")
-                            }
+                        VStack(spacing: 8) {
+                            primaryLicenseAction
+                            secondaryLicenseAction
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
-
-                        GlassDivider()
-
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Basic includes 1 provider, a recent sales snapshot, recent orders, and the full product catalog.")
-                                .font(.saneCallout)
-                                .foregroundStyle(.white.opacity(0.96))
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            Text("Pro adds full order history, CSV export, menu bar quick glance, desktop widgets, and multiple providers.")
-                                .font(.saneFootnote)
-                                .foregroundStyle(.white.opacity(0.9))
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
-
-                        GlassDivider()
-
-                        if licenseService.usesAppStorePurchase {
-                            Button("Restore Purchases") {
-                                Task { await licenseService.restorePurchases() }
-                            }
-                            .font(.saneSubheadline)
-                            .foregroundStyle(.teal)
-                            .disabled(licenseService.isPurchasing)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                            .accessibilityIdentifier("settings.license.restorePurchasesButton")
-                        } else {
-                            Button(licenseService.alternateUnlockLabel) {
-                                showingLicenseEntrySheet = true
-                            }
-                            .font(.saneSubheadline)
-                            .foregroundStyle(.teal)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 12)
-                        }
                     }
                 }
             }
@@ -354,7 +168,7 @@ struct SettingsView: View {
     // MARK: - Providers Section
 
     private var providersSection: some View {
-        GlassSection("Providers", icon: "link.circle.fill", iconColor: .salesGreen) {
+        GlassSection("Providers", icon: "link.circle.fill", iconColor: SaneSettingsIconSemantic.sync.color) {
             VStack(spacing: 0) {
                 providerRow(.lemonSqueezy, isConnected: manager.isLemonSqueezyConnected)
                 GlassDivider()
@@ -378,27 +192,15 @@ struct SettingsView: View {
             Spacer()
 
             if isConnected {
-                HStack(spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.salesSuccess)
-                        .font(.body)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        StatusBadge("Connected", color: .salesSuccess, icon: "checkmark.circle.fill")
+                        providerManagementMenu(provider)
+                    }
 
-                    Menu {
-                        Button {
-                            editingProvider = provider
-                            showingKeyEntry = true
-                        } label: {
-                            Label("Change Key", systemImage: "key")
-                        }
-                        Button(role: .destructive) {
-                            removingProvider = provider
-                            showRemoveConfirmation = true
-                        } label: {
-                            Label("Disconnect", systemImage: "xmark.circle")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .foregroundStyle(Color.textMuted)
+                    VStack(alignment: .trailing, spacing: 8) {
+                        StatusBadge("Connected", color: .salesSuccess, icon: "checkmark.circle.fill")
+                        providerManagementMenu(provider)
                     }
                 }
             } else {
@@ -429,12 +231,39 @@ struct SettingsView: View {
                         .foregroundStyle(Color.salesGreen)
                     }
                 #else
-                    Button("Connect Account") {
-                        editingProvider = provider
-                        showingKeyEntry = true
+                    if manager.needsProForAdditionalProvider {
+                        let unlockButton = Button(licenseService.usesAppStorePurchase
+                            ? (licenseService.isPurchasing ? "Processing..." : "Unlock")
+                            : "Unlock") {
+                            triggerUnlock()
+                        }
+                        .buttonStyle(SaneActionButtonStyle())
+                        .disabled(licenseService.isPurchasing)
+
+                        switch provider {
+                        case .lemonSqueezy:
+                            unlockButton.accessibilityIdentifier("settings.provider.lemonsqueezy.unlock")
+                        case .gumroad:
+                            unlockButton.accessibilityIdentifier("settings.provider.gumroad.unlock")
+                        case .stripe:
+                            unlockButton.accessibilityIdentifier("settings.provider.stripe.unlock")
+                        }
+                    } else {
+                        let connectButton = Button("Connect") {
+                            editingProvider = provider
+                            showingKeyEntry = true
+                        }
+                        .buttonStyle(SaneActionButtonStyle())
+
+                        switch provider {
+                        case .lemonSqueezy:
+                            connectButton.accessibilityIdentifier("settings.provider.lemonsqueezy.connect")
+                        case .gumroad:
+                            connectButton.accessibilityIdentifier("settings.provider.gumroad.connect")
+                        case .stripe:
+                            connectButton.accessibilityIdentifier("settings.provider.stripe.connect")
+                        }
                     }
-                    .font(.saneSubheadlineBold)
-                    .foregroundStyle(Color.salesGreen)
                 #endif
             }
         }
@@ -442,86 +271,10 @@ struct SettingsView: View {
         .padding(.vertical, 12)
     }
 
-    // MARK: - API Key Sheet
-
-    private var apiKeySheet: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                Image(systemName: editingProvider?.icon ?? "key.fill")
-                    .font(.system(size: 40))
-                    .foregroundStyle(editingProvider?.brandColor ?? .salesGreen)
-                    .padding(.top, 20)
-
-                Text("Connect \(editingProvider?.displayName ?? "Provider") Account")
-                    .font(.title3.weight(.semibold))
-
-                VStack(alignment: .leading, spacing: 8) {
-                    SecureField("API Key", text: $newAPIKey)
-                        .textFieldStyle(.roundedBorder)
-                        .textContentType(.password)
-                        .autocorrectionDisabled()
-                    #if os(iOS)
-                        .textInputAutocapitalization(.never)
-                        .keyboardType(.asciiCapable)
-                    #endif
-
-                    Text(keyHelpText)
-                        .font(.saneCallout)
-                        .foregroundStyle(Color.textMuted)
-
-                    Text("Used only to read your existing merchant data.")
-                        .font(.saneFootnote)
-                        .foregroundStyle(Color.textMuted)
-                }
-                .padding(.horizontal)
-
-                Spacer()
-            }
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        showingKeyEntry = false
-                        newAPIKey = ""
-                        editingProvider = nil
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    if isValidating {
-                        ProgressView()
-                            .tint(.salesGreen)
-                    } else {
-                        Button("Save") {
-                            saveKey()
-                        }
-                        .disabled(newAPIKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        .tint(.salesGreen)
-                    }
-                }
-            }
-            .alert(errorTitle, isPresented: $showError) {
-                Button("OK") {}
-            } message: {
-                Text(errorMessage)
-            }
-        }
-    }
-
-    private var keyHelpText: String {
-        guard let provider = editingProvider else { return "" }
-        switch provider {
-        case .lemonSqueezy: return "lemonsqueezy.com \u{2192} Settings \u{2192} API"
-        case .gumroad: return "gumroad.com \u{2192} Settings \u{2192} Advanced \u{2192} Applications"
-        case .stripe: return "dashboard.stripe.com \u{2192} Developers \u{2192} API keys (use Secret key)"
-        }
-    }
-
     // MARK: - Data Section
 
     private var dataSection: some View {
-        GlassSection("Data", icon: "internaldrive", iconColor: .blue) {
+        GlassSection("Data", icon: "internaldrive", iconColor: SaneSettingsIconSemantic.storage.color) {
             VStack(spacing: 0) {
                 if let date = manager.lastUpdated {
                     GlassRow("Last Updated", icon: "clock", iconColor: .salesGreen) {
@@ -566,34 +319,20 @@ struct SettingsView: View {
                 }
                 if !manager.orders.isEmpty {
                     GlassDivider()
-                    #if os(macOS)
-                        if !manager.isPro {
-                            // Locked CSV export — show Pro badge
-                            Button {
+                    if !manager.isPro {
+                        Button {
+                            #if os(macOS)
                                 proUpsellFeature = .csvExport
-                            } label: {
-                                GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "lock.fill")
-                                            .font(.system(size: 10))
-                                        Text("Pro")
-                                            .font(.system(size: 11, weight: .semibold))
-                                    }
-                                    .foregroundStyle(.teal)
-                                }
-                            }
-                        } else {
-                            Button {
-                                exportURL = exportOrdersCSV(manager.orders)
-                                if exportURL != nil { showExportSheet = true }
-                            } label: {
-                                GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
-                                    Image(systemName: "tablecells")
-                                        .foregroundStyle(Color.textMuted)
-                                }
+                            #else
+                                triggerUnlock()
+                            #endif
+                        } label: {
+                            GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
+                                StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                             }
                         }
-                    #else
+                        .accessibilityIdentifier("settings.data.export.lockedButton")
+                    } else {
                         Button {
                             exportURL = exportOrdersCSV(manager.orders)
                             if exportURL != nil { showExportSheet = true }
@@ -603,7 +342,8 @@ struct SettingsView: View {
                                     .foregroundStyle(Color.textMuted)
                             }
                         }
-                    #endif
+                        .accessibilityIdentifier("settings.data.export.button")
+                    }
                 }
             }
         }
@@ -617,14 +357,14 @@ struct SettingsView: View {
     // MARK: - About Section
 
     private var aboutSection: some View {
-        GlassSection("About", icon: "info.circle", iconColor: .secondary) {
+        GlassSection("About", icon: "info.circle", iconColor: SaneSettingsIconSemantic.about.color) {
             VStack(spacing: 0) {
-                GlassRow("Version", icon: "number", iconColor: .secondary) {
+                GlassRow("Version", icon: "number", iconColor: SaneSettingsIconSemantic.about.color) {
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                         .font(.saneSubheadline)
                 }
                 GlassDivider()
-                GlassRow("Build", icon: "hammer", iconColor: .secondary) {
+                GlassRow("Build", icon: "hammer", iconColor: SaneSettingsIconSemantic.about.color) {
                     Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
                         .font(.saneSubheadline)
                 }
@@ -660,9 +400,9 @@ struct SettingsView: View {
                     }
                 }
                 GlassDivider()
-                if let url = URL(string: "mailto:hi@saneapps.com") {
+                if let url = URL(string: "https://github.com/sane-apps/SaneSales/issues") {
                     Link(destination: url) {
-                        GlassRow("Email Us", icon: "envelope", iconColor: .blue) {
+                        GlassRow("View Issues", icon: "arrow.up.right.square", iconColor: .blue) {
                             Image(systemName: "arrow.up.forward.square")
                                 .foregroundStyle(Color.textMuted)
                                 .font(.saneSubheadline)
@@ -673,57 +413,100 @@ struct SettingsView: View {
         }
     }
 
-    private var trustTagline: some View {
-        Text("Made with love in the USA \u{00B7} Read-only merchant data \u{00B7} 100% On-Device")
-            .font(.saneCallout)
-            .foregroundStyle(Color.textMuted)
-            .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 8)
+    private func licenseTierBadge(title: String, color: Color) -> some View {
+        Text(title)
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(
+                Capsule()
+                    .fill(color.opacity(0.16))
+            )
+    }
+
+    @ViewBuilder
+    private var primaryLicenseAction: some View {
+        if licenseService.isPro {
+            if licenseService.usesAppStorePurchase {
+                Button("Restore Purchases") {
+                    Task { await licenseService.restorePurchases() }
+                }
+                .buttonStyle(SaneActionButtonStyle())
+                .disabled(licenseService.isPurchasing)
+            } else {
+                Button(licenseService.accessManagementLabel) {
+                    licenseService.deactivate()
+                }
+                .buttonStyle(SaneActionButtonStyle(destructive: true))
+            }
+        } else if licenseService.usesAppStorePurchase {
+            Button(licenseService.isPurchasing ? "Processing..." : "Unlock Pro — \(licenseService.appStoreDisplayPrice ?? "$6.99")") {
+                triggerUnlock()
+            }
+            .buttonStyle(SaneActionButtonStyle(prominent: true))
+            .disabled(licenseService.isPurchasing)
+            .accessibilityIdentifier("settings.license.unlockProButton")
+        } else {
+            Button("Unlock Pro — $6.99") {
+                triggerUnlock()
+            }
+            .buttonStyle(SaneActionButtonStyle(prominent: true))
+            .accessibilityIdentifier("settings.license.unlockProButton")
+        }
+    }
+
+    @ViewBuilder
+    private var secondaryLicenseAction: some View {
+        if licenseService.isPro {
+            EmptyView()
+        } else if licenseService.usesAppStorePurchase {
+            Button("Restore Purchases") {
+                Task { await licenseService.restorePurchases() }
+            }
+            .buttonStyle(SaneActionButtonStyle())
+            .disabled(licenseService.isPurchasing)
+            .accessibilityIdentifier("settings.license.restorePurchasesButton")
+        } else {
+            Button(licenseService.alternateEntryLabel) {
+                showingLicenseEntrySheet = true
+            }
+            .buttonStyle(SaneActionButtonStyle())
+        }
+    }
+
+    private func triggerUnlock() {
+        if licenseService.usesAppStorePurchase {
+            Task { await licenseService.purchasePro() }
+        } else if let url = licenseService.checkoutURL {
+            openURL(url)
+        }
+    }
+
+    private func providerManagementMenu(_ provider: SalesProviderType) -> some View {
+        Menu {
+            Button {
+                editingProvider = provider
+                showingKeyEntry = true
+            } label: {
+                Label("Change Key", systemImage: "key")
+            }
+            Button(role: .destructive) {
+                removingProvider = provider
+                showRemoveConfirmation = true
+            } label: {
+                Label("Disconnect", systemImage: "xmark.circle")
+            }
+        } label: {
+            Text("Manage")
+                .lineLimit(1)
+                .minimumScaleFactor(0.85)
+        }
+        .buttonStyle(SaneActionButtonStyle())
+        .modifier(SettingsProviderManagementAccessibilityModifier(provider: provider))
     }
 
     // MARK: - Actions
-
-    private func saveKey() {
-        guard let provider = editingProvider else { return }
-        isValidating = true
-        let key = newAPIKey.trimmingCharacters(in: .whitespacesAndNewlines)
-        Task {
-            let success: Bool = switch provider {
-            case .lemonSqueezy:
-                await manager.setLemonSqueezyAPIKey(key)
-            case .gumroad:
-                await manager.setGumroadAPIKey(key)
-            case .stripe:
-                await manager.setStripeAPIKey(key)
-            }
-            isValidating = false
-            if success {
-                showingKeyEntry = false
-                newAPIKey = ""
-                editingProvider = nil
-            } else {
-                switch manager.error {
-                case .invalidAPIKey:
-                    errorTitle = "Invalid API Key"
-                    errorMessage = "The server rejected this key. Check it and try again."
-                case .networkError:
-                    errorTitle = "Connection Failed"
-                    errorMessage = "Couldn't reach the server. Check your internet connection and try again."
-                case .rateLimited:
-                    errorTitle = "Rate Limited"
-                    errorMessage = "Too many requests. Wait a moment and try again."
-                case let .serverError(code):
-                    errorTitle = "Server Error"
-                    errorMessage = "The server returned an error (\(code)). Try again later."
-                default:
-                    errorTitle = "Connection Failed"
-                    errorMessage = "Could not connect with that key. Check it and try again."
-                }
-                showError = true
-            }
-        }
-    }
 
     private func disconnectProvider(_ provider: SalesProviderType) {
         switch provider {
@@ -743,6 +526,160 @@ struct SettingsView: View {
         }
     }
 
+    private func settingsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
+        #if os(iOS)
+            return max(20, safeAreaBottom + 84)
+        #else
+            return 20
+        #endif
+    }
+
+    private func consumePendingSettingsRoute() {
+        guard !pendingSettingsRoute.isEmpty else { return }
+
+        defer { pendingSettingsRoute = "" }
+
+        if pendingSettingsRoute == "license" {
+            return
+        }
+
+        guard pendingSettingsRoute.hasPrefix("provider:") else { return }
+        let rawValue = String(pendingSettingsRoute.dropFirst("provider:".count))
+        guard let provider = SalesProviderType(rawValue: rawValue) else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            editingProvider = provider
+            showingKeyEntry = true
+        }
+    }
+
+}
+struct ProviderConnectionSheet: View {
+    @Environment(SalesManager.self) private var manager
+    @Environment(\.dismiss) private var dismiss
+
+    let provider: SalesProviderType
+
+    @State private var apiKey = ""
+    @State private var isValidating = false
+    @State private var showError = false
+    @State private var errorTitle = ""
+    @State private var errorMessage = ""
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 20) {
+                Image(systemName: provider.icon)
+                    .font(.system(size: 40))
+                    .foregroundStyle(provider.brandColor)
+                    .padding(.top, 20)
+
+                Text("Connect \(provider.displayName) Account")
+                    .font(.title3.weight(.semibold))
+
+                VStack(alignment: .leading, spacing: 8) {
+                    SecureField("API Key", text: $apiKey)
+                        .textFieldStyle(.roundedBorder)
+                        .textContentType(.password)
+                        .autocorrectionDisabled()
+                    #if os(iOS)
+                        .textInputAutocapitalization(.never)
+                        .keyboardType(.asciiCapable)
+                    #endif
+
+                    Text(keyHelpText)
+                        .font(.saneCallout)
+                        .foregroundStyle(Color.textMuted)
+
+                    Text("Reads your existing sales data. Nothing is modified.")
+                        .font(.saneFootnote)
+                        .foregroundStyle(Color.textMuted)
+                }
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    if isValidating {
+                        ProgressView()
+                            .tint(.salesGreen)
+                    } else {
+                        Button("Save") {
+                            saveKey()
+                        }
+                        .disabled(apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .tint(.salesGreen)
+                    }
+                }
+            }
+            .alert(errorTitle, isPresented: $showError) {
+                Button("OK") {}
+            } message: {
+                Text(errorMessage)
+            }
+        }
+    }
+
+    private var keyHelpText: String {
+        switch provider {
+        case .lemonSqueezy: return "lemonsqueezy.com \u{2192} Settings \u{2192} API"
+        case .gumroad: return "gumroad.com \u{2192} Settings \u{2192} Advanced \u{2192} Applications"
+        case .stripe: return "dashboard.stripe.com \u{2192} Developers \u{2192} API keys (use Secret key)"
+        }
+    }
+
+    private func saveKey() {
+        isValidating = true
+        let normalizedKey = apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        Task {
+            let success: Bool = switch provider {
+            case .lemonSqueezy:
+                await manager.setLemonSqueezyAPIKey(normalizedKey)
+            case .gumroad:
+                await manager.setGumroadAPIKey(normalizedKey)
+            case .stripe:
+                await manager.setStripeAPIKey(normalizedKey)
+            }
+
+            isValidating = false
+
+            if success {
+                dismiss()
+            } else {
+                switch manager.error {
+                case .invalidAPIKey:
+                    errorTitle = "Invalid API Key"
+                    errorMessage = "The server rejected this key. Check it and try again."
+                case .networkError:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Couldn't reach the server. Check your internet connection and try again."
+                case .rateLimited:
+                    errorTitle = "Rate Limited"
+                    errorMessage = "Too many requests. Wait a moment and try again."
+                case let .serverError(code):
+                    errorTitle = "Server Error"
+                    errorMessage = "The server returned an error (\(code)). Try again later."
+                case .decodingError:
+                    errorTitle = "Provider Response Changed"
+                    errorMessage = "The key worked, but the provider returned data this build could not read. Try again from Settings or wait for the next update."
+                default:
+                    errorTitle = "Connection Failed"
+                    errorMessage = "Could not connect with that key. Check it and try again."
+                }
+                showError = true
+            }
+        }
+    }
 }
 
 private extension SettingsView {
@@ -818,8 +755,7 @@ private extension SettingsView {
                     Button("Reveal in Finder") {
                         NSWorkspace.shared.activateFileViewerSelecting([url])
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color.salesGreen)
+                    .buttonStyle(SaneActionButtonStyle(prominent: true))
                 }
                 .padding(40)
             }

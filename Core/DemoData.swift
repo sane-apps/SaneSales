@@ -6,14 +6,23 @@ import Foundation
 enum DemoData {
         // MARK: - Public API
 
-        @MainActor static func loadInto(manager: SalesManager) {
-            manager.orders = allOrders.sorted { $0.createdAt > $1.createdAt }
-            manager.products = allProducts
-            manager.stores = allStores
-            manager.metrics = SalesMetrics.compute(from: manager.orders)
-            manager.isLemonSqueezyConnected = true
-            manager.isGumroadConnected = true
-            manager.isStripeConnected = true
+        @MainActor static func loadInto(
+            manager: SalesManager,
+            connectedProviders: Set<SalesProviderType> = Set(SalesProviderType.allCases)
+        ) {
+            let filteredOrders = allOrders
+                .filter { connectedProviders.contains($0.provider) }
+                .sorted { $0.createdAt > $1.createdAt }
+            let filteredProducts = allProducts.filter { connectedProviders.contains($0.provider) }
+            let filteredStores = allStores.filter { connectedProviders.contains($0.provider) }
+
+            manager.orders = filteredOrders
+            manager.products = filteredProducts
+            manager.stores = filteredStores
+            manager.metrics = SalesMetrics.compute(from: filteredOrders)
+            manager.isLemonSqueezyConnected = connectedProviders.contains(.lemonSqueezy)
+            manager.isGumroadConnected = connectedProviders.contains(.gumroad)
+            manager.isStripeConnected = connectedProviders.contains(.stripe)
             manager.lastUpdated = Date()
         }
 

@@ -111,10 +111,10 @@ actor LemonSqueezyProvider: SalesProvider {
                 name: attrs.name,
                 slug: attrs.slug,
                 description: attrs.description,
-                price: attrs.price,
+                price: attrs.price ?? 0,
                 currency: "USD",
-                status: ProductStatus(rawValue: attrs.status) ?? .unknown,
-                createdAt: attrs.createdAt,
+                status: ProductStatus(rawValue: attrs.status ?? "") ?? .unknown,
+                createdAt: attrs.createdAt ?? .distantPast,
                 provider: .lemonSqueezy,
                 thumbURL: attrs.thumbUrl.flatMap(URL.init(string:)),
                 largeThumbURL: attrs.largeThumbUrl.flatMap(URL.init(string:)),
@@ -149,8 +149,8 @@ actor LemonSqueezyProvider: SalesProvider {
             name: attrs.name,
             slug: attrs.slug,
             currency: attrs.currency,
-            totalRevenue: attrs.totalRevenue,
-            thirtyDayRevenue: attrs.thirtyDayRevenue,
+            totalRevenue: attrs.totalRevenue ?? 0,
+            thirtyDayRevenue: attrs.thirtyDayRevenue ?? 0,
             provider: .lemonSqueezy,
             url: attrs.url.flatMap(URL.init(string:)),
             avatarURL: attrs.avatarUrl.flatMap(URL.init(string:)),
@@ -236,22 +236,22 @@ private struct LSOrderItem: Decodable {
 
 private struct LSOrderAttributes: Decodable {
     let status: String
-    let orderNumber: Int
-    let identifier: String
+    let orderNumber: Int?
+    let identifier: String?
     let total: Int
-    let subtotal: Int
-    let tax: Int
-    let discountTotal: Int
+    let subtotal: Int?
+    let tax: Int?
+    let discountTotal: Int?
     let currency: String
     let userEmail: String?
     let userName: String?
     let taxName: String?
     let taxRate: String?
-    let taxInclusive: Bool
-    let totalFormatted: String
-    let subtotalFormatted: String
-    let taxFormatted: String
-    let discountTotalFormatted: String
+    let taxInclusive: Bool?
+    let totalFormatted: String?
+    let subtotalFormatted: String?
+    let taxFormatted: String?
+    let discountTotalFormatted: String?
     let refundedAt: Date?
     let refundedAmount: Int?
     let firstOrderItem: LSFirstOrderItem?
@@ -301,14 +301,14 @@ private struct LSProductAttributes: Decodable {
     let name: String
     let slug: String?
     let description: String?
-    let price: Int
-    let status: String
+    let price: Int?
+    let status: String?
     let statusFormatted: String?
     let priceFormatted: String?
     let thumbUrl: String?
     let largeThumbUrl: String?
     let buyNowUrl: String?
-    let createdAt: Date
+    let createdAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case name, slug, description, price, status
@@ -330,10 +330,10 @@ private struct LSStoreAttributes: Decodable {
     let name: String
     let slug: String?
     let currency: String
-    let totalRevenue: Int
-    let thirtyDayRevenue: Int
-    let totalSales: Int
-    let thirtyDaySales: Int
+    let totalRevenue: Int?
+    let thirtyDayRevenue: Int?
+    let totalSales: Int?
+    let thirtyDaySales: Int?
     let url: String?
     let avatarUrl: String?
     let plan: String?
@@ -359,6 +359,27 @@ private struct LSMeta: Decodable {
 
 private struct LSPageInfo: Decodable {
     let lastPage: Int
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let camelCase = try container.decodeIfPresent(Int.self, forKey: .lastPage) {
+            lastPage = camelCase
+            return
+        }
+        if let snakeCase = try container.decodeIfPresent(Int.self, forKey: .lastPageSnakeCase) {
+            lastPage = snakeCase
+            return
+        }
+        throw DecodingError.keyNotFound(
+            CodingKeys.lastPage,
+            DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Missing lastPage/last_page")
+        )
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case lastPage
+        case lastPageSnakeCase = "last_page"
+    }
 }
 
 extension JSONDecoder {

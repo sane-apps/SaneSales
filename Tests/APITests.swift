@@ -172,6 +172,95 @@ struct APITests {
         #expect(response.data[0].attributes.createdAt != nil)
     }
 
+    @Test("Handles LemonSqueezy nullable noncritical order fields")
+    func parsesOrdersWhenOptionalFieldsAreNull() throws {
+        let json = """
+        {
+            "data": [{
+                "id": "901",
+                "type": "orders",
+                "attributes": {
+                    "status": "paid",
+                    "order_number": null,
+                    "identifier": null,
+                    "total": 500,
+                    "subtotal": null,
+                    "tax": null,
+                    "discount_total": null,
+                    "currency": "USD",
+                    "user_email": "test@example.com",
+                    "user_name": null,
+                    "tax_inclusive": null,
+                    "total_formatted": null,
+                    "subtotal_formatted": null,
+                    "tax_formatted": null,
+                    "discount_total_formatted": null,
+                    "first_order_item": null,
+                    "created_at": "2026-03-29T10:30:00.000000Z"
+                }
+            }],
+            "meta": {
+                "page": {
+                    "lastPage": 1
+                }
+            }
+        }
+        """
+
+        let data = json.data(using: .utf8)!
+        let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
+
+        #expect(response.data.count == 1)
+        #expect(response.data[0].attributes.userEmail == "test@example.com")
+        #expect(response.data[0].attributes.firstOrderItem == nil)
+    }
+
+    @Test("Parses LemonSqueezy snake_case page metadata")
+    func parsesStoreJSONWithSnakeCasePageMetadata() throws {
+        let json = """
+        {
+            "data": [{
+                "id": "123",
+                "type": "orders",
+                "attributes": {
+                    "status": "paid",
+                    "total": 500,
+                    "currency": "USD",
+                    "user_email": "test@example.com",
+                    "user_name": "Test User",
+                    "created_at": "2026-01-15T10:30:00Z"
+                }
+            }],
+            "meta": {
+                "page": {
+                    "last_page": 2
+                }
+            }
+        }
+        """
+
+        let data = json.data(using: .utf8)!
+        let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
+        #expect(response.meta.page.lastPage == 2)
+    }
+
+    @Test("Demo data respects the requested connected providers")
+    @MainActor
+    func demoDataRespectsConnectedProviders() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+
+        DemoData.loadInto(manager: manager, connectedProviders: [.lemonSqueezy])
+
+        #expect(manager.connectedProviders == [.lemonSqueezy])
+        #expect(manager.isLemonSqueezyConnected)
+        #expect(!manager.isGumroadConnected)
+        #expect(!manager.isStripeConnected)
+        #expect(Set(manager.orders.map(\.provider)) == [.lemonSqueezy])
+        #expect(Set(manager.products.map(\.provider)) == [.lemonSqueezy])
+        #expect(Set(manager.stores.map(\.provider)) == [.lemonSqueezy])
+    }
+
     @Test("Diagnostics issue URL uses GitHub bug template and clipboard hint")
     @MainActor
     func diagnosticsIssueURLUsesGitHubTemplate() throws {
@@ -233,6 +322,11 @@ struct APITests {
 struct AppStartupPolicyTests {
     @Test("iOS setup flow shows onboarding for first launch or broken startup")
     func iosSetupFlowShowsOnboardingWhenNeeded() {
+        #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: ["--force-onboarding"], environment: [:]) == false)
+        #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: ["--skip-onboarding"], environment: [:]) == true)
+        #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: [], environment: ["SANEAPPS_SKIP_ONBOARDING": "1"]) == true)
+        #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: [], environment: [:]) == nil)
+
         #expect(SalesSetupFlowPolicy.shouldShowInitialSetup(
             hasSeenWelcome: false,
             demoModeEnabled: false,
@@ -279,6 +373,34 @@ struct AppStartupPolicyTests {
         ))
     }
 
+    @Test("Store-only cache does not count as usable dashboard content")
+    func storeOnlyCacheDoesNotSuppressSetupRecovery() {
+        #expect(!SalesSetupFlowPolicy.hasUsableContent(ordersCount: 0, productsCount: 0))
+        #expect(SalesSetupFlowPolicy.hasUsableContent(ordersCount: 1, productsCount: 0))
+        #expect(SalesSetupFlowPolicy.hasUsableContent(ordersCount: 0, productsCount: 1))
+    }
+
+    @Test("Initial refresh failure only blocks setup completion when no usable content was loaded")
+    func initialRefreshFailureBlocksOnlyBlankDashboards() {
+        #expect(SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+            error: .decodingError(underlying: NSError(domain: "test", code: 1)),
+            ordersCount: 0,
+            productsCount: 0
+        ))
+
+        #expect(!SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+            error: .decodingError(underlying: NSError(domain: "test", code: 1)),
+            ordersCount: 12,
+            productsCount: 0
+        ))
+
+        #expect(!SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+            error: nil,
+            ordersCount: 0,
+            productsCount: 0
+        ))
+    }
+
     #if os(macOS)
         @Test("Dock default stays hidden")
         func dockDefaultIsHidden() {
@@ -310,13 +432,19 @@ struct AppStartupPolicyTests {
             let projectRoot = URL(fileURLWithPath: #filePath)
                 .deletingLastPathComponent()
                 .deletingLastPathComponent()
-            let source = try String(
+            let menuSource = try String(
                 contentsOf: projectRoot.appendingPathComponent("macOS/MenuBarManager.swift"),
                 encoding: .utf8
             )
+            let managerSource = try String(
+                contentsOf: projectRoot.appendingPathComponent("Core/SalesManager.swift"),
+                encoding: .utf8
+            )
 
-            #expect(source.contains("#if !APP_STORE"))
-            #expect(source.contains("Check for Updates"))
+            #expect(menuSource.contains("#if !APP_STORE"))
+            #expect(menuSource.contains("Check for Updates"))
+            #expect(managerSource.contains("SalesSetupFlowPolicy.welcomeOverride"))
+            #expect(managerSource.contains("UserDefaults.standard.set(hasSeenWelcomeOverride, forKey: \"hasSeenWelcome\")"))
         }
     #endif
 }
@@ -464,6 +592,27 @@ struct TestMeta: Decodable {
 
 struct TestPageInfo: Decodable {
     let lastPage: Int
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let camelCase = try container.decodeIfPresent(Int.self, forKey: .lastPage) {
+            lastPage = camelCase
+            return
+        }
+        if let snakeCase = try container.decodeIfPresent(Int.self, forKey: .lastPageSnakeCase) {
+            lastPage = snakeCase
+            return
+        }
+        throw DecodingError.keyNotFound(
+            CodingKeys.lastPage,
+            DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Missing lastPage/last_page")
+        )
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case lastPage
+        case lastPageSnakeCase = "last_page"
+    }
 }
 
 struct TestStoresResponse: Decodable {

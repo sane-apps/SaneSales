@@ -33,6 +33,26 @@ boot_device() {
   xcrun simctl ui "${udid}" appearance dark >/dev/null 2>&1 || true
 }
 
+app_bundle_variants() {
+  local bundle_id="$1"
+  printf '%s\n' "${bundle_id}"
+  case "${bundle_id}" in
+    com.sanesales.app) printf '%s\n' "com.sanesales.dev" ;;
+    com.sanesales.dev) printf '%s\n' "com.sanesales.app" ;;
+  esac
+}
+
+clean_simulator_app_variants() {
+  local udid="$1"
+  local bundle_id="$2"
+
+  while IFS= read -r candidate; do
+    [[ -z "${candidate}" ]] && continue
+    xcrun simctl terminate "${udid}" "${candidate}" >/dev/null 2>&1 || true
+    xcrun simctl uninstall "${udid}" "${candidate}" >/dev/null 2>&1 || true
+  done < <(app_bundle_variants "${bundle_id}" | awk '!seen[$0]++')
+}
+
 simulator_window_id() {
   swift - <<'SWIFT'
 import Cocoa
@@ -115,6 +135,8 @@ boot_device "${IPHONE_UDID}"
 boot_device "${IPAD_UDID}"
 boot_device "${WATCH_UDID}"
 
+clean_simulator_app_variants "${IPHONE_UDID}" "${IOS_BUNDLE}"
+clean_simulator_app_variants "${IPAD_UDID}" "${IOS_BUNDLE}"
 xcrun simctl install "${IPHONE_UDID}" "${IOS_APP}" >/dev/null
 xcrun simctl install "${IPAD_UDID}" "${IOS_APP}" >/dev/null
 xcrun simctl install "${WATCH_UDID}" "${WATCH_APP}" >/dev/null

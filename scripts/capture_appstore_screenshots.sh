@@ -10,11 +10,16 @@ WATCH_NAME="${WATCH_NAME:-Apple Watch Series 10 (46mm)}"
 WATCH_SCREENSHOT_MASK="${WATCH_SCREENSHOT_MASK:-black}"
 IOS_SCHEME="${IOS_SCHEME:-SaneSalesIOS}"
 WATCH_SCHEME="${WATCH_SCHEME:-SaneSalesWatch}"
+MAC_SCHEME="${MAC_SCHEME:-}"
+MAC_CONFIGURATION="${MAC_CONFIGURATION:-}"
 NAME_PREFIX="${NAME_PREFIX:-appstore-}"
+EXTRA_APP_ARGS="${EXTRA_APP_ARGS:-}"
+DEMO_CONNECTED_PROVIDER="${DEMO_CONNECTED_PROVIDER:-lemonsqueezy}"
 CAPTURE_IPHONE="${CAPTURE_IPHONE:-auto}"
 CAPTURE_IPAD="${CAPTURE_IPAD:-auto}"
 CAPTURE_WATCH="${CAPTURE_WATCH:-auto}"
 CAPTURE_MAC="${CAPTURE_MAC:-1}"
+CAPTURE_SETTINGS_PANES="${CAPTURE_SETTINGS_PANES:-0}"
 REQUIRE_WATCH="${REQUIRE_WATCH:-0}"
 MINI_HOST="${MINI_HOST:-mini}"
 ALLOW_LOCAL_CAPTURE="${ALLOW_LOCAL_CAPTURE:-0}"
@@ -30,6 +35,25 @@ IPHONE_UDID=""
 IPAD_UDID=""
 WATCH_UDID=""
 ORIGINAL_KEYBOARD_UI_MODE="__UNSET__"
+APP_EXTRA_ARGS=()
+
+if [[ -n "${EXTRA_APP_ARGS}" ]]; then
+  # shellcheck disable=SC2206
+  APP_EXTRA_ARGS=( ${EXTRA_APP_ARGS} )
+fi
+
+if [[ -n "${DEMO_CONNECTED_PROVIDER}" ]]; then
+  has_demo_provider_arg=0
+  for existing_arg in "${APP_EXTRA_ARGS[@]-}"; do
+    if [[ "${existing_arg}" == --demo-connected-provider=* ]]; then
+      has_demo_provider_arg=1
+      break
+    fi
+  done
+  if [[ "${has_demo_provider_arg}" == "0" ]]; then
+    APP_EXTRA_ARGS+=( "--demo-connected-provider=${DEMO_CONNECTED_PROVIDER}" )
+  fi
+fi
 
 log() {
   printf '[screenshots] %s\n' "$1"
@@ -124,6 +148,26 @@ boot_device() {
     --batteryLevel 100 >/dev/null 2>&1 || true
 }
 
+app_bundle_variants() {
+  local bundle_id="$1"
+  printf '%s\n' "${bundle_id}"
+  case "${bundle_id}" in
+    com.sanesales.app) printf '%s\n' "com.sanesales.dev" ;;
+    com.sanesales.dev) printf '%s\n' "com.sanesales.app" ;;
+  esac
+}
+
+clean_simulator_app_variants() {
+  local udid="$1"
+  local bundle_id="$2"
+
+  while IFS= read -r candidate; do
+    [[ -z "${candidate}" ]] && continue
+    xcrun simctl terminate "${udid}" "${candidate}" >/dev/null 2>&1 || true
+    xcrun simctl uninstall "${udid}" "${candidate}" >/dev/null 2>&1 || true
+  done < <(app_bundle_variants "${bundle_id}" | awk '!seen[$0]++')
+}
+
 capture_ios_shot() {
   local udid="$1"
   local bundle_id="$2"
@@ -157,12 +201,74 @@ capture_mac_shot() {
 
   local x=80
   local y=60
-  local width=1280
-  local height=900
+  local width=1020
+  local height=640
+  local tab_name="dashboard"
+  local settings_tab_name="general"
+  local i
+
+  for (( i=1; i <= $#; i++ )); do
+    if [[ "${!i}" == "--screenshot-tab" ]]; then
+      local next_index=$((i + 1))
+      if (( next_index <= $# )); then
+        tab_name="${!next_index}"
+      fi
+    fi
+
+    if [[ "${!i}" == "--screenshot-settings-tab" ]]; then
+      local next_settings_index=$((i + 1))
+      if (( next_settings_index <= $# )); then
+        settings_tab_name="${!next_settings_index}"
+      fi
+    fi
+  done
+
+  case "${tab_name}" in
+    dashboard)
+      width=1020
+      height=700
+      ;;
+    orders)
+      width=1080
+      height=700
+      ;;
+    products)
+      width=980
+      height=680
+      ;;
+    settings)
+      case "${settings_tab_name}" in
+        general)
+          width=700
+          height=560
+          ;;
+        providers)
+          width=700
+          height=430
+          ;;
+        data)
+          width=700
+          height=480
+          ;;
+        license)
+          width=680
+          height=360
+          ;;
+        about)
+          width=680
+          height=430
+          ;;
+        *)
+          width=700
+          height=500
+          ;;
+      esac
+      ;;
+  esac
 
   pkill -x SaneSales >/dev/null 2>&1 || true
   open -na "${app_path}" --args "$@" >/dev/null 2>&1
-  sleep 2.5
+  sleep 3.2
 
   osascript <<EOF >/dev/null
 tell application "SaneSales" to activate
@@ -177,7 +283,7 @@ tell application "System Events"
   end tell
 end tell
 EOF
-  sleep 0.8
+  sleep 1.1
 
   screencapture -x -R "${x},${y},${width},${height}" "${output_file}"
   log "Saved ${output_file}"
@@ -259,14 +365,15 @@ if has_scheme "${IOS_SCHEME}"; then
     fi
     log "Booting iPhone simulator..."
     boot_device "${IPHONE_UDID}"
+    clean_simulator_app_variants "${IPHONE_UDID}" "${IOS_BUNDLE_ID}"
     log "Installing iOS app on iPhone simulator..."
     xcrun simctl install "${IPHONE_UDID}" "${IOS_APP}"
     log "Capturing iPhone screenshots..."
     capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}01-onboarding-dark-6.7.png" --force-onboarding
-    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-6.7.png" --demo --screenshot-tab dashboard
-    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-6.7.png" --demo --screenshot-tab orders
-    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-6.7.png" --demo --screenshot-tab products
-    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-6.7.png" --demo --screenshot-tab settings
+    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-6.7.png" --demo --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-6.7.png" --demo --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-6.7.png" --demo --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-6.7.png" --demo --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
     captured_platforms+=("iphone")
   else
     log "Skipping iPhone screenshots (unsupported or CAPTURE_IPHONE=${CAPTURE_IPHONE})"
@@ -280,14 +387,15 @@ if has_scheme "${IOS_SCHEME}"; then
     fi
     log "Booting iPad simulator..."
     boot_device "${IPAD_UDID}"
+    clean_simulator_app_variants "${IPAD_UDID}" "${IOS_BUNDLE_ID}"
     log "Installing iOS app on iPad simulator..."
     xcrun simctl install "${IPAD_UDID}" "${IOS_APP}"
     log "Capturing iPad screenshots..."
     capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}01-onboarding-dark-ipad.png" --force-onboarding
-    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-ipad.png" --demo --screenshot-tab dashboard
-    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-ipad.png" --demo --screenshot-tab orders
-    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-ipad.png" --demo --screenshot-tab products
-    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-ipad.png" --demo --screenshot-tab settings
+    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-ipad.png" --demo --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-ipad.png" --demo --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-ipad.png" --demo --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_shot "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-ipad.png" --demo --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
     captured_platforms+=("ipad")
   else
     log "Skipping iPad screenshots (unsupported or CAPTURE_IPAD=${CAPTURE_IPAD})"
@@ -335,21 +443,35 @@ else
 fi
 
 if [[ "${WANT_MAC}" == "1" ]]; then
+  if [[ -z "${MAC_SCHEME}" ]]; then
+    if has_scheme "SaneSales-AppStore"; then
+      MAC_SCHEME="SaneSales-AppStore"
+    else
+      MAC_SCHEME="SaneSales"
+    fi
+  fi
+  if [[ -z "${MAC_CONFIGURATION}" ]]; then
+    if [[ "${MAC_SCHEME}" == "SaneSales-AppStore" ]]; then
+      MAC_CONFIGURATION="Release-AppStore"
+    else
+      MAC_CONFIGURATION="Debug"
+    fi
+  fi
   prepare_mac_focus_state
   trap 'restore_mac_focus_state' EXIT
   check_mac_capture_prereqs
-  log "Building macOS app..."
+  log "Building macOS app (${MAC_SCHEME}, ${MAC_CONFIGURATION})..."
   xcodebuild \
     -project "${ROOT_DIR}/SaneSales.xcodeproj" \
-    -scheme SaneSales \
-    -configuration Debug \
+    -scheme "${MAC_SCHEME}" \
+    -configuration "${MAC_CONFIGURATION}" \
     -destination "platform=macOS,arch=arm64" \
     -derivedDataPath "${DERIVED_DATA}" \
     CODE_SIGNING_ALLOWED=NO \
     CODE_SIGNING_REQUIRED=NO \
     build >/dev/null
 
-  MAC_APP="${DERIVED_DATA}/Build/Products/Debug/SaneSales.app"
+  MAC_APP="${DERIVED_DATA}/Build/Products/${MAC_CONFIGURATION}/SaneSales.app"
   if [[ ! -d "${MAC_APP}" ]]; then
     echo "Missing built macOS app at ${MAC_APP}" >&2
     exit 1
@@ -357,10 +479,17 @@ if [[ "${WANT_MAC}" == "1" ]]; then
 
   log "Capturing macOS screenshots..."
   capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}01-onboarding-dark-mac.png" --force-onboarding
-  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-mac.png" --demo --screenshot-tab dashboard
-  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-mac.png" --demo --screenshot-tab orders
-  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-mac.png" --demo --screenshot-tab products
-  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-mac.png" --demo --screenshot-tab settings
+  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}02-dashboard-dark-mac.png" --demo --skip-onboarding --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}03-orders-dark-mac.png" --demo --skip-onboarding --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}04-products-dark-mac.png" --demo --skip-onboarding --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
+  if [[ "${CAPTURE_SETTINGS_PANES}" == "1" ]]; then
+    capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-general-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings --screenshot-settings-tab general "${APP_EXTRA_ARGS[@]-}"
+    capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-providers-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings --screenshot-settings-tab providers "${APP_EXTRA_ARGS[@]-}"
+    capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-data-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings --screenshot-settings-tab data "${APP_EXTRA_ARGS[@]-}"
+    capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-license-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings --screenshot-settings-tab license "${APP_EXTRA_ARGS[@]-}"
+    capture_mac_shot "${MAC_APP}" "${OUT_DIR}/${NAME_PREFIX}05-settings-about-dark-mac.png" --demo --skip-onboarding --screenshot-tab settings --screenshot-settings-tab about "${APP_EXTRA_ARGS[@]-}"
+  fi
   captured_platforms+=("mac")
   restore_mac_focus_state
   trap - EXIT

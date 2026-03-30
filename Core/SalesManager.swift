@@ -5,6 +5,33 @@ import SwiftUI
 #endif
 
 enum SalesSetupFlowPolicy {
+    static func welcomeOverride(
+        arguments: [String] = CommandLine.arguments,
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Bool? {
+        if arguments.contains("--force-onboarding") {
+            return false
+        }
+
+        if arguments.contains("--skip-onboarding") || environment["SANEAPPS_SKIP_ONBOARDING"] == "1" {
+            return true
+        }
+
+        return nil
+    }
+
+    static func hasUsableContent(ordersCount: Int, productsCount: Int) -> Bool {
+        ordersCount > 0 || productsCount > 0
+    }
+
+    static func shouldTreatInitialRefreshFailureAsConnectionFailure(
+        error: SalesAPIError?,
+        ordersCount: Int,
+        productsCount: Int
+    ) -> Bool {
+        error != nil && !hasUsableContent(ordersCount: ordersCount, productsCount: productsCount)
+    }
+
     static func shouldShowInitialSetup(
         hasSeenWelcome: Bool,
         demoModeEnabled: Bool,
@@ -58,8 +85,8 @@ final class SalesManager {
     var isGumroadConnected = false
     var isStripeConnected = false
 
-    /// Set by the app entry point — used for Pro feature gating on macOS.
-    /// Not set on iOS/watchOS (no licensing on those platforms).
+    /// Set by the app entry point — used for Pro feature gating across the app.
+    /// Each platform syncs this from its active licensing backend.
     var isPro: Bool = false {
         didSet {
             #if os(macOS)
@@ -108,7 +135,7 @@ final class SalesManager {
     private let cache = CacheService()
 
     init() {
-        applyDebugLaunchBootstrapIfNeeded()
+        applyLaunchBootstrapIfNeeded()
 
         if CommandLine.arguments.contains("--force-onboarding") {
             return
@@ -116,7 +143,7 @@ final class SalesManager {
 
         if CommandLine.arguments.contains("--demo")
             || UserDefaults.standard.bool(forKey: "demo_mode") {
-            DemoData.loadInto(manager: self)
+            DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
             return
         }
         isLemonSqueezyConnected = KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey)
@@ -126,15 +153,17 @@ final class SalesManager {
         configureProviders()
     }
 
-    private func applyDebugLaunchBootstrapIfNeeded() {
+    private func applyLaunchBootstrapIfNeeded() {
+        let environment = ProcessInfo.processInfo.environment
+
+        if let hasSeenWelcomeOverride = SalesSetupFlowPolicy.welcomeOverride(
+            arguments: CommandLine.arguments,
+            environment: environment
+        ) {
+            UserDefaults.standard.set(hasSeenWelcomeOverride, forKey: "hasSeenWelcome")
+        }
+
         #if DEBUG
-            let environment = ProcessInfo.processInfo.environment
-
-            if environment["SANEAPPS_SKIP_ONBOARDING"] == "1"
-                || CommandLine.arguments.contains("--skip-onboarding") {
-                UserDefaults.standard.set(true, forKey: "hasSeenWelcome")
-            }
-
             seedProviderKey(
                 from: environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"],
                 account: KeychainService.lemonSqueezyAPIKey
@@ -191,6 +220,13 @@ final class SalesManager {
                 lemonSqueezyProvider = provider
                 isLemonSqueezyConnected = true
                 await refresh()
+                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+                    error: error,
+                    ordersCount: orders.count,
+                    productsCount: products.count
+                ) {
+                    return false
+                }
                 return true
             }
             error = .invalidAPIKey
@@ -226,6 +262,13 @@ final class SalesManager {
                 gumroadProvider = provider
                 isGumroadConnected = true
                 await refresh()
+                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+                    error: error,
+                    ordersCount: orders.count,
+                    productsCount: products.count
+                ) {
+                    return false
+                }
                 return true
             }
             error = .invalidAPIKey
@@ -261,6 +304,13 @@ final class SalesManager {
                 stripeProvider = provider
                 isStripeConnected = true
                 await refresh()
+                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
+                    error: error,
+                    ordersCount: orders.count,
+                    productsCount: products.count
+                ) {
+                    return false
+                }
                 return true
             }
             error = .invalidAPIKey
@@ -429,7 +479,7 @@ final class SalesManager {
 
     func enableDemoMode() {
         UserDefaults.standard.set(true, forKey: "demo_mode")
-        DemoData.loadInto(manager: self)
+        DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
         reloadWidgets()
     }
 
@@ -459,6 +509,9 @@ final class SalesManager {
 
     func resetForUITests() {
         UserDefaults.standard.set(false, forKey: "demo_mode")
+        UserDefaults.standard.set(false, forKey: "hasSeenWelcome")
+        UserDefaults.standard.removeObject(forKey: "pendingSettingsRoute")
+        UserDefaults.standard.removeObject(forKey: "selectedTimeRange")
 
         KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
         KeychainService.delete(account: KeychainService.gumroadAPIKey)
@@ -488,6 +541,31 @@ final class SalesManager {
         #if canImport(WidgetKit)
             WidgetCenter.shared.reloadAllTimelines()
         #endif
+    }
+
+    func demoConnectedProviders(
+        arguments: [String] = CommandLine.arguments,
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Set<SalesProviderType> {
+        if let argument = arguments.first(where: { $0.hasPrefix("--demo-connected-provider=") }) {
+            let rawValue = String(argument.dropFirst("--demo-connected-provider=".count))
+            if let provider = SalesProviderType(rawValue: rawValue) {
+                return [provider]
+            }
+        }
+
+        if let environmentValue = environment["SANEAPPS_DEMO_CONNECTED_PROVIDERS"] {
+            let providers = Set(
+                environmentValue
+                    .split(separator: ",")
+                    .compactMap { SalesProviderType(rawValue: $0.trimmingCharacters(in: .whitespacesAndNewlines)) }
+            )
+            if !providers.isEmpty {
+                return providers
+            }
+        }
+
+        return Set(SalesProviderType.allCases)
     }
 }
 
