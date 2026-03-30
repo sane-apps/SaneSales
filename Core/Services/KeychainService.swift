@@ -4,6 +4,7 @@ import Security
 /// Keychain storage for API keys. Thread-safe, static-only.
 struct KeychainService: Sendable {
     static let service = Bundle.main.bundleIdentifier ?? "com.sanesales.app"
+    static let legacyFallbackSuiteName = "com.sanesales.no-keychain"
 
     static let lemonSqueezyAPIKey = "lemonsqueezy-api-key"
     static let gumroadAPIKey = "gumroad-api-key"
@@ -13,10 +14,12 @@ struct KeychainService: Sendable {
     static func save(data: Data, account: String) -> Bool {
         if isKeychainBypassed {
             fallbackDefaults.set(data.base64EncodedString(), forKey: fallbackKey(account))
+            legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
             return true
         }
 
         fallbackDefaults.removeObject(forKey: fallbackKey(account))
+        legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
         delete(account: account)
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
@@ -32,7 +35,7 @@ struct KeychainService: Sendable {
 
     static func load(account: String) -> Data? {
         if isKeychainBypassed {
-            guard let encoded = fallbackDefaults.string(forKey: fallbackKey(account)),
+            guard let encoded = fallbackString(forKey: fallbackKey(account)),
                   let data = Data(base64Encoded: encoded)
             else { return nil }
             return data
@@ -58,6 +61,7 @@ struct KeychainService: Sendable {
     static func delete(account: String) -> Bool {
         if isKeychainBypassed {
             fallbackDefaults.removeObject(forKey: fallbackKey(account))
+            legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
             return true
         }
 
@@ -69,6 +73,7 @@ struct KeychainService: Sendable {
         ]
         let status = SecItemDelete(query as CFDictionary)
         fallbackDefaults.removeObject(forKey: fallbackKey(account))
+        legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
         return status == errSecSuccess || status == errSecItemNotFound
     }
 
@@ -89,34 +94,66 @@ struct KeychainService: Sendable {
         return String(data: data, encoding: .utf8)
     }
 
-    private static var isKeychainBypassed: Bool {
-#if DEBUG
-        let processInfo = ProcessInfo.processInfo
-        let forceRealKeychain = processInfo.environment["SANEAPPS_ENABLE_KEYCHAIN_IN_DEBUG"] == "1"
-        if forceRealKeychain {
-            return false
+    static func shouldBypassKeychain(
+        environment: [String: String],
+        arguments: [String],
+        isDebugBuild: Bool = buildIsDebug
+    ) -> Bool {
+        if environment["SANEAPPS_DISABLE_KEYCHAIN"] == "1" || arguments.contains("--sane-no-keychain") {
+            return true
         }
 
-        // Debug default now uses real Keychain. Bypass only when explicitly requested.
-        return processInfo.environment["SANEAPPS_DISABLE_KEYCHAIN"] == "1"
-            || processInfo.environment["SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG"] == "1"
-            || processInfo.arguments.contains("--sane-no-keychain")
-#else
-        // Production builds always use Keychain. No bypass path in App Store/TestFlight binaries.
-        return false
-#endif
+        guard isDebugBuild else { return false }
+        if environment["SANEAPPS_ENABLE_KEYCHAIN_IN_DEBUG"] == "1" {
+            return false
+        }
+        return environment["SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG"] == "1"
+    }
+
+    private static var buildIsDebug: Bool {
+        #if DEBUG
+            true
+        #else
+            false
+        #endif
+    }
+
+    private static var isKeychainBypassed: Bool {
+        shouldBypassKeychain(
+            environment: ProcessInfo.processInfo.environment,
+            arguments: ProcessInfo.processInfo.arguments
+        )
     }
 
     private static var fallbackDefaults: UserDefaults {
-        UserDefaults(suiteName: "com.sanesales.no-keychain") ?? .standard
+        .standard
+    }
+
+    private static var legacyFallbackDefaults: UserDefaults? {
+        UserDefaults(suiteName: legacyFallbackSuiteName)
     }
 
     private static func fallbackKey(_ account: String) -> String {
         "sane.no-keychain.\(service).\(account)"
     }
 
+    static func fallbackString(
+        forKey key: String,
+        primaryDefaults: UserDefaults = .standard,
+        legacyDefaults: UserDefaults? = UserDefaults(suiteName: legacyFallbackSuiteName)
+    ) -> String? {
+        if let value = primaryDefaults.string(forKey: key) {
+            return value
+        }
+        guard let legacyValue = legacyDefaults?.string(forKey: key) else { return nil }
+
+        primaryDefaults.set(legacyValue, forKey: key)
+        legacyDefaults?.removeObject(forKey: key)
+        return legacyValue
+    }
+
     private static func migrateFallbackToKeychainIfNeeded(account: String) -> Data? {
-        guard let encoded = fallbackDefaults.string(forKey: fallbackKey(account)),
+        guard let encoded = fallbackString(forKey: fallbackKey(account)),
               let data = Data(base64Encoded: encoded)
         else { return nil }
 

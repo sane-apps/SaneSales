@@ -101,10 +101,12 @@ enum OrderStatus: String, Codable, Sendable {
     }
 }
 
-enum SalesProviderType: String, Codable, Sendable, CaseIterable {
+enum SalesProviderType: String, Codable, Sendable, CaseIterable, Identifiable {
     case lemonSqueezy = "lemonsqueezy"
     case gumroad
     case stripe
+
+    var id: String { rawValue }
 
     var displayName: String {
         switch self {

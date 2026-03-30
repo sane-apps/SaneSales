@@ -7,38 +7,155 @@ struct ProductsView: View {
     @State private var selectedAngle: Int?
     @State private var selectedProduct: ProductSales?
 
+    private struct SummaryItem: Identifiable {
+        let title: String
+        let value: String
+        let icon: String
+        let color: Color
+
+        var id: String { title }
+    }
+
+    private enum WidthClass {
+        case compact
+        case regular
+        case wide
+
+        init(width: CGFloat) {
+            switch width {
+            case ..<760:
+                self = .compact
+            case ..<1100:
+                self = .regular
+            default:
+                self = .wide
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
-                Group {
-                    if manager.products.isEmpty, !manager.isLoading {
-                        ContentUnavailableView("No Products", systemImage: "shippingbox",
-                                               description: Text("Product data will appear after connecting a provider."))
-                    } else {
-                        ScrollView {
-                            VStack(spacing: 24) {
-                                if !manager.metrics.productBreakdown.isEmpty {
-                                    revenueChart
+                GeometryReader { proxy in
+                    let widthClass = WidthClass(width: proxy.size.width)
+
+                    Group {
+                        if manager.products.isEmpty, !manager.isLoading {
+                            ContentUnavailableView("No Products", systemImage: "shippingbox",
+                                                   description: Text("Product data will appear after connecting a provider."))
+                        } else {
+                            ScrollView {
+                                VStack(spacing: 12) {
+                                    productsOverview(widthClass)
+
+                                    if widthClass == .wide, !manager.metrics.productBreakdown.isEmpty {
+                                        HStack(alignment: .top, spacing: 16) {
+                                            revenueChart(widthClass)
+                                                .frame(width: min(max(proxy.size.width * 0.38, 340), 420))
+
+                                            catalogSection
+                                                .frame(maxWidth: .infinity, alignment: .top)
+                                        }
+                                    } else {
+                                        if !manager.metrics.productBreakdown.isEmpty {
+                                            revenueChart(widthClass)
+                                        }
+                                        catalogSection
+                                    }
                                 }
-                                catalogSection
+                                .padding(.horizontal, widthClass == .compact ? 16 : 20)
+                                .padding(.top, 12)
+                                .padding(.bottom, productsBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
+                                .frame(minHeight: proxy.size.height, alignment: .top)
                             }
-                            .padding(.horizontal, 20)
-                            .padding(.vertical, 16)
                         }
                     }
                 }
             }
             .navigationTitle("Products")
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
             .refreshable {
                 await manager.refresh()
             }
         }
     }
 
+    private func productsOverview(_ widthClass: WidthClass) -> some View {
+        let summary = [
+            SummaryItem(title: "Products", value: "\(manager.products.count)", icon: "shippingbox.fill", color: .salesGreen),
+            SummaryItem(title: "Providers", value: "\(manager.connectedProviders.count)", icon: "link.circle.fill", color: .salesGold),
+            SummaryItem(title: "Revenue", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime)
+        ]
+
+        if widthClass == .compact {
+            return AnyView(
+                VStack(spacing: 8) {
+                    HStack(spacing: 8) {
+                        summaryCard(summary[0], widthClass: widthClass)
+                        summaryCard(summary[1], widthClass: widthClass)
+                    }
+
+                    summaryCard(summary[2], widthClass: widthClass, fillsWidth: true)
+                }
+            )
+        }
+
+        return AnyView(
+            LazyVGrid(
+                columns: [
+                    GridItem(.adaptive(minimum: 150), spacing: 10)
+                ],
+                spacing: 10
+            ) {
+                ForEach(summary) { item in
+                    summaryCard(item, widthClass: widthClass)
+                }
+            }
+        )
+    }
+
+    private func summaryCard(
+        _ item: SummaryItem,
+        widthClass: WidthClass,
+        fillsWidth: Bool = false
+    ) -> some View {
+        VStack(alignment: .leading, spacing: widthClass == .compact ? 6 : 8) {
+            HStack(spacing: 8) {
+                Image(systemName: item.icon)
+                    .foregroundStyle(item.color)
+                    .font(.system(size: widthClass == .compact ? 11 : 13, weight: .semibold))
+                Text(item.title)
+                    .font(widthClass == .compact ? .system(size: 11, weight: .semibold) : .saneCallout)
+                    .foregroundStyle(Color.textMuted)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.68)
+            }
+            Text(item.value)
+                .font(widthClass == .compact ? .system(size: 15, weight: .bold, design: .rounded) : .saneSubheadlineBold)
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
+        .padding(.horizontal, widthClass == .compact ? 12 : 14)
+        .padding(.vertical, widthClass == .compact ? 8 : 11)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(AnyShapeStyle(.ultraThinMaterial))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                )
+        )
+    }
+
     // MARK: - Revenue Chart
 
-    private var revenueChart: some View {
+    private func revenueChart(_ widthClass: WidthClass) -> some View {
         GlassSection("Revenue by Product", icon: "chart.pie", iconColor: .salesGold) {
             VStack(spacing: 16) {
                 // Donut chart with center label
@@ -57,19 +174,19 @@ struct ProductsView: View {
                     .chartAngleSelection(value: $selectedAngle)
                     .chartLegend(.hidden)
                     .chartBackground { _ in
-                        donutCenter
+                        donutCenter(widthClass)
                     }
                     .animation(.spring(response: 0.3), value: selectedProduct?.id)
                 }
-                .frame(height: 220)
-                .padding(.horizontal, 14)
-                .padding(.top, 14)
+                .frame(height: widthClass == .compact ? 144 : 220)
+                .padding(.horizontal, widthClass == .compact ? 8 : 14)
+                .padding(.top, widthClass == .compact ? 8 : 14)
                 .accessibilityLabel("Revenue breakdown by product, \(manager.metrics.productBreakdown.count) products")
 
                 // Custom legend
                 customLegend
-                    .padding(.horizontal, 14)
-                    .padding(.bottom, 14)
+                    .padding(.horizontal, widthClass == .compact ? 8 : 14)
+                    .padding(.bottom, widthClass == .compact ? 8 : 14)
             }
         }
         .onChange(of: selectedAngle) { _, newValue in
@@ -80,29 +197,38 @@ struct ProductsView: View {
     }
 
     @ViewBuilder
-    private var donutCenter: some View {
+    private func donutCenter(_ widthClass: WidthClass) -> some View {
         if let selected = selectedProduct {
             VStack(spacing: 2) {
                 Text(selected.productName)
-                    .font(.footnote.weight(.semibold))
+                    .font(.system(size: widthClass == .compact ? 10 : 12, weight: .semibold))
+                    .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-                Text(formatCents(selected.revenue))
-                    .font(.title3.weight(.bold))
+                    .minimumScaleFactor(0.55)
+                Text(widthClass == .compact ? compactChartAmount(selected.revenue) : formatCents(selected.revenue))
+                    .font(.system(size: widthClass == .compact ? 15 : 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.55)
                 Text("\(selected.orderCount) sales")
-                    .font(.saneCallout)
+                    .font(widthClass == .compact ? .system(size: 10, weight: .medium) : .saneCallout)
                     .foregroundStyle(Color.textMuted)
             }
-            .padding(.horizontal, 8)
+            .frame(maxWidth: widthClass == .compact ? 88 : 132)
+            .padding(.horizontal, widthClass == .compact ? 4 : 8)
             .transition(.opacity)
         } else {
             VStack(spacing: 2) {
                 Text("Total")
-                    .font(.footnote.weight(.medium))
+                    .font(.system(size: widthClass == .compact ? 10 : 12, weight: .medium))
                     .foregroundStyle(Color.textMuted)
-                Text(formatCents(totalRevenue))
-                    .font(.title3.weight(.bold))
+                Text(widthClass == .compact ? compactChartAmount(totalRevenue) : formatCents(totalRevenue))
+                    .font(.system(size: widthClass == .compact ? 15 : 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.55)
             }
+            .frame(maxWidth: widthClass == .compact ? 88 : 132)
             .transition(.opacity)
         }
     }
@@ -136,7 +262,7 @@ struct ProductsView: View {
                             .font(.saneSubheadlineBold)
                             .foregroundStyle(.primary)
                     }
-                    .frame(minHeight: 44)
+                    .frame(minHeight: 40)
                     .padding(.horizontal, 4)
                     .contentShape(Rectangle())
                     .opacity(selectedProduct == nil || selectedProduct?.id == product.id ? 1.0 : 0.4)
@@ -161,6 +287,14 @@ struct ProductsView: View {
         manager.metrics.productBreakdown.reduce(0) { $0 + $1.revenue }
     }
 
+    private func productsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
+        #if os(iOS)
+            return max(16, safeAreaBottom + 74)
+        #else
+            return 12
+        #endif
+    }
+
     private func findProduct(at value: Int?) -> ProductSales? {
         guard let value else { return nil }
         var cumulative = 0
@@ -178,6 +312,40 @@ struct ProductsView: View {
         formatter.numberStyle = .currency
         formatter.currencyCode = manager.primaryCurrency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
+    }
+
+    private func compactChartAmount(_ cents: Int) -> String {
+        let amount = Double(cents) / 100
+        let absAmount = abs(amount)
+
+        if absAmount < 1000 {
+            return formatCents(cents)
+        }
+
+        let symbolFormatter = NumberFormatter()
+        symbolFormatter.numberStyle = .currency
+        symbolFormatter.currencyCode = manager.primaryCurrency
+        let symbol = symbolFormatter.currencySymbol ?? "$"
+
+        let divisor: Double
+        let suffix: String
+        if absAmount >= 1_000_000 {
+            divisor = 1_000_000
+            suffix = "M"
+        } else {
+            divisor = 1_000
+            suffix = "K"
+        }
+
+        let abbreviatedValue = amount / divisor
+        let decimalFormatter = NumberFormatter()
+        decimalFormatter.numberStyle = .decimal
+        decimalFormatter.minimumFractionDigits = 0
+        decimalFormatter.maximumFractionDigits = abs(abbreviatedValue) < 100 ? 1 : 0
+
+        let valueText = decimalFormatter.string(from: NSNumber(value: abbreviatedValue))
+            ?? String(format: "%.1f", abbreviatedValue)
+        return "\(symbol)\(valueText)\(suffix)"
     }
 
     // MARK: - Product Catalog
@@ -228,7 +396,7 @@ struct ProductsView: View {
                 HStack(spacing: 6) {
                     SalesBadge(
                         product.statusFormatted ?? product.status.displayName,
-                        color: product.status == .published || product.status == .active ? .salesSuccess : .secondary,
+                        color: product.status == .published || product.status == .active ? .salesSuccess : .salesWarning,
                         icon: product.status.icon
                     )
                     if manager.connectedProviders.count > 1 {

@@ -235,7 +235,10 @@ import SwiftUI
                     .task {
                         if CommandLine.arguments.contains("--demo") ||
                             UserDefaults.standard.bool(forKey: "loadDemoData") {
-                            DemoData.loadInto(manager: manager)
+                            DemoData.loadInto(
+                                manager: manager,
+                                connectedProviders: manager.demoConnectedProviders()
+                            )
                         }
                     }
                     .sheet(isPresented: Binding(

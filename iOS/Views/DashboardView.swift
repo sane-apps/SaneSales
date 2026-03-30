@@ -1,7 +1,6 @@
+// swiftlint:disable file_length
 import SwiftUI
-#if os(macOS)
-    import SaneUI
-#endif
+import SaneUI
 
 // MARK: - Time Range
 
@@ -38,20 +37,30 @@ enum SaneSalesFreeTierPolicy {
     }
 }
 
+struct DashboardComparisonItem: Identifiable {
+    let label: String
+    let value: String
+    let isPositive: Bool
+
+    var id: String { label }
+}
+
 struct DashboardView: View {
-    @Environment(SalesManager.self) private var manager
-    @Environment(\.colorScheme) private var colorScheme
-    @AppStorage("selectedTimeRange") private var selectedRange: TimeRange = .today
-    @State private var selectedProviderFilter: SalesProviderType?
-    @State private var animateCards = false
-    @Namespace private var pickerNamespace
+    @Environment(SalesManager.self) var manager
+    @Environment(\.colorScheme) var colorScheme
+    @AppStorage("selectedTimeRange") var selectedRange: TimeRange = .today
+    @AppStorage("pendingSettingsRoute") var pendingSettingsRoute = ""
+    @State var selectedProviderFilter: SalesProviderType?
+    @State var quickConnectProvider: SalesProviderType?
+    @State var animateCards = false
+    @State var didLogChartGateView = false
+    @Namespace var pickerNamespace
     #if os(macOS)
-        @State private var proUpsellFeature: ProFeature?
-        @State private var didLogChartGateView = false
-        @Environment(LicenseService.self) private var licenseService
+        @State var proUpsellFeature: ProFeature?
+        @Environment(LicenseService.self) var licenseService
     #endif
 
-    private enum DashboardLayout {
+    enum DashboardLayout {
         #if os(macOS)
             static let sectionSpacing: CGFloat = 16
             static let cardSpacing: CGFloat = 10
@@ -59,53 +68,117 @@ struct DashboardView: View {
             static let cardHeight: CGFloat = 152
             static let contentPadding: CGFloat = 10
         #else
-            static let sectionSpacing: CGFloat = 21
-            static let cardSpacing: CGFloat = 13
-            static let horizontalPadding: CGFloat = 21
+            static let sectionSpacing: CGFloat = 14
+            static let cardSpacing: CGFloat = 8
+            static let horizontalPadding: CGFloat = 16
             static let cardHeight: CGFloat = 168
-            static let contentPadding: CGFloat = 13
+            static let contentPadding: CGFloat = 8
         #endif
+    }
+
+    enum WidthClass {
+        case compact
+        case regular
+        case wide
+
+        init(width: CGFloat) {
+            switch width {
+            case ..<760:
+                self = .compact
+            case ..<1100:
+                self = .regular
+            default:
+                self = .wide
+            }
+        }
+
+        var heroValueSize: CGFloat {
+            switch self {
+            case .compact: 20
+            case .regular: 28
+            case .wide: 32
+            }
+        }
+
+        var cardHeight: CGFloat {
+            switch self {
+            case .compact: 96
+            case .regular: 124
+            case .wide: 128
+            }
+        }
+
+        var metricColumns: [GridItem] {
+            switch self {
+            case .compact, .regular:
+                [.init(.flexible()), .init(.flexible())]
+            case .wide:
+                [.init(.flexible()), .init(.flexible()), .init(.flexible()), .init(.flexible())]
+            }
+        }
+
+        func comparisonColumns(for itemCount: Int) -> [GridItem] {
+            switch self {
+            case .compact:
+                if itemCount <= 2 {
+                    return [.init(.flexible()), .init(.flexible())]
+                }
+                return [.init(.flexible()), .init(.flexible()), .init(.flexible())]
+            case .regular, .wide:
+                return [.init(.flexible()), .init(.flexible()), .init(.flexible())]
+            }
+        }
+
+        var supportsSecondaryColumns: Bool { self == .wide }
+
+        var overviewPadding: CGFloat {
+            switch self {
+            case .compact: 7
+            case .regular, .wide: 14
+            }
+        }
+
+        var brandIconSize: CGFloat {
+            switch self {
+            case .compact: 28
+            case .regular: 38
+            case .wide: 40
+            }
+        }
+
+        var brandTitleSize: CGFloat {
+            switch self {
+            case .compact: 17
+            case .regular: 21
+            case .wide: 22
+            }
+        }
+
     }
 
     var body: some View {
         NavigationStack {
             ZStack {
                 SaneBackground().ignoresSafeArea()
-                ScrollView {
-                    VStack(spacing: DashboardLayout.sectionSpacing) {
-                        if let error = manager.error {
-                            errorBanner(error)
+                GeometryReader { proxy in
+                    let widthClass = WidthClass(width: proxy.size.width)
+
+                    ScrollView {
+                        VStack(spacing: DashboardLayout.sectionSpacing) {
+                            if let error = manager.error {
+                                errorBanner(error)
+                            }
+
+                            overviewSection(widthClass)
+
+                            revenueCards(widthClass)
+
+                            secondarySection(widthClass)
                         }
-
-                        // Brand header
-                        dashboardBrandHeader
-
-                        // Hero revenue
-                        heroRevenue
-
-                        // Context note
-                        dashboardContextNote
-
-                        // Time range picker
-                        timeRangePicker
-
-                        // Comparison row
-                        comparisonRow
-
-                        // Provider badges
-                        connectedBadges
-
-                        // Revenue cards grid
-                        revenueCards
-
-                        // Chart
-                        chartSection
-
-                        // Top products
-                        topProductsSection
+                        .padding(.horizontal, DashboardLayout.horizontalPadding)
+                        .padding(.bottom, dashboardBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
+                        .frame(minHeight: proxy.size.height, alignment: .top)
                     }
-                    .padding(.horizontal, DashboardLayout.horizontalPadding)
-                    .padding(.bottom, DashboardLayout.sectionSpacing)
                 }
             }
             .navigationTitle("Dashboard")
@@ -120,11 +193,7 @@ struct DashboardView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: "arrow.clockwise")
-                                if let date = manager.lastUpdated {
-                                    Text(date, style: .relative)
-                                } else {
-                                    Text("Refresh")
-                                }
+                                Text(refreshButtonLabel)
                             }
                             .font(.saneCallout)
                             .foregroundStyle(Color.textMuted)
@@ -168,53 +237,113 @@ struct DashboardView: View {
                 ProUpsellView(feature: feature, licenseService: licenseService)
             }
             #endif
+            .sheet(item: $quickConnectProvider) { provider in
+                ProviderConnectionSheet(provider: provider)
+            }
         }
     }
 }
 
-private extension DashboardView {
-    // MARK: - Hero Revenue
+extension DashboardView {
+    // MARK: - Overview
 
-    private var dashboardBrandHeader: some View {
+    private func overviewSection(_ widthClass: WidthClass) -> some View {
+        VStack(spacing: widthClass == .compact ? 10 : 12) {
+            if widthClass == .wide {
+                HStack(alignment: .top, spacing: DashboardLayout.sectionSpacing) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        dashboardBrandHeader(widthClass)
+                        heroRevenue(widthClass, alignment: .leading)
+                        if shouldShowRecentSnapshotNote {
+                            dashboardContextNote
+                        }
+                    }
+
+                    comparisonGrid(widthClass)
+                        .frame(maxWidth: 360)
+                }
+
+                HStack(alignment: .center, spacing: DashboardLayout.cardSpacing) {
+                    timeRangePicker
+                        .frame(maxWidth: 360, alignment: .leading)
+                    connectedBadges(alignment: .trailing)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 10) {
+                    dashboardBrandHeader(widthClass)
+                    heroRevenue(widthClass, alignment: .leading)
+
+                    if shouldShowRecentSnapshotNote {
+                        dashboardContextNote
+                    }
+
+                    timeRangePicker
+                    comparisonGrid(widthClass)
+                    connectedBadges(alignment: .leading)
+                }
+            }
+        }
+        .padding(widthClass.overviewPadding)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(AnyShapeStyle(.ultraThinMaterial))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.16 : 0.10), lineWidth: 1)
+        )
+    }
+
+    private func dashboardBrandHeader(_ widthClass: WidthClass) -> some View {
         HStack(spacing: DashboardLayout.cardSpacing) {
+            let isCompact = widthClass == .compact
             Image("CoinColor")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 52, height: 52)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .frame(width: widthClass.brandIconSize, height: widthClass.brandIconSize)
+                .clipShape(RoundedRectangle(cornerRadius: isCompact ? 10 : 12, style: .continuous))
                 .accessibilityHidden(true)
 
-            Text("SaneSales")
-                .font(.system(size: 30, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
-            Spacer()
+            VStack(alignment: .leading, spacing: 1) {
+                Text("SaneSales")
+                    .font(.system(size: widthClass.brandTitleSize, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("Live sales at a glance")
+                    .font(isCompact ? .system(size: 11, weight: .medium) : .saneCallout)
+                    .foregroundStyle(Color.textMuted)
+            }
+
+            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 4)
     }
 
-    private var heroRevenue: some View {
-        VStack(spacing: 6) {
+    private func heroRevenue(_ widthClass: WidthClass, alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 2) {
             Text(rangeLabel)
-                .font(.saneSubheadline)
+                .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
 
             Text(formatCents(revenueForRange))
-                .font(.saneCardValue(size: 42))
-                .foregroundStyle(.primary)
+                .font(.saneCardValue(size: widthClass.heroValueSize))
+                .foregroundStyle(.white)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
                 .animation(.spring(response: 0.4), value: revenueForRange)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
 
             Text(pluralize(ordersForRange, "order"))
-                .font(.saneCallout)
+                .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(Color.textMuted)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 4)
-        .padding(.bottom, 2)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - Time Range Picker
+    // MARK: - Controls
 
     private var timeRangePicker: some View {
         HStack(spacing: 0) {
@@ -229,10 +358,10 @@ private extension DashboardView {
                                 .font(.system(size: 9, weight: .bold))
                         }
                     }
-                    .font(.saneSubheadline)
+                    .font(.saneCallout)
                     .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 40)
+                    .frame(minHeight: 30)
                     .contentShape(Rectangle())
                     .background {
                         if selectedRange == range {
@@ -243,54 +372,41 @@ private extension DashboardView {
                     }
                 }
                 .buttonStyle(.plain)
+                .modifier(DashboardRangeAccessibilityModifier(range: range))
             }
         }
-        .padding(4)
+        .padding(3)
         .background(
             Capsule()
                 .fill(AnyShapeStyle(.ultraThinMaterial))
         )
     }
 
-    // MARK: - Comparison Row
+    var comparisonItems: [DashboardComparisonItem] {
+        var items = [
+            DashboardComparisonItem(label: "vs prev", value: comparisonText, isPositive: comparisonDelta >= 0)
+        ]
 
-    @ViewBuilder
-    private var comparisonRow: some View {
-        #if os(macOS)
-            proComparisonRow
-        #else
-            proComparisonRow
-        #endif
+        if let avgDaily = averageDailyRevenue {
+            items.append(DashboardComparisonItem(label: "avg/day", value: formatCents(avgDaily), isPositive: true))
+        }
+
+        items.append(DashboardComparisonItem(label: "orders/day", value: String(format: "%.1f", averageDailyOrders), isPositive: true))
+        return items
     }
 
-    private var proComparisonRow: some View {
-        HStack(spacing: DashboardLayout.cardSpacing) {
-            comparisonPill(
-                label: "vs prev",
-                value: comparisonText,
-                isPositive: comparisonDelta >= 0
-            )
-
-            if let avgDaily = averageDailyRevenue {
-                comparisonPill(
-                    label: "avg/day",
-                    value: formatCents(avgDaily),
-                    isPositive: true
-                )
+    private func comparisonGrid(_ widthClass: WidthClass) -> some View {
+        LazyVGrid(columns: widthClass.comparisonColumns(for: comparisonItems.count), spacing: DashboardLayout.cardSpacing) {
+            ForEach(comparisonItems) { item in
+                comparisonPill(label: item.label, value: item.value, isPositive: item.isPositive, widthClass: widthClass)
             }
-
-            comparisonPill(
-                label: "orders/day",
-                value: String(format: "%.1f", averageDailyOrders),
-                isPositive: true
-            )
         }
     }
 
-    private func comparisonPill(label: String, value: String, isPositive: Bool) -> some View {
-        VStack(spacing: 4) {
+    private func comparisonPill(label: String, value: String, isPositive: Bool, widthClass: WidthClass) -> some View {
+        VStack(spacing: 3) {
             Text(value)
-                .font(.saneSubheadline)
+                .font(.system(size: widthClass == .compact ? 15 : 16, weight: .bold, design: .rounded))
                 .fontWeight(.bold)
                 .foregroundStyle(label == "vs prev"
                     ? (isPositive ? Color.salesSuccess : Color.salesError)
@@ -300,7 +416,8 @@ private extension DashboardView {
                 .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
+        .frame(minHeight: widthClass == .compact ? 40 : 50)
+        .padding(.vertical, widthClass == .compact ? 4 : 8)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(.ultraThinMaterial)
@@ -313,54 +430,32 @@ private extension DashboardView {
 
     // MARK: - Connected Badges
 
-    private var connectedBadges: some View {
-        HStack(spacing: 8) {
+    private func connectedBadges(alignment: Alignment) -> some View {
+        HStack(spacing: 6) {
             ForEach(SalesProviderType.allCases, id: \.self) { provider in
                 let isConnected = isProviderConnected(provider)
                 let isSelected = selectedProviderFilter == nil || selectedProviderFilter == provider
 
-                Button {
-                    guard isConnected else { return }
-                    withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
-                        selectedProviderFilter = selectedProviderFilter == provider ? nil : provider
-                    }
-                } label: {
-                    ProviderBadge(provider: provider)
-                        .saturation(isConnected ? 1.0 : 0.0)
-                        .opacity(isConnected ? 1.0 : 0.35)
-                        .overlay(
-                            Capsule()
-                                .stroke(
-                                    isSelected ? provider.brandColor.opacity(0.7) : Color.clear,
-                                    lineWidth: isSelected ? 1.2 : 0
-                                )
-                        )
-                }
-                .buttonStyle(.plain)
-                .disabled(!isConnected)
-                .accessibilityHint(isConnected ? "Filters dashboard by \(provider.displayName)" : "\(provider.displayName) not connected")
+                providerBadgeButton(provider: provider, isConnected: isConnected, isSelected: isSelected)
+                    .frame(maxWidth: .infinity)
             }
-            Spacer()
         }
+        .frame(maxWidth: .infinity, alignment: alignment)
     }
 
     // MARK: - Revenue Cards
 
     @ViewBuilder
-    private var revenueCards: some View {
-        #if os(macOS)
-            if !manager.isPro {
-                freeTierRevenueCards
-            } else {
-                proRevenueCards
-            }
-        #else
-            proRevenueCards
-        #endif
+    private func revenueCards(_ widthClass: WidthClass) -> some View {
+        if !manager.isPro {
+            freeTierRevenueCards(widthClass)
+        } else {
+            proRevenueCards(widthClass)
+        }
     }
 
-    private var proRevenueCards: some View {
-        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
+    private func proRevenueCards(_ widthClass: WidthClass) -> some View {
+        LazyVGrid(columns: widthClass.metricColumns, spacing: DashboardLayout.cardSpacing) {
             SalesCard(
                 title: "Today",
                 value: formatCents(dashboardMetrics.todayRevenue),
@@ -369,7 +464,7 @@ private extension DashboardView {
                 iconColor: .metricToday,
                 trend: todayTrend
             )
-            .frame(height: DashboardLayout.cardHeight)
+            .frame(height: widthClass.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
@@ -381,7 +476,7 @@ private extension DashboardView {
                 icon: "calendar",
                 iconColor: .metricMonth
             )
-            .frame(height: DashboardLayout.cardHeight)
+            .frame(height: widthClass.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
@@ -393,71 +488,70 @@ private extension DashboardView {
                 iconAssetName: "CoinTemplate",
                 iconColor: .metricAllTime
             )
-            .frame(height: DashboardLayout.cardHeight)
+            .frame(height: widthClass.cardHeight)
             .offset(y: animateCards ? 0 : 20)
             .opacity(animateCards ? 1 : 0)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
             storeCard
-                .frame(height: DashboardLayout.cardHeight)
+                .frame(height: widthClass.cardHeight)
                 .offset(y: animateCards ? 0 : 20)
                 .opacity(animateCards ? 1 : 0)
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.15), value: animateCards)
         }
     }
 
-    #if os(macOS)
-        private var freeTierRevenueCards: some View {
-            LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], spacing: DashboardLayout.cardSpacing) {
-                SalesCard(
-                    title: "Today",
-                    value: formatCents(dashboardMetrics.todayRevenue),
-                    subtitle: pluralize(dashboardMetrics.todayOrders, "order"),
-                    icon: "clock.fill",
-                    iconColor: .metricToday,
-                    trend: todayTrend
-                )
-                .frame(height: DashboardLayout.cardHeight)
-                .offset(y: animateCards ? 0 : 20)
-                .opacity(animateCards ? 1 : 0)
-                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
+    private func freeTierRevenueCards(_ widthClass: WidthClass) -> some View {
+        LazyVGrid(columns: widthClass.metricColumns, spacing: DashboardLayout.cardSpacing) {
+            SalesCard(
+                title: "Today",
+                value: formatCents(dashboardMetrics.todayRevenue),
+                subtitle: pluralize(dashboardMetrics.todayOrders, "order"),
+                icon: "clock.fill",
+                iconColor: .metricToday,
+                trend: todayTrend
+            )
+            .frame(height: widthClass.cardHeight)
+            .offset(y: animateCards ? 0 : 20)
+            .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.0), value: animateCards)
 
-                SalesCard(
-                    title: "7 Days",
-                    value: formatCents(revenueForDays(7)),
-                    subtitle: pluralize(ordersForDays(7), "order"),
-                    icon: "calendar",
-                    iconColor: .metricMonth,
-                )
-                .frame(height: DashboardLayout.cardHeight)
-                .offset(y: animateCards ? 0 : 20)
-                .opacity(animateCards ? 1 : 0)
-                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
+            SalesCard(
+                title: "7 Days",
+                value: formatCents(revenueForDays(7)),
+                subtitle: pluralize(ordersForDays(7), "order"),
+                icon: "calendar",
+                iconColor: .metricMonth
+            )
+            .frame(height: widthClass.cardHeight)
+            .offset(y: animateCards ? 0 : 20)
+            .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.05), value: animateCards)
 
-                SalesCard(
-                    title: "30 Days",
-                    value: formatCents(dashboardMetrics.thirtyDayRevenue),
-                    subtitle: pluralize(dashboardMetrics.thirtyDayOrders, "order"),
-                    icon: "calendar.badge.clock",
-                    iconColor: .metricRolling30
-                )
-                .frame(height: DashboardLayout.cardHeight)
-                .offset(y: animateCards ? 0 : 20)
-                .opacity(animateCards ? 1 : 0)
-                .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
+            SalesCard(
+                title: "30 Days",
+                value: formatCents(dashboardMetrics.thirtyDayRevenue),
+                subtitle: pluralize(dashboardMetrics.thirtyDayOrders, "order"),
+                icon: "calendar.badge.clock",
+                iconColor: .metricRolling30
+            )
+            .frame(height: widthClass.cardHeight)
+            .offset(y: animateCards ? 0 : 20)
+            .opacity(animateCards ? 1 : 0)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.10), value: animateCards)
 
-                lockedRevenueCard(
-                    title: "All Time",
-                    subtitle: "Unlock your full revenue history",
-                    iconAssetName: "CoinTemplate",
-                    iconColor: .metricAllTime,
-                    delay: 0.15
-                )
-            }
+            lockedRevenueCard(
+                title: "All Time",
+                subtitle: "Unlock your full revenue history",
+                iconAssetName: "CoinTemplate",
+                iconColor: .metricAllTime,
+                delay: 0.15,
+                height: widthClass.cardHeight
+            )
         }
-    #endif
+    }
 
-    private var storeCard: some View {
+    var storeCard: some View {
         Group {
             SalesCard(
                 title: "30-Day",
@@ -469,7 +563,7 @@ private extension DashboardView {
         }
     }
 
-    private var todayTrend: Trend? {
+    var todayTrend: Trend? {
         let daily = dashboardMetrics.dailyBreakdown
         guard daily.count >= 2 else { return nil }
         let today = daily.first(where: { Calendar.current.isDateInToday($0.date) })?.revenue ?? 0
@@ -480,198 +574,33 @@ private extension DashboardView {
     }
 }
 
-private extension DashboardView {
-    // MARK: - Chart
-
-    @ViewBuilder
-    private var chartSection: some View {
-        #if os(macOS)
-            if !manager.isPro {
-                // Pro-locked chart: show blurred placeholder + upsell button
-                GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-                    ZStack {
-                        // Blurred placeholder bars
-                        HStack(alignment: .bottom, spacing: 6) {
-                            ForEach([0.4, 0.6, 0.3, 0.8, 0.5, 0.9, 0.7], id: \.self) { height in
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color.salesGreen.opacity(0.3))
-                                    .frame(maxWidth: .infinity, minHeight: 20)
-                                    .frame(height: 160 * height)
-                            }
-                        }
-                        .padding(.horizontal, 8)
-                        .frame(height: 200)
-                        .blur(radius: 8)
-
-                        // Pro overlay
-                        VStack(spacing: 10) {
-                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                .font(.system(size: 28))
-                                .foregroundStyle(.teal)
-                            Text("Revenue Charts")
-                                .font(.system(size: 15, weight: .semibold))
-                                .foregroundStyle(.white)
-                            Text("Unlock interactive charts, all-time trends, and deeper comparisons.")
-                                .font(.system(size: 12))
-                                .foregroundStyle(.white.opacity(0.92))
-                                .multilineTextAlignment(.center)
-                            Button {
-                                proUpsellFeature = .charts
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 10))
-                                    Text("Unlock Pro")
-                                        .font(.system(size: 12, weight: .semibold))
-                                }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(Capsule().fill(Color.teal))
-                                .foregroundStyle(.white)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        .padding()
-                    }
-                    .frame(height: 200)
-                    .onAppear {
-                        guard manager.isConnected, !didLogChartGateView else { return }
-                        didLogChartGateView = true
-                        Task.detached {
-                            await EventTracker.log("chart_locked_viewed", app: "sanesales")
-                        }
-                    }
-                }
-            } else {
-                GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-                    if dashboardMetrics.dailyBreakdown.isEmpty {
-                        ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
-                                               description: Text("Sales data will appear here after your first order."))
-                            .frame(height: 200)
-                    } else {
-                        ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
-                            .padding(.top, 8)
-                            .frame(height: 220)
-                            .clipped()
-                            .padding(DashboardLayout.contentPadding)
-                    }
-                }
-            }
-        #else
-            GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-                if dashboardMetrics.dailyBreakdown.isEmpty {
-                    ContentUnavailableView("No Data", systemImage: "chart.line.uptrend.xyaxis",
-                                           description: Text("Sales data will appear here after your first order."))
-                        .frame(height: 200)
-                } else {
-                    ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
-                        .padding(.top, 8)
-                        .frame(height: 220)
-                        .clipped()
-                        .padding(DashboardLayout.contentPadding)
-                }
-            }
-        #endif
-    }
-
-    private var chartData: [DailySales] {
-        let days: Int = switch selectedRange {
-        case .today: 7
-        case .sevenDays: 7
-        case .thirtyDays: 30
-        case .allTime: dashboardMetrics.dailyBreakdown.count
-        }
-        return Array(dashboardMetrics.dailyBreakdown.prefix(days).reversed())
-    }
-
-    // MARK: - Top Products
-
-    private var topProductsSection: some View {
-        GlassSection("Top Products", icon: "star.fill", iconColor: .salesWarning) {
-            if dashboardMetrics.productBreakdown.isEmpty {
-                Text("No products yet")
-                    .foregroundStyle(Color.textMuted)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-            } else {
-                VStack(spacing: 0) {
-                    ForEach(Array(dashboardMetrics.productBreakdown.prefix(5).enumerated()), id: \.element.id) { index, product in
-                        if index > 0 { GlassDivider() }
-                        HStack(spacing: 12) {
-                            // Product thumbnail or rank fallback
-                            productThumbnail(for: product.productName, rank: index)
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(product.productName)
-                                    .font(.saneSubheadline)
-                                    .lineLimit(1)
-                                Text(pluralize(product.orderCount, "sale"))
-                                    .font(.saneCallout)
-                                    .foregroundStyle(Color.textMuted)
-                            }
-
-                            Spacer()
-
-                            Text(formatCents(product.revenue))
-                                .font(.saneSubheadlineBold)
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                    }
-                }
-            }
-        }
-    }
-
-    private func rankColor(_ index: Int) -> Color {
-        switch index {
-        case 0: .salesGreen
-        case 1: .blue
-        case 2: .salesGold
-        default: .secondary
-        }
-    }
-
-    @ViewBuilder
-    private func productThumbnail(for productName: String, rank: Int) -> some View {
-        let matchedProduct = manager.products.first { $0.name == productName }
-        if let thumbURL = matchedProduct?.thumbURL {
-            AsyncImage(url: thumbURL) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
-            } placeholder: {
-                rankCircle(rank)
-            }
-            .frame(width: 34, height: 34)
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-        } else {
-            rankCircle(rank)
-        }
-    }
-
-    private func rankCircle(_ index: Int) -> some View {
-        Text("\(index + 1)")
-            .font(.saneFootnote)
-            .foregroundStyle(.white)
-            .frame(width: 34, height: 34)
-            .background(rankColor(index))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
+extension DashboardView {
     // MARK: - Error Banner
 
-    private func errorBanner(_ error: SalesAPIError) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(Color.salesWarning)
-            Text(error.localizedDescription)
-                .font(.saneCallout)
-            Spacer()
-            Button("Retry") {
-                Task { await manager.refresh() }
+    func errorBanner(_ error: SalesAPIError) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(Color.salesWarning)
+                Text(error.localizedDescription)
+                    .font(.saneCallout)
+                    .foregroundStyle(.white)
+                Spacer()
             }
-            .buttonStyle(.bordered)
-            .tint(.salesGreen)
-            .controlSize(.small)
+
+            HStack(spacing: 10) {
+                Button("Retry") {
+                    Task { await manager.refresh() }
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
+
+                if let provider = primaryConnectedProvider {
+                    Button("Fix \(provider.displayName)") {
+                        queueSettingsRoute(for: provider)
+                    }
+                    .buttonStyle(SaneActionButtonStyle())
+                }
+            }
         }
         .padding(14)
         .background(
@@ -685,19 +614,19 @@ private extension DashboardView {
     }
 }
 
-private extension DashboardView {
+extension DashboardView {
     // MARK: - Computed Data
 
-    private var dashboardOrders: [Order] {
+    var dashboardOrders: [Order] {
         guard let selectedProviderFilter else { return manager.orders }
         return manager.orders.filter { $0.provider == selectedProviderFilter }
     }
 
-    private var dashboardMetrics: SalesMetrics {
+    var dashboardMetrics: SalesMetrics {
         SalesMetrics.compute(from: dashboardOrders)
     }
 
-    private var revenueForRange: Int {
+    var revenueForRange: Int {
         switch selectedRange {
         case .today: dashboardMetrics.todayRevenue
         case .sevenDays: revenueForDays(7)
@@ -706,7 +635,7 @@ private extension DashboardView {
         }
     }
 
-    private var ordersForRange: Int {
+    var ordersForRange: Int {
         switch selectedRange {
         case .today: dashboardMetrics.todayOrders
         case .sevenDays: ordersForDays(7)
@@ -715,7 +644,7 @@ private extension DashboardView {
         }
     }
 
-    private var rangeLabel: String {
+    var rangeLabel: String {
         switch selectedRange {
         case .today: "Today's Revenue"
         case .sevenDays: "Last 7 Days"
@@ -724,20 +653,20 @@ private extension DashboardView {
         }
     }
 
-    private var comparisonDelta: Int {
+    var comparisonDelta: Int {
         let current = revenueForRange
         let previous = previousPeriodRevenue
         guard previous > 0 else { return current > 0 ? 100 : 0 }
         return Int(Double(current - previous) / Double(previous) * 100)
     }
 
-    private var comparisonText: String {
+    var comparisonText: String {
         let delta = comparisonDelta
         let sign = delta >= 0 ? "+" : ""
         return "\(sign)\(delta)%"
     }
 
-    private var previousPeriodRevenue: Int {
+    var previousPeriodRevenue: Int {
         let daily = dashboardMetrics.dailyBreakdown
         let cal = Calendar.current
         switch selectedRange {
@@ -752,7 +681,7 @@ private extension DashboardView {
         }
     }
 
-    private var averageDailyRevenue: Int? {
+    var averageDailyRevenue: Int? {
         guard selectedRange != .today else { return nil }
         let days: Int = switch selectedRange {
         case .today: 1
@@ -763,7 +692,7 @@ private extension DashboardView {
         return revenueForRange / max(1, days)
     }
 
-    private var averageDailyOrders: Double {
+    var averageDailyOrders: Double {
         let days: Double = switch selectedRange {
         case .today: 1
         case .sevenDays: 7
@@ -773,19 +702,19 @@ private extension DashboardView {
         return Double(ordersForRange) / days
     }
 
-    private func revenueForDays(_ days: Int) -> Int {
+    func revenueForDays(_ days: Int) -> Int {
         let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         return dashboardOrders
             .filter { $0.status == .paid && $0.createdAt >= cutoff }
             .reduce(0) { $0 + $1.total }
     }
 
-    private func ordersForDays(_ days: Int) -> Int {
+    func ordersForDays(_ days: Int) -> Int {
         let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
         return dashboardOrders.filter { $0.status == .paid && $0.createdAt >= cutoff }.count
     }
 
-    private func revenueInRange(daysAgo: Int, daysUntil: Int) -> Int {
+    func revenueInRange(daysAgo: Int, daysUntil: Int) -> Int {
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -daysAgo, to: Date())!
         let end = cal.date(byAdding: .day, value: -daysUntil, to: Date())!
@@ -794,7 +723,7 @@ private extension DashboardView {
             .reduce(0) { $0 + $1.total }
     }
 
-    private func isProviderConnected(_ provider: SalesProviderType) -> Bool {
+    func isProviderConnected(_ provider: SalesProviderType) -> Bool {
         switch provider {
         case .lemonSqueezy: manager.isLemonSqueezyConnected
         case .gumroad: manager.isGumroadConnected
@@ -804,7 +733,7 @@ private extension DashboardView {
 
     // MARK: - Helpers
 
-    private func formatCents(_ cents: Int) -> String {
+    func formatCents(_ cents: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = manager.primaryCurrency
@@ -814,129 +743,265 @@ private extension DashboardView {
         return String(format: "$%.2f", Double(cents) / 100.0)
     }
 
-    private func pluralize(_ count: Int, _ word: String) -> String {
+    func pluralize(_ count: Int, _ word: String) -> String {
         "\(count) \(word)\(count == 1 ? "" : "s")"
     }
 
-    private func handleRangeSelection(_ range: TimeRange) {
-        #if os(macOS)
-            if SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro) {
-                showChartsUpsell(event: "trend_range_locked_tap")
-                return
-            }
-        #endif
+    func handleRangeSelection(_ range: TimeRange) {
+        if SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro) {
+            showLockedFeature(event: "trend_range_locked_tap")
+            return
+        }
 
         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
             selectedRange = range
         }
     }
 
-    private func enforceFreeTierRange() {
-        #if os(macOS)
-            selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
-                currentRange: selectedRange,
-                isPro: manager.isPro,
-                todayOrders: dashboardMetrics.todayOrders,
-                thirtyDayOrders: dashboardMetrics.thirtyDayOrders
-            )
-        #endif
+    func enforceFreeTierRange() {
+        selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: selectedRange,
+            isPro: manager.isPro,
+            todayOrders: dashboardMetrics.todayOrders,
+            thirtyDayOrders: dashboardMetrics.thirtyDayOrders
+        )
     }
 
-    private func isLockedRange(_ range: TimeRange) -> Bool {
-        #if os(macOS)
-            SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
-        #else
-            false
-        #endif
+    func isLockedRange(_ range: TimeRange) -> Bool {
+        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
     }
 
     @ViewBuilder
-    private var dashboardContextNote: some View {
+    var dashboardContextNote: some View {
+        if shouldShowRecentSnapshotNote {
+            HStack(spacing: 10) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundStyle(.teal)
+                Text("No sales yet today. Your recent sales snapshot is still loaded below.")
+                    .font(.saneCallout)
+                    .foregroundStyle(.white.opacity(0.96))
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(AnyShapeStyle(.ultraThinMaterial))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14)
+                            .stroke(Color.teal.opacity(0.24), lineWidth: 1)
+                    )
+            )
+        }
+    }
+
+    var shouldShowRecentSnapshotNote: Bool {
+        !manager.isPro
+            && selectedRange == .sevenDays
+            && dashboardMetrics.todayOrders == 0
+            && dashboardMetrics.thirtyDayOrders > 0
+    }
+
+    func showLockedFeature(event: String) {
+        Task.detached {
+            await EventTracker.log(event, app: "sanesales")
+        }
         #if os(macOS)
-            if shouldShowRecentSnapshotNote {
-                HStack(spacing: 10) {
-                    Image(systemName: "info.circle.fill")
-                        .foregroundStyle(.teal)
-                    Text("No sales yet today. Your recent sales snapshot is still loaded below.")
-                        .font(.saneCallout)
-                        .foregroundStyle(.white.opacity(0.96))
-                    Spacer()
+            proUpsellFeature = .charts
+        #else
+            queueLicenseSettingsRoute()
+        #endif
+    }
+
+    func lockedRevenueCard(
+        title: String,
+        subtitle: String,
+        icon: String? = nil,
+        iconAssetName: String? = nil,
+        iconColor: Color,
+        delay: Double,
+        height: CGFloat
+    ) -> some View {
+        Button {
+            showLockedFeature(event: "revenue_card_locked_tap")
+        } label: {
+            Group {
+                if let icon {
+                    SalesCard(
+                        title: title,
+                        value: "Unlock",
+                        subtitle: subtitle,
+                        icon: icon,
+                        iconColor: iconColor
+                    )
+                } else if let iconAssetName {
+                    SalesCard(
+                        title: title,
+                        value: "Unlock",
+                        subtitle: subtitle,
+                        iconAssetName: iconAssetName,
+                        iconColor: iconColor
+                    )
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(AnyShapeStyle(.ultraThinMaterial))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(Color.teal.opacity(0.24), lineWidth: 1)
+            }
+            .overlay(alignment: .topTrailing) {
+                Image(systemName: "lock.fill")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.teal)
+                    .padding(10)
+            }
+        }
+        .buttonStyle(.plain)
+        .frame(height: height)
+        .offset(y: animateCards ? 0 : 20)
+        .opacity(animateCards ? 1 : 0)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(delay), value: animateCards)
+    }
+
+    var primaryConnectedProvider: SalesProviderType? {
+        manager.connectedProviders.first
+    }
+
+    func queueLicenseSettingsRoute() {
+        pendingSettingsRoute = "license"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+        }
+    }
+
+    func queueSettingsRoute(for provider: SalesProviderType) {
+        if manager.needsProForAdditionalProvider, !isProviderConnected(provider) {
+            queueLicenseSettingsRoute()
+            return
+        }
+
+        pendingSettingsRoute = "provider:\(provider.rawValue)"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func providerBadgeButton(
+        provider: SalesProviderType,
+        isConnected: Bool,
+        isSelected: Bool
+    ) -> some View {
+        let button = Button {
+            if isConnected {
+                withAnimation(.spring(response: 0.28, dampingFraction: 0.86)) {
+                    selectedProviderFilter = selectedProviderFilter == provider ? nil : provider
+                }
+            } else {
+                if manager.needsProForAdditionalProvider {
+                    queueSettingsRoute(for: provider)
+                } else {
+                    quickConnectProvider = provider
+                }
+            }
+        } label: {
+            providerBadgeLabel(provider: provider, isConnected: isConnected, isSelected: isSelected)
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(
+            isConnected
+                ? "Filters dashboard by \(provider.displayName)"
+                : (manager.needsProForAdditionalProvider
+                    ? "Opens Pro unlock for additional providers"
+                    : "Opens setup for \(provider.displayName)")
+        )
+
+        switch provider {
+        case .lemonSqueezy:
+            button.accessibilityIdentifier("dashboard.provider.lemonSqueezy")
+        case .gumroad:
+            button.accessibilityIdentifier("dashboard.provider.gumroad")
+        case .stripe:
+            button.accessibilityIdentifier("dashboard.provider.stripe")
+        }
+    }
+
+    @ViewBuilder
+    private func providerBadgeLabel(
+        provider: SalesProviderType,
+        isConnected: Bool,
+        isSelected: Bool
+    ) -> some View {
+        if isConnected {
+            ProviderBadge(
+                provider: provider,
+                fillsAvailableWidth: true,
+                allowsWrappedTitle: false
+            )
+                .overlay(
+                    Capsule()
+                        .stroke(
+                            isSelected ? provider.brandColor.opacity(0.7) : .clear,
+                            lineWidth: isSelected ? 1.2 : 0
                         )
                 )
+        } else {
+            HStack(spacing: 5) {
+                Image(systemName: provider.icon)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(provider.brandColor)
+                    .accessibilityHidden(true)
+                Text(provider.displayName)
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.62)
+                Image(systemName: manager.needsProForAdditionalProvider ? "lock.fill" : "plus.circle.fill")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(
+                        manager.needsProForAdditionalProvider
+                            ? SaneSettingsIconSemantic.license.color
+                            : Color.salesGreen
+                    )
+                    .accessibilityHidden(true)
             }
-        #endif
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
+            .frame(minHeight: 36)
+            .background(
+                Capsule()
+                    .fill(provider.brandColor.opacity(colorScheme == .dark ? 0.14 : 0.10))
+            )
+            .overlay(
+                Capsule()
+                    .stroke(provider.brandColor.opacity(0.75), lineWidth: 1)
+            )
+        }
     }
 
-    private var shouldShowRecentSnapshotNote: Bool {
-        #if os(macOS)
-            !manager.isPro
-                && selectedRange == .sevenDays
-                && dashboardMetrics.todayOrders == 0
-                && dashboardMetrics.thirtyDayOrders > 0
+    private var refreshButtonLabel: String {
+        guard let lastUpdated = manager.lastUpdated else { return "Refresh" }
+
+        let elapsed = max(0, Int(Date().timeIntervalSince(lastUpdated)))
+        switch elapsed {
+        case ..<5:
+            return "Now"
+        case ..<60:
+            return "\(elapsed)s"
+        case ..<3600:
+            return "\(elapsed / 60)m"
+        case ..<86_400:
+            return "\(elapsed / 3600)h"
+        default:
+            return "\(elapsed / 86_400)d"
+        }
+    }
+
+    private func dashboardBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
+        #if os(iOS)
+            return max(DashboardLayout.sectionSpacing + 8, safeAreaBottom + 78)
         #else
-            false
+            return DashboardLayout.sectionSpacing
         #endif
     }
-
-    #if os(macOS)
-        private func showChartsUpsell(event: String) {
-            Task.detached {
-                await EventTracker.log(event, app: "sanesales")
-            }
-            proUpsellFeature = .charts
-        }
-
-        private func lockedRevenueCard(
-            title: String,
-            subtitle: String,
-            icon: String? = nil,
-            iconAssetName: String? = nil,
-            iconColor: Color,
-            delay: Double
-        ) -> some View {
-            Button {
-                showChartsUpsell(event: "revenue_card_locked_tap")
-            } label: {
-                Group {
-                    if let icon {
-                        SalesCard(
-                            title: title,
-                            value: "Unlock",
-                            subtitle: subtitle,
-                            icon: icon,
-                            iconColor: iconColor
-                        )
-                    } else if let iconAssetName {
-                        SalesCard(
-                            title: title,
-                            value: "Unlock",
-                            subtitle: subtitle,
-                            iconAssetName: iconAssetName,
-                            iconColor: iconColor
-                        )
-                    }
-                }
-                .overlay(alignment: .topTrailing) {
-                    Image(systemName: "lock.fill")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.teal)
-                        .padding(10)
-                }
-            }
-            .buttonStyle(.plain)
-            .frame(height: DashboardLayout.cardHeight)
-            .offset(y: animateCards ? 0 : 20)
-            .opacity(animateCards ? 1 : 0)
-            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(delay), value: animateCards)
-        }
-    #endif
 }

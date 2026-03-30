@@ -140,7 +140,3 @@ final class MenuBarManager: NSObject {
         NSApp.terminate(nil)
     }
 }
-
-extension Notification.Name {
-    static let showSettingsTab = Notification.Name("com.sanesales.showSettingsTab")
-}

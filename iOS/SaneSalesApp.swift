@@ -47,13 +47,21 @@ struct SaneSalesApp: App {
                 .onChange(of: manager.orders.count) { _, _ in
                     debugLogStartupState(reason: "orders")
                 }
+                .onChange(of: licenseService.isPro) { _, isPro in
+                    manager.isPro = isPro
+                    debugLogStartupState(reason: "license")
+                }
                 .task {
                     licenseService.checkCachedLicense()
+                    manager.isPro = licenseService.isPro
                     if CommandLine.arguments.contains("--uitest-reset") {
                         manager.resetForUITests()
                     }
                     if CommandLine.arguments.contains("--demo") {
-                        DemoData.loadInto(manager: manager)
+                        DemoData.loadInto(
+                            manager: manager,
+                            connectedProviders: manager.demoConnectedProviders()
+                        )
                     }
                 }
         }
@@ -64,20 +72,19 @@ struct SaneSalesApp: App {
             hasSeenWelcome: hasSeenWelcome,
             demoModeEnabled: demoModeEnabled,
             hasConnectedProviders: manager.isAnyConnected,
-            hasAnyData: !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty,
+            hasAnyData: hasUsableDashboardContent,
             hasError: manager.error != nil
         )
     }
 
     private func debugLogStartupState(reason: String) {
         #if DEBUG
-            let hasAnyData = !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty
             NSLog(
                 "%@",
                 "[SaneSales iOS startup] reason=\(reason) bundle=\(Bundle.main.bundleIdentifier ?? "unknown") " +
                     "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
                     "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
-                    "hasAnyData=\(hasAnyData) error=\(manager.error?.localizedDescription ?? "none") " +
+                    "hasAnyData=\(hasUsableDashboardContent) error=\(manager.error?.localizedDescription ?? "none") " +
                     "showSetup=\(shouldShowInitialSetup)"
             )
         #endif
@@ -94,11 +101,10 @@ struct SaneSalesApp: App {
     @ViewBuilder
     private var debugStartupOverlay: some View {
         #if DEBUG
-            let hasAnyData = !manager.orders.isEmpty || !manager.products.isEmpty || !manager.stores.isEmpty
             Text(
                 "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
                     "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
-                    "data=\(hasAnyData) error=\(manager.error == nil ? "none" : "yes") " +
+                    "data=\(hasUsableDashboardContent) error=\(manager.error == nil ? "none" : "yes") " +
                     "setup=\(shouldShowInitialSetup)"
             )
             .font(.system(size: 10, weight: .medium, design: .monospaced))
@@ -107,5 +113,12 @@ struct SaneSalesApp: App {
             .background(.black.opacity(0.72), in: RoundedRectangle(cornerRadius: 10))
             .padding(12)
         #endif
+    }
+
+    private var hasUsableDashboardContent: Bool {
+        SalesSetupFlowPolicy.hasUsableContent(
+            ordersCount: manager.orders.count,
+            productsCount: manager.products.count
+        )
     }
 }

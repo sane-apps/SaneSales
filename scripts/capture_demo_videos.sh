@@ -91,6 +91,26 @@ boot_device() {
     --batteryLevel 100 >/dev/null 2>&1 || true
 }
 
+app_bundle_variants() {
+  local bundle_id="$1"
+  printf '%s\n' "${bundle_id}"
+  case "${bundle_id}" in
+    com.sanesales.app) printf '%s\n' "com.sanesales.dev" ;;
+    com.sanesales.dev) printf '%s\n' "com.sanesales.app" ;;
+  esac
+}
+
+clean_simulator_app_variants() {
+  local udid="$1"
+  local bundle_id="$2"
+
+  while IFS= read -r candidate; do
+    [[ -z "${candidate}" ]] && continue
+    xcrun simctl terminate "${udid}" "${candidate}" >/dev/null 2>&1 || true
+    xcrun simctl uninstall "${udid}" "${candidate}" >/dev/null 2>&1 || true
+  done < <(app_bundle_variants "${bundle_id}" | awk '!seen[$0]++')
+}
+
 record_simulator_clip() {
   local udid="$1"
   local output_file="$2"
@@ -225,6 +245,7 @@ if [[ "${WANT_IPHONE}" == "1" || "${WANT_IPAD}" == "1" ]]; then
       exit 1
     fi
     boot_device "${IPHONE_UDID}"
+    clean_simulator_app_variants "${IPHONE_UDID}" "${IOS_BUNDLE_ID}"
     xcrun simctl install "${IPHONE_UDID}" "${IOS_APP}"
     capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-onboarding.mov" --force-onboarding
     capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-dashboard.mov" --demo --screenshot-tab dashboard
@@ -240,6 +261,7 @@ if [[ "${WANT_IPHONE}" == "1" || "${WANT_IPAD}" == "1" ]]; then
       exit 1
     fi
     boot_device "${IPAD_UDID}"
+    clean_simulator_app_variants "${IPAD_UDID}" "${IOS_BUNDLE_ID}"
     xcrun simctl install "${IPAD_UDID}" "${IOS_APP}"
     capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-onboarding.mov" --force-onboarding
     capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-dashboard.mov" --demo --screenshot-tab dashboard
@@ -291,10 +313,10 @@ if [[ "${WANT_MAC}" == "1" ]]; then
 
   MAC_APP="${DERIVED_DATA}/Build/Products/Debug/SaneSales.app"
   capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-onboarding.mov" --force-onboarding
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-dashboard.mov" --demo --screenshot-tab dashboard
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-orders.mov" --demo --screenshot-tab orders
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-products.mov" --demo --screenshot-tab products
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-settings.mov" --demo --screenshot-tab settings
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-dashboard.mov" --demo --skip-onboarding --screenshot-tab dashboard
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-orders.mov" --demo --skip-onboarding --screenshot-tab orders
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-products.mov" --demo --skip-onboarding --screenshot-tab products
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-settings.mov" --demo --skip-onboarding --screenshot-tab settings
 fi
 
 log "Done. Demo clips saved in ${OUT_DIR}"
