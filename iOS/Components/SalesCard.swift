@@ -211,9 +211,28 @@ struct SalesCard: View {
     var trend: Trend?
 
     // Keep card internals optically consistent across all KPI cards.
-    private let headerRowHeight: CGFloat = 38
-    private let trendBadgeHeight: CGFloat = 30
+    #if os(macOS)
+        private let headerRowHeight: CGFloat = 38
+        private let trendBadgeHeight: CGFloat = 30
+    #else
+        private let headerRowHeight: CGFloat = 32
+        private let trendBadgeHeight: CGFloat = 28
+    #endif
     private let trendBadgeWidth: CGFloat = 58
+
+    #if os(macOS)
+        private let cardPadding: CGFloat = 16
+        private let glowRadius: CGFloat = 12
+        private let glowYOffset: CGFloat = 4
+        private let ambientRadius: CGFloat = 6
+        private let ambientYOffset: CGFloat = 2
+    #else
+        private let cardPadding: CGFloat = 12
+        private let glowRadius: CGFloat = 8
+        private let glowYOffset: CGFloat = 3
+        private let ambientRadius: CGFloat = 4
+        private let ambientYOffset: CGFloat = 1
+    #endif
 
     init(
         title: String,
@@ -278,21 +297,21 @@ struct SalesCard: View {
                 .foregroundStyle(Color.textMuted)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(16)
+        .padding(cardPadding)
         .background(cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .overlay(cardBorder)
         .shadow(
             color: colorScheme == .dark ? Color.brandBlueGlow.opacity(0.25) : Color.brandBlueGlow.opacity(0.10),
-            radius: colorScheme == .dark ? 12 : 8,
+            radius: colorScheme == .dark ? glowRadius : ambientRadius + 2,
             x: 0,
-            y: 4
+            y: glowYOffset
         )
         .shadow(
             color: colorScheme == .dark ? .black.opacity(0.15) : .clear,
-            radius: 6,
+            radius: ambientRadius,
             x: 0,
-            y: 2
+            y: ambientYOffset
         )
         #if os(macOS)
         .scaleEffect(isHovered ? 1.02 : 1.0)

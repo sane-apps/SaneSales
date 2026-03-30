@@ -1,9 +1,11 @@
 import Charts
+import SaneUI
 import SwiftUI
 
 struct ProductsView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var selectedAngle: Int?
     @State private var selectedProduct: ProductSales?
 
@@ -42,14 +44,13 @@ struct ProductsView: View {
 
                     Group {
                         if manager.products.isEmpty, !manager.isLoading {
-                            ContentUnavailableView("No Products", systemImage: "shippingbox",
-                                                   description: Text("Product data will appear after connecting a provider."))
+                            emptyProductsState(widthClass: widthClass)
                         } else {
                             ScrollView {
                                 VStack(spacing: 12) {
                                     productsOverview(widthClass)
 
-                                    if widthClass == .wide, !manager.metrics.productBreakdown.isEmpty {
+                                    if widthClass == .wide, manager.metrics.productBreakdown.count >= 3 {
                                         HStack(alignment: .top, spacing: 16) {
                                             revenueChart(widthClass)
                                                 .frame(width: min(max(proxy.size.width * 0.38, 340), 420))
@@ -58,10 +59,11 @@ struct ProductsView: View {
                                                 .frame(maxWidth: .infinity, alignment: .top)
                                         }
                                     } else {
+                                        catalogSection
+
                                         if !manager.metrics.productBreakdown.isEmpty {
                                             revenueChart(widthClass)
                                         }
-                                        catalogSection
                                     }
                                 }
                                 .padding(.horizontal, widthClass == .compact ? 16 : 20)
@@ -104,14 +106,9 @@ struct ProductsView: View {
         }
 
         return AnyView(
-            LazyVGrid(
-                columns: [
-                    GridItem(.adaptive(minimum: 150), spacing: 10)
-                ],
-                spacing: 10
-            ) {
+            HStack(spacing: 8) {
                 ForEach(summary) { item in
-                    summaryCard(item, widthClass: widthClass)
+                    summaryCard(item, widthClass: widthClass, fillsWidth: true)
                 }
             }
         )
@@ -122,7 +119,7 @@ struct ProductsView: View {
         widthClass: WidthClass,
         fillsWidth: Bool = false
     ) -> some View {
-        VStack(alignment: .leading, spacing: widthClass == .compact ? 6 : 8) {
+        VStack(alignment: .leading, spacing: widthClass == .compact ? 6 : 7) {
             HStack(spacing: 8) {
                 Image(systemName: item.icon)
                     .foregroundStyle(item.color)
@@ -142,7 +139,7 @@ struct ProductsView: View {
         }
         .frame(maxWidth: fillsWidth ? .infinity : nil, alignment: .leading)
         .padding(.horizontal, widthClass == .compact ? 12 : 14)
-        .padding(.vertical, widthClass == .compact ? 8 : 11)
+        .padding(.vertical, widthClass == .compact ? 8 : 10)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .fill(AnyShapeStyle(.ultraThinMaterial))
@@ -157,36 +154,41 @@ struct ProductsView: View {
 
     private func revenueChart(_ widthClass: WidthClass) -> some View {
         GlassSection("Revenue by Product", icon: "chart.pie", iconColor: .salesGold) {
-            VStack(spacing: 16) {
-                // Donut chart with center label
-                ZStack {
-                    Chart(manager.metrics.productBreakdown) { product in
-                        SectorMark(
-                            angle: .value("Revenue", product.revenue),
-                            innerRadius: .ratio(0.58),
-                            outerRadius: .ratio(selectedProduct?.id == product.id ? 0.95 : 0.85),
-                            angularInset: 1.5
-                        )
-                        .foregroundStyle(chartColor(for: product))
-                        .opacity(selectedProduct == nil || selectedProduct?.id == product.id ? 1.0 : 0.3)
-                        .cornerRadius(4)
-                    }
-                    .chartAngleSelection(value: $selectedAngle)
-                    .chartLegend(.hidden)
-                    .chartBackground { _ in
-                        donutCenter(widthClass)
-                    }
-                    .animation(.spring(response: 0.3), value: selectedProduct?.id)
-                }
-                .frame(height: widthClass == .compact ? 144 : 220)
-                .padding(.horizontal, widthClass == .compact ? 8 : 14)
-                .padding(.top, widthClass == .compact ? 8 : 14)
-                .accessibilityLabel("Revenue breakdown by product, \(manager.metrics.productBreakdown.count) products")
+            Group {
+                if compactChartLayout, widthClass != .compact {
+                    HStack(alignment: .center, spacing: 20) {
+                        donutChart(widthClass)
+                            .frame(width: 220, height: 220)
 
-                // Custom legend
-                customLegend
-                    .padding(.horizontal, widthClass == .compact ? 8 : 14)
-                    .padding(.bottom, widthClass == .compact ? 8 : 14)
+                        VStack(alignment: .leading, spacing: 14) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Revenue mix")
+                                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                Text("Use the chart for the split and the catalog for product details.")
+                                    .font(.system(size: 13, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.86))
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+
+                            customLegend
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 12)
+                } else {
+                    VStack(spacing: 16) {
+                        donutChart(widthClass)
+                            .frame(height: widthClass == .compact ? 144 : 220)
+                            .padding(.horizontal, widthClass == .compact ? 8 : 14)
+                            .padding(.top, widthClass == .compact ? 8 : 14)
+
+                        customLegend
+                            .padding(.horizontal, widthClass == .compact ? 8 : 14)
+                            .padding(.bottom, widthClass == .compact ? 8 : 14)
+                    }
+                }
             }
         }
         .onChange(of: selectedAngle) { _, newValue in
@@ -196,39 +198,67 @@ struct ProductsView: View {
         }
     }
 
+    private func donutChart(_ widthClass: WidthClass) -> some View {
+        ZStack {
+            Chart(manager.metrics.productBreakdown) { product in
+                SectorMark(
+                    angle: .value("Revenue", product.revenue),
+                    innerRadius: .ratio(compactChartLayout ? 0.64 : 0.58),
+                    outerRadius: .ratio(selectedProduct?.id == product.id ? 0.95 : 0.85),
+                    angularInset: 1.5
+                )
+                .foregroundStyle(chartColor(for: product))
+                .opacity(selectedProduct == nil || selectedProduct?.id == product.id ? 1.0 : 0.3)
+                .cornerRadius(4)
+            }
+            .chartAngleSelection(value: $selectedAngle)
+            .chartLegend(.hidden)
+            .chartBackground { _ in
+                donutCenter(widthClass)
+            }
+            .animation(.spring(response: 0.3), value: selectedProduct?.id)
+        }
+        .accessibilityLabel("Revenue breakdown by product, \(manager.metrics.productBreakdown.count) products")
+    }
+
     @ViewBuilder
     private func donutCenter(_ widthClass: WidthClass) -> some View {
+        let useCompactAmount = compactChartLayout || widthClass == .compact
+        let titleSize: CGFloat = widthClass == .compact ? 10 : (compactChartLayout ? 11 : 12)
+        let amountSize: CGFloat = widthClass == .compact ? 15 : (compactChartLayout ? 18 : 20)
+        let centerWidth: CGFloat = widthClass == .compact ? 88 : (compactChartLayout ? 110 : 132)
+
         if let selected = selectedProduct {
             VStack(spacing: 2) {
                 Text(selected.productName)
-                    .font(.system(size: widthClass == .compact ? 10 : 12, weight: .semibold))
+                    .font(.system(size: titleSize, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.55)
-                Text(widthClass == .compact ? compactChartAmount(selected.revenue) : formatCents(selected.revenue))
-                    .font(.system(size: widthClass == .compact ? 15 : 20, weight: .bold, design: .rounded))
+                    .minimumScaleFactor(0.6)
+                Text(useCompactAmount ? compactChartAmount(selected.revenue) : formatCents(selected.revenue))
+                    .font(.system(size: amountSize, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.55)
+                    .minimumScaleFactor(0.65)
                 Text("\(selected.orderCount) sales")
                     .font(widthClass == .compact ? .system(size: 10, weight: .medium) : .saneCallout)
                     .foregroundStyle(Color.textMuted)
             }
-            .frame(maxWidth: widthClass == .compact ? 88 : 132)
+            .frame(maxWidth: centerWidth)
             .padding(.horizontal, widthClass == .compact ? 4 : 8)
             .transition(.opacity)
         } else {
             VStack(spacing: 2) {
                 Text("Total")
-                    .font(.system(size: widthClass == .compact ? 10 : 12, weight: .medium))
+                    .font(.system(size: titleSize, weight: .medium))
                     .foregroundStyle(Color.textMuted)
-                Text(widthClass == .compact ? compactChartAmount(totalRevenue) : formatCents(totalRevenue))
-                    .font(.system(size: widthClass == .compact ? 15 : 20, weight: .bold, design: .rounded))
+                Text(useCompactAmount ? compactChartAmount(totalRevenue) : formatCents(totalRevenue))
+                    .font(.system(size: amountSize, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.55)
+                    .minimumScaleFactor(0.65)
             }
-            .frame(maxWidth: widthClass == .compact ? 88 : 132)
+            .frame(maxWidth: centerWidth)
             .transition(.opacity)
         }
     }
@@ -285,6 +315,10 @@ struct ProductsView: View {
 
     private var totalRevenue: Int {
         manager.metrics.productBreakdown.reduce(0) { $0 + $1.revenue }
+    }
+
+    private var compactChartLayout: Bool {
+        manager.metrics.productBreakdown.count <= 2
     }
 
     private func productsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
@@ -346,6 +380,131 @@ struct ProductsView: View {
         let valueText = decimalFormatter.string(from: NSNumber(value: abbreviatedValue))
             ?? String(format: "%.1f", abbreviatedValue)
         return "\(symbol)\(valueText)\(suffix)"
+    }
+
+    private func emptyProductsState(widthClass: WidthClass) -> some View {
+        VStack {
+            Spacer(minLength: widthClass == .compact ? 28 : 40)
+
+            VStack(spacing: 18) {
+                Image(systemName: "shippingbox")
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(Color.salesGold)
+
+                VStack(spacing: 8) {
+                    Text("No Products Yet")
+                        .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+
+                    Text("Connect a provider to turn this into your catalog, revenue breakdown, and product-level sales view.")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 560)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    emptyStateDetailRow("See which products drive the most revenue")
+                    emptyStateDetailRow("Track status, pricing, and sales count in one place")
+                    emptyStateDetailRow("Use the chart for quick revenue mix and the catalog for specifics")
+                }
+                .frame(maxWidth: 520, alignment: .leading)
+
+                if manager.connectedProviders.isEmpty {
+                    Text("Choose the store you already use. SaneSales will pull in your catalog first, then the revenue breakdown fills in.")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 520)
+
+                    emptyStateProviderActions(widthClass: widthClass)
+                } else {
+                    HStack(spacing: 10) {
+                        Button("Refresh Now") {
+                            Task { await manager.refresh() }
+                        }
+                        .buttonStyle(SaneActionButtonStyle(prominent: true))
+
+                        Button("Open Provider Settings") {
+                            queueSettingsRoute(for: manager.connectedProviders.first)
+                        }
+                        .buttonStyle(SaneActionButtonStyle())
+                    }
+                }
+            }
+            .padding(.horizontal, widthClass == .compact ? 20 : 26)
+            .padding(.vertical, widthClass == .compact ? 24 : 28)
+            .frame(maxWidth: 660)
+            .background(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(AnyShapeStyle(.ultraThinMaterial))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(Color.brandBlueGlow.opacity(0.26), lineWidth: 1)
+                    )
+            )
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 28)
+    }
+
+    private func emptyStateProviderActions(widthClass: WidthClass) -> some View {
+        let columns = widthClass == .compact
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+
+        return LazyVGrid(columns: columns, spacing: 10) {
+            ForEach([SalesProviderType.lemonSqueezy, .gumroad, .stripe], id: \.self) { provider in
+                Button {
+                    queueSettingsRoute(for: provider)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: provider.icon)
+                            .foregroundStyle(provider.brandColor)
+                        Text(provider.displayName)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.78))
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: provider == .lemonSqueezy))
+            }
+        }
+        .frame(maxWidth: 620)
+    }
+
+    private func emptyStateDetailRow(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.salesGreen)
+                .padding(.top, 2)
+
+            Text(text)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func queueSettingsRoute(for provider: SalesProviderType?) {
+        if let provider {
+            pendingSettingsRoute = "provider:\(provider.rawValue)"
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+
+            guard let provider else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
+            }
+        }
     }
 
     // MARK: - Product Catalog
