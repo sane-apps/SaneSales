@@ -10,6 +10,21 @@ private enum SaneSalesSettingsTab: String, SaneSettingsTab {
     case license = "License"
     case about = "About"
 
+    var title: String {
+        switch self {
+        case .general:
+            SaneSalesSettingsCopy.tabGeneralTitle
+        case .providers:
+            SaneSalesSettingsCopy.tabProvidersTitle
+        case .data:
+            SaneSalesSettingsCopy.tabDataTitle
+        case .license:
+            SaneSalesSettingsCopy.tabLicenseTitle
+        case .about:
+            SaneSalesSettingsCopy.tabAboutTitle
+        }
+    }
+
     var icon: String {
         switch self {
         case .general: "gearshape"
@@ -86,16 +101,16 @@ struct SaneSalesMacSettingsView: View {
             apiKeySheet(for: provider)
         }
         .confirmationDialog(
-            "Disconnect \(removingProvider?.displayName ?? "Provider")?",
+            SaneSalesSettingsCopy.disconnectConfirmationTitle(providerName: removingProvider?.displayName),
             isPresented: $showRemoveConfirmation
         ) {
-            Button("Disconnect", role: .destructive) {
+            Button(SaneSalesSettingsCopy.disconnectButtonTitle, role: .destructive) {
                 if let provider = removingProvider {
                     disconnectProvider(provider)
                 }
             }
         } message: {
-            Text("This will remove the API key and cached data for this provider.")
+            Text(SaneSalesSettingsCopy.disconnectConfirmationMessage)
         }
         .sheet(item: $proUpsellFeature) { feature in
             ProUpsellView(feature: feature, licenseService: licenseService)
@@ -119,10 +134,10 @@ struct SaneSalesMacSettingsView: View {
 
     private var generalTab: some View {
         settingsScrollView {
-            CompactSection("Appearance", icon: "paintpalette", iconColor: SaneSettingsIconSemantic.appearance.color) {
+            CompactSection(SaneSalesSettingsCopy.appearanceSectionTitle, icon: "paintpalette", iconColor: SaneSettingsIconSemantic.appearance.color) {
                 if licenseService.isPro {
                     CompactToggle(
-                        label: "Show in Menu Bar",
+                        label: SaneSalesSettingsCopy.showInMenuBarLabel,
                         icon: "menubar.rectangle",
                         iconColor: .white,
                         isOn: showInMenuBarBinding
@@ -131,7 +146,7 @@ struct SaneSalesMacSettingsView: View {
                     if showInMenuBar {
                         CompactDivider()
                         CompactToggle(
-                            label: "Show Revenue in Menu Bar",
+                            label: SaneSalesSettingsCopy.showRevenueInMenuBarLabel,
                             icon: "dollarsign.circle",
                             iconColor: .white,
                             isOn: $showRevenueInMenuBar
@@ -139,28 +154,40 @@ struct SaneSalesMacSettingsView: View {
                     }
 
                     CompactDivider()
-                    CompactRow("Desktop Widgets", icon: "widget.small", iconColor: .white) {
+                    CompactRow(SaneSalesSettingsCopy.desktopWidgetsLabel, icon: "widget.small", iconColor: .white) {
                         StatusBadge(widgetsStatusTitle, color: widgetsStatusColor)
                     }
                 } else {
-                    CompactRow("Show in Menu Bar", icon: "menubar.rectangle", iconColor: .white) {
-                        StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                    CompactRow(SaneSalesSettingsCopy.showInMenuBarLabel, icon: "menubar.rectangle", iconColor: .white) {
+                        StatusBadge(
+                            SaneSalesSettingsCopy.licenseLabels.proBadgeTitle,
+                            color: SaneSettingsIconSemantic.license.color,
+                            icon: "lock.fill"
+                        )
                     }
 
                     CompactDivider()
-                    CompactRow("Desktop Widgets", icon: "widget.small", iconColor: .white) {
-                        StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                    CompactRow(SaneSalesSettingsCopy.desktopWidgetsLabel, icon: "widget.small", iconColor: .white) {
+                        StatusBadge(
+                            SaneSalesSettingsCopy.licenseLabels.proBadgeTitle,
+                            color: SaneSettingsIconSemantic.license.color,
+                            icon: "lock.fill"
+                        )
                     }
 
                     CompactDivider()
-                    hint("Unlock Pro to keep revenue in your menu bar and add desktop widgets.")
+                    hint(SaneSalesSettingsCopy.appearanceUnlockHint)
 
                     CompactDivider()
-                    CompactRow("Actions", icon: "sparkles", iconColor: SaneSettingsIconSemantic.license.color) {
+                    CompactRow(
+                        SaneSalesSettingsCopy.licenseLabels.actionsLabel,
+                        icon: "sparkles",
+                        iconColor: SaneSettingsIconSemantic.license.color
+                    ) {
                         Button {
                             proUpsellFeature = .menuBar
                         } label: {
-                            actionLabel("Unlock Pro")
+                            actionLabel(SaneSalesSettingsCopy.unlockProButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }
@@ -169,14 +196,21 @@ struct SaneSalesMacSettingsView: View {
                 CompactDivider()
                 SaneDockIconToggle(showDockIcon: showInDockBinding)
                 CompactDivider()
-                hint("SaneSales always keeps either the Dock or menu bar available so you can reopen it.")
+                hint(SaneSalesSettingsCopy.availabilityHint)
             }
 
+            SaneLanguageSettingsRow(labels: SaneSalesSettingsCopy.languageLabels)
+
             #if !APP_STORE
-                CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
+                CompactSection(
+                    SaneSalesSettingsCopy.softwareUpdatesSectionTitle,
+                    icon: "arrow.triangle.2.circlepath",
+                    iconColor: .saneAccent
+                ) {
                     SaneSparkleRow(
                         automaticallyChecks: $automaticallyChecksForUpdates,
                         checkFrequency: $updateCheckFrequency,
+                        labels: SaneSalesSettingsCopy.sparkleLabels,
                         onCheckNow: { UpdateService.shared.checkForUpdates() }
                     )
                     .onChange(of: automaticallyChecksForUpdates) { _, newValue in
@@ -192,7 +226,7 @@ struct SaneSalesMacSettingsView: View {
 
     private var providersTab: some View {
         settingsScrollView {
-            CompactSection("Accounts", icon: "link.circle.fill", iconColor: SaneSettingsIconSemantic.sync.color) {
+            CompactSection(SaneSalesSettingsCopy.providersSectionTitle, icon: "link.circle.fill", iconColor: SaneSettingsIconSemantic.sync.color) {
                 providerRow(.lemonSqueezy, isConnected: manager.isLemonSqueezyConnected)
                 CompactDivider()
                 providerRow(.gumroad, isConnected: manager.isGumroadConnected)
@@ -204,36 +238,36 @@ struct SaneSalesMacSettingsView: View {
 
     private var dataTab: some View {
         settingsScrollView {
-            CompactSection("Snapshot", icon: "internaldrive", iconColor: SaneSettingsIconSemantic.storage.color) {
+            CompactSection(SaneSalesSettingsCopy.snapshotSectionTitle, icon: "internaldrive", iconColor: SaneSettingsIconSemantic.storage.color) {
                 if let date = manager.lastUpdated {
-                    CompactRow("Last Updated", icon: "clock", iconColor: .white) {
+                    CompactRow(SaneSalesSettingsCopy.lastUpdatedLabel, icon: "clock", iconColor: .white) {
                         valueText(date.formatted(date: .abbreviated, time: .shortened))
                     }
                     CompactDivider()
                 }
 
-                CompactRow("Cached Orders", icon: "list.bullet.rectangle", iconColor: .white) {
+                CompactRow(SaneSalesSettingsCopy.cachedOrdersLabel, icon: "list.bullet.rectangle", iconColor: .white) {
                     valueText("\(manager.orders.count)")
                 }
                 CompactDivider()
-                CompactRow("Products", icon: "shippingbox.fill", iconColor: .white) {
+                CompactRow(SaneSalesSettingsCopy.productsLabel, icon: "shippingbox.fill", iconColor: .white) {
                     valueText("\(manager.products.count)")
                 }
                 CompactDivider()
                 CompactToggle(
-                    label: "Demo Mode",
+                    label: SaneSalesSettingsCopy.demoModeLabel,
                     icon: demoMode ? "sparkles" : "sparkles",
                     iconColor: demoMode ? SaneSettingsIconSemantic.content.color : .white,
                     isOn: demoModeBinding
                 )
             }
 
-            CompactSection("Actions", icon: "bolt.fill", iconColor: SaneSettingsIconSemantic.general.color) {
-                CompactRow("Refresh Data", icon: "arrow.clockwise", iconColor: .white) {
+            CompactSection(SaneSalesSettingsCopy.actionsSectionTitle, icon: "bolt.fill", iconColor: SaneSettingsIconSemantic.general.color) {
+                CompactRow(SaneSalesSettingsCopy.refreshDataLabel, icon: "arrow.clockwise", iconColor: .white) {
                     Button {
                         Task { await manager.refresh() }
                     } label: {
-                        actionLabel(manager.isLoading ? "Refreshing..." : "Refresh")
+                        actionLabel(manager.isLoading ? SaneSalesSettingsCopy.refreshingButtonTitle : SaneSalesSettingsCopy.refreshButtonTitle)
                     }
                     .buttonStyle(SaneActionButtonStyle())
                     .disabled(manager.isLoading)
@@ -241,33 +275,33 @@ struct SaneSalesMacSettingsView: View {
 
                 if !manager.orders.isEmpty {
                     CompactDivider()
-                    CompactRow("Export Orders (CSV)", icon: "tablecells", iconColor: .white) {
+                    CompactRow(SaneSalesSettingsCopy.exportOrdersCSVLabel, icon: "tablecells", iconColor: .white) {
                         if manager.isPro {
                             Button {
                                 exportURL = exportOrdersCSV(manager.orders)
                                 showExportSheet = exportURL != nil
                             } label: {
-                                actionLabel("Export")
+                                actionLabel(SaneSalesSettingsCopy.exportButtonTitle)
                             }
                             .buttonStyle(SaneActionButtonStyle())
                         } else {
                             ViewThatFits(in: .horizontal) {
                                 HStack(spacing: 8) {
-                                    StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                                    StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
                                         proUpsellFeature = .csvExport
                                     } label: {
-                                        actionLabel("Unlock")
+                                        actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }
                                     .buttonStyle(SaneActionButtonStyle())
                                 }
 
                                 VStack(alignment: .trailing, spacing: 8) {
-                                    StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                                    StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
                                         proUpsellFeature = .csvExport
                                     } label: {
-                                        actionLabel("Unlock")
+                                        actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }
                                     .buttonStyle(SaneActionButtonStyle())
                                 }
@@ -281,7 +315,11 @@ struct SaneSalesMacSettingsView: View {
 
     private var licenseTab: some View {
         settingsScrollView(maxWidth: 460) {
-            LicenseSettingsView(licenseService: licenseService, style: .panel)
+            LicenseSettingsView(
+                licenseService: licenseService,
+                style: .panel,
+                labels: SaneSalesSettingsCopy.licenseLabels
+            )
         }
     }
 
@@ -291,7 +329,8 @@ struct SaneSalesMacSettingsView: View {
             githubRepo: "SaneSales",
             diagnosticsService: .shared,
             licenses: saneSalesAboutLicenses(),
-            feedbackExtraAttachments: [("link.circle.fill", "Connected providers and local cache summary")]
+            feedbackExtraAttachments: [("link.circle.fill", SaneSalesSettingsCopy.providerSummaryAttachmentLabel)],
+            labels: SaneSalesSettingsCopy.aboutLabels
         )
     }
 
@@ -301,33 +340,33 @@ struct SaneSalesMacSettingsView: View {
             if isConnected {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) {
-                        StatusBadge("Connected", color: .green, icon: "checkmark.circle.fill")
+                        StatusBadge(SaneSalesSettingsCopy.connectedStatusTitle, color: .green, icon: "checkmark.circle.fill")
                         Menu {
-                            Button("Change Key") {
+                            Button(SaneSalesSettingsCopy.changeKeyButtonTitle) {
                                 beginEditing(provider)
                             }
-                            Button("Disconnect", role: .destructive) {
+                            Button(SaneSalesSettingsCopy.disconnectButtonTitle, role: .destructive) {
                                 removingProvider = provider
                                 showRemoveConfirmation = true
                             }
                         } label: {
-                            actionLabel("Manage")
+                            actionLabel(SaneSalesSettingsCopy.manageButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }
 
                     VStack(alignment: .trailing, spacing: 8) {
-                        StatusBadge("Connected", color: .green, icon: "checkmark.circle.fill")
+                        StatusBadge(SaneSalesSettingsCopy.connectedStatusTitle, color: .green, icon: "checkmark.circle.fill")
                         Menu {
-                            Button("Change Key") {
+                            Button(SaneSalesSettingsCopy.changeKeyButtonTitle) {
                                 beginEditing(provider)
                             }
-                            Button("Disconnect", role: .destructive) {
+                            Button(SaneSalesSettingsCopy.disconnectButtonTitle, role: .destructive) {
                                 removingProvider = provider
                                 showRemoveConfirmation = true
                             }
                         } label: {
-                            actionLabel("Manage")
+                            actionLabel(SaneSalesSettingsCopy.manageButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }
@@ -335,21 +374,21 @@ struct SaneSalesMacSettingsView: View {
             } else if manager.needsProForAdditionalProvider {
                 ViewThatFits(in: .horizontal) {
                     HStack(spacing: 8) {
-                        StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                        StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                         Button {
                             proUpsellFeature = .multipleProviders
                         } label: {
-                            actionLabel("Unlock")
+                            actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }
 
                     VStack(alignment: .trailing, spacing: 8) {
-                        StatusBadge("Pro", color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
+                        StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                         Button {
                             proUpsellFeature = .multipleProviders
                         } label: {
-                            actionLabel("Unlock")
+                            actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }
@@ -358,7 +397,7 @@ struct SaneSalesMacSettingsView: View {
                 Button {
                     beginEditing(provider)
                 } label: {
-                    actionLabel("Connect")
+                    actionLabel(SaneSalesSettingsCopy.connectButtonTitle)
                 }
                 .buttonStyle(SaneActionButtonStyle())
             }
@@ -424,7 +463,7 @@ struct SaneSalesMacSettingsView: View {
     }
 
     private var widgetsStatusTitle: String {
-        widgetsEnabled ? "Enabled" : "Ready"
+        widgetsEnabled ? SaneSalesSettingsCopy.widgetsEnabledTitle : SaneSalesSettingsCopy.widgetsReadyTitle
     }
 
     private var widgetsStatusColor: Color {
@@ -518,12 +557,12 @@ struct SaneSalesMacSettingsView: View {
                     .foregroundStyle(provider.brandColor)
                     .padding(.top, 20)
 
-                Text("Connect \(provider.displayName) Account")
+                Text(SaneSalesSettingsCopy.connectAccountTitle(providerName: provider.displayName))
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(.white)
 
                 VStack(alignment: .leading, spacing: 8) {
-                    SecureField("API Key", text: $newAPIKey)
+                    SecureField(SaneSalesSettingsCopy.apiKeyPlaceholder, text: $newAPIKey)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.password)
                         .autocorrectionDisabled()
@@ -532,7 +571,7 @@ struct SaneSalesMacSettingsView: View {
                         .font(.saneCallout)
                         .foregroundStyle(Color.textMuted)
 
-                    Text("Reads your existing sales data. Nothing is modified.")
+                    Text(SaneSalesSettingsCopy.apiKeyReadOnlyHint)
                         .font(.saneFootnote)
                         .foregroundStyle(Color.textMuted)
                 }
@@ -542,7 +581,7 @@ struct SaneSalesMacSettingsView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(SaneSalesSettingsCopy.cancelButtonTitle) {
                         editingProvider = nil
                         newAPIKey = ""
                     }
@@ -552,7 +591,7 @@ struct SaneSalesMacSettingsView: View {
                         ProgressView()
                             .tint(.salesGreen)
                     } else {
-                        Button("Save") {
+                        Button(SaneSalesSettingsCopy.saveButtonTitle) {
                             saveKey(for: provider)
                         }
                         .disabled(newAPIKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -561,7 +600,7 @@ struct SaneSalesMacSettingsView: View {
                 }
             }
             .alert(errorTitle, isPresented: $showError) {
-                Button("OK") {}
+                Button(SaneSalesSettingsCopy.okButtonTitle) {}
             } message: {
                 Text(errorMessage)
             }
@@ -572,11 +611,11 @@ struct SaneSalesMacSettingsView: View {
     private func keyHelpText(for provider: SalesProviderType) -> String {
         switch provider {
         case .lemonSqueezy:
-            "lemonsqueezy.com → Settings → API"
+            SaneSalesSettingsCopy.lemonSqueezyAPIHelpText
         case .gumroad:
-            "gumroad.com → Settings → Advanced → Applications"
+            SaneSalesSettingsCopy.gumroadAPIHelpText
         case .stripe:
-            "dashboard.stripe.com → Developers → API keys (use Secret key)"
+            SaneSalesSettingsCopy.stripeAPIHelpText
         }
     }
 
@@ -602,20 +641,20 @@ struct SaneSalesMacSettingsView: View {
 
             switch manager.error {
             case .invalidAPIKey:
-                errorTitle = "Invalid API Key"
-                errorMessage = "The server rejected this key. Check it and try again."
+                errorTitle = SaneSalesSettingsCopy.invalidAPIKeyTitle
+                errorMessage = SaneSalesSettingsCopy.invalidAPIKeyMessage
             case .networkError:
-                errorTitle = "Connection Failed"
-                errorMessage = "Couldn't reach the server. Check your internet connection and try again."
+                errorTitle = SaneSalesSettingsCopy.connectionFailedTitle
+                errorMessage = SaneSalesSettingsCopy.networkErrorMessage
             case .rateLimited:
-                errorTitle = "Rate Limited"
-                errorMessage = "Too many requests. Wait a moment and try again."
+                errorTitle = SaneSalesSettingsCopy.rateLimitedTitle
+                errorMessage = SaneSalesSettingsCopy.rateLimitedMessage
             case let .serverError(code):
-                errorTitle = "Server Error"
-                errorMessage = "The server returned an error (\(code)). Try again later."
+                errorTitle = SaneSalesSettingsCopy.serverErrorTitle
+                errorMessage = SaneSalesSettingsCopy.serverErrorMessage(code: code)
             default:
-                errorTitle = "Connection Failed"
-                errorMessage = "Could not connect with that key. Check it and try again."
+                errorTitle = SaneSalesSettingsCopy.connectionFailedTitle
+                errorMessage = SaneSalesSettingsCopy.genericConnectionFailedMessage
             }
             showError = true
         }

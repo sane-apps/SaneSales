@@ -32,7 +32,7 @@ extension DashboardView {
                         }
                     }
                     .padding(.horizontal, 8)
-                    .frame(height: widthClass == .compact ? 144 : 172)
+                    .frame(height: widthClass == .compact ? 132 : 172)
                     .blur(radius: 8)
 
                     VStack(spacing: 10) {
@@ -60,7 +60,7 @@ extension DashboardView {
                     }
                     .padding()
                 }
-                .frame(height: widthClass == .compact ? 144 : 172)
+                .frame(height: widthClass == .compact ? 132 : 172)
                 .onAppear {
                     guard manager.isConnected, !didLogChartGateView else { return }
                     didLogChartGateView = true
@@ -169,7 +169,7 @@ extension DashboardView {
             } else {
                 ChartsView(dailySales: chartData, currency: manager.primaryCurrency)
                     .padding(.top, widthClass == .compact ? 4 : 8)
-                    .frame(height: widthClass == .compact ? 144 : 208)
+                    .frame(height: widthClass == .compact ? 132 : 208)
                     .clipped()
                     .padding(widthClass == .compact ? 8 : DashboardLayout.contentPadding)
             }

@@ -68,8 +68,8 @@ struct DashboardView: View {
             static let cardHeight: CGFloat = 152
             static let contentPadding: CGFloat = 10
         #else
-            static let sectionSpacing: CGFloat = 14
-            static let cardSpacing: CGFloat = 8
+            static let sectionSpacing: CGFloat = 18
+            static let cardSpacing: CGFloat = 12
             static let horizontalPadding: CGFloat = 16
             static let cardHeight: CGFloat = 168
             static let contentPadding: CGFloat = 8
@@ -114,6 +114,13 @@ struct DashboardView: View {
                 [.init(.flexible()), .init(.flexible())]
             case .wide:
                 [.init(.flexible()), .init(.flexible()), .init(.flexible()), .init(.flexible())]
+            }
+        }
+
+        var metricGridSpacing: CGFloat {
+            switch self {
+            case .compact: 16
+            case .regular, .wide: DashboardLayout.cardSpacing
             }
         }
 
@@ -248,7 +255,7 @@ extension DashboardView {
     // MARK: - Overview
 
     private func overviewSection(_ widthClass: WidthClass) -> some View {
-        VStack(spacing: widthClass == .compact ? 10 : 12) {
+        VStack(spacing: widthClass == .compact ? 12 : 12) {
             if widthClass == .wide {
                 HStack(alignment: .top, spacing: DashboardLayout.sectionSpacing) {
                     VStack(alignment: .leading, spacing: 12) {
@@ -269,7 +276,7 @@ extension DashboardView {
                     connectedBadges(alignment: .trailing)
                 }
             } else {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 12) {
                     dashboardBrandHeader(widthClass)
                     heroRevenue(widthClass, alignment: .leading)
 
@@ -361,7 +368,7 @@ extension DashboardView {
                     .font(.saneCallout)
                     .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
                     .frame(maxWidth: .infinity)
-                    .frame(minHeight: 30)
+                    .frame(minHeight: 28)
                     .contentShape(Rectangle())
                     .background {
                         if selectedRange == range {
@@ -416,8 +423,8 @@ extension DashboardView {
                 .foregroundStyle(Color.textMuted)
         }
         .frame(maxWidth: .infinity)
-        .frame(minHeight: widthClass == .compact ? 40 : 50)
-        .padding(.vertical, widthClass == .compact ? 4 : 8)
+        .frame(minHeight: widthClass == .compact ? 36 : 50)
+        .padding(.vertical, widthClass == .compact ? 3 : 8)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(.ultraThinMaterial)
@@ -455,7 +462,7 @@ extension DashboardView {
     }
 
     private func proRevenueCards(_ widthClass: WidthClass) -> some View {
-        LazyVGrid(columns: widthClass.metricColumns, spacing: DashboardLayout.cardSpacing) {
+        LazyVGrid(columns: widthClass.metricColumns, spacing: widthClass.metricGridSpacing) {
             SalesCard(
                 title: "Today",
                 value: formatCents(dashboardMetrics.todayRevenue),
@@ -502,7 +509,7 @@ extension DashboardView {
     }
 
     private func freeTierRevenueCards(_ widthClass: WidthClass) -> some View {
-        LazyVGrid(columns: widthClass.metricColumns, spacing: DashboardLayout.cardSpacing) {
+        LazyVGrid(columns: widthClass.metricColumns, spacing: widthClass.metricGridSpacing) {
             SalesCard(
                 title: "Today",
                 value: formatCents(dashboardMetrics.todayRevenue),
@@ -965,9 +972,9 @@ extension DashboardView {
                     .accessibilityHidden(true)
             }
             .padding(.horizontal, 10)
-            .padding(.vertical, 6)
+            .padding(.vertical, 5)
             .frame(maxWidth: .infinity)
-            .frame(minHeight: 36)
+            .frame(minHeight: 34)
             .background(
                 Capsule()
                     .fill(provider.brandColor.opacity(colorScheme == .dark ? 0.14 : 0.10))
@@ -999,7 +1006,7 @@ extension DashboardView {
 
     private func dashboardBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
         #if os(iOS)
-            return max(DashboardLayout.sectionSpacing + 8, safeAreaBottom + 78)
+            return max(DashboardLayout.sectionSpacing + 16, safeAreaBottom + 96)
         #else
             return DashboardLayout.sectionSpacing
         #endif

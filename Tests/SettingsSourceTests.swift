@@ -20,6 +20,11 @@ struct SettingsSourceTests {
         #expect(macSettingsSource.contains("LicenseSettingsView("))
         #expect(macSettingsSource.contains("SaneAboutView("))
         #expect(macSettingsSource.contains("SaneSparkleRow("))
+        #expect(macSettingsSource.contains("SaneLanguageSettingsRow("))
+        #expect(macSettingsSource.contains("labels: SaneSalesSettingsCopy.aboutLabels"))
+        #expect(macSettingsSource.contains("SaneSalesSettingsCopy.providersSectionTitle"))
+        #expect(macSettingsSource.contains("SaneSalesSettingsCopy.snapshotSectionTitle"))
+        #expect(macSettingsSource.contains("SaneSalesSettingsCopy.actionsSectionTitle"))
     }
 
     @Test("SaneSales settings source avoids legacy mail and local updater drift")
@@ -56,5 +61,24 @@ struct SettingsSourceTests {
         #expect(source.contains("alternateUnlockLabel: \"Unlock Pro\""))
         #expect(source.contains("alternateEntryLabel: \"Enter License Key\""))
         #expect(source.contains("accessManagementLabel: \"Deactivate Pro\""))
+    }
+
+    @Test("Primary app plists opt into Apple app-language settings")
+    func appPlistsOptIntoLanguageSettings() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let macInfo = try String(
+            contentsOf: projectRoot.appendingPathComponent("SaneSales/Info.plist"),
+            encoding: .utf8
+        )
+        let iosInfo = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Info.plist"),
+            encoding: .utf8
+        )
+
+        #expect(macInfo.contains("<key>UIPrefersShowingLanguageSettings</key>"))
+        #expect(iosInfo.contains("<key>UIPrefersShowingLanguageSettings</key>"))
     }
 }

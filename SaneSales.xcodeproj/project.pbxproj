@@ -16,6 +16,7 @@
 		0D47BD395152224542125A75 /* DirectDistributionSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC2B0BD50A5D58BEB518900 /* DirectDistributionSupport.swift */; };
 		1432AF34DCB5C9B1FE68C987 /* SettingsSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EFF2181B744813181F493D /* SettingsSourceTests.swift */; };
 		14741577F8BCAD7C834A8EEC /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
+		159679B5C20C4CC62576F2A9 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6912154CAC2E8453F1A24941 /* Localizable.xcstrings */; };
 		17E8D20E10630CDADDE33A19 /* SalesWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C36DD3BC9D110F383875BCA /* SalesWidget.swift */; };
 		187E58B344F940860F319B21 /* SaneSalesMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */; };
 		1BA7BDB90E149F02FE796F22 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
@@ -107,17 +108,21 @@
 		AC4B1015F5E284A74A0281F5 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918B68B186DDA22ECC661408 /* KeychainService.swift */; };
 		ADBCBC572018AFE9296DE0A8 /* WidgetInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D1917DF8EDAE9242D0D7DB7 /* WidgetInfo.plist */; };
 		ADF96C32D055EC9F71EE8F10 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728D82B164E8AD71A7E2E4C2 /* Product.swift */; };
+		B35D20E02D5C436C6F51A304 /* SaneSalesSettingsCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7F8263410FB391C0971DAC /* SaneSalesSettingsCopy.swift */; };
 		B4FD7965634D379402FA9B3A /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C6F5EE90C3B3429DF8D9C4F /* WidgetDataProvider.swift */; };
 		B76E8EB0D07451E3F101FDEC /* OrdersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 210579112467D7E4B62B4364 /* OrdersListView.swift */; };
 		B7A805B2515BFE0D1ADA40D2 /* SaneUI in Frameworks */ = {isa = PBXBuildFile; productRef = D2BBC50ED52B92ACAFAB7C26 /* SaneUI */; };
 		B8C9289D3F82BE7305E4E9BE /* StripeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB903445C8A3AE0899087713 /* StripeProvider.swift */; };
+		BA6F552CE4E7158269DF01B8 /* SaneSalesSettingsCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7F8263410FB391C0971DAC /* SaneSalesSettingsCopy.swift */; };
 		BD3E96B34E9F733F19248519 /* SaneSalesIOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1E76BF88688A954972719 /* SaneSalesIOSUITests.swift */; };
 		BE88B4FA6C81AFB6D3CBADFA /* SalesCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2701F2BA6C71F0B71FD529AC /* SalesCard.swift */; };
+		BF099166843B5836AAFA35CF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6912154CAC2E8453F1A24941 /* Localizable.xcstrings */; };
 		BF94456DDE10AA727F1DC2D2 /* SFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D669AC02DA1C50DB65C03586 /* SFSymbols.swift */; };
 		C034CE13993E4F73493C9C52 /* SalesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7871DE8CCBE2105E04DE24 /* SalesProvider.swift */; };
 		C3A3F63D3D0A637878568B41 /* SalesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56337DF07E23B45D4BAE3B34 /* SalesManager.swift */; };
 		C513A25CCBEA94EBA6491F17 /* GumroadProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 483C95981793E764EFC426A1 /* GumroadProvider.swift */; };
 		C520957CFB19FA1494C0BAC9 /* MetricsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69097B39C9B5D8C4772EA48C /* MetricsTests.swift */; };
+		C753F4CB248FC6CA3F4610EE /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6912154CAC2E8453F1A24941 /* Localizable.xcstrings */; };
 		C75FCF9DDC4BAB9F948BCFCC /* SaneUI in Frameworks */ = {isa = PBXBuildFile; productRef = 91AE130FE51FD577A863ED79 /* SaneUI */; };
 		C7BCA35EC1518A60BB59B829 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4C5102C0EF1EF95CC23945 /* SharedStore.swift */; };
 		CA1144C2B504D3FBC9238835 /* LemonSqueezyProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9585439EA7EBC30394CB8EED /* LemonSqueezyProvider.swift */; };
@@ -302,6 +307,7 @@
 		677DA3F8BC07B5E39C384C9A /* SaneSalesWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaneSalesWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		67C618B676662B450F13B5F6 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		69097B39C9B5D8C4772EA48C /* MetricsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsTests.swift; sourceTree = "<group>"; };
+		6912154CAC2E8453F1A24941 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6D6E57047FDF372541282016 /* SaneSalesSettingsMacView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesSettingsMacView.swift; sourceTree = "<group>"; };
 		728D82B164E8AD71A7E2E4C2 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		79B9EC7D0D770CFEE29B2FC3 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -325,6 +331,7 @@
 		D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesMacApp.swift; sourceTree = "<group>"; };
 		D5FA114DC013F1FF9284894E /* SaneSalesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaneSalesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D669AC02DA1C50DB65C03586 /* SFSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SFSymbols.swift; sourceTree = "<group>"; };
+		DC7F8263410FB391C0971DAC /* SaneSalesSettingsCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaneSalesSettingsCopy.swift; sourceTree = "<group>"; };
 		DCF40882ECF2171D4B11935A /* AccessibilityIdentifierModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityIdentifierModifiers.swift; sourceTree = "<group>"; };
 		E077F3679A1C5054CF24632C /* CacheService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheService.swift; sourceTree = "<group>"; };
 		E23BF71C99337FFA9F9B9382 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
@@ -456,6 +463,7 @@
 				41947086D2C90F540159C8FB /* MenuBarManager.swift */,
 				F17195C02826FCB63E9DFC56 /* ProFeature.swift */,
 				D22F10DB3BBDF0AE255C99DC /* SaneSalesMacApp.swift */,
+				DC7F8263410FB391C0971DAC /* SaneSalesSettingsCopy.swift */,
 				6D6E57047FDF372541282016 /* SaneSalesSettingsMacView.swift */,
 			);
 			path = macOS;
@@ -490,6 +498,7 @@
 			children = (
 				22F265C7EEB1FD7DC7E3D088 /* Assets.xcassets */,
 				C87AA9592B9B69CAE07E0B72 /* DMGIcon.icns */,
+				6912154CAC2E8453F1A24941 /* Localizable.xcstrings */,
 				E9DEB6FA40C5A37F9A0DED1D /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
@@ -803,7 +812,9 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
+				ja,
 			);
 			mainGroup = 77CCCE98A045A03596E94058;
 			minimizedProjectReferenceProxies = 1;
@@ -836,6 +847,7 @@
 			files = (
 				092D1B8AB197F692FE7C3B5E /* Assets.xcassets in Resources */,
 				28814E797649C9899C01C2D4 /* DMGIcon.icns in Resources */,
+				C753F4CB248FC6CA3F4610EE /* Localizable.xcstrings in Resources */,
 				4AF7AB52140E81E07F6C9405 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -855,6 +867,7 @@
 			files = (
 				D5027B0DEC6A2378992019F7 /* Assets.xcassets in Resources */,
 				38C2212EBEB25FEDF47DA255 /* DMGIcon.icns in Resources */,
+				BF099166843B5836AAFA35CF /* Localizable.xcstrings in Resources */,
 				3327D0F949C011B53C31A93C /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -865,6 +878,7 @@
 			files = (
 				256221EB41F019FBFD938F45 /* Assets.xcassets in Resources */,
 				90BB26D590AA92816082FEBE /* DMGIcon.icns in Resources */,
+				159679B5C20C4CC62576F2A9 /* Localizable.xcstrings in Resources */,
 				1F77F23467C295F2416EC3A2 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -982,6 +996,7 @@
 				9E765BC3899B42C73771432E /* SalesMetrics.swift in Sources */,
 				F6447D7FCD6936A46DE6F4DC /* SalesProvider.swift in Sources */,
 				2AA32C8A5C5634617CFD2464 /* SaneSalesMacApp.swift in Sources */,
+				BA6F552CE4E7158269DF01B8 /* SaneSalesSettingsCopy.swift in Sources */,
 				40F1B95C3C600154BBFE3217 /* SaneSalesSettingsMacView.swift in Sources */,
 				38DA1C95E1A9C2528A5A28CE /* SettingsView.swift in Sources */,
 				1BA7BDB90E149F02FE796F22 /* SharedStore.swift in Sources */,
@@ -1046,6 +1061,7 @@
 				68C84797089C3314DF3BEDF1 /* SalesMetrics.swift in Sources */,
 				C034CE13993E4F73493C9C52 /* SalesProvider.swift in Sources */,
 				187E58B344F940860F319B21 /* SaneSalesMacApp.swift in Sources */,
+				B35D20E02D5C436C6F51A304 /* SaneSalesSettingsCopy.swift in Sources */,
 				7933CA76222341881A208AA0 /* SaneSalesSettingsMacView.swift in Sources */,
 				3D5F52CCDB7DC306C8754B4E /* SettingsView.swift in Sources */,
 				C7BCA35EC1518A60BB59B829 /* SharedStore.swift in Sources */,
@@ -1160,7 +1176,7 @@
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1170,7 +1186,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1187,12 +1203,12 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.dev;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1211,11 +1227,11 @@
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Widgets Developer ID";
@@ -1236,7 +1252,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1245,7 +1261,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1264,11 +1280,11 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Widgets Mac App Store";
@@ -1372,7 +1388,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1381,7 +1397,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1397,7 +1413,7 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1405,7 +1421,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1423,7 +1439,7 @@
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1433,7 +1449,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1540,7 +1556,7 @@
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1550,7 +1566,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1631,7 +1647,7 @@
 				CODE_SIGN_ENTITLEMENTS = iOS/SaneSalesIOS.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
@@ -1641,7 +1657,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = iphoneos;
@@ -1656,7 +1672,7 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1664,7 +1680,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Watch Widgets App Store";
@@ -1706,7 +1722,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1715,7 +1731,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev;
 				PRODUCT_NAME = SaneSales;
 				SDKROOT = macosx;
@@ -1730,7 +1746,7 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1738,7 +1754,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch.widgets;
 				PRODUCT_NAME = SaneSalesWatchWidgets;
 				SDKROOT = watchos;
@@ -1759,7 +1775,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1768,7 +1784,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Developer ID";
@@ -1784,7 +1800,7 @@
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1794,7 +1810,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				SDKROOT = iphoneos;
@@ -1810,7 +1826,7 @@
 				CODE_SIGN_ENTITLEMENTS = Widgets/SaneSalesWidgets.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				INFOPLIST_FILE = Widgets/Info.plist;
@@ -1820,7 +1836,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.ioswidgets;
 				PRODUCT_NAME = SaneSalesIOSWidgets;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales iOS Widgets App Store";
@@ -1858,11 +1874,11 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Widgets/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks @executable_path/../../../../Frameworks";
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.dev.widgets;
 				PRODUCT_NAME = SaneSalesWidgets;
 				SDKROOT = macosx;
@@ -1879,12 +1895,12 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				SDKROOT = watchos;
@@ -1905,7 +1921,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1916,7 +1932,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				OTHER_SWIFT_FLAGS = "-D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -1956,7 +1972,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
@@ -1965,7 +1981,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D APP_STORE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app;
 				PRODUCT_NAME = SaneSales;
@@ -2043,12 +2059,12 @@
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1206;
+				CURRENT_PROJECT_VERSION = 1207;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/Info.plist;
 				INFOPLIST_KEY_CFBundleIconName = WatchAppIcon;
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.sanesales.app;
-				MARKETING_VERSION = 1.2.5;
+				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sanesales.app.watch;
 				PRODUCT_NAME = SaneSalesWatch;
 				PROVISIONING_PROFILE_SPECIFIER = "SaneSales Watch App Store";

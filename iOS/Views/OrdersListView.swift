@@ -34,6 +34,22 @@ struct OrdersListView: View {
         manager.filteredOrders(search: searchText, provider: providerFilter)
     }
 
+    private var hasOrders: Bool {
+        !manager.orders.isEmpty
+    }
+
+    private var canFilterProviders: Bool {
+        hasOrders && manager.connectedProviders.count > 1
+    }
+
+    private var shouldShowOrdersOverview: Bool {
+        manager.isLoading || hasOrders
+    }
+
+    private var shouldShowSearch: Bool {
+        hasOrders || !searchText.isEmpty
+    }
+
     private var orderSummaryTitle: String {
         if manager.isPro {
             return "\(displayedOrders.count) \(displayedOrders.count == 1 ? "order" : "orders")"
@@ -87,26 +103,37 @@ struct OrdersListView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
+            let content = ZStack {
                 SaneBackground().ignoresSafeArea()
                 GeometryReader { proxy in
                     let widthClass = WidthClass(width: proxy.size.width)
 
                     VStack(spacing: 12) {
-                        ordersOverview(widthClass)
-                        ordersContent
+                        if shouldShowOrdersOverview {
+                            ordersOverview(widthClass)
+                        }
+                        ordersContent(widthClass)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }
             }
+
+            Group {
+                if shouldShowSearch {
+                    content.searchable(text: $searchText, prompt: "Search customers, products, or order IDs")
+                } else {
+                    content
+                }
+            }
             .navigationTitle("Orders")
-            .searchable(text: $searchText, prompt: "Search by name, email, product, or order ID")
             .refreshable {
                 await manager.refresh()
             }
             .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    providerFilterMenu
+                if canFilterProviders {
+                    ToolbarItem(placement: .automatic) {
+                        providerFilterMenu
+                    }
                 }
             }
             #if os(iOS)
@@ -128,20 +155,19 @@ struct OrdersListView: View {
     // MARK: - Orders Content (shared)
 
     @ViewBuilder
-    private var ordersContent: some View {
+    private func ordersContent(_ widthClass: WidthClass) -> some View {
         if !manager.isPro {
-            freeTierOrdersContent
+            freeTierOrdersContent(widthClass)
         } else {
-            fullOrdersContent
+            fullOrdersContent(widthClass)
         }
     }
 
-    private var fullOrdersContent: some View {
+    private func fullOrdersContent(_ widthClass: WidthClass) -> some View {
         Group {
             if displayedOrders.isEmpty, !manager.isLoading {
                 if searchText.isEmpty {
-                    ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
-                                           description: Text("Orders will appear here once you make your first sale."))
+                    emptyOrdersState(widthClass: widthClass)
                 } else {
                     ContentUnavailableView.search(text: searchText)
                 }
@@ -170,28 +196,85 @@ struct OrdersListView: View {
     }
 
     private func ordersOverview(_ widthClass: WidthClass) -> some View {
-        return VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: widthClass == .compact ? 8 : 10) {
             if widthClass == .compact {
                 VStack(alignment: .leading, spacing: 8) {
                     orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
-                    providerChipRow(widthClass)
+
+                    if canFilterProviders {
+                        providerChipRow(widthClass)
+                    } else if let provider = manager.connectedProviders.first {
+                        ProviderBadge(provider: provider, fillsAvailableWidth: true)
+                    }
                 }
             } else {
-                HStack(alignment: .center, spacing: 12) {
+                HStack(alignment: .top, spacing: 12) {
                     orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
                     Spacer()
-                    providerChipRow(widthClass)
+
+                    if canFilterProviders {
+                        providerChipRow(widthClass)
+                            .frame(maxWidth: 420)
+                    } else if let provider = manager.connectedProviders.first {
+                        ProviderBadge(provider: provider, fillsAvailableWidth: false)
+                    }
+                }
+            }
+
+            if !manager.isPro, displayedOrders.count > freeTierPreviewOrders.count {
+                Group {
+                    if widthClass == .compact {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Basic keeps the latest orders front and center. Pro unlocks full history, deeper search, and CSV export.")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.9))
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Button {
+                                showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                            } label: {
+                                Label("Unlock Full History", systemImage: "arrow.up.right")
+                            }
+                            .buttonStyle(SaneActionButtonStyle(prominent: true))
+                        }
+                    } else {
+                        HStack(alignment: .center, spacing: 12) {
+                            Text("Basic keeps the latest orders front and center. Pro unlocks full history, deeper search, and CSV export.")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.9))
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            Spacer(minLength: 0)
+
+                            Button {
+                                showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                            } label: {
+                                Label("Unlock Full History", systemImage: "arrow.up.right")
+                            }
+                            .buttonStyle(SaneActionButtonStyle(prominent: true))
+                        }
+                    }
                 }
             }
         }
         .padding(.horizontal, 16)
-        .padding(.top, 10)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(AnyShapeStyle(.ultraThinMaterial))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                )
+        )
+        .padding(.horizontal, 16)
     }
 
     private func orderSummary(widthClass: WidthClass, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(orderSummaryTitle)
-                .font(.system(size: widthClass == .compact ? 21 : 24, weight: .bold, design: .rounded))
+                .font(.system(size: widthClass == .compact ? 20 : 23, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
             Text(subtitle)
                 .font(.saneCallout)
@@ -252,12 +335,11 @@ struct OrdersListView: View {
         .buttonStyle(.plain)
     }
 
-    private var freeTierOrdersContent: some View {
+    private func freeTierOrdersContent(_ widthClass: WidthClass) -> some View {
         Group {
             if freeTierPreviewOrders.isEmpty, !manager.isLoading {
                 if searchText.isEmpty {
-                    ContentUnavailableView("No Orders", systemImage: "list.bullet.rectangle",
-                                           description: Text("Recent orders will appear here after your first sale."))
+                    emptyOrdersState(widthClass: widthClass)
                 } else {
                     ContentUnavailableView.search(text: searchText)
                 }
@@ -371,6 +453,131 @@ struct OrdersListView: View {
         }
     }
 
+    private func emptyOrdersState(widthClass: WidthClass) -> some View {
+        VStack {
+            Spacer(minLength: widthClass == .compact ? 28 : 40)
+
+            VStack(spacing: 18) {
+                Image(systemName: "list.bullet.rectangle")
+                    .font(.system(size: 34, weight: .semibold))
+                    .foregroundStyle(Color.salesGreen)
+
+                VStack(spacing: 8) {
+                    Text("No Orders Yet")
+                        .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+
+                    Text("Connect a provider to turn this into your live order feed for customers, products, and recent sales.")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 540)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    emptyStateDetailRow("See the latest sales as they come in")
+                    emptyStateDetailRow("Search by customer, product, or order ID")
+                    emptyStateDetailRow("Use Basic for recent orders or Pro for full history")
+                }
+                .frame(maxWidth: 520, alignment: .leading)
+
+                if manager.connectedProviders.isEmpty {
+                    Text("Choose the store you already use. SaneSales will sync the latest orders after you connect it.")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: 520)
+
+                    emptyStateProviderActions(widthClass: widthClass)
+                } else {
+                    HStack(spacing: 10) {
+                        Button("Refresh Now") {
+                            Task { await manager.refresh() }
+                        }
+                        .buttonStyle(SaneActionButtonStyle(prominent: true))
+
+                        Button("Open Provider Settings") {
+                            queueSettingsRoute(for: manager.connectedProviders.first)
+                        }
+                        .buttonStyle(SaneActionButtonStyle())
+                    }
+                }
+            }
+            .padding(.horizontal, widthClass == .compact ? 20 : 26)
+            .padding(.vertical, widthClass == .compact ? 24 : 28)
+            .frame(maxWidth: 660)
+            .background(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(AnyShapeStyle(.ultraThinMaterial))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(Color.brandBlueGlow.opacity(0.26), lineWidth: 1)
+                    )
+            )
+
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 28)
+    }
+
+    private func emptyStateProviderActions(widthClass: WidthClass) -> some View {
+        let columns = widthClass == .compact
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+
+        return LazyVGrid(columns: columns, spacing: 10) {
+            ForEach([SalesProviderType.lemonSqueezy, .gumroad, .stripe], id: \.self) { provider in
+                Button {
+                    queueSettingsRoute(for: provider)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: provider.icon)
+                            .foregroundStyle(provider.brandColor)
+                        Text(provider.displayName)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.72)
+                        Image(systemName: "arrow.up.right")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.78))
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: provider == .lemonSqueezy))
+            }
+        }
+        .frame(maxWidth: 620)
+    }
+
+    private func emptyStateDetailRow(_ text: String) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Color.salesGreen)
+                .padding(.top, 2)
+
+            Text(text)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func queueSettingsRoute(for provider: SalesProviderType?) {
+        if let provider {
+            pendingSettingsRoute = "provider:\(provider.rawValue)"
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+
+            guard let provider else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
+            }
+        }
+    }
+
     private func showOrderHistoryUpsell(event: String) {
         Task.detached {
             await EventTracker.log(event, app: "sanesales")
@@ -394,22 +601,25 @@ struct OrderRow: View {
     let order: Order
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             // Status icon
             Image(systemName: order.status.icon)
-                .font(.title3)
+                .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(statusColor)
-                .frame(width: 28)
+                .frame(width: 24)
                 .accessibilityHidden(true)
 
             // Customer + Product
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(order.customerName)
-                    .font(.saneSubheadlineBold)
-                HStack(spacing: 6) {
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                HStack(spacing: 8) {
                     Text(order.productName)
-                        .font(.saneCallout)
+                        .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(Color.textMuted)
+                        .lineLimit(1)
                     if manager.connectedProviders.count > 1 {
                         ProviderDot(provider: order.provider)
                     }
@@ -419,16 +629,18 @@ struct OrderRow: View {
             Spacer()
 
             // Amount + Date
-            VStack(alignment: .trailing, spacing: 3) {
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(order.displayTotal)
-                    .font(.saneSubheadlineBold)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .monospacedDigit()
                     .foregroundStyle(order.isRefunded ? Color.salesWarning : Color.primary)
-                Text(order.createdAt, style: .date)
-                    .font(.saneFootnote)
+                Text(secondaryTimestamp)
+                    .font(.system(size: 12, weight: .medium))
+                    .monospacedDigit()
                     .foregroundStyle(Color.textMuted)
             }
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, 8)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(order.customerName), \(order.productName), \(order.displayTotal), \(order.status.displayName)")
     }
@@ -441,6 +653,21 @@ struct OrderRow: View {
         case .failed: .salesError
         case .unknown: .textMuted
         }
+    }
+
+    private var secondaryTimestamp: String {
+        let calendar = Calendar.current
+
+        if calendar.isDateInToday(order.createdAt) || calendar.isDateInYesterday(order.createdAt) {
+            return order.createdAt.formatted(date: .omitted, time: .shortened)
+        }
+
+        if let daysAgo = calendar.dateComponents([.day], from: order.createdAt, to: Date()).day,
+           daysAgo < 7 {
+            return order.createdAt.formatted(.dateTime.weekday(.abbreviated))
+        }
+
+        return order.createdAt.formatted(date: .abbreviated, time: .omitted)
     }
 }
 

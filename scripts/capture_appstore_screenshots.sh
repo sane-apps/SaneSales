@@ -230,7 +230,7 @@ capture_mac_shot() {
       ;;
     orders)
       width=1080
-      height=700
+      height=728
       ;;
     products)
       width=980
