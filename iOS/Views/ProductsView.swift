@@ -4,7 +4,6 @@ import SwiftUI
 
 struct ProductsView: View {
     @Environment(SalesManager.self) private var manager
-    @Environment(\.colorScheme) private var colorScheme
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var selectedAngle: Int?
     @State private var selectedProduct: ProductSales?
@@ -35,6 +34,32 @@ struct ProductsView: View {
         }
     }
 
+    private var scopedMetrics: SalesMetrics {
+        manager.isPro ? manager.metrics : manager.planScopedMetrics
+    }
+
+    private var productSalesByName: [String: ProductSales] {
+        Dictionary(uniqueKeysWithValues: scopedMetrics.productBreakdown.map { ($0.productName, $0) })
+    }
+
+    private var hasRevenueBreakdown: Bool {
+        !scopedMetrics.productBreakdown.isEmpty
+    }
+
+    private var sortedProducts: [Product] {
+        manager.products.sorted { lhs, rhs in
+            let lhsRevenue = productSalesByName[lhs.name]?.revenue ?? -1
+            let rhsRevenue = productSalesByName[rhs.name]?.revenue ?? -1
+            if lhsRevenue != rhsRevenue {
+                return lhsRevenue > rhsRevenue
+            }
+            if lhs.provider != rhs.provider {
+                return lhs.provider.displayName < rhs.provider.displayName
+            }
+            return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -50,7 +75,11 @@ struct ProductsView: View {
                                 VStack(spacing: 12) {
                                     productsOverview(widthClass)
 
-                                    if widthClass == .wide, manager.metrics.productBreakdown.count >= 3 {
+                                    if !manager.isPro && !hasRevenueBreakdown {
+                                        noSalesCallout
+                                    }
+
+                                    if widthClass == .wide, scopedMetrics.productBreakdown.count >= 3 {
                                         HStack(alignment: .top, spacing: 16) {
                                             revenueChart(widthClass)
                                                 .frame(width: min(max(proxy.size.width * 0.38, 340), 420))
@@ -61,7 +90,7 @@ struct ProductsView: View {
                                     } else {
                                         catalogSection
 
-                                        if !manager.metrics.productBreakdown.isEmpty {
+                                        if hasRevenueBreakdown {
                                             revenueChart(widthClass)
                                         }
                                     }
@@ -89,7 +118,7 @@ struct ProductsView: View {
         let summary = [
             SummaryItem(title: "Products", value: "\(manager.products.count)", icon: "shippingbox.fill", color: .salesGreen),
             SummaryItem(title: "Providers", value: "\(manager.connectedProviders.count)", icon: "link.circle.fill", color: .salesGold),
-            SummaryItem(title: "Revenue", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime)
+            SummaryItem(title: manager.isPro ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime)
         ]
 
         if widthClass == .compact {
@@ -142,10 +171,10 @@ struct ProductsView: View {
         .padding(.vertical, widthClass == .compact ? 8 : 10)
         .background(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(AnyShapeStyle(.ultraThinMaterial))
+                .fill(Color.salesPanel)
                 .overlay(
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                        .stroke(Color.salesPanelStroke, lineWidth: 1)
                 )
         )
     }
@@ -153,7 +182,7 @@ struct ProductsView: View {
     // MARK: - Revenue Chart
 
     private func revenueChart(_ widthClass: WidthClass) -> some View {
-        GlassSection("Revenue by Product", icon: "chart.pie", iconColor: .salesGold) {
+        GlassSection(manager.isPro ? "Revenue by Product" : "Today's Sales by Product", icon: "chart.pie", iconColor: .salesGold) {
             Group {
                 if compactChartLayout, widthClass != .compact {
                     HStack(alignment: .center, spacing: 20) {
@@ -165,7 +194,7 @@ struct ProductsView: View {
                                 Text("Revenue mix")
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white)
-                                Text("Use the chart for the split and the catalog for product details.")
+                                Text(manager.isPro ? "Use the chart for the split and the catalog for product details." : "Basic focuses on today's winners. Use Pro for longer history and comparisons.")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(.white.opacity(0.86))
                                     .fixedSize(horizontal: false, vertical: true)
@@ -200,7 +229,7 @@ struct ProductsView: View {
 
     private func donutChart(_ widthClass: WidthClass) -> some View {
         ZStack {
-            Chart(manager.metrics.productBreakdown) { product in
+            Chart(scopedMetrics.productBreakdown) { product in
                 SectorMark(
                     angle: .value("Revenue", product.revenue),
                     innerRadius: .ratio(compactChartLayout ? 0.64 : 0.58),
@@ -218,7 +247,7 @@ struct ProductsView: View {
             }
             .animation(.spring(response: 0.3), value: selectedProduct?.id)
         }
-        .accessibilityLabel("Revenue breakdown by product, \(manager.metrics.productBreakdown.count) products")
+        .accessibilityLabel("Revenue breakdown by product, \(scopedMetrics.productBreakdown.count) products")
     }
 
     @ViewBuilder
@@ -265,7 +294,7 @@ struct ProductsView: View {
 
     private var customLegend: some View {
         VStack(spacing: 0) {
-            ForEach(Array(manager.metrics.productBreakdown.enumerated()), id: \.element.id) { index, product in
+            ForEach(Array(scopedMetrics.productBreakdown.enumerated()), id: \.element.id) { index, product in
                 if index > 0 { GlassDivider() }
                 Button {
                     withAnimation(.spring(response: 0.3)) {
@@ -307,18 +336,18 @@ struct ProductsView: View {
     ]
 
     private func chartColor(for product: ProductSales) -> Color {
-        guard let index = manager.metrics.productBreakdown.firstIndex(where: { $0.id == product.id }) else {
+        guard let index = scopedMetrics.productBreakdown.firstIndex(where: { $0.id == product.id }) else {
             return .salesGreen
         }
         return chartColorPalette[index % chartColorPalette.count]
     }
 
     private var totalRevenue: Int {
-        manager.metrics.productBreakdown.reduce(0) { $0 + $1.revenue }
+        scopedMetrics.productBreakdown.reduce(0) { $0 + $1.revenue }
     }
 
     private var compactChartLayout: Bool {
-        manager.metrics.productBreakdown.count <= 2
+        scopedMetrics.productBreakdown.count <= 2
     }
 
     private func productsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
@@ -332,7 +361,7 @@ struct ProductsView: View {
     private func findProduct(at value: Int?) -> ProductSales? {
         guard let value else { return nil }
         var cumulative = 0
-        for product in manager.metrics.productBreakdown {
+        for product in scopedMetrics.productBreakdown {
             cumulative += product.revenue
             if value <= cumulative {
                 return product
@@ -396,7 +425,7 @@ struct ProductsView: View {
                         .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
 
-                    Text("Connect a provider to turn this into your catalog, revenue breakdown, and product-level sales view.")
+                    Text("Connect a provider to turn this into your catalog, today's product revenue view, and product-level sales feed.")
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.white.opacity(0.9))
                         .multilineTextAlignment(.center)
@@ -406,7 +435,7 @@ struct ProductsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See which products drive the most revenue")
                     emptyStateDetailRow("Track status, pricing, and sales count in one place")
-                    emptyStateDetailRow("Use the chart for quick revenue mix and the catalog for specifics")
+                    emptyStateDetailRow("Use Basic for live daily sales or Pro for longer history")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
@@ -437,10 +466,10 @@ struct ProductsView: View {
             .frame(maxWidth: 660)
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(AnyShapeStyle(.ultraThinMaterial))
+                    .fill(Color.salesPanel)
                     .overlay(
                         RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .stroke(Color.brandBlueGlow.opacity(0.26), lineWidth: 1)
+                            .stroke(Color.salesPanelStroke, lineWidth: 1)
                     )
             )
 
@@ -448,6 +477,22 @@ struct ProductsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 28)
+    }
+
+    private var noSalesCallout: some View {
+        GlassSection("No Product Sales Today", icon: "sparkles", iconColor: .salesGold) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Basic focuses on live daily sales. Your catalog is still here, but product revenue cards and charts only fill in after today's orders arrive.")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.92))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text("Upgrade to Pro when you want longer history, product trends, and deeper comparisons.")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
     }
 
     private func emptyStateProviderActions(widthClass: WidthClass) -> some View {
@@ -512,7 +557,7 @@ struct ProductsView: View {
     private var catalogSection: some View {
         GlassSection("Catalog", icon: "square.grid.2x2", iconColor: .blue) {
             VStack(spacing: 0) {
-                ForEach(Array(manager.products.enumerated()), id: \.element.id) { index, product in
+                ForEach(Array(sortedProducts.enumerated()), id: \.element.id) { index, product in
                     if index > 0 { GlassDivider() }
                     productRow(product)
                 }
@@ -521,7 +566,9 @@ struct ProductsView: View {
     }
 
     private func productRow(_ product: Product) -> some View {
-        HStack(spacing: 12) {
+        let scopedSales = productSalesByName[product.name]
+
+        return HStack(spacing: 12) {
             // Thumbnail
             if let thumbURL = product.thumbURL {
                 AsyncImage(url: thumbURL) { image in
@@ -562,22 +609,38 @@ struct ProductsView: View {
                         ProviderDot(provider: product.provider)
                     }
                 }
+                Text(product.displayPrice)
+                    .font(.saneCallout)
+                    .foregroundStyle(Color.textMuted)
             }
 
             Spacer()
 
-            // Price + Stats
+            // Revenue + Stats
             VStack(alignment: .trailing, spacing: 4) {
-                Text(product.displayPrice)
+                Text(scopedSales.map { formatCents($0.revenue) } ?? product.displayPrice)
                     .font(.subheadline.weight(.bold))
-                if let sales = product.totalSales {
-                    Text("\(sales) sales")
-                        .font(.saneCallout)
-                        .foregroundStyle(Color.textMuted)
-                }
+                Text(productRowDetailText(for: product, scopedSales: scopedSales))
+                    .font(.saneCallout)
+                    .foregroundStyle(Color.textMuted)
             }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
+        .opacity(manager.isPro || scopedSales != nil ? 1.0 : 0.78)
+    }
+
+    private func productRowDetailText(for product: Product, scopedSales: ProductSales?) -> String {
+        if let scopedSales {
+            return manager.isPro
+                ? "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale" : "sales")"
+                : "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale today" : "sales today")"
+        }
+
+        if manager.isPro, let totalSales = product.totalSales {
+            return "\(totalSales) lifetime"
+        }
+
+        return manager.isPro ? "No sales yet" : "No sales today"
     }
 }

@@ -239,28 +239,28 @@ capture_mac_shot() {
     settings)
       case "${settings_tab_name}" in
         general)
-          width=700
-          height=560
+          width=1040
+          height=680
           ;;
         providers)
-          width=700
-          height=430
+          width=980
+          height=620
           ;;
         data)
-          width=700
-          height=480
+          width=980
+          height=640
           ;;
         license)
-          width=680
-          height=360
+          width=940
+          height=560
           ;;
         about)
-          width=680
-          height=430
+          width=980
+          height=620
           ;;
         *)
-          width=700
-          height=500
+          width=980
+          height=640
           ;;
       esac
       ;;

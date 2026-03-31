@@ -98,30 +98,38 @@ final class SaneSalesIOSUITests: XCTestCase {
         app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
         app.launch()
 
-        let gumroadProvider = app.buttons["dashboard.provider.gumroad"]
-        XCTAssertTrue(gumroadProvider.waitForExistence(timeout: 5))
-        gumroadProvider.tap()
+        let providerMenu = app.buttons["dashboard.providerMenu"]
+        XCTAssertTrue(providerMenu.waitForExistence(timeout: 5))
+        providerMenu.tap()
+
+        let connectGumroad = app.buttons["Connect Gumroad"]
+        XCTAssertTrue(connectGumroad.waitForExistence(timeout: 5))
+        connectGumroad.tap()
 
         XCTAssertTrue(app.staticTexts["Connect Gumroad Account"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.secureTextFields["API Key"].exists)
     }
 
-    func testDisconnectedDashboardProviderRoutesToLicenseWhenBasicAlreadyUsesOneProvider() {
+    func testDisconnectedDashboardProviderStillOpensSetupInBasicMode() {
         let app = launchOnboarding(extraLaunchArguments: ["--demo-connected-provider=lemonsqueezy"])
 
         let demoButton = app.buttons["onboarding.demoButton"]
         XCTAssertTrue(demoButton.waitForExistence(timeout: 5))
         demoButton.tap()
 
-        let gumroadProvider = app.buttons["dashboard.provider.gumroad"]
-        XCTAssertTrue(gumroadProvider.waitForExistence(timeout: 5))
-        gumroadProvider.tap()
+        let providerMenu = app.buttons["dashboard.providerMenu"]
+        XCTAssertTrue(providerMenu.waitForExistence(timeout: 5))
+        providerMenu.tap()
 
-        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["settings.license.unlockProButton"].exists)
+        let connectGumroad = app.buttons["Connect Gumroad"]
+        XCTAssertTrue(connectGumroad.waitForExistence(timeout: 5))
+        connectGumroad.tap()
+
+        XCTAssertTrue(app.staticTexts["Connect Gumroad Account"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.secureTextFields["API Key"].exists)
     }
 
-    func testLaunchDemoRespectsSingleProviderAndLockedRoutesInBasicMode() {
+    func testLaunchDemoLimitsFreeModeToTodayAndLeavesAllProvidersConnectable() {
         let app = XCUIApplication()
         app.launchArguments += [
             "--uitest-reset",
@@ -148,8 +156,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         }
 
         XCTAssertTrue(app.buttons["settings.provider.lemonsqueezy.manage"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["settings.provider.gumroad.unlock"].exists)
-        XCTAssertTrue(app.buttons["settings.provider.stripe.unlock"].exists)
+        XCTAssertTrue(app.buttons["settings.provider.gumroad.connect"].exists)
+        XCTAssertTrue(app.buttons["settings.provider.stripe.connect"].exists)
     }
 
     func testSeededLemonSqueezyKeySkipsOnboarding() throws {

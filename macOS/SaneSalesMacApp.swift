@@ -260,17 +260,17 @@ import SwiftUI
                             appName: "SaneSales",
                             appIcon: "dollarsign.circle.fill",
                             freeFeatures: [
-                                (icon: "link", text: "Connect 1 sales provider"),
-                                (icon: "clock.badge.checkmark", text: "Recent dashboard snapshot"),
-                                (icon: "shippingbox", text: "Recent orders and full product catalog"),
+                                (icon: "link", text: "Connect any sales provider"),
+                                (icon: "clock.badge.checkmark", text: "Live daily sales dashboard"),
+                                (icon: "shippingbox", text: "Orders today and full product catalog"),
                                 (icon: "play.circle", text: "Demo mode to explore")
                             ],
                             proFeatures: [
                                 (icon: "checkmark", text: "Everything in Basic, plus:"),
-                                (icon: "chart.line.uptrend.xyaxis", text: "Full charts and all-time trends"),
+                                (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, and all-time trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
-                                (icon: "link.badge.plus", text: "Multiple providers at once"),
+                                (icon: "chart.pie", text: "Deeper product comparisons"),
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
                                 (icon: "widget.small", text: "Desktop widgets")
                             ],

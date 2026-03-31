@@ -500,11 +500,11 @@ struct AppStoreReviewPathTests {
 }
 
 struct FreeTierPolicyTests {
-    @Test("Free tier keeps recent dashboard ranges open")
-    func freeTierDashboardRangesStayUseful() {
+    @Test("Free tier keeps dashboard focused on today")
+    func freeTierDashboardRangesStayFocusedOnToday() {
         #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: false))
-        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
-        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
+        #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
+        #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: false))
         #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: true))
     }
@@ -514,14 +514,14 @@ struct FreeTierPolicyTests {
         #expect(SaneSalesFreeTierPolicy.recentOrderPreviewLimit == 20)
     }
 
-    @Test("Free tier defaults to a recent snapshot when today is empty")
-    func freeTierPreferredDashboardRangeAvoidsDeadFirstImpression() {
+    @Test("Free tier always defaults to today")
+    func freeTierPreferredDashboardRangeStaysOnToday() {
         #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: .today,
             isPro: false,
             todayOrders: 0,
             thirtyDayOrders: 12
-        ) == .sevenDays)
+        ) == .today)
 
         #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: .today,
@@ -535,7 +535,7 @@ struct FreeTierPolicyTests {
             isPro: false,
             todayOrders: 0,
             thirtyDayOrders: 12
-        ) == .sevenDays)
+        ) == .today)
 
         #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: .allTime,

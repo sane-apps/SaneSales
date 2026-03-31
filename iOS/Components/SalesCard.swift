@@ -84,6 +84,9 @@ extension Color {
     // Surfaces
     static let surfaceCarbon = Color(red: 0.078, green: 0.078, blue: 0.098)
     static let surfaceSmoke = Color(red: 0.133, green: 0.133, blue: 0.157)
+    static let salesPanel = Color(red: 0.15, green: 0.19, blue: 0.28)
+    static let salesPanelStroke = Color(red: 0.24, green: 0.40, blue: 0.72).opacity(0.55)
+    static let salesControlSurface = Color(red: 0.18, green: 0.22, blue: 0.31).opacity(0.96)
 
     // Provider brand colors
     static let providerLemonSqueezy = Color(red: 0.988, green: 0.761, blue: 0.200) // #FCC233 yellow
@@ -326,19 +329,16 @@ struct SalesCard: View {
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 14)
-            .fill(.ultraThinMaterial)
+            .fill(Color.salesPanel)
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                    .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.05 : 0.03))
             )
     }
 
     private var cardBorder: some View {
         RoundedRectangle(cornerRadius: 14)
-            .stroke(
-                Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.20 : 0.12),
-                lineWidth: 1
-            )
+            .stroke(Color.salesPanelStroke, lineWidth: 1)
     }
 
     @ViewBuilder
@@ -446,19 +446,16 @@ struct GlassSection<Content: View>: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(.ultraThinMaterial)
+                    .fill(Color.salesPanel)
                     .overlay(
                         RoundedRectangle(cornerRadius: 14)
-                            .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                            .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.05 : 0.03))
                     )
             )
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(
-                        Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.20 : 0.12),
-                        lineWidth: 1
-                    )
+                    .stroke(Color.salesPanelStroke, lineWidth: 1)
             )
             .shadow(
                 color: colorScheme == .dark ? Color.brandBlueGlow.opacity(0.25) : Color.brandBlueGlow.opacity(0.10),

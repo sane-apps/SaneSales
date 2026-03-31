@@ -83,18 +83,16 @@ struct SaneSalesMacSettingsView: View {
     }
 
     var body: some View {
-        SaneSettingsContainer(defaultTab: .general, selection: $selectedTab, windowSizing: .embedded) { tab in
-            switch tab {
-            case .general:
-                generalTab
-            case .providers:
-                providersTab
-            case .data:
-                dataTab
-            case .license:
-                licenseTab
-            case .about:
-                aboutTab
+        VStack(spacing: 0) {
+            settingsHeader
+
+            Divider()
+                .overlay(Color.white.opacity(0.08))
+
+            ZStack {
+                SaneGradientBackground(style: .panel)
+                currentTabView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
         }
         .sheet(item: $editingProvider) { provider in
@@ -125,10 +123,55 @@ struct SaneSalesMacSettingsView: View {
                 automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
                 updateCheckFrequency = UpdateService.shared.updateCheckFrequency
             #endif
-            applyWindowSize(for: selectedTab)
         }
-        .onChange(of: selectedTab) { _, newValue in
-            applyWindowSize(for: newValue)
+    }
+
+    private var currentTab: SaneSalesSettingsTab {
+        selectedTab ?? .general
+    }
+
+    private var settingsHeader: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Settings")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text("Manage your providers, data, and app behavior without leaving the main window.")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.84))
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(Array(SaneSalesSettingsTab.allCases), id: \.id) { tab in
+                        SaneSegmentedChoiceButton(title: tab.title, isSelected: currentTab == tab) {
+                            selectedTab = tab
+                        }
+                        .frame(width: tab == .providers ? 108 : 96)
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 18)
+        .padding(.bottom, 16)
+        .background(Color.black.opacity(0.14))
+    }
+
+    @ViewBuilder
+    private var currentTabView: some View {
+        switch currentTab {
+        case .general:
+            generalTab
+        case .providers:
+            providersTab
+        case .data:
+            dataTab
+        case .license:
+            licenseTab
+        case .about:
+            aboutTab
         }
     }
 
@@ -367,28 +410,6 @@ struct SaneSalesMacSettingsView: View {
                             }
                         } label: {
                             actionLabel(SaneSalesSettingsCopy.manageButtonTitle)
-                        }
-                        .buttonStyle(SaneActionButtonStyle())
-                    }
-                }
-            } else if manager.needsProForAdditionalProvider {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) {
-                        StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
-                        Button {
-                            proUpsellFeature = .multipleProviders
-                        } label: {
-                            actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
-                        }
-                        .buttonStyle(SaneActionButtonStyle())
-                    }
-
-                    VStack(alignment: .trailing, spacing: 8) {
-                        StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
-                        Button {
-                            proUpsellFeature = .multipleProviders
-                        } label: {
-                            actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }

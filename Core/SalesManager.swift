@@ -121,7 +121,28 @@ final class SalesManager {
     /// True when a free-tier user tries to add a second provider.
     /// Used by the UI to show the Pro upsell instead of connecting.
     var needsProForAdditionalProvider: Bool {
-        !isPro && connectedProviders.count >= 1
+        false
+    }
+
+    var planScopedOrders: [Order] {
+        guard !isPro else { return orders }
+        let calendar = Calendar.current
+        return orders.filter { calendar.isDateInToday($0.createdAt) }
+    }
+
+    var planScopedMetrics: SalesMetrics {
+        SalesMetrics.compute(from: planScopedOrders)
+    }
+
+    func allOrders(filteredBy provider: SalesProviderType?) -> [Order] {
+        guard let provider else { return orders }
+        return orders.filter { $0.provider == provider }
+    }
+
+    func planScopedOrders(filteredBy provider: SalesProviderType?) -> [Order] {
+        let source = planScopedOrders
+        guard let provider else { return source }
+        return source.filter { $0.provider == provider }
     }
 
     /// Convenience for backward compat (onboarding checks this)
@@ -456,10 +477,7 @@ final class SalesManager {
     // MARK: - Search & Filter
 
     func filteredOrders(search: String, provider: SalesProviderType? = nil) -> [Order] {
-        var result = orders
-        if let provider {
-            result = result.filter { $0.provider == provider }
-        }
+        var result = planScopedOrders(filteredBy: provider)
         guard !search.isEmpty else { return result }
         let query = search.lowercased()
         return result.filter {
