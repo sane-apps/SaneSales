@@ -12,100 +12,219 @@ struct ContentView: View {
     }
 }
 
+private enum MainSection: Int, CaseIterable, Hashable {
+    case dashboard
+    case orders
+    case products
+    case settings
+
+    var title: String {
+        switch self {
+        case .dashboard: "Dashboard"
+        case .orders: "Orders"
+        case .products: "Products"
+        case .settings: "Settings"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .dashboard: "chart.bar.fill"
+        case .orders: "list.bullet.rectangle"
+        case .products: "shippingbox.fill"
+        case .settings: "gearshape.fill"
+        }
+    }
+}
+
 struct MainTabView: View {
-    @State private var selectedTab: Int
+    @State private var selectedSection: MainSection
     #if os(macOS)
     @State private var previousNonSettingsContentSize: NSSize?
     #endif
 
     init() {
-        _selectedTab = State(initialValue: Self.initialTabSelection)
+        _selectedSection = State(initialValue: Self.initialSectionSelection)
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            DashboardView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "chart.bar.fill")
-                }
-                .tag(0)
-            OrdersListView()
-                .tabItem {
-                    Label("Orders", systemImage: "list.bullet.rectangle")
-                }
-                .tag(1)
-            ProductsView()
-                .tabItem {
-                    Label("Products", systemImage: "shippingbox.fill")
-                }
-                .tag(2)
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
-                }
-                .tag(3)
+        Group {
+            #if os(macOS)
+                macLayout
+            #else
+                iosLayout
+            #endif
         }
         .tint(.salesGreen)
         .accessibilityIdentifier("main.tabView")
         .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
-            selectedTab = 3
+            selectedSection = .settings
         }
         #if os(macOS)
-            .onAppear {
-                applyWindowSize(for: selectedTab, previousTab: nil)
-            }
-            .onChange(of: selectedTab) { oldValue, newValue in
-                applyWindowSize(for: newValue, previousTab: oldValue)
-            }
+        .onAppear {
+            applyWindowSize(for: selectedSection, previousSection: nil)
+        }
+        .onChange(of: selectedSection) { oldValue, newValue in
+            applyWindowSize(for: newValue, previousSection: oldValue)
+        }
         #endif
     }
 
-    private static var initialTabSelection: Int {
+    #if os(iOS)
+    private var iosLayout: some View {
+        TabView(selection: $selectedSection) {
+            DashboardView()
+                .tabItem { Label(MainSection.dashboard.title, systemImage: MainSection.dashboard.icon) }
+                .tag(MainSection.dashboard)
+            OrdersListView()
+                .tabItem { Label(MainSection.orders.title, systemImage: MainSection.orders.icon) }
+                .tag(MainSection.orders)
+            ProductsView()
+                .tabItem { Label(MainSection.products.title, systemImage: MainSection.products.icon) }
+                .tag(MainSection.products)
+            SettingsView()
+                .tabItem { Label(MainSection.settings.title, systemImage: MainSection.settings.icon) }
+                .tag(MainSection.settings)
+        }
+    }
+    #endif
+
+    #if os(macOS)
+    private var macLayout: some View {
+        HStack(spacing: 0) {
+            macSidebar
+            Divider().overlay(Color.white.opacity(0.08))
+            selectedSectionView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .background(SaneBackground().ignoresSafeArea())
+    }
+
+    private var macSidebar: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(spacing: 12) {
+                Image("CoinColor")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 34, height: 34)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("SaneSales")
+                        .font(.system(size: 20, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                    Text("Read sales clearly")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.84))
+                }
+            }
+            .padding(.top, 8)
+
+            VStack(spacing: 6) {
+                ForEach(MainSection.allCases, id: \.self) { section in
+                    Button {
+                        selectedSection = section
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: section.icon)
+                                .font(.system(size: 15, weight: .semibold))
+                                .frame(width: 18)
+                            Text(section.title)
+                                .font(.system(size: 15, weight: .semibold))
+                            Spacer()
+                        }
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 11)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(selectedSection == section ? Color.salesGreen.opacity(0.22) : Color.clear)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(selectedSection == section ? Color.salesGreen.opacity(0.45) : Color.clear, lineWidth: 1)
+                                )
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            Spacer()
+        }
+        .frame(width: 228, alignment: .topLeading)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 18)
+        .background(Color.black.opacity(0.16))
+    }
+    #endif
+
+    @ViewBuilder
+    private var selectedSectionView: some View {
+        switch selectedSection {
+        case .dashboard:
+            DashboardView()
+        case .orders:
+            OrdersListView()
+        case .products:
+            ProductsView()
+        case .settings:
+            SettingsView()
+        }
+    }
+
+    private static var initialSectionSelection: MainSection {
         let args = CommandLine.arguments
 
         if let inlineValue = args.first(where: { $0.hasPrefix("--screenshot-tab=") })?
             .split(separator: "=", maxSplits: 1).last {
-            return tabIndex(for: String(inlineValue))
+            return section(for: String(inlineValue))
         }
 
         if let index = args.firstIndex(of: "--screenshot-tab"),
            args.indices.contains(index + 1) {
-            return tabIndex(for: args[index + 1])
+            return section(for: args[index + 1])
         }
 
-        return 0
+        return .dashboard
     }
 
-    private static func tabIndex(for name: String) -> Int {
+    private static func section(for name: String) -> MainSection {
         switch name.lowercased() {
         case "dashboard":
-            return 0
+            return .dashboard
         case "orders":
-            return 1
+            return .orders
         case "products":
-            return 2
+            return .products
         case "settings":
-            return 3
+            return .settings
         default:
-            return 0
+            return .dashboard
         }
     }
 
     #if os(macOS)
-    private func applyWindowSize(for selectedTab: Int, previousTab: Int?) {
+    private func applyWindowSize(
+        for selectedSection: MainSection,
+        previousSection: MainSection?,
+        attempt: Int = 0
+    ) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            guard let window = currentWindow() else { return }
+            guard let window = currentWindow() else {
+                guard attempt < 8 else { return }
+                applyWindowSize(for: selectedSection, previousSection: previousSection, attempt: attempt + 1)
+                return
+            }
 
             let currentContentSize = window.contentRect(forFrameRect: window.frame).size
-            let isSettingsTab = selectedTab == 3
-            let wasSettingsTab = previousTab == 3
-            let metrics = SaneSalesWindowSizing.metrics(for: selectedTab)
+            let isSettingsTab = selectedSection == .settings
+            let wasSettingsTab = previousSection == .settings
+            let metrics = SaneSalesWindowSizing.metrics(for: selectedSection)
             let minimumSize = metrics.minimum
 
             window.contentMinSize = minimumSize
 
             if isSettingsTab {
-                if !wasSettingsTab, previousTab != nil {
+                if !wasSettingsTab, previousSection != nil {
                     previousNonSettingsContentSize = currentContentSize
                 }
 
@@ -125,7 +244,7 @@ struct MainTabView: View {
                 return
             }
 
-            if previousTab == nil,
+            if previousSection == nil,
                currentContentSize.width < metrics.preferred.width ||
                 currentContentSize.height < metrics.preferred.height {
                 window.setContentSize(metrics.preferred)
@@ -170,34 +289,34 @@ private enum SaneSalesWindowSizing {
     }
 
     static let dashboard = Metrics(
-        minimum: NSSize(width: 820, height: 560),
-        preferred: NSSize(width: 1020, height: 700)
+        minimum: NSSize(width: 920, height: 600),
+        preferred: NSSize(width: 1180, height: 760)
     )
 
     static let orders = Metrics(
-        minimum: NSSize(width: 900, height: 560),
-        preferred: NSSize(width: 1080, height: 700)
+        minimum: NSSize(width: 980, height: 620),
+        preferred: NSSize(width: 1240, height: 780)
     )
 
     static let products = Metrics(
-        minimum: NSSize(width: 860, height: 540),
-        preferred: NSSize(width: 980, height: 680)
+        minimum: NSSize(width: 960, height: 600),
+        preferred: NSSize(width: 1200, height: 760)
     )
 
     static let settings = Metrics(
-        minimum: NSSize(width: 640, height: 460),
-        preferred: NSSize(width: 700, height: 500)
+        minimum: NSSize(width: 860, height: 560),
+        preferred: NSSize(width: 1040, height: 680)
     )
 
-    static func metrics(for tab: Int) -> Metrics {
-        switch tab {
-        case 1:
+    static func metrics(for section: MainSection) -> Metrics {
+        switch section {
+        case .orders:
             orders
-        case 2:
+        case .products:
             products
-        case 3:
+        case .settings:
             settings
-        default:
+        case .dashboard:
             dashboard
         }
     }

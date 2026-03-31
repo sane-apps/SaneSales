@@ -21,46 +21,29 @@ extension DashboardView {
     @ViewBuilder
     func chartSection(_ widthClass: WidthClass) -> some View {
         if !manager.isPro {
-            GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-                ZStack {
-                    HStack(alignment: .bottom, spacing: 6) {
-                        ForEach([0.4, 0.6, 0.3, 0.8, 0.5, 0.9, 0.7], id: \.self) { height in
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.salesGreen.opacity(0.3))
-                                .frame(maxWidth: .infinity, minHeight: 20)
-                                .frame(height: 146 * height)
-                        }
-                    }
-                    .padding(.horizontal, 8)
-                    .frame(height: widthClass == .compact ? 132 : 172)
-                    .blur(radius: 8)
-
-                    VStack(spacing: 10) {
-                        Image(systemName: "chart.line.uptrend.xyaxis")
-                            .font(.system(size: 28))
-                            .foregroundStyle(.teal)
-                        Text("Revenue Charts")
-                            .font(.system(size: 15, weight: .semibold))
+            GlassSection("Charts • Pro", icon: "chart.xyaxis.line", iconColor: .metricToday) {
+                HStack(alignment: .center, spacing: 14) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Unlock 7D, 30D, all-time trends, and deeper comparisons.")
+                            .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.white)
-                        Text("Unlock interactive charts, all-time trends, and deeper comparisons.")
-                            .font(.system(size: 12))
-                            .foregroundStyle(.white.opacity(0.92))
-                            .multilineTextAlignment(.center)
-                        Button {
-                            showLockedFeature(event: "chart_locked_tap")
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 10))
-                                Text("Unlock Pro")
-                                    .font(.system(size: 12, weight: .semibold))
-                            }
-                        }
-                        .buttonStyle(SaneActionButtonStyle(prominent: true))
+                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Basic stays focused on today.")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(Color.textMuted)
                     }
-                    .padding()
+
+                    Spacer(minLength: 12)
+
+                    Button {
+                        showLockedFeature(event: "chart_locked_tap")
+                    } label: {
+                        Label("Unlock Pro", systemImage: "lock.fill")
+                    }
+                    .buttonStyle(SaneActionButtonStyle(prominent: true))
                 }
-                .frame(height: widthClass == .compact ? 132 : 172)
+                .padding(.horizontal, widthClass == .compact ? 10 : 12)
+                .padding(.vertical, widthClass == .compact ? 8 : 10)
                 .onAppear {
                     guard manager.isConnected, !didLogChartGateView else { return }
                     didLogChartGateView = true
@@ -76,7 +59,7 @@ extension DashboardView {
 
     var chartData: [DailySales] {
         let days: Int = switch selectedRange {
-        case .today: 7
+        case .today: 1
         case .sevenDays: 7
         case .thirtyDays: 30
         case .allTime: dashboardMetrics.dailyBreakdown.count
@@ -88,7 +71,7 @@ extension DashboardView {
     var topProductsSection: some View {
         GlassSection("Top Products", icon: "star.fill", iconColor: .salesWarning) {
             if dashboardMetrics.productBreakdown.isEmpty {
-                Text("No products yet")
+                Text(manager.products.isEmpty ? "No products yet" : "No sales yet today")
                     .foregroundStyle(Color.textMuted)
                     .frame(maxWidth: .infinity)
                     .padding()

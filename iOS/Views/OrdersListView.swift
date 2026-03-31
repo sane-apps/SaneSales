@@ -34,16 +34,32 @@ struct OrdersListView: View {
         manager.filteredOrders(search: searchText, provider: providerFilter)
     }
 
+    private var scopedOrders: [Order] {
+        manager.planScopedOrders(filteredBy: providerFilter)
+    }
+
+    private var allOrdersForScope: [Order] {
+        manager.allOrders(filteredBy: providerFilter)
+    }
+
     private var hasOrders: Bool {
-        !manager.orders.isEmpty
+        !scopedOrders.isEmpty
+    }
+
+    private var hasLockedHistory: Bool {
+        !manager.isPro && allOrdersForScope.count > scopedOrders.count
+    }
+
+    private var lockedHistoryCount: Int {
+        max(0, allOrdersForScope.count - scopedOrders.count)
     }
 
     private var canFilterProviders: Bool {
-        hasOrders && manager.connectedProviders.count > 1
+        manager.connectedProviders.count > 1
     }
 
     private var shouldShowOrdersOverview: Bool {
-        manager.isLoading || hasOrders
+        manager.isLoading || hasOrders || hasLockedHistory
     }
 
     private var shouldShowSearch: Bool {
@@ -51,48 +67,36 @@ struct OrdersListView: View {
     }
 
     private var orderSummaryTitle: String {
+        let count = searchText.isEmpty ? scopedOrders.count : displayedOrders.count
+
         if manager.isPro {
-            return "\(displayedOrders.count) \(displayedOrders.count == 1 ? "order" : "orders")"
+            return "\(count) \(count == 1 ? "order" : "orders")"
         }
 
-        if displayedOrders.count > freeTierPreviewOrders.count {
-            return "\(freeTierPreviewOrders.count) recent orders"
-        }
-
-        return "\(freeTierPreviewOrders.count) \(freeTierPreviewOrders.count == 1 ? "order" : "orders")"
+        return "\(count) \(count == 1 ? "order today" : "orders today")"
     }
 
     private var orderSummarySubtitle: String {
         if !searchText.isEmpty {
-            return "Search: \(searchText)"
+            return "Today only"
         }
 
         let scope = providerFilter?.displayName
-            ?? (manager.isPro ? "All providers" : (manager.connectedProviders.first?.displayName ?? "Recent activity"))
+            ?? (manager.connectedProviders.count > 1 ? "All providers" : (manager.connectedProviders.first?.displayName ?? "Today"))
 
-        guard !manager.isPro, displayedOrders.count > freeTierPreviewOrders.count else {
+        guard !manager.isPro else {
             return scope
         }
 
-        return "\(scope) preview"
+        if scope == "All providers" || scope == "Today" {
+            return "Today"
+        }
+
+        return "\(scope) · Today"
     }
 
     private var groupedOrders: [(DateSection, [Order])] {
         let grouped = Dictionary(grouping: displayedOrders) { order in
-            DateSection.from(order.createdAt)
-        }
-        return DateSection.allCases.compactMap { section in
-            guard let orders = grouped[section], !orders.isEmpty else { return nil }
-            return (section, orders)
-        }
-    }
-
-    private var freeTierPreviewOrders: [Order] {
-        Array(displayedOrders.prefix(SaneSalesFreeTierPolicy.recentOrderPreviewLimit))
-    }
-
-    private var freeTierPreviewGroups: [(DateSection, [Order])] {
-        let grouped = Dictionary(grouping: freeTierPreviewOrders) { order in
             DateSection.from(order.createdAt)
         }
         return DateSection.allCases.compactMap { section in
@@ -120,21 +124,19 @@ struct OrdersListView: View {
 
             Group {
                 if shouldShowSearch {
-                    content.searchable(text: $searchText, prompt: "Search customers, products, or order IDs")
+                    content.searchable(text: $searchText, prompt: manager.isPro ? "Search customers, products, or order IDs" : "Search today's customers or products")
                 } else {
                     content
                 }
             }
+            #if os(iOS)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: 84)
+            }
+            #endif
             .navigationTitle("Orders")
             .refreshable {
                 await manager.refresh()
-            }
-            .toolbar {
-                if canFilterProviders {
-                    ToolbarItem(placement: .automatic) {
-                        providerFilterMenu
-                    }
-                }
             }
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -197,147 +199,187 @@ struct OrdersListView: View {
 
     private func ordersOverview(_ widthClass: WidthClass) -> some View {
         VStack(alignment: .leading, spacing: widthClass == .compact ? 8 : 10) {
-            if widthClass == .compact {
-                VStack(alignment: .leading, spacing: 8) {
-                    orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
-
-                    if canFilterProviders {
-                        providerChipRow(widthClass)
-                    } else if let provider = manager.connectedProviders.first {
-                        ProviderBadge(provider: provider, fillsAvailableWidth: true)
-                    }
-                }
+            #if os(macOS)
+            if widthClass != .compact {
+                denseMacOrdersOverview
             } else {
-                HStack(alignment: .top, spacing: 12) {
-                    orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
-                    Spacer()
+                standardOrdersOverviewHeader(widthClass)
 
-                    if canFilterProviders {
-                        providerChipRow(widthClass)
-                            .frame(maxWidth: 420)
-                    } else if let provider = manager.connectedProviders.first {
-                        ProviderBadge(provider: provider, fillsAvailableWidth: false)
-                    }
+                if hasLockedHistory {
+                    lockedHistoryCallout(widthClass)
                 }
             }
+            #else
+            standardOrdersOverviewHeader(widthClass)
 
-            if !manager.isPro, displayedOrders.count > freeTierPreviewOrders.count {
-                Group {
-                    if widthClass == .compact {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Basic keeps the latest orders front and center. Pro unlocks full history, deeper search, and CSV export.")
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white.opacity(0.9))
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            Button {
-                                showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
-                            } label: {
-                                Label("Unlock Full History", systemImage: "arrow.up.right")
-                            }
-                            .buttonStyle(SaneActionButtonStyle(prominent: true))
-                        }
-                    } else {
-                        HStack(alignment: .center, spacing: 12) {
-                            Text("Basic keeps the latest orders front and center. Pro unlocks full history, deeper search, and CSV export.")
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white.opacity(0.9))
-                                .fixedSize(horizontal: false, vertical: true)
-
-                            Spacer(minLength: 0)
-
-                            Button {
-                                showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
-                            } label: {
-                                Label("Unlock Full History", systemImage: "arrow.up.right")
-                            }
-                            .buttonStyle(SaneActionButtonStyle(prominent: true))
-                        }
-                    }
-                }
+            if hasLockedHistory {
+                lockedHistoryCallout(widthClass)
             }
+            #endif
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 10)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(AnyShapeStyle(.ultraThinMaterial))
+                .fill(Color.salesPanel)
                 .overlay(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                        .stroke(Color.salesPanelStroke, lineWidth: 1)
                 )
         )
         .padding(.horizontal, 16)
     }
 
+    @ViewBuilder
+    private func standardOrdersOverviewHeader(_ widthClass: WidthClass) -> some View {
+        if widthClass == .compact {
+            VStack(alignment: .leading, spacing: 6) {
+                orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
+
+                if canFilterProviders {
+                    providerFilterControl
+                }
+            }
+        } else {
+            HStack(alignment: .top, spacing: 12) {
+                orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
+                Spacer()
+
+                if canFilterProviders {
+                    providerFilterControl
+                        .frame(maxWidth: 260)
+                } else if let provider = manager.connectedProviders.first {
+                    ProviderBadge(provider: provider, fillsAvailableWidth: false)
+                }
+            }
+        }
+    }
+
+    private var denseMacOrdersOverview: some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                orderSummary(widthClass: .regular, subtitle: orderSummarySubtitle)
+
+                if hasLockedHistory {
+                    Text("Basic shows today’s orders. Pro unlocks \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.9))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            VStack(alignment: .trailing, spacing: 10) {
+                if canFilterProviders {
+                    providerFilterControl
+                        .frame(width: 220)
+                } else if let provider = manager.connectedProviders.first {
+                    ProviderBadge(provider: provider, fillsAvailableWidth: false)
+                }
+
+                if hasLockedHistory {
+                    Button {
+                        showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                    } label: {
+                        Label("Unlock Full History", systemImage: "arrow.up.right")
+                    }
+                    .buttonStyle(SaneActionButtonStyle(prominent: true))
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func lockedHistoryCallout(_ widthClass: WidthClass) -> some View {
+        if widthClass == .compact {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Basic shows today only. Pro unlocks older orders, deeper search, and CSV export.")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Button {
+                    showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                } label: {
+                    Label("Unlock Full History", systemImage: "arrow.up.right")
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
+            }
+        } else {
+            HStack(alignment: .center, spacing: 12) {
+                Text("Basic keeps today front and center. Pro unlocks older orders, deeper search, and CSV export.")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer(minLength: 0)
+
+                Button {
+                    showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                } label: {
+                    Label("Unlock Full History", systemImage: "arrow.up.right")
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
+            }
+        }
+    }
+
     private func orderSummary(widthClass: WidthClass, subtitle: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(orderSummaryTitle)
                 .font(.system(size: widthClass == .compact ? 20 : 23, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
             Text(subtitle)
                 .font(.saneCallout)
                 .foregroundStyle(Color.textMuted)
-                .lineLimit(1)
+                .lineLimit(widthClass == .compact ? 2 : 1)
         }
     }
 
-    @ViewBuilder
-    private func providerChipRow(_ widthClass: WidthClass) -> some View {
-        let providers = manager.connectedProviders
-        let columns: [GridItem] = widthClass == .compact
-            ? [.init(.flexible()), .init(.flexible())]
-            : Array(repeating: GridItem(.flexible()), count: max(2, providers.count + 1))
-
-        LazyVGrid(columns: columns, spacing: 8) {
-            allProviderChip
-
-            ForEach(providers, id: \.self) { provider in
-                Button {
-                    providerFilter = providerFilter == provider ? nil : provider
-                } label: {
-                    ProviderBadge(provider: provider, fillsAvailableWidth: true)
-                        .overlay(
-                            Capsule()
-                                .stroke(
-                                    providerFilter == provider ? provider.brandColor.opacity(0.9) : Color.clear,
-                                    lineWidth: 1.2
-                                )
-                        )
-                        .opacity(providerFilter == nil || providerFilter == provider ? 1.0 : 0.55)
-                }
-                .buttonStyle(.plain)
+    private var providerFilterControl: some View {
+        Menu {
+            Button("All Providers") {
+                providerFilter = nil
             }
-        }
-    }
 
-    private var allProviderChip: some View {
-        Button {
-            providerFilter = nil
-        } label: {
-            Text("All")
-                .font(.saneCallout)
-                .foregroundStyle(providerFilter == nil ? .white : Color.textMuted)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background {
-                    if providerFilter == nil {
-                        Capsule()
-                            .fill(Color.salesGreen.opacity(0.9))
-                    } else {
-                        Capsule()
-                            .fill(AnyShapeStyle(.ultraThinMaterial))
-                    }
+            ForEach(manager.connectedProviders, id: \.self) { provider in
+                Button(provider.displayName) {
+                    providerFilter = provider
                 }
+            }
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                    .foregroundStyle(.white.opacity(0.9))
+                Text(providerFilter?.displayName ?? "All Providers")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                Spacer(minLength: 8)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Color.textMuted)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color.salesControlSurface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .stroke(Color.salesPanelStroke, lineWidth: 1)
+                    )
+            )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("orders.providerMenu")
     }
 
     private func freeTierOrdersContent(_ widthClass: WidthClass) -> some View {
         Group {
-            if freeTierPreviewOrders.isEmpty, !manager.isLoading {
+            if displayedOrders.isEmpty, !manager.isLoading {
                 if searchText.isEmpty {
                     emptyOrdersState(widthClass: widthClass)
                 } else {
@@ -345,7 +387,7 @@ struct OrdersListView: View {
                 }
             } else {
                 List {
-                    ForEach(freeTierPreviewGroups, id: \.0) { section, orders in
+                    ForEach(groupedOrders, id: \.0) { section, orders in
                         Section {
                             ForEach(orders) { order in
                                 NavigationLink(value: order.id) {
@@ -361,7 +403,7 @@ struct OrdersListView: View {
                         }
                     }
 
-                    if displayedOrders.count > freeTierPreviewOrders.count {
+                    if hasLockedHistory && widthClass != .compact {
                         Section {
                             Button {
                                 showOrderHistoryUpsell(event: "order_history_locked_tap")
@@ -370,10 +412,10 @@ struct OrdersListView: View {
                                     Image(systemName: "lock.fill")
                                         .foregroundStyle(.teal)
                                     VStack(alignment: .leading, spacing: 2) {
-                                        Text("Showing recent \(freeTierPreviewOrders.count) of \(displayedOrders.count) orders")
+                                        Text("Showing today’s \(displayedOrders.count) orders")
                                             .font(.saneSubheadlineBold)
                                             .foregroundStyle(.primary)
-                                        Text("Unlock Pro for full history, deeper search, and older sales.")
+                                        Text("Unlock Pro for \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
                                             .font(.saneCallout)
                                             .foregroundStyle(Color.textMuted)
                                     }
@@ -387,11 +429,11 @@ struct OrdersListView: View {
                             .buttonStyle(.plain)
                             .listRowBackground(orderRowBackground)
                         } header: {
-                            Text("More Orders • Pro")
+                            Text("Older Orders • Pro")
                                 .font(.saneSectionHeader)
                                 .foregroundStyle(Color.textMuted)
                                 .textCase(nil)
-                            }
+                        }
                     }
                 }
                 .listStyle(.plain)
@@ -409,10 +451,10 @@ struct OrdersListView: View {
 
     private var orderRowBackground: some View {
         RoundedRectangle(cornerRadius: 10)
-            .fill(AnyShapeStyle(.ultraThinMaterial))
+            .fill(Color.salesPanel)
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(Color.brandBlueGlow.opacity(colorScheme == .dark ? 0.08 : 0.04))
+                    .stroke(Color.salesPanelStroke, lineWidth: 1)
             )
             .shadow(
                 color: colorScheme == .dark
@@ -423,34 +465,6 @@ struct OrdersListView: View {
                 y: 2
             )
             .padding(.vertical, 2)
-    }
-
-    private var providerFilterMenu: some View {
-        Menu {
-            Button {
-                providerFilter = nil
-            } label: {
-                Label("All Providers", systemImage: providerFilter == nil ? "checkmark" : "")
-            }
-            Divider()
-            ForEach(manager.connectedProviders, id: \.self) { provider in
-                Button {
-                    providerFilter = provider
-                } label: {
-                    Label(provider.displayName, systemImage: providerFilter == provider ? "checkmark" : provider.icon)
-                }
-            }
-        } label: {
-            Image(systemName: providerFilter != nil
-                ? "line.3.horizontal.decrease.circle.fill"
-                : "line.3.horizontal.decrease.circle")
-                .foregroundStyle(providerFilter != nil
-                    ? providerFilter!.brandColor
-                    : Color.salesGreen)
-                .accessibilityLabel(providerFilter != nil
-                    ? "Filter: \(providerFilter!.displayName)"
-                    : "Filter providers")
-        }
     }
 
     private func emptyOrdersState(widthClass: WidthClass) -> some View {
@@ -467,7 +481,7 @@ struct OrdersListView: View {
                         .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
 
-                    Text("Connect a provider to turn this into your live order feed for customers, products, and recent sales.")
+                    Text("Connect a provider to turn this into your live order feed for customers, products, and today's sales.")
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.white.opacity(0.9))
                         .multilineTextAlignment(.center)
@@ -477,12 +491,12 @@ struct OrdersListView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See the latest sales as they come in")
                     emptyStateDetailRow("Search by customer, product, or order ID")
-                    emptyStateDetailRow("Use Basic for recent orders or Pro for full history")
+                    emptyStateDetailRow("Use Basic for today’s feed or Pro for older history")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
                 if manager.connectedProviders.isEmpty {
-                    Text("Choose the store you already use. SaneSales will sync the latest orders after you connect it.")
+                    Text("Choose the store you already use. SaneSales will sync today's orders after you connect it.")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white.opacity(0.85))
                         .multilineTextAlignment(.center)
@@ -508,10 +522,10 @@ struct OrdersListView: View {
             .frame(maxWidth: 660)
             .background(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .fill(AnyShapeStyle(.ultraThinMaterial))
+                    .fill(Color.salesPanel)
                     .overlay(
                         RoundedRectangle(cornerRadius: 24, style: .continuous)
-                            .stroke(Color.brandBlueGlow.opacity(0.26), lineWidth: 1)
+                            .stroke(Color.salesPanelStroke, lineWidth: 1)
                     )
             )
 

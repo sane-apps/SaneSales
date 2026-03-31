@@ -33,14 +33,14 @@ struct SettingsView: View {
                 SaneBackground().ignoresSafeArea()
                 GeometryReader { proxy in
                     ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 16) {
                         licenseSection
                         providersSection
                         dataSection
                         aboutSection
                     }
                     .padding(.horizontal, 18)
-                    .padding(.top, 14)
+                    .padding(.top, 12)
                     .padding(.bottom, settingsBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
                     }
                 }
@@ -129,20 +129,20 @@ struct SettingsView: View {
                         }
                     }
                     .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, settingsSectionVerticalPadding)
 
                     GlassDivider()
 
                     Text(
                         licenseService.isPro
-                            ? "Pro unlocks multiple providers, full order history, CSV export, menu bar quick glance, and widgets."
-                            : "Basic includes 1 provider, recent sales, recent orders, and the full product catalog."
+                            ? "Pro unlocks longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
+                            : "Basic includes any provider, live daily sales, orders today, and the full product catalog."
                     )
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 14)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, settingsSectionVerticalPadding)
 
                     GlassDivider()
 
@@ -152,14 +152,14 @@ struct SettingsView: View {
                             secondaryLicenseAction
                         }
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
+                        .padding(.vertical, settingsSectionVerticalPadding)
 
                         VStack(spacing: 8) {
                             primaryLicenseAction
                             secondaryLicenseAction
                         }
                         .padding(.horizontal, 14)
-                        .padding(.vertical, 12)
+                        .padding(.vertical, settingsSectionVerticalPadding)
                     }
                 }
             }
@@ -204,71 +204,33 @@ struct SettingsView: View {
                     }
                 }
             } else {
-                // Gate: free users can connect exactly 1 provider
                 #if os(macOS)
-                    if manager.needsProForAdditionalProvider {
-                        Button {
-                            Task.detached {
-                                await EventTracker.log("multiple_providers_locked_tap", app: "sanesales")
-                            }
-                            proUpsellFeature = .multipleProviders
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 10))
-                                Text("Pro")
-                                    .font(.system(size: 11, weight: .semibold))
-                            }
-                            .foregroundStyle(.teal)
-                        }
-                        .buttonStyle(.plain)
-                    } else {
-                        Button("Connect Account") {
-                            editingProvider = provider
-                            showingKeyEntry = true
-                        }
-                        .font(.saneSubheadlineBold)
-                        .foregroundStyle(Color.salesGreen)
+                    Button("Connect Account") {
+                        editingProvider = provider
+                        showingKeyEntry = true
                     }
+                    .font(.saneSubheadlineBold)
+                    .foregroundStyle(Color.salesGreen)
                 #else
-                    if manager.needsProForAdditionalProvider {
-                        let unlockButton = Button(licenseService.usesAppStorePurchase
-                            ? (licenseService.isPurchasing ? "Processing..." : "Unlock")
-                            : "Unlock") {
-                            triggerUnlock()
-                        }
-                        .buttonStyle(SaneActionButtonStyle())
-                        .disabled(licenseService.isPurchasing)
+                    let connectButton = Button("Connect") {
+                        editingProvider = provider
+                        showingKeyEntry = true
+                    }
+                    .buttonStyle(SaneActionButtonStyle())
 
-                        switch provider {
-                        case .lemonSqueezy:
-                            unlockButton.accessibilityIdentifier("settings.provider.lemonsqueezy.unlock")
-                        case .gumroad:
-                            unlockButton.accessibilityIdentifier("settings.provider.gumroad.unlock")
-                        case .stripe:
-                            unlockButton.accessibilityIdentifier("settings.provider.stripe.unlock")
-                        }
-                    } else {
-                        let connectButton = Button("Connect") {
-                            editingProvider = provider
-                            showingKeyEntry = true
-                        }
-                        .buttonStyle(SaneActionButtonStyle())
-
-                        switch provider {
-                        case .lemonSqueezy:
-                            connectButton.accessibilityIdentifier("settings.provider.lemonsqueezy.connect")
-                        case .gumroad:
-                            connectButton.accessibilityIdentifier("settings.provider.gumroad.connect")
-                        case .stripe:
-                            connectButton.accessibilityIdentifier("settings.provider.stripe.connect")
-                        }
+                    switch provider {
+                    case .lemonSqueezy:
+                        connectButton.accessibilityIdentifier("settings.provider.lemonsqueezy.connect")
+                    case .gumroad:
+                        connectButton.accessibilityIdentifier("settings.provider.gumroad.connect")
+                    case .stripe:
+                        connectButton.accessibilityIdentifier("settings.provider.stripe.connect")
                     }
                 #endif
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(.vertical, providerRowVerticalPadding)
     }
 
     // MARK: - Data Section
@@ -283,8 +245,8 @@ struct SettingsView: View {
                     }
                     GlassDivider()
                 }
-                GlassRow("Cached Orders", icon: "list.bullet", iconColor: .blue) {
-                    Text("\(manager.orders.count)")
+                GlassRow(manager.isPro ? "Cached Orders" : "Orders Today", icon: "list.bullet", iconColor: .blue) {
+                    Text("\(manager.isPro ? manager.orders.count : manager.planScopedOrders(filteredBy: nil).count)")
                         .font(.saneSubheadlineBold)
                 }
                 GlassDivider()
@@ -528,9 +490,25 @@ struct SettingsView: View {
 
     private func settingsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
         #if os(iOS)
-            return max(20, safeAreaBottom + 84)
+            return max(28, safeAreaBottom + 112)
         #else
             return 20
+        #endif
+    }
+
+    private var settingsSectionVerticalPadding: CGFloat {
+        #if os(iOS)
+            return 10
+        #else
+            return 12
+        #endif
+    }
+
+    private var providerRowVerticalPadding: CGFloat {
+        #if os(iOS)
+            return 8
+        #else
+            return 12
         #endif
     }
 
@@ -540,6 +518,13 @@ struct SettingsView: View {
         defer { pendingSettingsRoute = "" }
 
         if pendingSettingsRoute == "license" {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                if licenseService.usesAppStorePurchase {
+                    triggerUnlock()
+                } else {
+                    showingLicenseEntrySheet = true
+                }
+            }
             return
         }
 
