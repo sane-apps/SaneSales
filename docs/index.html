@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaneSales - Bring Sanity to Your Sales Tracking</title>
-    <meta name="description" content="Track today's sales free, then unlock yesterday, 7-day trends, full order history, and CSV export for $6.99. 100% on-device.">
+    <meta name="description" content="Track sales on-device. Start with today, then unlock trends, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $6.99.">
     <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
     <meta name="author" content="Mr. Sane">
     <meta name="robots" content="index, follow">
@@ -18,7 +18,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
-    <meta property="og:description" content="Track today's sales free, then unlock yesterday, 7-day trends, full order history, and CSV export for $6.99.">
+    <meta property="og:description" content="Track sales on-device. Start with today, then unlock trends, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $6.99.">
     <meta property="og:image" content="https://sanesales.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -30,7 +30,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
-    <meta name="twitter:description" content="Track today's sales free, then unlock yesterday, 7-day trends, full order history, and CSV export for $6.99.">
+    <meta name="twitter:description" content="Track sales on-device. Start with today, then unlock trends, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $6.99.">
     <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
     <meta name="twitter:site" content="@saneapps">
     <meta name="twitter:url" content="https://sanesales.com/">
@@ -84,9 +84,9 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server in the middle for your sales data."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. The Basic tier is free forever. Pro is $6.99 one-time — you own it forever with all future updates included. No recurring charges, no subscriptions. Or build from source for free — it's PolyForm Shield licensed."}},
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales Pro is $6.99 one-time. Basic is included so you can try the app first, and there are no recurring charges or subscriptions."}},
         {"@type": "Question", "name": "What happens after I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Send $6.99 (or more) to any listed address, then email hi@saneapps.com with your transaction ID or screenshot. I verify it and reply with your Pro download link."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales is free to download with 1 provider plus today's revenue and orders. Upgrade to Pro for $6.99 to unlock yesterday, 7-day and 30-day trends, full order history, CSV export, and multi-provider tracking. Demo mode is included."}}
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with Basic to connect 1 provider and see today's revenue and orders. Buy Pro for $6.99 when you want trends, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included."}}
       ]
     }
     </script>
@@ -963,6 +963,27 @@
         .feature-card p strong {
             color: var(--accent);
             font-weight: 600;
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(79, 143, 250, 0.28);
+            background: rgba(79, 143, 250, 0.10);
+            color: var(--accent);
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .feature-badge.basic {
+            border-color: var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
         }
 
         /* How It Works */
@@ -1932,7 +1953,7 @@
     <section class="hero" id="screenshots">
         <div class="container">
             <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Sales Tracking</h1>
-            <p class="subtitle animate-in delay-3">Track <em>today's sales free</em>. Unlock <em>yesterday, 7-day trends, and full history</em> when you need them.</p>
+            <p class="subtitle animate-in delay-3">See <em>today's sales instantly</em>. Unlock <em>trends, full history, and export</em> with SaneSales Pro.</p>
             <div class="trust-badges animate-in delay-3">
                 <span>&#128187; Used by Indie Developers Daily</span>
                 <span>&#128274; 100% On-Device</span>
@@ -1943,12 +1964,12 @@
                 <div class="pricing-card">
                     <p class="pricing-label">Basic</p>
                     <p class="pricing-price">Free</p>
-                    <p class="pricing-price-note">Forever — start with today</p>
+                    <p class="pricing-price-note">Start with today — upgrade for the full picture</p>
                     <ul class="pricing-features">
                         <li>Connect 1 sales provider</li>
                         <li>Today's revenue and orders</li>
-                        <li>Demo mode to explore</li>
-                        <li>iOS companion app (free)</li>
+                        <li>Demo mode before you connect</li>
+                        <li>iPhone, iPad, and Mac apps</li>
                         <li>100% On-Device privacy</li>
                     </ul>
                     <a href="https://dist.sanesales.com/updates/SaneSales-1.2.3.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
@@ -1961,13 +1982,13 @@
                 <div class="pricing-card featured">
                     <p class="pricing-label">Pro</p>
                     <p class="pricing-price">$6.99<span class="price-note">*</span></p>
-                    <p class="pricing-price-note">One-time — yours forever</p>
+                    <p class="pricing-price-note">One-time — full sales picture</p>
                     <ul class="pricing-features">
-                        <li>Everything in Basic, plus:</li>
-                        <li class="extra">Yesterday, 7-day, and 30-day trends</li>
+                        <li class="extra">Compare today vs yesterday instantly</li>
+                        <li class="extra">7-day and 30-day trend ranges</li>
                         <li class="extra">Full order history &amp; search</li>
                         <li class="extra">CSV export for accounting</li>
-                        <li class="extra">Multiple providers simultaneously</li>
+                        <li class="extra">Multiple providers in one view</li>
                         <li class="extra">macOS menu bar revenue</li>
                         <li class="extra">Home Screen &amp; Watch widgets</li>
                     </ul>
@@ -1978,7 +1999,7 @@
                 <code style="background: var(--bg-card); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;" onclick="copyToClipboard(this)" title="Click to copy">brew install --cask sane-apps/tap/sanesales</code>
             </p>
             <h2 class="section-title animate-in delay-4">See It in Action</h2>
-            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Start with today. Unlock trends, history, and export in Pro.</p>
+            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Basic shows today. Pro gives you trends, history, export, and the bigger picture.</p>
             <div class="screenshot-tabs animate-in delay-5">
                 <button class="screenshot-tab active" data-screen="charts" onclick="showScreen('charts', this)">Onboarding</button>
                 <button class="screenshot-tab" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
@@ -2045,7 +2066,7 @@
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <h3>Track</h3>
-                    <p>See everything in one dashboard. Charts, search, export. On your iPhone, iPad, or Mac.</p>
+                    <p>See today's numbers immediately. Unlock trends, history, and export in Pro on your iPhone, iPad, or Mac.</p>
                 </div>
             </div>
         </div>
@@ -2054,7 +2075,7 @@
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Everything you need. Nothing you don't.</h2>
-            <p class="section-subtitle">One app. Every platform. No cloud required.</p>
+            <p class="section-subtitle">One app. Every platform. Basic gets you started. Pro does the real work.</p>
             <div class="feature-grid">
                 <!-- 1. Multi-Provider - THE unique selling point -->
                 <div class="feature-card featured">
@@ -2066,6 +2087,7 @@
                         </svg>
                     </div>
                     <h3>Three Providers, One Dashboard</h3>
+                    <div class="feature-badge">Pro</div>
                     <p><strong>LemonSqueezy + Gumroad + Stripe</strong> — unified. Stop juggling three dashboards and a spreadsheet. See all your revenue in one place.</p>
                 </div>
                 <!-- 2. Revenue Dashboard -->
@@ -2077,7 +2099,8 @@
                         </svg>
                     </div>
                     <h3>Revenue Dashboard</h3>
-                    <p>Free starts with today's revenue and orders. Pro unlocks yesterday, 7-day, and 30-day trends plus the bigger revenue picture.</p>
+                    <div class="feature-badge basic">Basic + Pro</div>
+                    <p>Basic shows today's revenue and orders. Pro adds yesterday, 7-day, and 30-day comparisons so you can actually spot movement.</p>
                 </div>
                 <!-- 3. Interactive Charts -->
                 <div class="feature-card">
@@ -2089,7 +2112,8 @@
                         </svg>
                     </div>
                     <h3>Interactive Charts</h3>
-                    <p>Daily revenue charts built with Swift Charts. Unlock trend ranges when you're ready to compare momentum instead of just checking today's number.</p>
+                    <div class="feature-badge">Pro</div>
+                    <p>Daily revenue charts built with Swift Charts. Compare momentum instead of staring at a single number.</p>
                 </div>
                 <!-- 4. Order Tracking -->
                 <div class="feature-card">
@@ -2100,7 +2124,8 @@
                         </svg>
                     </div>
                     <h3>Order Tracking</h3>
-                    <p>Search by customer, product, or amount. Filter by provider, status, or date range. Every order, every refund, all in one list.</p>
+                    <div class="feature-badge">Pro</div>
+                    <p>Search by customer, product, or amount. Filter by provider, status, or date range across your full order history.</p>
                 </div>
                 <!-- 5. CSV Export -->
                 <div class="feature-card">
@@ -2112,6 +2137,7 @@
                         </svg>
                     </div>
                     <h3>CSV Export</h3>
+                    <div class="feature-badge">Pro</div>
                     <p>Export your full order history for accounting, tax prep, or email marketing. One tap, all providers, clean data.</p>
                 </div>
                 <!-- 6. Home Screen Widgets -->
@@ -2125,6 +2151,7 @@
                         </svg>
                     </div>
                     <h3>Home Screen Widgets</h3>
+                    <div class="feature-badge">Pro</div>
                     <p>Glance at today's revenue from your home screen or lock screen. Small, medium, and rectangular sizes for iOS and macOS.</p>
                 </div>
                 <!-- 7. macOS Menu Bar -->
@@ -2137,6 +2164,7 @@
                         </svg>
                     </div>
                     <h3>macOS Menu Bar</h3>
+                    <div class="feature-badge">Pro</div>
                     <p>See today's revenue in the menu bar without opening the app. Right-click for quick actions. Always one glance away.</p>
                 </div>
                 <!-- 8. Product Breakdown -->
@@ -2384,7 +2412,7 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. The Basic tier is free forever. Pro is $6.99 one-time — you own it forever with all future updates included. No recurring charges, no subscriptions. Or build from source for free — it's PolyForm Shield licensed.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales Pro is $6.99 one-time. Basic is included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2405,7 +2433,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes. SaneSales is free to download with 1 provider plus today's revenue and orders — no time limit, no credit card. Upgrade to Pro for $6.99 to unlock yesterday, 7-day and 30-day trends, full order history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with Basic to connect 1 provider and see today's revenue and orders. Buy Pro for $6.99 when you want trends, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
                 </div>
             </div>
         </div>
@@ -2505,11 +2533,11 @@
                     <div class="sustainability-options">
                         <a href="https://dist.sanesales.com/updates/SaneSales-1.2.3.zip" class="sustainability-option" data-cta="download_free_sustainability">
                             <h4>Download Free</h4>
-                            <p>Free forever. Connect 1 provider, see today's revenue and orders, demo mode included.</p>
+                            <p>Start with 1 provider, today's revenue, today's orders, and demo mode. Upgrade when you want the full picture.</p>
                         </a>
                         <a href="https://go.saneapps.com/buy/sanesales?ref=sustainability" class="sustainability-option featured" data-cta="buy_pro_sustainability">
                             <h4>Upgrade to Pro — $6.99</h4>
-                            <p>One-time purchase. Trends, history, export, widgets, and multi-provider tracking.</p>
+                            <p>One-time purchase. Trends, full history, export, widgets, menu bar revenue, and multi-provider tracking.</p>
                         </a>
                     </div>
                 </div>
