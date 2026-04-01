@@ -187,8 +187,6 @@ targets:
           CODE_SIGN_STYLE: Manual
           CODE_SIGN_IDENTITY: "Developer ID Application"
           PROVISIONING_PROFILE_SPECIFIER: "SaneSales Developer ID"
-          INFOPLIST_KEY_SUFeedURL: "https://sanesales.com/appcast.xml"
-          INFOPLIST_KEY_SUPublicEDKey: "7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU="
         Release-AppStore:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Manual
@@ -196,8 +194,6 @@ targets:
           PROVISIONING_PROFILE_SPECIFIER: "SaneSales Mac App Store"
           CODE_SIGN_ENTITLEMENTS: SaneSales/SaneSales-AppStore.entitlements
           OTHER_SWIFT_FLAGS: "-D APP_STORE"
-          INFOPLIST_KEY_SUFeedURL: ""
-          INFOPLIST_KEY_SUPublicEDKey: ""
     postCompileScripts:
       - script: |
           if which swiftlint >/dev/null; then
@@ -283,6 +279,14 @@ targets:
           CODE_SIGN_IDENTITY: "Apple Distribution"
           PROVISIONING_PROFILE_SPECIFIER: "SaneSales Mac App Store"
           CODE_SIGN_ENTITLEMENTS: SaneSales/SaneSales-AppStore.entitlements
+    postBuildScripts:
+      - script: |
+          if [ "$CONFIGURATION" == "Release-AppStore" ]; then
+            /usr/libexec/PlistBuddy -c "Delete :SUFeedURL" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Delete :SUPublicEDKey" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Delete :SUEnableAutomaticChecks" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
+            /usr/libexec/PlistBuddy -c "Delete :SUEnableInstallerLauncherService" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || true
+          fi
 
   # macOS Tests
   SaneSalesTests:

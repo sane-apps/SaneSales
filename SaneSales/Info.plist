@@ -26,6 +26,14 @@
 	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.finance</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://sanesales.com/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
 	<key>UIPrefersShowingLanguageSettings</key>
 	<true/>
 </dict>
