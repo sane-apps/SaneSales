@@ -26,6 +26,7 @@ enum SalesAPIError: Error, LocalizedError {
     case decodingError(underlying: Error)
     case serverError(statusCode: Int)
     case noAPIKey
+    case proRequired(feature: String)
 
     var errorDescription: String? {
         switch self {
@@ -41,6 +42,8 @@ enum SalesAPIError: Error, LocalizedError {
             "Server error (\(code)). Try again later."
         case .noAPIKey:
             "No API key configured. Add one in Settings."
+        case let .proRequired(feature):
+            "Pro required: \(feature)"
         }
     }
 }

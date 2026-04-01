@@ -95,8 +95,7 @@ struct SettingsView: View {
                 else { return }
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    editingProvider = provider
-                    showingKeyEntry = true
+                    startProviderConnection(provider)
                 }
             }
         }
@@ -136,7 +135,7 @@ struct SettingsView: View {
                     Text(
                         licenseService.isPro
                             ? "Pro unlocks longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
-                            : "Basic includes any provider, live daily sales, orders today, and the full product catalog."
+                            : "Basic includes 1 provider, live daily sales, orders today, and the full product catalog."
                     )
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
@@ -206,15 +205,13 @@ struct SettingsView: View {
             } else {
                 #if os(macOS)
                     Button("Connect Account") {
-                        editingProvider = provider
-                        showingKeyEntry = true
+                        startProviderConnection(provider)
                     }
                     .font(.saneSubheadlineBold)
                     .foregroundStyle(Color.salesGreen)
                 #else
                     let connectButton = Button("Connect") {
-                        editingProvider = provider
-                        showingKeyEntry = true
+                        startProviderConnection(provider)
                     }
                     .buttonStyle(SaneActionButtonStyle())
 
@@ -533,9 +530,21 @@ struct SettingsView: View {
         guard let provider = SalesProviderType(rawValue: rawValue) else { return }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            editingProvider = provider
-            showingKeyEntry = true
+            startProviderConnection(provider)
         }
+    }
+
+    private func startProviderConnection(_ provider: SalesProviderType) {
+        if manager.requiresProForProviderConnection(provider) {
+            Task.detached {
+                await EventTracker.log("second_provider_attempt", app: "sanesales")
+            }
+            triggerUnlock()
+            return
+        }
+
+        editingProvider = provider
+        showingKeyEntry = true
     }
 
 }
@@ -654,6 +663,9 @@ struct ProviderConnectionSheet: View {
                 case let .serverError(code):
                     errorTitle = "Server Error"
                     errorMessage = "The server returned an error (\(code)). Try again later."
+                case let .proRequired(feature):
+                    errorTitle = "Pro Required"
+                    errorMessage = "\(feature) requires Pro."
                 case .decodingError:
                     errorTitle = "Provider Response Changed"
                     errorMessage = "The key worked, but the provider returned data this build could not read. Try again from Settings or wait for the next update."

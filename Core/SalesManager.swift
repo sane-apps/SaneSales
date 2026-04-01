@@ -89,8 +89,9 @@ final class SalesManager {
     /// Each platform syncs this from its active licensing backend.
     var isPro: Bool = false {
         didSet {
+            let defaults = SharedStore.userDefaults()
+            defaults.set(isPro, forKey: SharedStore.proEnabledKey)
             #if os(macOS)
-                let defaults = SharedStore.userDefaults()
                 defaults.set(isPro, forKey: SharedStore.macOSWidgetsProEnabledKey)
             #endif
             reloadWidgets()
@@ -121,7 +122,11 @@ final class SalesManager {
     /// True when a free-tier user tries to add a second provider.
     /// Used by the UI to show the Pro upsell instead of connecting.
     var needsProForAdditionalProvider: Bool {
-        false
+        !isPro && !connectedProviders.isEmpty
+    }
+
+    func requiresProForProviderConnection(_ provider: SalesProviderType) -> Bool {
+        !isPro && !connectedProviders.isEmpty && !connectedProviders.contains(provider)
     }
 
     var planScopedOrders: [Order] {
@@ -233,6 +238,10 @@ final class SalesManager {
             return false
         }
 
+        guard allowProviderConnection(.lemonSqueezy) else {
+            return false
+        }
+
         let provider = LemonSqueezyProvider(apiKey: normalizedKey)
         do {
             let valid = try await provider.validateAPIKey(normalizedKey)
@@ -275,6 +284,10 @@ final class SalesManager {
             return false
         }
 
+        guard allowProviderConnection(.gumroad) else {
+            return false
+        }
+
         let provider = GumroadProvider(apiKey: normalizedKey)
         do {
             let valid = try await provider.validateAPIKey(normalizedKey)
@@ -314,6 +327,10 @@ final class SalesManager {
         let normalizedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !normalizedKey.isEmpty else {
             error = .invalidAPIKey
+            return false
+        }
+
+        guard allowProviderConnection(.stripe) else {
             return false
         }
 
@@ -407,6 +424,15 @@ final class SalesManager {
 
         isLoading = false
         reloadWidgets()
+    }
+
+    private func allowProviderConnection(_ provider: SalesProviderType) -> Bool {
+        guard requiresProForProviderConnection(provider) else {
+            return true
+        }
+
+        error = .proRequired(feature: "Connect multiple providers at once")
+        return false
     }
 
     /// Fetch all data from a single provider. Runs off MainActor.

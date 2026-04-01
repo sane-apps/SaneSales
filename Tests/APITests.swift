@@ -544,6 +544,63 @@ struct FreeTierPolicyTests {
             thirtyDayOrders: 12
         ) == .allTime)
     }
+
+    @Test("Free tier requires Pro to connect a second provider")
+    @MainActor
+    func freeTierRequiresProForAdditionalProviders() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        DemoData.loadInto(manager: manager, connectedProviders: [.lemonSqueezy])
+
+        #expect(manager.needsProForAdditionalProvider)
+        #expect(!manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Free tier still allows the first provider connection")
+    @MainActor
+    func freeTierAllowsInitialProviderConnection() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+
+        #expect(!manager.needsProForAdditionalProvider)
+        #expect(!manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(!manager.requiresProForProviderConnection(.gumroad))
+        #expect(!manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Pro allows multiple providers")
+    @MainActor
+    func proAllowsMultipleProviders() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        DemoData.loadInto(manager: manager, connectedProviders: [.lemonSqueezy])
+        manager.isPro = true
+
+        #expect(!manager.needsProForAdditionalProvider)
+        #expect(!manager.requiresProForProviderConnection(.gumroad))
+        #expect(!manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Shared Pro flag recognizes modern and legacy widget keys")
+    func sharedProFlagRecognizesModernAndLegacyKeys() {
+        let suiteName = "tests.sanesales.sharedstore.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suiteName) else {
+            Issue.record("Failed to create isolated defaults suite")
+            return
+        }
+
+        defaults.removePersistentDomain(forName: suiteName)
+        #expect(!SharedStore.isProEnabled(defaults: defaults))
+
+        defaults.set(true, forKey: SharedStore.proEnabledKey)
+        #expect(SharedStore.isProEnabled(defaults: defaults))
+
+        defaults.removeObject(forKey: SharedStore.proEnabledKey)
+        defaults.set(true, forKey: SharedStore.macOSWidgetsProEnabledKey)
+        #expect(SharedStore.isProEnabled(defaults: defaults))
+    }
 }
 
 // MARK: - Test-visible LS types (mirror private types for parsing tests)

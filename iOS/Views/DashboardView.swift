@@ -402,7 +402,7 @@ extension DashboardView {
                 }
                 ForEach(disconnected, id: \.self) { provider in
                     Button("Connect \(provider.displayName)") {
-                        quickConnectProvider = provider
+                        beginQuickConnect(provider)
                     }
                 }
             }
@@ -927,6 +927,22 @@ extension DashboardView {
                 NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
             }
         }
+    }
+
+    func beginQuickConnect(_ provider: SalesProviderType) {
+        if manager.requiresProForProviderConnection(provider) {
+            Task.detached {
+                await EventTracker.log("second_provider_attempt", app: "sanesales")
+            }
+            #if os(macOS)
+                proUpsellFeature = .multipleProviders
+            #else
+                queueLicenseSettingsRoute()
+            #endif
+            return
+        }
+
+        quickConnectProvider = provider
     }
 
     private var refreshButtonLabel: String {

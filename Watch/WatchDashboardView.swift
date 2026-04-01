@@ -9,9 +9,21 @@ final class WatchDashboardViewModel: ObservableObject {
     @Published private(set) var snapshot: WatchSalesSnapshot?
     @Published private(set) var isLoading = false
     @Published private(set) var usingDemoData = false
+    @Published private(set) var isLocked = false
 
     func refresh(useDemoIfEmpty: Bool = false) {
         isLoading = true
+        let defaults = SharedStore.userDefaults()
+
+        guard SharedStore.isProEnabled(defaults: defaults) else {
+            snapshot = nil
+            usingDemoData = false
+            isLocked = true
+            isLoading = false
+            return
+        }
+
+        isLocked = false
 
         let orders = loadOrders()
         let resolvedOrders: [Order]
@@ -42,7 +54,6 @@ final class WatchDashboardViewModel: ObservableObject {
             )
         }
 
-        let defaults = SharedStore.userDefaults()
         let lastUpdated = defaults.double(forKey: SharedStore.cacheLastUpdatedKey)
         let lastUpdatedDate = lastUpdated > 0 ? Date(timeIntervalSince1970: lastUpdated) : nil
 
@@ -165,6 +176,8 @@ struct WatchDashboardView: View {
                 GeometryReader { proxy in
                     watchContent(snapshot: snapshot, width: proxy.size.width)
                 }
+            } else if viewModel.isLocked {
+                lockedState
             } else {
                 emptyState
             }
@@ -335,6 +348,24 @@ struct WatchDashboardView: View {
                     )
             }
             .buttonStyle(.plain)
+        }
+        .padding(12)
+    }
+
+    private var lockedState: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(WatchPalette.salesGreen)
+
+            Text("SaneSales Pro")
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+
+            Text("Unlock Apple Watch access in SaneSales on iPhone.")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.white.opacity(0.9))
+                .multilineTextAlignment(.center)
         }
         .padding(12)
     }
