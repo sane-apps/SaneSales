@@ -1769,6 +1769,8 @@
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = SaneSales/Info.plist;
+				INFOPLIST_KEY_SUFeedURL = "https://sanesales.com/appcast.xml";
+				INFOPLIST_KEY_SUPublicEDKey = "7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
