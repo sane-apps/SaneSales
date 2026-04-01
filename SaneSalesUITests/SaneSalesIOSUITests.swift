@@ -54,15 +54,11 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(demoButton.waitForExistence(timeout: 5))
         demoButton.tap()
 
-        let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(tabBar.waitForExistence(timeout: 5))
+        XCTAssertTrue(waitForMainShell(app))
 
         let tabs = ["Dashboard", "Orders", "Products", "Settings"]
         for tab in tabs {
-            let tabButton = tabBar.buttons[tab]
-            XCTAssertTrue(tabButton.exists, "Missing tab: \(tab)")
-            tabButton.tap()
-            XCTAssertTrue(tabButton.isSelected, "Tab did not select: \(tab)")
+            openMainSection(tab, in: app)
         }
     }
 
@@ -83,9 +79,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(demoButton.waitForExistence(timeout: 5))
         demoButton.tap()
 
-        let settingsTab = app.tabBars.firstMatch.buttons["Settings"]
-        XCTAssertTrue(settingsTab.waitForExistence(timeout: 5))
-        settingsTab.tap()
+        XCTAssertTrue(waitForMainShell(app))
+        openMainSection("Settings", in: app)
 
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["settings.license.unlockProButton"].exists)
@@ -110,7 +105,7 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.secureTextFields["API Key"].exists)
     }
 
-    func testDisconnectedDashboardProviderStillOpensSetupInBasicMode() {
+    func testDisconnectedDashboardProviderRoutesToUpgradeInBasicMode() {
         let app = launchOnboarding(extraLaunchArguments: ["--demo-connected-provider=lemonsqueezy"])
 
         let demoButton = app.buttons["onboarding.demoButton"]
@@ -125,39 +120,56 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(connectGumroad.waitForExistence(timeout: 5))
         connectGumroad.tap()
 
-        XCTAssertTrue(app.staticTexts["Connect Gumroad Account"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.secureTextFields["API Key"].exists)
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
     func testLaunchDemoLimitsFreeModeToTodayAndLeavesAllProvidersConnectable() {
-        let app = XCUIApplication()
-        app.launchArguments += [
-            "--uitest-reset",
-            "--skip-onboarding",
-            "--demo",
-            "--demo-connected-provider=lemonsqueezy",
-            "--force-free-mode"
-        ]
-        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
-        app.launchEnvironment["SANEAPPS_FORCE_FREE_MODE"] = "1"
-        app.launch()
-
-        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 8))
+        let app = launchFreeDemo()
 
         let allTimeButton = app.buttons["dashboard.range.allTime"]
-        XCTAssertTrue(allTimeButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(allTimeButton.waitForExistence(timeout: 8))
         allTimeButton.tap()
 
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
 
-        let settingsTab = app.tabBars.firstMatch.buttons["Settings"]
-        if settingsTab.exists, !settingsTab.isSelected {
-            settingsTab.tap()
-        }
+        openMainSection("Settings", in: app)
 
         XCTAssertTrue(app.buttons["settings.provider.lemonsqueezy.manage"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["settings.provider.gumroad.connect"].exists)
         XCTAssertTrue(app.buttons["settings.provider.stripe.connect"].exists)
+    }
+
+    func testLaunchDemoInFreeModeLocksOlderOrderHistory() {
+        let app = launchFreeDemo()
+
+        openMainSection("Orders", in: app)
+
+        let unlockHistoryButton = app.buttons["Unlock Full History"]
+        XCTAssertTrue(unlockHistoryButton.waitForExistence(timeout: 5))
+        unlockHistoryButton.tap()
+
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
+    }
+
+    func testLaunchDemoInFreeModeShowsLockedCSVExport() {
+        let app = launchFreeDemo()
+
+        openMainSection("Settings", in: app)
+
+        let lockedExportButton = app.buttons["settings.data.export.lockedButton"]
+        XCTAssertTrue(lockedExportButton.waitForExistence(timeout: 5))
+    }
+
+    func testLaunchDemoInFreeModeLocksSecondProviderConnectionFromSettings() {
+        let app = launchFreeDemo()
+
+        openMainSection("Settings", in: app)
+
+        let connectGumroad = app.buttons["settings.provider.gumroad.connect"]
+        XCTAssertTrue(connectGumroad.waitForExistence(timeout: 5))
+        connectGumroad.tap()
+
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
     func testSeededLemonSqueezyKeySkipsOnboarding() throws {
@@ -195,6 +207,49 @@ final class SaneSalesIOSUITests: XCTestCase {
         app.launchArguments += ["--uitest-reset"] + extraLaunchArguments
         app.launch()
         return app
+    }
+
+    @discardableResult
+    private func launchFreeDemo() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "--uitest-reset",
+            "--skip-onboarding",
+            "--demo",
+            "--demo-connected-provider=lemonsqueezy",
+            "--force-free-mode"
+        ]
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_FORCE_FREE_MODE"] = "1"
+        app.launch()
+        XCTAssertTrue(waitForMainShell(app))
+        return app
+    }
+
+    private func waitForMainShell(_ app: XCUIApplication, timeout: TimeInterval = 8) -> Bool {
+        if app.buttons["dashboard.range.allTime"].waitForExistence(timeout: timeout) {
+            return true
+        }
+
+        if app.tabBars.firstMatch.waitForExistence(timeout: 1) {
+            return true
+        }
+
+        return app.buttons["Dashboard"].waitForExistence(timeout: 1)
+    }
+
+    private func openMainSection(_ title: String, in app: XCUIApplication) {
+        let tabButton = app.tabBars.firstMatch.buttons.matching(NSPredicate(format: "label == %@", title)).firstMatch
+        if tabButton.waitForExistence(timeout: 2) {
+            if !tabButton.isSelected {
+                tabButton.tap()
+            }
+            return
+        }
+
+        let sidebarButton = app.buttons.matching(NSPredicate(format: "label == %@", title)).firstMatch
+        XCTAssertTrue(sidebarButton.waitForExistence(timeout: 5), "Missing main section button: \(title)")
+        sidebarButton.tap()
     }
 
     private func loadSeededLemonSqueezyKeyBase64() throws -> String {

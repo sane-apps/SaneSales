@@ -426,6 +426,14 @@ struct SaneSalesMacSettingsView: View {
     }
 
     private func beginEditing(_ provider: SalesProviderType) {
+        if manager.requiresProForProviderConnection(provider) {
+            Task.detached {
+                await EventTracker.log("second_provider_attempt", app: "sanesales")
+            }
+            proUpsellFeature = .multipleProviders
+            return
+        }
+
         newAPIKey = ""
         editingProvider = provider
     }
