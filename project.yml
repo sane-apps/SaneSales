@@ -25,7 +25,7 @@ settings:
   SWIFT_EMIT_LOC_STRINGS: YES
   ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
   ENABLE_HARDENED_RUNTIME: YES
-  GENERATE_INFOPLIST_FILE: YES
+  GENERATE_INFOPLIST_FILE: NO
   CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING: YES
   CLANG_WARN_BOOL_CONVERSION: YES
   CLANG_WARN_COMMA: YES
@@ -203,6 +203,18 @@ targets:
           fi
         name: Run SwiftLint
         basedOnDependencyAnalysis: false
+    postBuildScripts:
+      - script: |
+          if [ "$CONFIGURATION" == "Release" ]; then
+            /usr/libexec/PlistBuddy -c "Set :SUFeedURL https://sanesales.com/appcast.xml" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || \
+              /usr/libexec/PlistBuddy -c "Add :SUFeedURL string https://sanesales.com/appcast.xml" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+            /usr/libexec/PlistBuddy -c "Set :SUPublicEDKey 7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || \
+              /usr/libexec/PlistBuddy -c "Add :SUPublicEDKey string 7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+            /usr/libexec/PlistBuddy -c "Set :SUEnableAutomaticChecks true" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || \
+              /usr/libexec/PlistBuddy -c "Add :SUEnableAutomaticChecks bool true" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+            /usr/libexec/PlistBuddy -c "Set :SUEnableInstallerLauncherService true" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}" 2>/dev/null || \
+              /usr/libexec/PlistBuddy -c "Add :SUEnableInstallerLauncherService bool true" "${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+          fi
 
   SaneSalesAppStore:
     type: application
