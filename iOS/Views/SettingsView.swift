@@ -89,15 +89,6 @@ struct SettingsView: View {
             .onChange(of: pendingSettingsRoute) { _, _ in
                 consumePendingSettingsRoute()
             }
-            .onReceive(NotificationCenter.default.publisher(for: .showSettingsProviderSetup)) { notification in
-                guard let rawValue = notification.object as? String,
-                      let provider = SalesProviderType(rawValue: rawValue)
-                else { return }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    startProviderConnection(provider)
-                }
-            }
         }
         #endif
     }
@@ -515,7 +506,7 @@ struct SettingsView: View {
         defer { pendingSettingsRoute = "" }
 
         if pendingSettingsRoute == "license" {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.async {
                 if licenseService.usesAppStorePurchase {
                     triggerUnlock()
                 } else {
@@ -529,7 +520,7 @@ struct SettingsView: View {
         let rawValue = String(pendingSettingsRoute.dropFirst("provider:".count))
         guard let provider = SalesProviderType(rawValue: rawValue) else { return }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.async {
             startProviderConnection(provider)
         }
     }

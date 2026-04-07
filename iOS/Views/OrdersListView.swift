@@ -582,13 +582,8 @@ struct OrdersListView: View {
             pendingSettingsRoute = "provider:\(provider.rawValue)"
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+        DispatchQueue.main.async {
             NotificationCenter.default.post(name: .showSettingsTab, object: nil)
-
-            guard let provider else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
-                NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
-            }
         }
     }
 
@@ -600,7 +595,7 @@ struct OrdersListView: View {
             proUpsellFeature = .orderHistory
         #else
             pendingSettingsRoute = "license"
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            DispatchQueue.main.async {
                 NotificationCenter.default.post(name: .showSettingsTab, object: nil)
             }
         #endif

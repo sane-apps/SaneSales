@@ -44,6 +44,31 @@ import SwiftUI
         }
     }
 
+    @MainActor
+    final class SettingsTabNavigationStorage {
+        static let shared = SettingsTabNavigationStorage()
+        private var pendingShowSettingsTab = false
+
+        func requestShowSettingsTab() {
+            pendingShowSettingsTab = true
+            WindowActionStorage.shared.showMainWindow()
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+            }
+        }
+
+        func consumePendingRequest() -> Bool {
+            guard pendingShowSettingsTab else { return false }
+            pendingShowSettingsTab = false
+            return true
+        }
+
+        func markRequestHandled() {
+            pendingShowSettingsTab = false
+        }
+    }
+
     // MARK: - Update Service
 
     #if !APP_STORE
@@ -154,10 +179,7 @@ import SwiftUI
         #endif
 
         @objc private func dockOpenSettings() {
-            WindowActionStorage.shared.showMainWindow()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
-            }
+            SettingsTabNavigationStorage.shared.requestShowSettingsTab()
         }
     }
 
@@ -328,10 +350,7 @@ import SwiftUI
         }
 
         private func showSettingsTab() {
-            WindowActionStorage.shared.showMainWindow()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
-            }
+            SettingsTabNavigationStorage.shared.requestShowSettingsTab()
         }
 
         private func handleMenuBarToggle(_ show: Bool) {
