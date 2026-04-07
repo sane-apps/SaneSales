@@ -16,7 +16,8 @@ struct SettingsSourceTests {
             encoding: .utf8
         )
 
-        #expect(macSettingsSource.contains("SaneSettingsContainer("))
+        #expect(macSettingsSource.contains("SaneGradientBackground(style: .panel)"))
+        #expect(macSettingsSource.contains("CompactSection("))
         #expect(macSettingsSource.contains("LicenseSettingsView("))
         #expect(macSettingsSource.contains("SaneAboutView("))
         #expect(macSettingsSource.contains("SaneSparkleRow("))
@@ -80,5 +81,78 @@ struct SettingsSourceTests {
 
         #expect(macInfo.contains("<key>UIPrefersShowingLanguageSettings</key>"))
         #expect(iosInfo.contains("<key>UIPrefersShowingLanguageSettings</key>"))
+    }
+
+    @Test("macOS settings navigation uses queued routing instead of timer delays")
+    func macSettingsNavigationUsesQueuedRouting() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let appSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesMacApp.swift"),
+            encoding: .utf8
+        )
+        let menuSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("macOS/MenuBarManager.swift"),
+            encoding: .utf8
+        )
+        let contentSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(appSource.contains("final class SettingsTabNavigationStorage"))
+        #expect(appSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab()"))
+        #expect(!appSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)"))
+        #expect(menuSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab()"))
+        #expect(!menuSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.15)"))
+        #expect(contentSource.contains("SettingsTabNavigationStorage.shared.consumePendingRequest()"))
+        #expect(contentSource.contains("SettingsTabNavigationStorage.shared.markRequestHandled()"))
+    }
+
+    @Test("In-app settings routes avoid timer-based follow-up notifications")
+    func inAppSettingsRoutesAvoidTimerBasedNotifications() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let dashboardSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/DashboardView.swift"),
+            encoding: .utf8
+        )
+        let ordersSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/OrdersListView.swift"),
+            encoding: .utf8
+        )
+        let productsSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/ProductsView.swift"),
+            encoding: .utf8
+        )
+        let settingsSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"),
+            encoding: .utf8
+        )
+        let contentSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(!dashboardSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.05)"))
+        #expect(!dashboardSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.15)"))
+        #expect(!ordersSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.05)"))
+        #expect(!ordersSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.12)"))
+        #expect(!productsSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.05)"))
+        #expect(!productsSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.12)"))
+        #expect(!settingsSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)"))
+        #expect(!dashboardSource.contains(".showSettingsProviderSetup"))
+        #expect(!ordersSource.contains(".showSettingsProviderSetup"))
+        #expect(!productsSource.contains(".showSettingsProviderSetup"))
+        #expect(!settingsSource.contains(".showSettingsProviderSetup"))
+        #expect(!contentSource.contains("showSettingsProviderSetup"))
+        #expect(dashboardSource.contains("DispatchQueue.main.async"))
+        #expect(ordersSource.contains("DispatchQueue.main.async"))
+        #expect(productsSource.contains("DispatchQueue.main.async"))
+        #expect(settingsSource.contains("DispatchQueue.main.async"))
     }
 }

@@ -129,11 +129,7 @@ final class MenuBarManager: NSObject {
     #endif
 
     @objc private func menuOpenSettings() {
-        WindowActionStorage.shared.showMainWindow()
-        // Switch to Settings tab after window is visible
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-            NotificationCenter.default.post(name: .showSettingsTab, object: nil)
-        }
+        SettingsTabNavigationStorage.shared.requestShowSettingsTab()
     }
 
     @objc private func menuQuit() {

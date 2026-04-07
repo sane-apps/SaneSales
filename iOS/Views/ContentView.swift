@@ -59,9 +59,15 @@ struct MainTabView: View {
         .accessibilityIdentifier("main.tabView")
         .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
             selectedSection = .settings
+            #if os(macOS)
+            SettingsTabNavigationStorage.shared.markRequestHandled()
+            #endif
         }
         #if os(macOS)
         .onAppear {
+            if SettingsTabNavigationStorage.shared.consumePendingRequest() {
+                selectedSection = .settings
+            }
             applyWindowSize(for: selectedSection, previousSection: nil)
         }
         .onChange(of: selectedSection) { oldValue, newValue in
@@ -325,7 +331,6 @@ private enum SaneSalesWindowSizing {
 
 extension Notification.Name {
     static let showSettingsTab = Notification.Name("com.sanesales.showSettingsTab")
-    static let showSettingsProviderSetup = Notification.Name("com.sanesales.showSettingsProviderSetup")
 }
 
 // MARK: - Onboarding

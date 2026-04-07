@@ -914,18 +914,15 @@ extension DashboardView {
 
     func queueLicenseSettingsRoute() {
         pendingSettingsRoute = "license"
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+        DispatchQueue.main.async {
             NotificationCenter.default.post(name: .showSettingsTab, object: nil)
         }
     }
 
     func queueSettingsRoute(for provider: SalesProviderType) {
         pendingSettingsRoute = "provider:\(provider.rawValue)"
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+        DispatchQueue.main.async {
             NotificationCenter.default.post(name: .showSettingsTab, object: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                NotificationCenter.default.post(name: .showSettingsProviderSetup, object: provider.rawValue)
-            }
         }
     }
 
