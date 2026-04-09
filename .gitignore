@@ -86,12 +86,14 @@ releases/
 .claude/sanetrack.log.old
 .claude/sanetools.log.old
 .claude/research_*.json*
+.claude/research-locks.json
 .claude/enforcement_*.json
 .claude/memory_checked.json
 .claude/recent_actions.json
 .claude/read_history.json
 .claude/user_patterns.json
 .claude/bypass_mode.txt
+.claude/sop-verify-state.json
 .claude/saneloop-archive/
 .claude/research/
 .claude/rule_tracking.jsonl
