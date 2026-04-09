@@ -59,6 +59,36 @@ log() {
   printf '[screenshots] %s\n' "$1"
 }
 
+wait_for_mac_window() {
+  local app_name="$1"
+  local attempts="${2:-40}"
+  local delay="${3:-0.25}"
+  local attempt=0
+
+  while [[ "${attempt}" -lt "${attempts}" ]]; do
+    if osascript >/dev/null 2>&1 <<EOF
+tell application "System Events"
+  if exists process "${app_name}" then
+    tell process "${app_name}"
+      if exists window 1 then
+        return true
+      end if
+    end tell
+  end if
+end tell
+return false
+EOF
+    then
+      return 0
+    fi
+
+    sleep "${delay}"
+    attempt=$((attempt + 1))
+  done
+
+  return 1
+}
+
 enforce_mini_first() {
   local host_short host_lc user_lc
   host_short="$(hostname -s 2>/dev/null || hostname)"
@@ -268,7 +298,11 @@ capture_mac_shot() {
 
   pkill -x SaneSales >/dev/null 2>&1 || true
   open -na "${app_path}" --args "$@" >/dev/null 2>&1
-  sleep 3.2
+  if ! wait_for_mac_window "SaneSales" 60 0.25; then
+    echo "Timed out waiting for the SaneSales window before capture." >&2
+    return 1
+  fi
+  sleep 0.8
 
   osascript <<EOF >/dev/null
 tell application "SaneSales" to activate

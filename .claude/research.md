@@ -47,3 +47,12 @@ Graduate verified findings to ARCHITECTURE.md or DEVELOPMENT.md.
 - Updated listing direction:
   - both macOS and iOS now lead with `Read-Only Sales Dashboard`
   - descriptions start with the dashboard value, then separate Free from Pro in a simple feature list
+
+## macOS Settings / Window Routing Research 2026-04-09
+**Updated:** 2026-04-09 | **Status:** verified | **TTL:** 30d
+**Source:** Apple docs for [`Settings`](https://developer.apple.com/documentation/swiftui/settings) and [`openWindow`](https://developer.apple.com/documentation/SwiftUI/EnvironmentValues/openWindow), GitHub examples/research around SwiftUI settings access, local audit of `macOS/SaneSalesMacApp.swift`, `macOS/MenuBarManager.swift`, and `Tests/SettingsSourceTests.swift`
+- Apple’s current SwiftUI model is to define a `Settings` scene for macOS and use environment-driven window actions like `openWindow` to front or create windows. That is the stable modern path, not old selector-based preferences hacks.
+- External GitHub research around SwiftUI settings access confirms legacy `NSApp.sendAction(showSettingsWindow:)` is brittle or removed in newer SwiftUI/macOS flows, especially around menu-bar-driven apps.
+- Local SaneSales code now routes both Dock and menu bar `Settings…` entry points through `SettingsTabNavigationStorage.requestShowSettingsTab()`, which first fronts the main window and then posts the settings-tab notification.
+- Local SaneSales code keeps `WindowActionStorage.showMainWindow()` as the single reopen/front path for status item clicks, Dock menu actions, and settings routing, reducing split behavior between window sources.
+- Local regression coverage in `Tests/SettingsSourceTests.swift` checks that Dock and menu bar settings actions both use the shared settings-tab navigation path, so release verification should focus on live UI confirmation rather than adding more source-only tests.
