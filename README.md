@@ -47,6 +47,16 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ---
 
+## Current Release
+
+**Current direct-download release: 1.2.6**
+
+- Cleans up settings navigation so menu-bar, dock, and in-app routes all open the intended settings surface
+- Keeps the website, appcast, and download assets aligned on the same live version
+- Preserves the current direct-download lane while App Store review continues separately
+
+---
+
 ## Supported Providers
 
 | Provider | Revenue | Orders | Products | Refunds | Pagination |
