@@ -1,6 +1,15 @@
-# Session Handoff
+# Session Handoff — SaneSales
 
-> Last updated: 2026-02-10
+**Last updated:** 2026-04-09
+**Current version:** `1.2.6` (build `1206`)
+
+## Current State
+
+- Use `CHANGELOG.md` and `project.yml` for the current release picture; the notes below capture older launch work only.
+- The old `WAITING_FOR_REVIEW` summary at the top of the historical notes is not current anymore.
+- Keep new handoff updates above the archival sections below.
+
+## Archived Notes
 
 ## Session 1: Full Project Scaffold
 
