@@ -391,14 +391,14 @@ struct SettingsView: View {
                 .buttonStyle(SaneActionButtonStyle(destructive: true))
             }
         } else if licenseService.usesAppStorePurchase {
-            Button(licenseService.isPurchasing ? "Processing..." : "Unlock Pro — \(licenseService.appStoreDisplayPrice ?? "$6.99")") {
+            Button(licenseService.isPurchasing ? "Processing..." : "Unlock Pro — \(licenseService.displayPriceLabel)") {
                 triggerUnlock()
             }
             .buttonStyle(SaneActionButtonStyle(prominent: true))
             .disabled(licenseService.isPurchasing)
             .accessibilityIdentifier("settings.license.unlockProButton")
         } else {
-            Button("Unlock Pro — $6.99") {
+            Button("Unlock Pro — \(licenseService.displayPriceLabel)") {
                 triggerUnlock()
             }
             .buttonStyle(SaneActionButtonStyle(prominent: true))

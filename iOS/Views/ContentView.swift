@@ -442,7 +442,7 @@ struct OnboardingView: View {
                         Text(
                             licenseService.isPurchasing
                                 ? "Processing..."
-                                : "Unlock Pro — " + (licenseService.appStoreDisplayPrice ?? "$6.99")
+                                : "Unlock Pro — \(licenseService.displayPriceLabel)"
                         )
                         .lineLimit(1)
                         .minimumScaleFactor(0.82)

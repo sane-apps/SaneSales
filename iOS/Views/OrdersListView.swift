@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OrdersListView: View {
     @Environment(SalesManager.self) private var manager
+    @Environment(LicenseService.self) private var licenseService
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var searchText = ""
@@ -10,7 +11,6 @@ struct OrdersListView: View {
     @State private var didLogOrderHistoryGate = false
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
-        @Environment(LicenseService.self) private var licenseService
     #endif
 
     private enum WidthClass {
@@ -283,9 +283,10 @@ struct OrdersListView: View {
                     Button {
                         showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
                     } label: {
-                        Label("Unlock Full History", systemImage: "arrow.up.right")
+                        Label("Unlock Full History — \(licenseService.displayPriceLabel)", systemImage: "arrow.up.right")
                     }
                     .buttonStyle(SaneActionButtonStyle(prominent: true))
+                    .accessibilityIdentifier("orders.unlockHistoryButton")
                 }
             }
         }
@@ -303,9 +304,10 @@ struct OrdersListView: View {
                 Button {
                     showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
                 } label: {
-                    Label("Unlock Full History", systemImage: "arrow.up.right")
+                    Label("Unlock Full History — \(licenseService.displayPriceLabel)", systemImage: "arrow.up.right")
                 }
                 .buttonStyle(SaneActionButtonStyle(prominent: true))
+                .accessibilityIdentifier("orders.unlockHistoryButton")
             }
         } else {
             HStack(alignment: .center, spacing: 12) {
@@ -319,9 +321,10 @@ struct OrdersListView: View {
                 Button {
                     showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
                 } label: {
-                    Label("Unlock Full History", systemImage: "arrow.up.right")
+                    Label("Unlock Full History — \(licenseService.displayPriceLabel)", systemImage: "arrow.up.right")
                 }
                 .buttonStyle(SaneActionButtonStyle(prominent: true))
+                .accessibilityIdentifier("orders.unlockHistoryButton")
             }
         }
     }
@@ -420,7 +423,7 @@ struct OrdersListView: View {
                                             .foregroundStyle(Color.textMuted)
                                     }
                                     Spacer()
-                                    Text("$6.99")
+                                    Text(licenseService.displayPriceLabel)
                                         .font(.saneSubheadlineBold)
                                         .foregroundStyle(.teal)
                                 }

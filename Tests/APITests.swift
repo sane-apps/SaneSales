@@ -495,7 +495,7 @@ struct AppStoreReviewPathTests {
         #expect(manifest.localizedCaseInsensitiveContains("open Settings and select the License tab"))
         #expect(macAppSource.contains("WelcomeGateView("))
         #expect(settingsSource.contains("GlassSection(\"License\""))
-        #expect(welcomeGateSource.contains("Text(licenseService.isPurchasing ? \"Processing...\" : \"Unlock Pro\")"))
+        #expect(welcomeGateSource.contains("Text(licenseService.isPurchasing ? \"Processing...\" : \"Unlock Pro — \\(licenseService.displayPriceLabel)\")"))
     }
 }
 

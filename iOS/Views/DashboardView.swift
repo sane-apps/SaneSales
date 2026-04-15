@@ -41,6 +41,7 @@ struct DashboardComparisonItem: Identifiable {
 struct DashboardView: View {
     @Environment(SalesManager.self) var manager
     @Environment(\.colorScheme) var colorScheme
+    @Environment(LicenseService.self) var licenseService
     @AppStorage("selectedTimeRange") var selectedRange: TimeRange = .today
     @AppStorage("pendingSettingsRoute") var pendingSettingsRoute = ""
     @State var selectedProviderFilter: SalesProviderType?
@@ -50,7 +51,6 @@ struct DashboardView: View {
     @Namespace var pickerNamespace
     #if os(macOS)
         @State var proUpsellFeature: ProFeature?
-        @Environment(LicenseService.self) var licenseService
     #endif
 
     enum DashboardLayout {

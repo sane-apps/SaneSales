@@ -1,10 +1,13 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-04-09
+**Last updated:** 2026-04-14
 **Current version:** `1.2.6` (build `1206`)
 
 ## Current State
 
+- Pricing rollout approved on 2026-04-14: direct and App Store copy should present `Basic free + Pro $24.99 once`. Keep StoreKit product ID `com.sanesales.app.pro.unlock.v2`.
+- Pricing language should stay consistent across README, `docs/index.html`, long-tail guide CTAs, and in-app unlock fallbacks. No apology pricing copy and no subscription wording for the product itself.
+- Track rollout impact with direct checkout conversion, App Store unlock rate, activation-to-paid conversion, and whether long-tail guide CTAs still pull traffic after the price increase.
 - Use `CHANGELOG.md` and `project.yml` for the current release picture; the notes below capture older launch work only.
 - The old `WAITING_FOR_REVIEW` summary at the top of the historical notes is not current anymore.
 - Keep new handoff updates above the archival sections below.
@@ -57,7 +60,7 @@
 6. **Notarized DMG built** — `release.sh` ran successfully. DMG uploaded to shared R2 bucket `sanebar-downloads`.
 7. **Appcast.xml created** — v1.0 entry with EdDSA signature for Sparkle updates.
 8. **Website deployed** — `docs/` deployed to Cloudflare Pages at sanesales.com.
-9. **LemonSqueezy product live** — Product ID 822714, $6.99, published. Checkout UUID: `5f7903d4-d6c8-4da4-b3e3-4586ef86bb51`.
+9. **LemonSqueezy product live** — Product ID 822714, published. Checkout UUID: `5f7903d4-d6c8-4da4-b3e3-4586ef86bb51`.
 10. **Checkout Worker updated** — `go.saneapps.com/buy/sanesales` → LemonSqueezy checkout (verified 302 redirect). All 5 products confirmed working.
 11. **saneapps.com updated** — SaneSales changed from "Coming Soon" to "Live" with link to sanesales.com. Deployed.
 12. **Desktop wallpaper created** — `~/Desktop/Wallpapers/SaneSales.png` using feathered circular alpha mask on real app icon over navy gradient. User said "PERFECT!!!!". Method saved to Serena memory `wallpaper-generation-method`.
