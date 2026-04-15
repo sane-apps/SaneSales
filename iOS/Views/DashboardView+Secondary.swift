@@ -38,7 +38,7 @@ extension DashboardView {
                     Button {
                         showLockedFeature(event: "chart_locked_tap")
                     } label: {
-                        Label("Unlock Pro", systemImage: "lock.fill")
+                        Label("Unlock Pro — \(licenseService.displayPriceLabel)", systemImage: "lock.fill")
                     }
                     .buttonStyle(SaneActionButtonStyle(prominent: true))
                 }

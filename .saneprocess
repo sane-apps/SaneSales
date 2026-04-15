@@ -182,6 +182,7 @@ appstore:
       - Connecting LemonSqueezy, Gumroad, or Stripe is optional and does not unlock paid app features or digital content.
   iap:
     display_name: "SaneSales Pro Unlock"
+    price_usd: 24.99
     description: "Unlock Pro analytics with one purchase."
     review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
   accessibility_declarations:

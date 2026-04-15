@@ -144,7 +144,7 @@ final class SaneSalesIOSUITests: XCTestCase {
 
         openMainSection("Orders", in: app)
 
-        let unlockHistoryButton = app.buttons["Unlock Full History"]
+        let unlockHistoryButton = app.buttons["orders.unlockHistoryButton"]
         XCTAssertTrue(unlockHistoryButton.waitForExistence(timeout: 5))
         unlockHistoryButton.tap()
 

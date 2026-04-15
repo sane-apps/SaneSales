@@ -56,3 +56,20 @@ Graduate verified findings to ARCHITECTURE.md or DEVELOPMENT.md.
 - Local SaneSales code now routes both Dock and menu bar `Settings…` entry points through `SettingsTabNavigationStorage.requestShowSettingsTab()`, which first fronts the main window and then posts the settings-tab notification.
 - Local SaneSales code keeps `WindowActionStorage.showMainWindow()` as the single reopen/front path for status item clicks, Dock menu actions, and settings routing, reducing split behavior between window sources.
 - Local regression coverage in `Tests/SettingsSourceTests.swift` checks that Dock and menu bar settings actions both use the shared settings-tab navigation path, so release verification should focus on live UI confirmation rather than adding more source-only tests.
+
+## Pricing Upgrade Surface Research 2026-04-14
+**Updated:** 2026-04-14 | **Status:** verified | **TTL:** 30d
+**Source:** Apple docs for [`Settings`](https://developer.apple.com/documentation/swiftui/settings), StoreKit pricing display patterns, GitHub search for current SwiftUI + StoreKit upgrade CTA examples, local audit of `iOS/Views/ContentView.swift`, `iOS/Views/SettingsView.swift`, `iOS/Views/OrdersListView.swift`, and shared `infra/SaneUI/Sources/SaneUI/License/*`
+- The shared pricing source of truth for SaneSales is `LicenseService.displayPriceLabel`, which already resolves the live StoreKit/App Store price when available and falls back to the approved one-time sticker price otherwise.
+- SaneSales macOS already routes setup, upsell, and license settings through shared `SaneUI` surfaces, so the remaining drift was iOS-only.
+- The iOS setup and upgrade path previously had three local `$24.99` strings in onboarding, settings, and locked-history upsell rows. Those are now patched to use `licenseService.displayPriceLabel` so App Store and future price changes stay centralized.
+- The post-patch code-only audit shows no remaining non-doc/test hardcoded upgrade prices in SaneSales outside the single approved fallback label in `macOS/SaneSalesSettingsCopy.swift`.
+- SaneBar still owns a local licensing layer instead of shared `SaneUI`, so it requires its own computed `displayPriceLabel`; onboarding and local pro-upsell views must read that property rather than embedding `$14.99` in view code.
+
+## Verify Recovery After Pricing Sweep 2026-04-14
+**Updated:** 2026-04-14 | **Status:** verified | **TTL:** 7d
+**Source:** local Mini verify/build logs, local code audit, Swift docs search, GitHub search
+- The first post-pricing Mini `verify --quiet` failure was not a real product bug. It was a Swift type-inference issue in `macOS/SaneSalesSettingsCopy.swift` where `LicenseSettingsView<LicenseService>.Labels(...)` needed an explicit type annotation plus `.init(...)`.
+- After changing that declaration to `static let licenseLabels: LicenseSettingsView<LicenseService>.Labels = .init(...)`, the compile blocker was removed.
+- The Mini project also needed the local-package sync: `project.yml` and `SaneSales.xcodeproj/project.pbxproj` had to point at the monorepo `../../infra/SaneUI` path on the Mini, otherwise `displayPriceLabel` changes in shared SaneUI would not be visible during app builds.
+- Current runtime-pricing source of truth remains `licenseService.displayPriceLabel` for iOS upgrade CTAs, with the macOS settings copy providing only the approved fallback label if live price resolution is unavailable.

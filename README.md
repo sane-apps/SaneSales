@@ -10,11 +10,11 @@
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg?style=flat-square)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
-[![Price](https://img.shields.io/badge/Price-$6.99_one--time-green?style=flat-square)](https://sanesales.com)
+[![Price](https://img.shields.io/badge/Price-$24.99_one--time-green?style=flat-square)](https://sanesales.com)
 [![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](PRIVACY.md)
 [![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Star this repo if you find it useful!** &middot; **[Buy — $6.99](https://sanesales.com)** &middot; Keeps development alive
+> **Star this repo if you find it useful!** &middot; **[Buy — $24.99](https://sanesales.com)** &middot; Keeps development alive
 
 </div>
 
@@ -89,10 +89,10 @@ SaneSales is the opposite:
 | **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
-| **No subscription** | **$6.99 once** | $29+/mo | $99+/mo | Free |
+| **No subscription** | **$24.99 once** | $29+/mo | $99+/mo | Free |
 | **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
 
-> **$6.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
+> **$24.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
 
 ---
 
@@ -100,11 +100,11 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — $6.99
+**[Download from sanesales.com](https://sanesales.com)** — $24.99
 
 Also coming to the iOS & Mac App Store (submitted, awaiting review).
 
-> *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
+> Pay once. Keep the full Pro dashboard. No subscription.
 
 Or [build from source](#development) — it's PolyForm Shield licensed, always will be.
 

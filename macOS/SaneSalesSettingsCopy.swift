@@ -351,7 +351,7 @@ enum SaneSalesSettingsCopy {
         )
     )
 
-    static let licenseLabels = LicenseSettingsView.Labels(
+    static let licenseLabels: LicenseSettingsView<LicenseService>.Labels = .init(
         sectionTitle: String(
             localized: "sanesales.settings.license.section_title",
             defaultValue: "License"
@@ -396,7 +396,7 @@ enum SaneSalesSettingsCopy {
             localized: "sanesales.settings.license.unlock_prefix",
             defaultValue: "Unlock Pro —"
         ),
-        fallbackPriceLabel: "$6.99",
+        fallbackPriceLabel: "$24.99",
         directEntryLabel: String(
             localized: "sanesales.settings.license.enter_license_key",
             defaultValue: "Enter License Key"
