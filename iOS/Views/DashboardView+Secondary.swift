@@ -24,7 +24,7 @@ extension DashboardView {
             GlassSection("Charts • Pro", icon: "chart.xyaxis.line", iconColor: .metricToday) {
                 HStack(alignment: .center, spacing: 14) {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Unlock 7D, 30D, all-time trends, and deeper comparisons.")
+                        Text("Unlock 7D, 30D, custom date ranges, all-time trends, and deeper comparisons.")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
@@ -58,26 +58,19 @@ extension DashboardView {
     }
 
     var chartData: [DailySales] {
-        let days: Int = switch selectedRange {
-        case .today: 1
-        case .sevenDays: 7
-        case .thirtyDays: 30
-        case .allTime: dashboardMetrics.dailyBreakdown.count
-        }
-
-        return Array(dashboardMetrics.dailyBreakdown.prefix(days).reversed())
+        chartSeries
     }
 
     var topProductsSection: some View {
         GlassSection("Top Products", icon: "star.fill", iconColor: .salesWarning) {
-            if dashboardMetrics.productBreakdown.isEmpty {
-                Text(manager.products.isEmpty ? "No products yet" : "No sales yet today")
+            if selectedRangeMetrics.productBreakdown.isEmpty {
+                Text(manager.products.isEmpty ? "No products yet" : "No sales in this range")
                     .foregroundStyle(Color.textMuted)
                     .frame(maxWidth: .infinity)
                     .padding()
             } else {
                 VStack(spacing: 0) {
-                    ForEach(Array(dashboardMetrics.productBreakdown.prefix(5).enumerated()), id: \.element.id) { index, product in
+                    ForEach(Array(selectedRangeMetrics.productBreakdown.prefix(5).enumerated()), id: \.element.id) { index, product in
                         if index > 0 { GlassDivider() }
 
                         HStack(spacing: 12) {
@@ -142,7 +135,7 @@ extension DashboardView {
 
     private func liveChartSection(_ widthClass: WidthClass) -> some View {
         GlassSection("Revenue Trend", icon: "chart.xyaxis.line", iconColor: .metricToday) {
-            if dashboardMetrics.dailyBreakdown.isEmpty {
+            if chartData.isEmpty {
                 ContentUnavailableView(
                     "No Data",
                     systemImage: "chart.line.uptrend.xyaxis",

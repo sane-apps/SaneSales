@@ -1,9 +1,19 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-04-14
-**Current version:** `1.2.6` (build `1206`)
+**Last updated:** 2026-04-23
+**Current version:** `1.3.0` (build `1300`) release candidate
 
 ## Current State
+
+## 2026-04-23: SaneSales 1.3.0 Release Candidate
+
+- Added Pro custom date ranges with editable start/end dates and a calendar range picker.
+- Dashboard and Orders now share the selected custom range and enforce Basic gating correctly.
+- App Store entitlement refresh now picks up redeemed offer codes/restored purchases more reliably through shared SaneUI license refresh work.
+- Updated App Store metadata, README, changelog, website copy, and website screenshots for the custom-range release.
+- Refreshed canonical App Store screenshot files from the Mini-verified Pro screenshots.
+- Mini verification: `./scripts/SaneMaster.rb verify --ui` passed with 83 tests on 2026-04-23.
+- Mini preflights: `release_preflight` and `appstore_preflight` pass with warnings only. Expected pre-publish warnings remain for appcast/Homebrew/webhook still on 1.2.7 until the release deploy updates live channels.
 
 - Pricing rollout approved on 2026-04-14: direct and App Store copy should present `Basic free + Pro $24.99 once`. Keep StoreKit product ID `com.sanesales.app.pro.unlock.v2`.
 - Pricing language should stay consistent across README, `docs/index.html`, long-tail guide CTAs, and in-app unlock fallbacks. No apology pricing copy and no subscription wording for the product itself.

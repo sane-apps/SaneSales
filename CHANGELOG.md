@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Adds Pro custom date ranges with a dedicated calendar range picker and editable start/end dates.
+- Keeps Dashboard and Orders in sync when a custom range is applied.
+- Refreshes Basic and Pro gating copy so locked ranges, history, and export explain the upgrade clearly.
+- Improves App Store entitlement refresh so redeemed offer codes and restored purchases are picked up more reliably.
+
+---
+
 ## 1.2.7
 
 - Updates Pro pricing copy so settings, locked views, and other Basic-to-Pro prompts consistently show the current $24.99 one-time unlock.

@@ -2,6 +2,10 @@ import Foundation
 import SaneUI
 import SwiftUI
 
+#if os(iOS)
+import UIKit
+#endif
+
 @main
 struct SaneSalesApp: App {
     @State private var manager = SalesManager()
@@ -11,6 +15,17 @@ struct SaneSalesApp: App {
     )
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("demo_mode") private var demoModeEnabled = false
+
+    init() {
+        #if os(iOS)
+        configureTabBarAppearance()
+        #endif
+        if CommandLine.arguments.contains("--uitest-reset") {
+            SalesManager.resetUITestPersistentState()
+        }
+
+        SaneSalesLaunchOverrides.applyPersistentUIState()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -48,13 +63,13 @@ struct SaneSalesApp: App {
                     debugLogStartupState(reason: "orders")
                 }
                 .onChange(of: licenseService.isPro) { _, isPro in
-                    manager.isPro = isPro
+                    manager.isPro = forcedProModeEnabled || isPro
                     debugLogStartupState(reason: "license")
                 }
                 .task {
                     licenseService.checkCachedLicense()
-                    manager.isPro = licenseService.isPro
-                    if CommandLine.arguments.contains("--uitest-reset") {
+                    manager.isPro = forcedProModeEnabled || licenseService.isPro
+        if CommandLine.arguments.contains("--uitest-reset") {
                         manager.resetForUITests()
                     }
                     if CommandLine.arguments.contains("--demo") {
@@ -65,6 +80,11 @@ struct SaneSalesApp: App {
                     }
                 }
         }
+    }
+
+    private var forcedProModeEnabled: Bool {
+        let environment = ProcessInfo.processInfo.environment
+        return environment["SANEAPPS_FORCE_PRO_MODE"] == "1" || CommandLine.arguments.contains("--force-pro-mode")
     }
 
     private var shouldShowInitialSetup: Bool {
@@ -121,4 +141,33 @@ struct SaneSalesApp: App {
             productsCount: manager.products.count
         )
     }
+
+    #if os(iOS)
+    private func configureTabBarAppearance() {
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(red: 8 / 255, green: 11 / 255, blue: 20 / 255, alpha: 0.98)
+        appearance.shadowColor = UIColor.white.withAlphaComponent(0.08)
+
+        let selectedColor = UIColor(Color.salesGreen)
+        let normalColor = UIColor.white.withAlphaComponent(0.78)
+        let itemAppearances = [
+            appearance.stackedLayoutAppearance,
+            appearance.inlineLayoutAppearance,
+            appearance.compactInlineLayoutAppearance
+        ]
+
+        itemAppearances.forEach { itemAppearance in
+            itemAppearance.normal.iconColor = normalColor
+            itemAppearance.normal.titleTextAttributes = [.foregroundColor: normalColor]
+            itemAppearance.selected.iconColor = selectedColor
+            itemAppearance.selected.titleTextAttributes = [.foregroundColor: selectedColor]
+        }
+
+        let proxy = UITabBar.appearance()
+        proxy.isTranslucent = false
+        proxy.standardAppearance = appearance
+        proxy.scrollEdgeAppearance = appearance
+    }
+    #endif
 }

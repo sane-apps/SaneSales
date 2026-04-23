@@ -2,6 +2,205 @@
 import SwiftUI
 import SaneUI
 
+import Foundation
+
+enum SaneSalesDateRangeStore {
+    static let selectedRangeKey = "selectedTimeRange"
+    static let customStartKey = "customDateRangeStart"
+    static let customEndKey = "customDateRangeEnd"
+
+    static var defaultCustomStartTimestamp: Double {
+        defaultCustomInterval().start.timeIntervalSince1970
+    }
+
+    static var defaultCustomEndTimestamp: Double {
+        defaultCustomInterval().end.timeIntervalSince1970
+    }
+
+    static func defaultCustomInterval(now: Date = Date(), calendar: Calendar = .current) -> DateInterval {
+        let end = calendar.endOfDay(for: now)
+        let startOfToday = calendar.startOfDay(for: now)
+        let start = calendar.date(byAdding: .day, value: -13, to: startOfToday) ?? startOfToday
+        return DateInterval(start: start, end: end)
+    }
+
+    static func normalizedInterval(
+        start: Date,
+        end: Date,
+        maximumDate: Date = Date(),
+        calendar: Calendar = .current
+    ) -> DateInterval {
+        let lowerBound = min(start, end)
+        let upperBound = min(max(start, end), maximumDate)
+        let startOfRange = min(calendar.startOfDay(for: lowerBound), calendar.startOfDay(for: maximumDate))
+        let endOfRange = max(startOfRange, calendar.endOfDay(for: upperBound))
+        return DateInterval(start: startOfRange, end: endOfRange)
+    }
+
+    static func interval(
+        for range: TimeRange,
+        customStart: Date,
+        customEnd: Date,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> DateInterval? {
+        let end = calendar.endOfDay(for: now)
+        let startOfToday = calendar.startOfDay(for: now)
+
+        switch range {
+        case .today:
+            return DateInterval(start: startOfToday, end: end)
+        case .sevenDays:
+            let start = calendar.date(byAdding: .day, value: -6, to: startOfToday) ?? startOfToday
+            return DateInterval(start: start, end: end)
+        case .thirtyDays:
+            let start = calendar.date(byAdding: .day, value: -29, to: startOfToday) ?? startOfToday
+            return DateInterval(start: start, end: end)
+        case .allTime:
+            return nil
+        case .custom:
+            return normalizedInterval(start: customStart, end: customEnd, maximumDate: now, calendar: calendar)
+        }
+    }
+
+    static func previousInterval(
+        for range: TimeRange,
+        customStart: Date,
+        customEnd: Date,
+        now: Date = Date(),
+        calendar: Calendar = .current
+    ) -> DateInterval? {
+        guard let currentInterval = interval(
+            for: range,
+            customStart: customStart,
+            customEnd: customEnd,
+            now: now,
+            calendar: calendar
+        ) else {
+            return nil
+        }
+
+        let days = dayCount(in: currentInterval, calendar: calendar)
+        let previousEndDay = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: currentInterval.start))
+            ?? currentInterval.start
+        let previousStartDay = calendar.date(byAdding: .day, value: -(days - 1), to: previousEndDay)
+            ?? previousEndDay
+        return DateInterval(start: calendar.startOfDay(for: previousStartDay), end: calendar.endOfDay(for: previousEndDay))
+    }
+
+    static func title(for range: TimeRange) -> String {
+        switch range {
+        case .today:
+            return "Today"
+        case .sevenDays:
+            return "7 Days"
+        case .thirtyDays:
+            return "30 Days"
+        case .allTime:
+            return "All Time"
+        case .custom:
+            return "Custom Range"
+        }
+    }
+
+    static func summaryLabel(
+        for range: TimeRange,
+        customStart: Date,
+        customEnd: Date,
+        calendar: Calendar = .current
+    ) -> String {
+        switch range {
+        case .today:
+            return "Today"
+        case .sevenDays:
+            return "Last 7 days"
+        case .thirtyDays:
+            return "Last 30 days"
+        case .allTime:
+            return "All time"
+        case .custom:
+            let interval = normalizedInterval(start: customStart, end: customEnd, calendar: calendar)
+            let formatter = DateIntervalFormatter()
+            formatter.calendar = calendar
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter.string(from: interval.start, to: interval.end)
+        }
+    }
+
+    static func compactLabel(
+        for range: TimeRange,
+        customStart: Date,
+        customEnd: Date,
+        calendar: Calendar = .current
+    ) -> String {
+        switch range {
+        case .today:
+            return "Today"
+        case .sevenDays:
+            return "7D"
+        case .thirtyDays:
+            return "30D"
+        case .allTime:
+            return "All"
+        case .custom:
+            let interval = normalizedInterval(start: customStart, end: customEnd, calendar: calendar)
+            let formatter = DateIntervalFormatter()
+            formatter.calendar = calendar
+            formatter.dateTemplate = "MMM d"
+            return formatter.string(from: interval.start, to: interval.end)
+        }
+    }
+
+    static func dayCount(in interval: DateInterval, calendar: Calendar = .current) -> Int {
+        let startDay = calendar.startOfDay(for: interval.start)
+        let endDay = calendar.startOfDay(for: interval.end)
+        let components = calendar.dateComponents([.day], from: startDay, to: endDay)
+        return max(1, (components.day ?? 0) + 1)
+    }
+
+    static func dailySeries(
+        from orders: [Order],
+        in interval: DateInterval,
+        calendar: Calendar = .current
+    ) -> [DailySales] {
+        let normalized = normalizedInterval(start: interval.start, end: interval.end, maximumDate: interval.end, calendar: calendar)
+        let paidOrders = orders.filter { order in
+            order.status == .paid && order.createdAt >= normalized.start && order.createdAt <= normalized.end
+        }
+        let grouped = Dictionary(grouping: paidOrders) { order in
+            calendar.startOfDay(for: order.createdAt)
+        }
+
+        let endDay = calendar.startOfDay(for: normalized.end)
+        var currentDay = calendar.startOfDay(for: normalized.start)
+        var series: [DailySales] = []
+
+        while currentDay <= endDay {
+            let dayOrders = grouped[currentDay] ?? []
+            series.append(
+                DailySales(
+                    date: currentDay,
+                    revenue: dayOrders.reduce(0) { $0 + $1.netTotal },
+                    orderCount: dayOrders.count
+                )
+            )
+            guard let nextDay = calendar.date(byAdding: .day, value: 1, to: currentDay) else { break }
+            currentDay = nextDay
+        }
+
+        return series
+    }
+}
+
+extension Calendar {
+    func endOfDay(for date: Date) -> Date {
+        let start = startOfDay(for: date)
+        let next = self.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86_400)
+        return next.addingTimeInterval(-1)
+    }
+}
+
 // MARK: - Time Range
 
 enum TimeRange: String, CaseIterable {
@@ -9,6 +208,7 @@ enum TimeRange: String, CaseIterable {
     case sevenDays = "7D"
     case thirtyDays = "30D"
     case allTime = "All"
+    case custom = "Custom"
 }
 
 enum SaneSalesFreeTierPolicy {
@@ -42,12 +242,15 @@ struct DashboardView: View {
     @Environment(SalesManager.self) var manager
     @Environment(\.colorScheme) var colorScheme
     @Environment(LicenseService.self) var licenseService
-    @AppStorage("selectedTimeRange") var selectedRange: TimeRange = .today
-    @AppStorage("pendingSettingsRoute") var pendingSettingsRoute = ""
-    @State var selectedProviderFilter: SalesProviderType?
-    @State var quickConnectProvider: SalesProviderType?
-    @State var animateCards = false
+    @AppStorage(SaneSalesDateRangeStore.selectedRangeKey) var selectedRange: TimeRange = .today
+    @AppStorage(SaneSalesDateRangeStore.customStartKey) private var customRangeStartTimestamp = SaneSalesDateRangeStore.defaultCustomStartTimestamp
+    @AppStorage(SaneSalesDateRangeStore.customEndKey) private var customRangeEndTimestamp = SaneSalesDateRangeStore.defaultCustomEndTimestamp
+    @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
+    @State private var selectedProviderFilter: SalesProviderType?
+    @State private var quickConnectProvider: SalesProviderType?
+    @State private var animateCards = false
     @State var didLogChartGateView = false
+    @State private var showingCustomRangeSheet = false
     @Namespace var pickerNamespace
     #if os(macOS)
         @State var proUpsellFeature: ProFeature?
@@ -180,6 +383,11 @@ struct DashboardView: View {
                 }
             }
             .navigationTitle("Dashboard")
+            #if os(iOS)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+            }
+            #endif
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     if manager.isLoading {
@@ -229,6 +437,15 @@ struct DashboardView: View {
             }
             .onChange(of: manager.orders.count) { _, _ in
                 enforceFreeTierRange()
+            }
+            .sheet(isPresented: $showingCustomRangeSheet) {
+                SalesCustomDateRangeSheet(
+                    startDate: customRangeStartDate,
+                    endDate: customRangeEndDate,
+                    maximumDate: Date()
+                ) { start, end in
+                    applyCustomRange(start: start, end: end)
+                }
             }
             #if os(macOS)
             .sheet(item: $proUpsellFeature) { feature in
@@ -322,6 +539,13 @@ extension DashboardView {
                         .foregroundStyle(Color.textMuted)
                 }
             }
+
+            if shouldShowCustomRangeSummary {
+                Text(customRangeSummary)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.9))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -334,50 +558,60 @@ extension DashboardView {
             VStack(alignment: .leading, spacing: 10) {
                 providerMenu
                 timeRangePicker
+                if shouldShowCustomRangeSummary {
+                    customRangeSummaryRow
+                }
             }
         } else {
-            HStack(alignment: .center, spacing: 12) {
-                providerMenu
-                    .frame(maxWidth: 260, alignment: .leading)
-                timeRangePicker
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .center, spacing: 12) {
+                    providerMenu
+                        .frame(maxWidth: 260, alignment: .leading)
+                    timeRangePicker
+                }
+
+                if shouldShowCustomRangeSummary {
+                    customRangeSummaryRow
+                }
             }
         }
     }
 
     private var timeRangePicker: some View {
-        HStack(spacing: 0) {
-            ForEach(TimeRange.allCases, id: \.self) { range in
-                Button {
-                    handleRangeSelection(range)
-                } label: {
-                    HStack(spacing: 4) {
-                        Text(range.rawValue)
-                        if isLockedRange(range) {
-                            Image(systemName: "lock.fill")
-                                .font(.system(size: 9, weight: .bold))
-                        }
-                    }
-                    .font(.saneCallout)
-                    .foregroundStyle(selectedRange == range ? .white : Color.textMuted)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 36)
-                    .contentShape(Rectangle())
-                    .background {
-                        if selectedRange == range {
-                            Capsule()
-                                .fill(Color.salesGreen)
-                                .matchedGeometryEffect(id: "picker", in: pickerNamespace)
-                        }
-                    }
-                }
-                .buttonStyle(.plain)
-                .modifier(DashboardRangeAccessibilityModifier(range: range))
+        SalesDateRangePicker(
+            scope: "dashboard",
+            selectedRange: selectedRange,
+            isRangeLocked: isLockedRange,
+            onSelect: handleRangeSelection
+        )
+    }
+
+    private var customRangeSummaryRow: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "calendar.badge.clock")
+                .foregroundStyle(Color.salesGreen)
+            Text(customRangeSummary)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white.opacity(0.92))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer()
+            Button("Edit") {
+                showingCustomRangeSheet = true
             }
+            .font(.system(size: 13, weight: .semibold))
+            .foregroundStyle(Color.salesGreen)
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("dashboard.customRange.editButton")
         }
-        .padding(3)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .background(
-            Capsule()
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color.salesControlSurface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .stroke(Color.salesPanelStroke, lineWidth: 1)
+                )
         )
     }
 
@@ -678,34 +912,70 @@ extension DashboardView {
     }
 
     var dashboardMetrics: SalesMetrics {
-        SalesMetrics.compute(from: dashboardOrders)
+        manager.metrics(filteredBy: selectedProviderFilter, scopedToPlan: true)
+    }
+
+    var customRangeStartDate: Date {
+        Date(timeIntervalSince1970: customRangeStartTimestamp)
+    }
+
+    var customRangeEndDate: Date {
+        Date(timeIntervalSince1970: customRangeEndTimestamp)
+    }
+
+    var selectedDateInterval: DateInterval? {
+        SaneSalesDateRangeStore.interval(
+            for: selectedRange,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
+    var previousDateInterval: DateInterval? {
+        SaneSalesDateRangeStore.previousInterval(
+            for: selectedRange,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
+    var selectedRangeOrders: [Order] {
+        manager.planScopedOrders(filteredBy: selectedProviderFilter, in: selectedDateInterval)
+    }
+
+    var selectedRangeMetrics: SalesMetrics {
+        manager.metrics(filteredBy: selectedProviderFilter, in: selectedDateInterval, scopedToPlan: true)
+    }
+
+    var chartSeries: [DailySales] {
+        if let selectedDateInterval {
+            return SaneSalesDateRangeStore.dailySeries(from: dashboardOrders, in: selectedDateInterval)
+        }
+        return Array(selectedRangeMetrics.dailyBreakdown.reversed())
+    }
+
+    var customRangeSummary: String {
+        SaneSalesDateRangeStore.summaryLabel(
+            for: .custom,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
+    var shouldShowCustomRangeSummary: Bool {
+        manager.isPro && selectedRange == .custom
     }
 
     var revenueForRange: Int {
-        switch selectedRange {
-        case .today: dashboardMetrics.todayRevenue
-        case .sevenDays: revenueForDays(7)
-        case .thirtyDays: revenueForDays(30)
-        case .allTime: dashboardMetrics.allTimeRevenue
-        }
+        selectedRangeMetrics.allTimeRevenue
     }
 
     var ordersForRange: Int {
-        switch selectedRange {
-        case .today: dashboardMetrics.todayOrders
-        case .sevenDays: ordersForDays(7)
-        case .thirtyDays: ordersForDays(30)
-        case .allTime: dashboardMetrics.allTimeOrders
-        }
+        selectedRangeMetrics.allTimeOrders
     }
 
     var rangeLabel: String {
-        switch selectedRange {
-        case .today: "Today"
-        case .sevenDays: "7 Days"
-        case .thirtyDays: "30 Days"
-        case .allTime: "All Time"
-        }
+        SaneSalesDateRangeStore.title(for: selectedRange)
     }
 
     var comparisonDelta: Int {
@@ -722,60 +992,54 @@ extension DashboardView {
     }
 
     var previousPeriodRevenue: Int {
-        let daily = dashboardMetrics.dailyBreakdown
-        let cal = Calendar.current
-        switch selectedRange {
-        case .today:
-            return daily.first(where: { cal.isDateInYesterday($0.date) })?.revenue ?? 0
-        case .sevenDays:
-            return revenueInRange(daysAgo: 14, daysUntil: 7)
-        case .thirtyDays:
-            return revenueInRange(daysAgo: 60, daysUntil: 30)
-        case .allTime:
-            return 0
-        }
+        guard let previousDateInterval else { return 0 }
+        return manager.metrics(
+            filteredBy: selectedProviderFilter,
+            in: previousDateInterval,
+            scopedToPlan: true
+        ).allTimeRevenue
     }
 
     var averageDailyRevenue: Int? {
         guard selectedRange != .today else { return nil }
-        let days: Int = switch selectedRange {
-        case .today: 1
-        case .sevenDays: 7
-        case .thirtyDays: 30
-        case .allTime: max(1, dashboardMetrics.dailyBreakdown.count)
+        let days = if let selectedDateInterval {
+            SaneSalesDateRangeStore.dayCount(in: selectedDateInterval)
+        } else {
+            max(1, selectedRangeMetrics.dailyBreakdown.count)
         }
         return revenueForRange / max(1, days)
     }
 
     var averageDailyOrders: Double {
-        let days: Double = switch selectedRange {
-        case .today: 1
-        case .sevenDays: 7
-        case .thirtyDays: 30
-        case .allTime: max(1, Double(dashboardMetrics.dailyBreakdown.count))
+        let days: Double = if let selectedDateInterval {
+            Double(SaneSalesDateRangeStore.dayCount(in: selectedDateInterval))
+        } else {
+            max(1, Double(selectedRangeMetrics.dailyBreakdown.count))
         }
         return Double(ordersForRange) / days
     }
 
     func revenueForDays(_ days: Int) -> Int {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days + 1, to: Calendar.current.startOfDay(for: Date()))
+            ?? Date()
         return dashboardOrders
             .filter { $0.status == .paid && $0.createdAt >= cutoff }
-            .reduce(0) { $0 + $1.total }
+            .reduce(0) { $0 + $1.netTotal }
     }
 
     func ordersForDays(_ days: Int) -> Int {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -days, to: Date())!
+        let cutoff = Calendar.current.date(byAdding: .day, value: -days + 1, to: Calendar.current.startOfDay(for: Date()))
+            ?? Date()
         return dashboardOrders.filter { $0.status == .paid && $0.createdAt >= cutoff }.count
     }
 
     func revenueInRange(daysAgo: Int, daysUntil: Int) -> Int {
         let cal = Calendar.current
-        let start = cal.date(byAdding: .day, value: -daysAgo, to: Date())!
-        let end = cal.date(byAdding: .day, value: -daysUntil, to: Date())!
+        let start = cal.date(byAdding: .day, value: -daysAgo, to: cal.startOfDay(for: Date()))!
+        let end = cal.endOfDay(for: cal.date(byAdding: .day, value: -daysUntil, to: Date())!)
         return dashboardOrders
-            .filter { $0.status == .paid && $0.createdAt >= start && $0.createdAt < end }
-            .reduce(0) { $0 + $1.total }
+            .filter { $0.status == .paid && $0.createdAt >= start && $0.createdAt <= end }
+            .reduce(0) { $0 + $1.netTotal }
     }
 
     func isProviderConnected(_ provider: SalesProviderType) -> Bool {
@@ -808,12 +1072,33 @@ extension DashboardView {
             return
         }
 
+        if range == .custom {
+            showingCustomRangeSheet = true
+            return
+        }
+
         withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
             selectedRange = range
         }
     }
 
+    func applyCustomRange(start: Date, end: Date) {
+        let normalized = SaneSalesDateRangeStore.normalizedInterval(start: start, end: end)
+        customRangeStartTimestamp = normalized.start.timeIntervalSince1970
+        customRangeEndTimestamp = normalized.end.timeIntervalSince1970
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            selectedRange = .custom
+        }
+    }
+
+    func normalizeStoredCustomRange() {
+        let normalized = SaneSalesDateRangeStore.normalizedInterval(start: customRangeStartDate, end: customRangeEndDate)
+        customRangeStartTimestamp = normalized.start.timeIntervalSince1970
+        customRangeEndTimestamp = normalized.end.timeIntervalSince1970
+    }
+
     func enforceFreeTierRange() {
+        normalizeStoredCustomRange()
         selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: selectedRange,
             isPro: manager.isPro,
@@ -831,7 +1116,7 @@ extension DashboardView {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.salesGold)
-            Text("Basic shows live daily sales. Pro unlocks 7D, 30D, all-time history, charts, and exports.")
+            Text("Basic shows live daily sales. Pro unlocks 7D, 30D, custom date ranges, all-time history, charts, and CSV export.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white.opacity(0.94))
             Spacer()
@@ -962,7 +1247,8 @@ extension DashboardView {
 
     private func dashboardBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
         #if os(iOS)
-            return max(DashboardLayout.sectionSpacing + 24, safeAreaBottom + 126)
+            let breathingRoom = DashboardLayout.sectionSpacing + 20
+            return max(breathingRoom, safeAreaBottom + 18)
         #else
             return DashboardLayout.sectionSpacing
         #endif

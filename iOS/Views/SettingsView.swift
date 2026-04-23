@@ -17,6 +17,9 @@ struct SettingsView: View {
     @State private var showExportSheet = false
     @State private var exportURL: URL?
     @State private var showFeedback = false
+    @AppStorage(SaneSalesDateRangeStore.selectedRangeKey) private var selectedRange: TimeRange = .today
+    @AppStorage(SaneSalesDateRangeStore.customStartKey) private var customRangeStartTimestamp = SaneSalesDateRangeStore.defaultCustomStartTimestamp
+    @AppStorage(SaneSalesDateRangeStore.customEndKey) private var customRangeEndTimestamp = SaneSalesDateRangeStore.defaultCustomEndTimestamp
     @AppStorage("demo_mode") private var demoMode = false
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var showingLicenseEntrySheet = false
@@ -48,6 +51,9 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+            }
             #endif
             .sheet(
                 isPresented: $showingKeyEntry,
@@ -125,7 +131,7 @@ struct SettingsView: View {
 
                     Text(
                         licenseService.isPro
-                            ? "Pro unlocks longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
+                            ? "Pro unlocks custom date ranges, longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
                             : "Basic includes 1 provider, live daily sales, orders today, and the full product catalog."
                     )
                     .font(.system(size: 13, weight: .medium))
@@ -284,12 +290,14 @@ struct SettingsView: View {
                         .accessibilityIdentifier("settings.data.export.lockedButton")
                     } else {
                         Button {
-                            exportURL = exportOrdersCSV(manager.orders)
+                            exportURL = exportOrdersCSV(exportOrders, scopeLabel: exportScopeLabel)
                             if exportURL != nil { showExportSheet = true }
                         } label: {
                             GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
-                                Image(systemName: "tablecells")
+                                Text(exportScopeLabel)
+                                    .font(.system(size: 12, weight: .semibold))
                                     .foregroundStyle(Color.textMuted)
+                                    .lineLimit(1)
                             }
                         }
                         .accessibilityIdentifier("settings.data.export.button")
@@ -458,6 +466,34 @@ struct SettingsView: View {
 
     // MARK: - Actions
 
+    private var customRangeStartDate: Date {
+        Date(timeIntervalSince1970: customRangeStartTimestamp)
+    }
+
+    private var customRangeEndDate: Date {
+        Date(timeIntervalSince1970: customRangeEndTimestamp)
+    }
+
+    private var exportRangeInterval: DateInterval? {
+        SaneSalesDateRangeStore.interval(
+            for: selectedRange,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
+    private var exportOrders: [Order] {
+        manager.planScopedOrders(filteredBy: nil, in: exportRangeInterval)
+    }
+
+    private var exportScopeLabel: String {
+        SaneSalesDateRangeStore.compactLabel(
+            for: selectedRange,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
     private func disconnectProvider(_ provider: SalesProviderType) {
         switch provider {
         case .lemonSqueezy: manager.removeLemonSqueezyAPIKey()
@@ -478,7 +514,7 @@ struct SettingsView: View {
 
     private func settingsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
         #if os(iOS)
-            return max(28, safeAreaBottom + 112)
+            return max(28, safeAreaBottom + 20)
         #else
             return 20
         #endif
@@ -671,7 +707,7 @@ struct ProviderConnectionSheet: View {
 }
 
 private extension SettingsView {
-    func exportOrdersCSV(_ orders: [Order]) -> URL? {
+    func exportOrdersCSV(_ orders: [Order], scopeLabel: String) -> URL? {
         let headers = "Date,Order #,Customer,Email,Product,Variant,Provider,Status,Subtotal,Tax,Discount,Total,Currency,Refunded"
         let dateFormatter = ISO8601DateFormatter()
         let fileDateFormatter = DateFormatter()
@@ -709,7 +745,12 @@ private extension SettingsView {
             rows.append(row.joined(separator: ","))
         }
 
-        let filename = "SaneSales-Export-\(fileDateFormatter.string(from: Date())).csv"
+        let safeScope = scopeLabel
+            .replacingOccurrences(of: " ", with: "-")
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: ".", with: "")
+        let filename = "SaneSales-Export-\(safeScope)-\(fileDateFormatter.string(from: Date())).csv"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
         do {
             try rows.joined(separator: "\n").write(to: url, atomically: true, encoding: .utf8)

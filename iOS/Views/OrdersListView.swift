@@ -5,10 +5,14 @@ struct OrdersListView: View {
     @Environment(SalesManager.self) private var manager
     @Environment(LicenseService.self) private var licenseService
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage(SaneSalesDateRangeStore.selectedRangeKey) private var selectedRange: TimeRange = .today
+    @AppStorage(SaneSalesDateRangeStore.customStartKey) private var customRangeStartTimestamp = SaneSalesDateRangeStore.defaultCustomStartTimestamp
+    @AppStorage(SaneSalesDateRangeStore.customEndKey) private var customRangeEndTimestamp = SaneSalesDateRangeStore.defaultCustomEndTimestamp
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
     @State private var searchText = ""
     @State private var providerFilter: SalesProviderType?
     @State private var didLogOrderHistoryGate = false
+    @State private var showingCustomRangeSheet = false
     #if os(macOS)
         @State private var proUpsellFeature: ProFeature?
     #endif
@@ -30,16 +34,45 @@ struct OrdersListView: View {
         }
     }
 
+    private var customRangeStartDate: Date {
+        Date(timeIntervalSince1970: customRangeStartTimestamp)
+    }
+
+    private var customRangeEndDate: Date {
+        Date(timeIntervalSince1970: customRangeEndTimestamp)
+    }
+
+    private var selectedDateInterval: DateInterval? {
+        SaneSalesDateRangeStore.interval(
+            for: selectedRange,
+            customStart: customRangeStartDate,
+            customEnd: customRangeEndDate
+        )
+    }
+
+    private var rangeSummaryLabel: String {
+        manager.isPro
+            ? SaneSalesDateRangeStore.summaryLabel(
+                for: selectedRange,
+                customStart: customRangeStartDate,
+                customEnd: customRangeEndDate
+            )
+            : "Today"
+    }
+
     private var displayedOrders: [Order] {
-        manager.filteredOrders(search: searchText, provider: providerFilter)
+        manager.filteredOrders(search: searchText, provider: providerFilter, in: selectedDateInterval)
     }
 
     private var scopedOrders: [Order] {
-        manager.planScopedOrders(filteredBy: providerFilter)
+        manager.planScopedOrders(filteredBy: providerFilter, in: selectedDateInterval)
     }
 
     private var allOrdersForScope: [Order] {
-        manager.allOrders(filteredBy: providerFilter)
+        if manager.isPro {
+            return manager.allOrders(filteredBy: providerFilter, in: selectedDateInterval)
+        }
+        return manager.allOrders(filteredBy: providerFilter)
     }
 
     private var hasOrders: Bool {
@@ -77,22 +110,21 @@ struct OrdersListView: View {
     }
 
     private var orderSummarySubtitle: String {
-        if !searchText.isEmpty {
-            return "Today only"
-        }
-
         let scope = providerFilter?.displayName
             ?? (manager.connectedProviders.count > 1 ? "All providers" : (manager.connectedProviders.first?.displayName ?? "Today"))
 
-        guard !manager.isPro else {
-            return scope
+        guard manager.isPro else {
+            if scope == "All providers" || scope == "Today" {
+                return "Today"
+            }
+            return "\(scope) · Today"
         }
 
-        if scope == "All providers" || scope == "Today" {
-            return "Today"
+        if scope == "All providers" {
+            return rangeSummaryLabel
         }
 
-        return "\(scope) · Today"
+        return "\(scope) · \(rangeSummaryLabel)"
     }
 
     private var groupedOrders: [(DateSection, [Order])] {
@@ -131,12 +163,21 @@ struct OrdersListView: View {
             }
             #if os(iOS)
             .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 84)
+                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
             }
             #endif
             .navigationTitle("Orders")
             .refreshable {
                 await manager.refresh()
+            }
+            .onAppear {
+                enforceFreeTierRange()
+            }
+            .onChange(of: manager.isPro) { _, _ in
+                enforceFreeTierRange()
+            }
+            .onChange(of: manager.orders.count) { _, _ in
+                enforceFreeTierRange()
             }
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -144,6 +185,15 @@ struct OrdersListView: View {
             .navigationDestination(for: String.self) { orderId in
                 if let order = manager.orders.first(where: { $0.id == orderId }) {
                     OrderDetailView(order: order)
+                }
+            }
+            .sheet(isPresented: $showingCustomRangeSheet) {
+                SalesCustomDateRangeSheet(
+                    startDate: customRangeStartDate,
+                    endDate: customRangeEndDate,
+                    maximumDate: Date()
+                ) { start, end in
+                    applyCustomRange(start: start, end: end)
                 }
             }
             #if os(macOS)
@@ -233,61 +283,56 @@ struct OrdersListView: View {
 
     @ViewBuilder
     private func standardOrdersOverviewHeader(_ widthClass: WidthClass) -> some View {
-        if widthClass == .compact {
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: widthClass == .compact ? 8 : 10) {
+            if widthClass == .compact {
                 orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
-
-                if canFilterProviders {
-                    providerFilterControl
+            } else {
+                HStack(alignment: .top, spacing: 12) {
+                    orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
+                    Spacer()
                 }
             }
-        } else {
-            HStack(alignment: .top, spacing: 12) {
-                orderSummary(widthClass: widthClass, subtitle: orderSummarySubtitle)
-                Spacer()
 
-                if canFilterProviders {
-                    providerFilterControl
-                        .frame(maxWidth: 260)
-                } else if let provider = manager.connectedProviders.first {
-                    ProviderBadge(provider: provider, fillsAvailableWidth: false)
-                }
-            }
+            ordersFilterControls(widthClass)
         }
     }
 
     private var denseMacOrdersOverview: some View {
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
-                orderSummary(widthClass: .regular, subtitle: orderSummarySubtitle)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    orderSummary(widthClass: .regular, subtitle: orderSummarySubtitle)
 
-                if hasLockedHistory {
-                    Text("Basic shows today’s orders. Pro unlocks \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.9))
-                        .fixedSize(horizontal: false, vertical: true)
+                    if hasLockedHistory {
+                        Text("Basic shows today’s orders. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.9))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                if !hasLockedHistory {
+                    ordersFilterControls(.regular)
+                        .frame(maxWidth: 420, alignment: .trailing)
                 }
             }
 
-            Spacer(minLength: 0)
-
-            VStack(alignment: .trailing, spacing: 10) {
-                if canFilterProviders {
-                    providerFilterControl
-                        .frame(width: 220)
-                } else if let provider = manager.connectedProviders.first {
-                    ProviderBadge(provider: provider, fillsAvailableWidth: false)
+            if hasLockedHistory {
+                HStack(alignment: .center, spacing: 12) {
+                    Spacer(minLength: 0)
+                    ordersFilterControls(.regular)
                 }
 
-                if hasLockedHistory {
-                    Button {
-                        showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
-                    } label: {
-                        Label("Unlock Full History — \(licenseService.displayPriceLabel)", systemImage: "arrow.up.right")
-                    }
-                    .buttonStyle(SaneActionButtonStyle(prominent: true))
-                    .accessibilityIdentifier("orders.unlockHistoryButton")
+                Button {
+                    showOrderHistoryUpsell(event: "orders_overview_unlock_tap")
+                } label: {
+                    Label("Unlock Full History — \(licenseService.displayPriceLabel)", systemImage: "arrow.up.right")
                 }
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .accessibilityIdentifier("orders.unlockHistoryButton")
             }
         }
     }
@@ -296,7 +341,7 @@ struct OrdersListView: View {
     private func lockedHistoryCallout(_ widthClass: WidthClass) -> some View {
         if widthClass == .compact {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Basic shows today only. Pro unlocks older orders, deeper search, and CSV export.")
+                Text("Basic shows today only. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white.opacity(0.9))
                     .fixedSize(horizontal: false, vertical: true)
@@ -311,7 +356,7 @@ struct OrdersListView: View {
             }
         } else {
             HStack(alignment: .center, spacing: 12) {
-                Text("Basic keeps today front and center. Pro unlocks older orders, deeper search, and CSV export.")
+                Text("Basic keeps today front and center. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white.opacity(0.9))
                     .fixedSize(horizontal: false, vertical: true)
@@ -380,6 +425,82 @@ struct OrdersListView: View {
         .accessibilityIdentifier("orders.providerMenu")
     }
 
+    @ViewBuilder
+    private func ordersFilterControls(_ widthClass: WidthClass) -> some View {
+        if widthClass == .compact {
+            VStack(alignment: .leading, spacing: 10) {
+                if canFilterProviders {
+                    providerFilterControl
+                }
+                timeRangePicker(for: widthClass)
+            }
+        } else {
+            HStack(alignment: .center, spacing: 12) {
+                if canFilterProviders {
+                    providerFilterControl
+                        .frame(maxWidth: 220)
+                } else if let provider = manager.connectedProviders.first {
+                    ProviderBadge(provider: provider, fillsAvailableWidth: false)
+                }
+                timeRangePicker(for: widthClass)
+            }
+        }
+    }
+
+    private func timeRangePicker(for widthClass: WidthClass) -> some View {
+        SalesDateRangePicker(
+            scope: "orders",
+            selectedRange: selectedRange,
+            isRangeLocked: isLockedRange,
+            onSelect: handleRangeSelection
+        )
+    }
+
+    private func handleRangeSelection(_ range: TimeRange) {
+        if isLockedRange(range) {
+            showOrderHistoryUpsell(event: "order_history_locked_tap")
+            return
+        }
+
+        if range == .custom {
+            showingCustomRangeSheet = true
+            return
+        }
+
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            selectedRange = range
+        }
+    }
+
+    private func applyCustomRange(start: Date, end: Date) {
+        let normalized = SaneSalesDateRangeStore.normalizedInterval(start: start, end: end)
+        customRangeStartTimestamp = normalized.start.timeIntervalSince1970
+        customRangeEndTimestamp = normalized.end.timeIntervalSince1970
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            selectedRange = .custom
+        }
+    }
+
+    private func normalizeStoredCustomRange() {
+        let normalized = SaneSalesDateRangeStore.normalizedInterval(start: customRangeStartDate, end: customRangeEndDate)
+        customRangeStartTimestamp = normalized.start.timeIntervalSince1970
+        customRangeEndTimestamp = normalized.end.timeIntervalSince1970
+    }
+
+    private func enforceFreeTierRange() {
+        normalizeStoredCustomRange()
+        selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
+            currentRange: selectedRange,
+            isPro: manager.isPro,
+            todayOrders: manager.metrics(filteredBy: providerFilter, scopedToPlan: true).todayOrders,
+            thirtyDayOrders: manager.metrics(filteredBy: providerFilter, scopedToPlan: true).thirtyDayOrders
+        )
+    }
+
+    private func isLockedRange(_ range: TimeRange) -> Bool {
+        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
+    }
+
     private func freeTierOrdersContent(_ widthClass: WidthClass) -> some View {
         Group {
             if displayedOrders.isEmpty, !manager.isLoading {
@@ -418,7 +539,7 @@ struct OrdersListView: View {
                                         Text("Showing today’s \(displayedOrders.count) orders")
                                             .font(.saneSubheadlineBold)
                                             .foregroundStyle(.primary)
-                                        Text("Unlock Pro for \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
+                                        Text("Unlock Pro for custom date ranges, \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
                                             .font(.saneCallout)
                                             .foregroundStyle(Color.textMuted)
                                     }
@@ -494,7 +615,7 @@ struct OrdersListView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See the latest sales as they come in")
                     emptyStateDetailRow("Search by customer, product, or order ID")
-                    emptyStateDetailRow("Use Basic for today’s feed or Pro for older history")
+                    emptyStateDetailRow("Use Basic for today’s feed or Pro for custom ranges and older history")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
@@ -602,118 +723,5 @@ struct OrdersListView: View {
                 NotificationCenter.default.post(name: .showSettingsTab, object: nil)
             }
         #endif
-    }
-}
-
-// MARK: - Order Row
-
-struct OrderRow: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(SalesManager.self) private var manager
-    let order: Order
-
-    var body: some View {
-        HStack(spacing: 12) {
-            // Status icon
-            Image(systemName: order.status.icon)
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundStyle(statusColor)
-                .frame(width: 24)
-                .accessibilityHidden(true)
-
-            // Customer + Product
-            VStack(alignment: .leading, spacing: 4) {
-                Text(order.customerName)
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                HStack(spacing: 8) {
-                    Text(order.productName)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(Color.textMuted)
-                        .lineLimit(1)
-                    if manager.connectedProviders.count > 1 {
-                        ProviderDot(provider: order.provider)
-                    }
-                }
-            }
-
-            Spacer()
-
-            // Amount + Date
-            VStack(alignment: .trailing, spacing: 4) {
-                Text(order.displayTotal)
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(order.isRefunded ? Color.salesWarning : Color.primary)
-                Text(secondaryTimestamp)
-                    .font(.system(size: 12, weight: .medium))
-                    .monospacedDigit()
-                    .foregroundStyle(Color.textMuted)
-            }
-        }
-        .padding(.vertical, 8)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(order.customerName), \(order.productName), \(order.displayTotal), \(order.status.displayName)")
-    }
-
-    private var statusColor: Color {
-        switch order.status {
-        case .paid: .salesSuccess
-        case .refunded: .salesWarning
-        case .pending: .salesWarning
-        case .failed: .salesError
-        case .unknown: .textMuted
-        }
-    }
-
-    private var secondaryTimestamp: String {
-        let calendar = Calendar.current
-
-        if calendar.isDateInToday(order.createdAt) || calendar.isDateInYesterday(order.createdAt) {
-            return order.createdAt.formatted(date: .omitted, time: .shortened)
-        }
-
-        if let daysAgo = calendar.dateComponents([.day], from: order.createdAt, to: Date()).day,
-           daysAgo < 7 {
-            return order.createdAt.formatted(.dateTime.weekday(.abbreviated))
-        }
-
-        return order.createdAt.formatted(date: .abbreviated, time: .omitted)
-    }
-}
-
-// MARK: - Date Section
-
-private enum DateSection: String, CaseIterable {
-    case today = "Today"
-    case yesterday = "Yesterday"
-    case thisWeek = "This Week"
-    case thisMonth = "This Month"
-    case earlier = "Earlier"
-
-    static func from(_ date: Date) -> DateSection {
-        let cal = Calendar.current
-        if cal.isDateInToday(date) { return .today }
-        if cal.isDateInYesterday(date) { return .yesterday }
-        let weekAgo = cal.date(byAdding: .day, value: -7, to: cal.startOfDay(for: Date()))!
-        if date >= weekAgo { return .thisWeek }
-        if let monthStart = cal.dateInterval(of: .month, for: Date())?.start, date >= monthStart {
-            return .thisMonth
-        }
-        return .earlier
-    }
-}
-
-// MARK: - Provider Dot (compact indicator)
-
-struct ProviderDot: View {
-    let provider: SalesProviderType
-
-    var body: some View {
-        Circle()
-            .fill(provider.brandColor)
-            .frame(width: 10, height: 10)
-            .accessibilityLabel(provider.displayName)
     }
 }
