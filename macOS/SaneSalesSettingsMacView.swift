@@ -83,17 +83,12 @@ struct SaneSalesMacSettingsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            settingsHeader
-
-            Divider()
-                .overlay(Color.white.opacity(0.08))
-
-            ZStack {
-                SaneGradientBackground(style: .panel)
-                currentTabView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            }
+        SaneSettingsContainer(
+            defaultTab: .general,
+            selection: $selectedTab,
+            windowSizing: .embedded
+        ) { tab in
+            currentTabView(for: tab)
         }
         .sheet(item: $editingProvider) { provider in
             apiKeySheet(for: provider)
@@ -126,42 +121,9 @@ struct SaneSalesMacSettingsView: View {
         }
     }
 
-    private var currentTab: SaneSalesSettingsTab {
-        selectedTab ?? .general
-    }
-
-    private var settingsHeader: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Settings")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
-                Text("Manage your providers, data, and app behavior without leaving the main window.")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.84))
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(Array(SaneSalesSettingsTab.allCases), id: \.id) { tab in
-                        SaneSegmentedChoiceButton(title: tab.title, isSelected: currentTab == tab) {
-                            selectedTab = tab
-                        }
-                        .frame(width: tab == .providers ? 108 : 96)
-                    }
-                }
-                .padding(.vertical, 2)
-            }
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 18)
-        .padding(.bottom, 16)
-        .background(Color.black.opacity(0.14))
-    }
-
     @ViewBuilder
-    private var currentTabView: some View {
-        switch currentTab {
+    private func currentTabView(for tab: SaneSalesSettingsTab) -> some View {
+        switch tab {
         case .general:
             generalTab
         case .providers:
@@ -515,28 +477,6 @@ struct SaneSalesMacSettingsView: View {
         }
 
         return .general
-    }
-
-    private func applyWindowSize(for tab: SaneSalesSettingsTab?) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            guard let window = NSApp.keyWindow ?? NSApp.windows.first(where: { $0.canBecomeMain && !$0.isSheet }) else {
-                return
-            }
-
-            let metrics = SaneSalesSettingsWindowSizing.metrics(for: tab ?? .general)
-            let currentContentSize = window.contentRect(forFrameRect: window.frame).size
-            let widthDelta = abs(currentContentSize.width - metrics.preferred.width)
-            let heightDelta = abs(currentContentSize.height - metrics.preferred.height)
-
-            window.contentMinSize = metrics.minimum
-
-            if currentContentSize.width < metrics.minimum.width ||
-                currentContentSize.height < metrics.minimum.height ||
-                widthDelta > 80 ||
-                heightDelta > 80 {
-                window.setContentSize(metrics.preferred)
-            }
-        }
     }
 
     private func valueText(_ text: String) -> some View {

@@ -69,7 +69,7 @@ The LemonSqueezy key is in macOS Keychain (service: `lemonsqueezy`, account: `ap
 
 The macOS target includes shared files from `SaneProcess/shared/`:
 
-- **`MoveToApplications.swift`** — `SaneAppMover.moveToApplicationsFolderIfNeeded()` prompts users to move the app to /Applications on first launch. Called in `applicationDidFinishLaunching` wrapped in `#if !DEBUG`. Tries direct move first, falls back to AppleScript admin prompt.
+- **`MoveToApplications.swift`** — `SaneAppMover.moveToApplicationsFolderIfNeeded()` prompts direct-download users to move the app to /Applications on first launch. Called in `applicationDidFinishLaunching` wrapped in `#if !DEBUG && !APP_STORE`. Tries direct move first, falls back to AppleScript admin prompt.
 
 These files are referenced via relative path in `project.yml` (`../../infra/SaneProcess/shared/`). Do NOT duplicate them — edit the shared source.
 

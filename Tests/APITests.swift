@@ -506,7 +506,9 @@ struct FreeTierPolicyTests {
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: false))
+        #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.custom, isPro: false))
         #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: true))
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.custom, isPro: true))
     }
 
     @Test("Free tier order preview stays capped to a small recent slice")

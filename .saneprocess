@@ -73,7 +73,7 @@ appstore:
   metadata:
     macos:
       subtitle: "Read-Only Sales Dashboard"
-      promotional_text: "Try demo data first. Free includes a recent sales snapshot, recent orders, and products. Pro adds full history, CSV export, and multi-provider views."
+      promotional_text: "Try demo data first. Free includes live daily sales, today's orders, and products. Pro adds custom date ranges, full history, CSV export, and multi-provider views."
       description: >-
         Track LemonSqueezy, Gumroad, and Stripe revenue in one private read-only desktop dashboard.
 
@@ -87,16 +87,17 @@ appstore:
         • Private on-device storage
 
         Pro unlock adds:
+        • Custom date ranges
         • Full order history
         • CSV export
         • Desktop widgets and menu bar totals
         • Multiple providers at once
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,merchant,menubar"
-      whats_new: "Fixes a setup issue that could leave the dashboard blank after connecting a provider, plus reliability improvements for first launch and bug reporting."
+      whats_new: "Adds custom date ranges for Pro, with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after redeeming offer codes or restoring purchases."
       marketing_url: "https://sanesales.com"
     ios:
       subtitle: "Read-Only Sales Dashboard"
-      promotional_text: "Try demo data first. Free includes a recent sales snapshot, recent orders, and products. Pro adds full history, CSV export, and multi-provider views."
+      promotional_text: "Try demo data first. Free includes live daily sales, today's orders, and products. Pro adds custom date ranges, full history, CSV export, and multi-provider views."
       description: >-
         Track LemonSqueezy, Gumroad, and Stripe revenue on iPhone, iPad, and Apple Watch in one private read-only dashboard.
 
@@ -110,12 +111,13 @@ appstore:
         • Private on-device storage
 
         Pro unlock adds:
+        • Custom date ranges
         • Full order history
         • CSV export
         • Multiple providers at once
         • Shared Pro access across your Apple devices
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,widgets,watch"
-      whats_new: "Fixes a setup issue that could leave the dashboard blank after connecting a provider, plus first-launch reliability improvements on iPhone, iPad, and Apple Watch."
+      whats_new: "Adds custom date ranges for Pro, with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after redeeming offer codes or restoring purchases."
       marketing_url: "https://sanesales.com"
   review_notes: "SaneSales is a freemium, read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. Basic is free in the App Store build. Demo mode is available immediately, so App Review does not need an account, API key, or payment. SaneSales Pro is the only paid app unlock and is sold as a one-time StoreKit In-App Purchase. Connecting a provider is optional and does not unlock paid app features. There are no external checkout links, account signups, or license keys in the App Store build."
   review_notes_by_platform:
@@ -132,6 +134,7 @@ appstore:
       - Recent orders and full product catalog.
       - Built-in demo mode.
       Pro adds:
+      - Custom date ranges.
       - Full order history.
       - CSV export.
       - Multiple providers at once.
@@ -163,6 +166,7 @@ appstore:
       - Recent orders and full product catalog.
       - Built-in demo mode.
       Pro adds:
+      - Custom date ranges.
       - Full order history.
       - CSV export.
       - Multiple providers at once.
@@ -184,7 +188,7 @@ appstore:
     display_name: "SaneSales Pro Unlock"
     price_usd: 24.99
     description: "Unlock Pro analytics with one purchase."
-    review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
+    review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks custom date ranges, full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
   accessibility_declarations:
     publish: true
     mac:

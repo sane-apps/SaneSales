@@ -203,6 +203,91 @@ struct MetricsTests {
         #expect(revenue(from: orders, daysBack: 30, now: now) > revenue(from: orders, daysBack: 60, untilDaysBack: 30, now: now))
     }
 
+
+    @Test("Custom range helpers normalize dates and fill missing days")
+    func customRangeHelpers() {
+        let calendar = Calendar.current
+        let start = calendar.date(from: DateComponents(year: 2026, month: 4, day: 10))!
+        let end = calendar.date(from: DateComponents(year: 2026, month: 4, day: 8))!
+        let interval = SaneSalesDateRangeStore.normalizedInterval(start: start, end: end, maximumDate: start)
+
+        #expect(calendar.isDate(interval.start, inSameDayAs: end))
+        #expect(calendar.isDate(interval.end, inSameDayAs: start))
+        #expect(SaneSalesDateRangeStore.dayCount(in: interval) == 3)
+
+        let orders = [
+            makeOrder(id: "one", total: 500, date: calendar.date(byAdding: .hour, value: 9, to: end)!),
+            makeOrder(id: "two", total: 1200, date: calendar.date(byAdding: .hour, value: 12, to: start)!)
+        ]
+        let series = SaneSalesDateRangeStore.dailySeries(from: orders, in: interval)
+
+        #expect(series.count == 3)
+        #expect(series[0].revenue == 500)
+        #expect(series[1].revenue == 0)
+        #expect(series[2].revenue == 1200)
+    }
+
+    @Test("Launch overrides persist a custom screenshot range before the view tree loads")
+    func launchOverridesPersistCustomRange() {
+        let suiteName = "SaneSalesLaunchOverridesTests-\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer {
+            defaults.removePersistentDomain(forName: suiteName)
+        }
+
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let now = calendar.date(from: DateComponents(year: 2026, month: 4, day: 22, hour: 12))!
+
+        SaneSalesLaunchOverrides.applyPersistentUIState(
+            arguments: [
+                "SaneSales",
+                "--force-pro-mode",
+                "--screenshot-custom-range-start", "2026-04-04",
+                "--screenshot-custom-range-end", "2026-04-18"
+            ],
+            userDefaults: defaults,
+            now: now,
+            calendar: calendar
+        )
+
+        #expect(defaults.string(forKey: SaneSalesDateRangeStore.selectedRangeKey) == TimeRange.custom.rawValue)
+
+        let storedStart = Date(timeIntervalSince1970: defaults.double(forKey: SaneSalesDateRangeStore.customStartKey))
+        let storedEnd = Date(timeIntervalSince1970: defaults.double(forKey: SaneSalesDateRangeStore.customEndKey))
+
+        #expect(calendar.isDate(storedStart, inSameDayAs: calendar.date(from: DateComponents(year: 2026, month: 4, day: 4))!))
+        #expect(calendar.isDate(storedEnd, inSameDayAs: calendar.date(from: DateComponents(year: 2026, month: 4, day: 18))!))
+    }
+
+    @Test("Sales manager filters plan scoped orders inside a selected interval")
+    @MainActor
+    func salesManagerIntervalFiltering() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        manager.isPro = true
+
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let inRangeDate = calendar.date(byAdding: .day, value: -2, to: today)!
+        let outOfRangeDate = calendar.date(byAdding: .day, value: -10, to: today)!
+
+        manager.orders = [
+            makeOrder(id: "recent", total: 900, date: inRangeDate),
+            makeOrder(id: "older", total: 700, date: outOfRangeDate)
+        ]
+
+        let interval = SaneSalesDateRangeStore.normalizedInterval(
+            start: calendar.date(byAdding: .day, value: -3, to: today)!,
+            end: today,
+            maximumDate: today
+        )
+
+        let filtered = manager.planScopedOrders(filteredBy: nil, in: interval)
+        #expect(filtered.map(\.id) == ["recent"])
+        #expect(manager.metrics(filteredBy: nil, in: interval, scopedToPlan: true).allTimeRevenue == 900)
+    }
+
     private func revenue(from orders: [Order], daysBack: Int, untilDaysBack: Int = 0, now: Date) -> Int {
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -daysBack, to: now) ?? now

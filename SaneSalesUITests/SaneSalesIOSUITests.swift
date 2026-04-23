@@ -172,6 +172,26 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
+
+    func testProDemoCustomRangeAppliesAcrossDashboardAndOrders() {
+        let app = launchProDemo()
+
+        let customButton = app.buttons["dashboard.range.custom"]
+        XCTAssertTrue(customButton.waitForExistence(timeout: 5))
+        customButton.tap()
+
+        let applyButton = app.buttons["customRange.applyButton"]
+        XCTAssertTrue(applyButton.waitForExistence(timeout: 5))
+        applyButton.tap()
+
+        let expectedSummary = defaultCustomRangeSummaryLabel()
+        XCTAssertTrue(app.staticTexts[expectedSummary].waitForExistence(timeout: 5))
+
+        openMainSection("Orders", in: app)
+        XCTAssertTrue(app.buttons["orders.range.custom"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts[expectedSummary].waitForExistence(timeout: 5))
+    }
+
     func testSeededLemonSqueezyKeySkipsOnboarding() throws {
         let apiKeyB64 = try loadSeededLemonSqueezyKeyBase64()
 
@@ -206,6 +226,22 @@ final class SaneSalesIOSUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments += ["--uitest-reset"] + extraLaunchArguments
         app.launch()
+        return app
+    }
+
+    @discardableResult
+    private func launchProDemo() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "--uitest-reset",
+            "--skip-onboarding",
+            "--demo",
+            "--force-pro-mode"
+        ]
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_FORCE_PRO_MODE"] = "1"
+        app.launch()
+        XCTAssertTrue(waitForMainShell(app))
         return app
     }
 
@@ -250,6 +286,18 @@ final class SaneSalesIOSUITests: XCTestCase {
         let sidebarButton = app.buttons.matching(NSPredicate(format: "label == %@", title)).firstMatch
         XCTAssertTrue(sidebarButton.waitForExistence(timeout: 5), "Missing main section button: \(title)")
         sidebarButton.tap()
+    }
+
+    private func defaultCustomRangeSummaryLabel() -> String {
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let start = calendar.date(byAdding: .day, value: -13, to: startOfToday) ?? startOfToday
+        let formatter = DateIntervalFormatter()
+        formatter.calendar = calendar
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: start, to: now)
     }
 
     private func loadSeededLemonSqueezyKeyBase64() throws -> String {

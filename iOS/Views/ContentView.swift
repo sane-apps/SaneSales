@@ -37,6 +37,12 @@ private enum MainSection: Int, CaseIterable, Hashable {
     }
 }
 
+#if os(iOS)
+enum SaneSalesIOSChrome {
+    static let floatingTabBarClearance: CGFloat = 108
+}
+#endif
+
 struct MainTabView: View {
     @State private var selectedSection: MainSection
     #if os(macOS)
@@ -92,6 +98,9 @@ struct MainTabView: View {
                 .tabItem { Label(MainSection.settings.title, systemImage: MainSection.settings.icon) }
                 .tag(MainSection.settings)
         }
+        .toolbarBackground(Color.black.opacity(0.94), for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarColorScheme(.dark, for: .tabBar)
     }
     #endif
 

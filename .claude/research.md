@@ -73,3 +73,79 @@ Graduate verified findings to ARCHITECTURE.md or DEVELOPMENT.md.
 - After changing that declaration to `static let licenseLabels: LicenseSettingsView<LicenseService>.Labels = .init(...)`, the compile blocker was removed.
 - The Mini project also needed the local-package sync: `project.yml` and `SaneSales.xcodeproj/project.pbxproj` had to point at the monorepo `../../infra/SaneUI` path on the Mini, otherwise `displayPriceLabel` changes in shared SaneUI would not be visible during app builds.
 - Current runtime-pricing source of truth remains `licenseService.displayPriceLabel` for iOS upgrade CTAs, with the macOS settings copy providing only the approved fallback label if live price resolution is unavailable.
+
+## Custom Date Range AppStorage Mutation 2026-04-23
+**Updated:** 2026-04-23 | **Status:** verified | **TTL:** 7d
+**Source:** Apple docs [`AppStorage`](https://developer.apple.com/documentation/SwiftUI/AppStorage), Apple docs [`Settings`](https://developer.apple.com/documentation/swiftui/settings), web search on Apple docs, GitHub binding examples, local SaneApps code search
+- Apple’s `AppStorage` API explicitly exposes a `wrappedValue` and a projected `Binding`, which is the supported write path for SwiftUI views. The Settings docs also show controls writing `AppStorage` values through bindings rather than through computed-property setter indirection.
+- Local compile failures in `OrdersListView` happened when a `View` method assigned through computed `Date` properties whose setters wrote to `@AppStorage`-backed timestamps. Swift treated those computed setters as mutating `self` on an immutable view instance.
+- Local SaneApps patterns in `SaneUI` and other apps consistently use `Binding(get:set:)` or direct writes to the wrapped storage property for SwiftUI state changes, not computed-property setters on the view struct.
+- GitHub binding examples reinforce the same model: when a view needs transformed state, keep the stored source of truth writable and expose derived values through `Binding(get:set:)` or direct wrapped-value writes.
+- Safe fix for SaneSales: keep custom range dates as read-only computed views over the timestamp storage, and in action methods write `customRangeStartTimestamp` / `customRangeEndTimestamp` directly.
+
+## [OrdersListView split access control] | Updated: 2026-04-23 | Status: verified | TTL: 30d
+- After moving helper types out of OrdersListView.swift, integer 10 readonly !=0
+integer 10 readonly '#'=0
+integer 10 readonly '$'=42169
+array readonly '*'=(  )
+readonly -=569X
+0=zsh
+integer 10 readonly '?'=0
+array readonly @=(  )
+integer 10 readonly ARGC=0
+tied cdpath CDPATH=''
+integer 10 COLUMNS=0
+CPUTYPE=arm64
+integer 10 EGID=20
+integer 10 EUID=501
+tied fignore FIGNORE=''
+tied fpath FPATH=/usr/local/share/zsh/site-functions:/usr/share/zsh/site-functions:/usr/share/zsh/5.9/functions
+integer 10 FUNCNEST=700
+integer 10 GID=20
+HISTCHARS='!^#'
+integer 10 readonly HISTCMD=0
+integer 10 HISTSIZE=30
+HOME=/Users/stephansmac
+HOST=Stephans-Mac-mini.local
+IFS=$'
+\C-@'
+KEYBOARD_HACK=''
+integer KEYTIMEOUT=40
+LANG=C.UTF-8
+LC_ALL=C.UTF-8
+LC_CTYPE=C.UTF-8
+integer 10 readonly LINENO=1
+integer 10 LINES=0
+integer LISTMAX=100
+LOGNAME=stephansmac
+MACHTYPE=x86_64
+integer MAILCHECK=60
+tied mailpath MAILPATH=''
+tied manpath MANPATH=''
+tied module_path MODULE_PATH=/usr/lib/zsh/5.9
+NULLCMD=cat
+OLDPWD=/Users/stephansmac
+OPTARG=''
+integer 10 OPTIND=1
+OSTYPE=darwin25.0
+tied path PATH=/opt/homebrew/bin:/usr/local/bin:/Users/stephansmac/.local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+integer 10 readonly PPID=42168
+PROMPT=''
+PROMPT2=''
+PROMPT3='?# '
+PROMPT4='+
+## [OrdersListView split access control] | Updated: 2026-04-23 | Status: verified | TTL: 30d
+- After moving helper types out of OrdersListView.swift, `private` on DateSection became too narrow because the enum now lives in a separate file. Swift access control treats `private` as declaration-scoped, while file-wide sharing needs broader visibility. Fix by widening DateSection to file default/internal (or fileprivate if staying within one file). Source: local compiler error + Swift access control docs index at docs.swift.org/swift-book/LanguageGuide/AccessControl.html.
+
+## 2026-04-23
+- topic: SalesDateRangePicker dense-layout getter
+- summary:  needs an explicit  on the iOS path. The getter currently evaluates  as a bare expression, which works poorly across conditional compilation and triggers  during  in full verify. Fix by returning the expression explicitly after the dense-layout early exit.
+
+## iPhone Tab Bar Opaqueness 2026-04-23
+**Updated:** 2026-04-23 | **Status:** verified | **TTL:** 7d
+**Source:** Apple docs UITabBarAppearance, Apple docs on SwiftUI toolbar backgrounds, GitHub code search for UITabBarAppearance + scrollEdgeAppearance + SwiftUI TabView, local Mini audit of iOS/Views/ContentView.swift, iOS/SaneSalesApp.swift, and refreshed screenshots
+- Apple’s UIKit tab bar appearance API is the control surface that actually defines tab bar background treatment. configureWithOpaqueBackground() is the documented path when the bar should stop reading as transparent glass over live content.
+- SwiftUI toolbarBackground for .tabBar helps request a visible background, but by itself it did not remove visible content bleed in the refreshed SaneSales iPhone screenshots.
+- Current GitHub SwiftUI + TabView patterns consistently apply UITabBar.appearance().standardAppearance and scrollEdgeAppearance from app startup when they need a stable opaque tab bar background.
+- Local Mini findings: the per-screen bottom inset patch improved spacing, but the remaining screenshot problem is shared tab chrome, not individual screen layout. The correct fix path is app-level UITabBarAppearance plus the existing TabView modifiers in iOS/Views/ContentView.swift.
+- Local Mini re-read confirmed the current source line in iOS/SaneSalesApp.swift is now CommandLine.arguments.contains("--uitest-reset"); the earlier compile failure was from a stale broken edit before the line-level rewrite.

@@ -139,15 +139,39 @@ final class SalesManager {
         SalesMetrics.compute(from: planScopedOrders)
     }
 
-    func allOrders(filteredBy provider: SalesProviderType?) -> [Order] {
-        guard let provider else { return orders }
-        return orders.filter { $0.provider == provider }
+    func allOrders(filteredBy provider: SalesProviderType?, in interval: DateInterval? = nil) -> [Order] {
+        let providerScoped: [Order]
+        if let provider {
+            providerScoped = orders.filter { $0.provider == provider }
+        } else {
+            providerScoped = orders
+        }
+        return filtered(source: providerScoped, containedIn: interval)
     }
 
-    func planScopedOrders(filteredBy provider: SalesProviderType?) -> [Order] {
+    func planScopedOrders(filteredBy provider: SalesProviderType?, in interval: DateInterval? = nil) -> [Order] {
         let source = planScopedOrders
-        guard let provider else { return source }
-        return source.filter { $0.provider == provider }
+        let providerScoped: [Order]
+        if let provider {
+            providerScoped = source.filter { $0.provider == provider }
+        } else {
+            providerScoped = source
+        }
+        return filtered(source: providerScoped, containedIn: interval)
+    }
+
+    func metrics(filteredBy provider: SalesProviderType?, in interval: DateInterval? = nil, scopedToPlan: Bool = false) -> SalesMetrics {
+        let source = scopedToPlan
+            ? planScopedOrders(filteredBy: provider, in: interval)
+            : allOrders(filteredBy: provider, in: interval)
+        return SalesMetrics.compute(from: source)
+    }
+
+    private func filtered(source: [Order], containedIn interval: DateInterval?) -> [Order] {
+        guard let interval else { return source }
+        return source.filter { order in
+            order.createdAt >= interval.start && order.createdAt <= interval.end
+        }
     }
 
     /// Convenience for backward compat (onboarding checks this)
@@ -502,8 +526,8 @@ final class SalesManager {
 
     // MARK: - Search & Filter
 
-    func filteredOrders(search: String, provider: SalesProviderType? = nil) -> [Order] {
-        var result = planScopedOrders(filteredBy: provider)
+    func filteredOrders(search: String, provider: SalesProviderType? = nil, in interval: DateInterval? = nil) -> [Order] {
+        let result = planScopedOrders(filteredBy: provider, in: interval)
         guard !search.isEmpty else { return result }
         let query = search.lowercased()
         return result.filter {
@@ -551,15 +575,21 @@ final class SalesManager {
         }
     }
 
-    func resetForUITests() {
-        UserDefaults.standard.set(false, forKey: "demo_mode")
-        UserDefaults.standard.set(false, forKey: "hasSeenWelcome")
-        UserDefaults.standard.removeObject(forKey: "pendingSettingsRoute")
-        UserDefaults.standard.removeObject(forKey: "selectedTimeRange")
+    static func resetUITestPersistentState(userDefaults: UserDefaults = .standard) {
+        userDefaults.set(false, forKey: "demo_mode")
+        userDefaults.set(false, forKey: "hasSeenWelcome")
+        userDefaults.removeObject(forKey: "pendingSettingsRoute")
+        userDefaults.removeObject(forKey: SaneSalesDateRangeStore.selectedRangeKey)
+        userDefaults.removeObject(forKey: SaneSalesDateRangeStore.customStartKey)
+        userDefaults.removeObject(forKey: SaneSalesDateRangeStore.customEndKey)
 
         KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
         KeychainService.delete(account: KeychainService.gumroadAPIKey)
         KeychainService.delete(account: KeychainService.stripeAPIKey)
+    }
+
+    func resetForUITests() {
+        Self.resetUITestPersistentState()
 
         lemonSqueezyProvider = nil
         gumroadProvider = nil

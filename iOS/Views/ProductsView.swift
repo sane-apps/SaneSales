@@ -107,6 +107,9 @@ struct ProductsView: View {
             .navigationTitle("Products")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            .safeAreaInset(edge: .bottom) {
+                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+            }
             #endif
             .refreshable {
                 await manager.refresh()
@@ -352,7 +355,7 @@ struct ProductsView: View {
 
     private func productsBottomPadding(safeAreaBottom: CGFloat) -> CGFloat {
         #if os(iOS)
-            return max(16, safeAreaBottom + 74)
+            return max(16, safeAreaBottom + 18)
         #else
             return 12
         #endif

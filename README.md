@@ -35,8 +35,8 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 | | |
 |---|---|
-| **Revenue Dashboard** | Today, this month, and all-time revenue at a glance with trend indicators |
-| **Interactive Charts** | Daily revenue bar charts with Swift Charts. Tap to drill into any day |
+| **Revenue Dashboard** | Today, 7-day, 30-day, custom-range, and all-time revenue at a glance with trend indicators |
+| **Interactive Charts** | Daily revenue charts with Swift Charts across quick presets and custom date ranges |
 | **Product Breakdown** | Donut chart showing revenue by product. Tap segments to explore |
 | **Refund-Aware Revenue** | Net totals that deduct refunds automatically — no more overstated numbers |
 | **Order Tracking** | Search by customer, product, or amount. Filter by provider, status, or date |
@@ -49,11 +49,11 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Current Release
 
-**Current direct-download release: 1.2.7**
+**Current direct-download release: 1.3.0**
 
-- Aligns Basic-to-Pro upgrade pricing across settings, locked views, and upgrade prompts
-- Keeps the website, appcast, and download assets aligned on the same live version
-- Preserves the current direct-download lane while App Store review continues separately
+- Adds Pro custom date ranges with editable start/end dates and a calendar range picker
+- Keeps Dashboard and Orders synced to the same selected range
+- Improves App Store entitlement refresh after offer-code redemption or purchase restore
 
 ---
 
@@ -100,9 +100,9 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — $24.99
+**[Download from sanesales.com](https://sanesales.com)** — free to start, Pro is $24.99 once
 
-Also coming to the iOS & Mac App Store (submitted, awaiting review).
+Also available on the iOS and Mac App Store.
 
 > Pay once. Keep the full Pro dashboard. No subscription.
 
@@ -116,7 +116,7 @@ Or [build from source](#development) — it's PolyForm Shield licensed, always w
 
 1. **Connect** — Paste your API key from LemonSqueezy, Gumroad, or Stripe
 2. **Sync** — SaneSales fetches your orders, products, and revenue directly from the provider APIs
-3. **Track** — See everything in one dashboard with charts, search, and export
+3. **Track** — See everything in one dashboard with charts, shared date ranges, search, and export
 
 API keys are stored in the device Keychain with hardware encryption. Sales data is cached locally for offline access. Nothing is ever transmitted to SaneApps servers.
 

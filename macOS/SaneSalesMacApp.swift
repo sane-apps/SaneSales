@@ -209,6 +209,12 @@ import SwiftUI
         @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
 
         init() {
+            if CommandLine.arguments.contains("--uitest-reset") {
+                SalesManager.resetUITestPersistentState()
+            }
+
+            SaneSalesLaunchOverrides.applyPersistentUIState()
+
             // Defer Dock/accessory policy until NSApp exists.
             let showDock = Self.defaultShowDockPreference()
             SaneActivationPolicy.applyInitialPolicy(showDockIcon: showDock)
@@ -218,6 +224,11 @@ import SwiftUI
             userDefaults: UserDefaults = .standard
         ) -> Bool {
             userDefaults.object(forKey: "showInDock") as? Bool ?? SaneBackgroundAppDefaults.showDockIcon
+        }
+
+        private var forcedProModeEnabled: Bool {
+            let environment = ProcessInfo.processInfo.environment
+            return environment["SANEAPPS_FORCE_PRO_MODE"] == "1" || CommandLine.arguments.contains("--force-pro-mode")
         }
 
         var body: some Scene {
@@ -234,10 +245,10 @@ import SwiftUI
                         licenseService.checkCachedLicense()
 
                         // Sync license state into manager for Pro gating
-                        manager.isPro = licenseService.isPro
+                        manager.isPro = forcedProModeEnabled || licenseService.isPro
 
                         // Fire launch event based on tier
-                        let tier = licenseService.isPro ? "pro" : "free"
+                        let tier = (forcedProModeEnabled || licenseService.isPro) ? "pro" : "free"
                         let isFirstLaunch = !hasSeenWelcome
                         if SaneBackgroundAppDefaults.launchAtLogin {
                             _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
@@ -250,7 +261,7 @@ import SwiftUI
                         }
 
                         // Only set up menu bar if Pro
-                        if licenseService.isPro {
+                        if forcedProModeEnabled || licenseService.isPro {
                             setupMenuBar()
                         }
                     }
@@ -269,7 +280,7 @@ import SwiftUI
                             if !isShowing {
                                 hasSeenWelcome = true
                                 // Set up menu bar now that welcome is done, if Pro
-                                if licenseService.isPro, showInMenuBar, menuBarManager == nil {
+                                if forcedProModeEnabled || licenseService.isPro, showInMenuBar, menuBarManager == nil {
                                     menuBarManager = MenuBarManager(
                                         salesManager: manager,
                                         showRevenue: showRevenueInMenuBar
@@ -289,7 +300,7 @@ import SwiftUI
                             ],
                             proFeatures: [
                                 (icon: "checkmark", text: "Everything in Basic, plus:"),
-                                (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, and all-time trends"),
+                                (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
                                 (icon: "chart.pie", text: "Deeper product comparisons"),
@@ -319,10 +330,10 @@ import SwiftUI
                 menuBarManager?.updateTitle()
             }
             .onChange(of: licenseService.isPro) { _, isPro in
-                manager.isPro = isPro
-                if isPro, showInMenuBar, menuBarManager == nil {
+                manager.isPro = forcedProModeEnabled || isPro
+                if forcedProModeEnabled || isPro, showInMenuBar, menuBarManager == nil {
                     menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
-                } else if !isPro {
+                } else if !(forcedProModeEnabled || isPro) {
                     menuBarManager?.tearDown()
                     menuBarManager = nil
                 }
@@ -354,7 +365,7 @@ import SwiftUI
         }
 
         private func handleMenuBarToggle(_ show: Bool) {
-            guard licenseService.isPro else { return }
+            guard forcedProModeEnabled || licenseService.isPro else { return }
             if show {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
             } else {

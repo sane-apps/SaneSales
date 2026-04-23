@@ -16,7 +16,7 @@ struct SettingsSourceTests {
             encoding: .utf8
         )
 
-        #expect(macSettingsSource.contains("SaneGradientBackground(style: .panel)"))
+        #expect(macSettingsSource.contains("SaneSettingsContainer("))
         #expect(macSettingsSource.contains("CompactSection("))
         #expect(macSettingsSource.contains("LicenseSettingsView("))
         #expect(macSettingsSource.contains("SaneAboutView("))
