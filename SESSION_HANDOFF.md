@@ -1,11 +1,11 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-04-23
-**Current version:** `1.3.0` (build `1300`) release candidate
+**Current version:** `1.3.0` (build `1300`) direct live; App Store waiting for review
 
 ## Current State
 
-## 2026-04-23: SaneSales 1.3.0 Release Candidate
+## 2026-04-23: SaneSales 1.3.0 Released
 
 - Added Pro custom date ranges with editable start/end dates and a calendar range picker.
 - Dashboard and Orders now share the selected custom range and enforce Basic gating correctly.
@@ -13,7 +13,10 @@
 - Updated App Store metadata, README, changelog, website copy, and website screenshots for the custom-range release.
 - Refreshed canonical App Store screenshot files from the Mini-verified Pro screenshots.
 - Mini verification: `./scripts/SaneMaster.rb verify --ui` passed with 83 tests on 2026-04-23.
-- Mini preflights: `release_preflight` and `appstore_preflight` pass with warnings only. Expected pre-publish warnings remain for appcast/Homebrew/webhook still on 1.2.7 until the release deploy updates live channels.
+- Release command verification: `./scripts/SaneMaster.rb release --full --version 1.3.0 --deploy` passed its built-in Mini verification lane with 55 tests before packaging.
+- Direct channel is live at `https://dist.sanesales.com/updates/SaneSales-1.3.0.zip`; appcast, website JSON-LD, Homebrew cask, GitHub release `v1.3.0`, download redirect, and email webhook all verified at 1.3.0.
+- App Store Connect state: macOS 1.3.0 and iOS 1.3.0 are both `WAITING_FOR_REVIEW`; previous public App Store versions remain live until Apple approval.
+- Final release commits: `7a1fec7` version bump, `fd84491` release metadata sync. Both Mini and Air repos were synced to `fd84491`.
 
 - Pricing rollout approved on 2026-04-14: direct and App Store copy should present `Basic free + Pro $24.99 once`. Keep StoreKit product ID `com.sanesales.app.pro.unlock.v2`.
 - Pricing language should stay consistent across README, `docs/index.html`, long-tail guide CTAs, and in-app unlock fallbacks. No apology pricing copy and no subscription wording for the product itself.
