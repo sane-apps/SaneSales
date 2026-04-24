@@ -149,3 +149,12 @@ PROMPT4='+
 - Current GitHub SwiftUI + TabView patterns consistently apply UITabBar.appearance().standardAppearance and scrollEdgeAppearance from app startup when they need a stable opaque tab bar background.
 - Local Mini findings: the per-screen bottom inset patch improved spacing, but the remaining screenshot problem is shared tab chrome, not individual screen layout. The correct fix path is app-level UITabBarAppearance plus the existing TabView modifiers in iOS/Views/ContentView.swift.
 - Local Mini re-read confirmed the current source line in iOS/SaneSalesApp.swift is now CommandLine.arguments.contains("--uitest-reset"); the earlier compile failure was from a stale broken edit before the line-level rewrite.
+
+## Verify False Failure From Concurrent Release Checks 2026-04-24
+**Updated:** 2026-04-24 | **Status:** verified | **TTL:** 7d
+**Source:** local Mini process/log inspection, Apple xcodebuild/result-bundle docs web search, GitHub issue search for matching xcodebuild/no-xcresult failures
+- Local evidence shows the 10:25 unit-test xcodebuild run succeeded with 55 tests and produced `Test-SaneSales-2026.04.24_10-25-34--0400.xcresult`.
+- The later failed `verify --ui` attempts left `test_output.txt` with only the section header and no compiler/test error, while the wrapper reported no `.xcresult`; this matches the run being interrupted before xcodebuild emitted a result bundle.
+- The failure happened after `release_preflight` and `verify --ui` were started concurrently. Both wrappers perform stale-process reaping and runtime app dedupe, so they can kill or invalidate each other's xcodebuild/test state.
+- GitHub search for `xcodebuild no xcresult bundle` and `xcodebuild concurrent builds build database` returned no matching SaneSales-specific upstream issue in this environment.
+- Safe verification path: do not run `release_preflight`, `verify`, `verify --ui`, screenshot capture, or other xcodebuild lanes in parallel for the same app. Confirm no active xcodebuild/XCTest/simctl processes, then rerun one SaneMaster verification command sequentially.

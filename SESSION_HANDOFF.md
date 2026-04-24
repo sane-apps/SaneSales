@@ -1,9 +1,20 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-04-23
-**Current version:** `1.3.0` (build `1300`) direct live; App Store waiting for review
+**Last updated:** 2026-04-24
+**Current version:** `1.3.0` (build `1300`) direct live; macOS App Store ready; iOS App Store waiting for review
 
 ## Current State
+
+## 2026-04-24: Product Hunt Readiness / Website Source Sync
+
+- Product Hunt website audit found live `sanesales.com` was correct, but the Mini repo source had drifted behind the live site and still contained the old hero copy, duplicate locked Apple Watch website screenshots, stale spreadsheet download link, and `0% Telemetry` footer copy.
+- Repo source was synced to the live-approved launch state: approved "Stop checking three dashboards..." hero, Dashboard-first screenshot carousel, product Watch screenshots with cache-busting, `No Subscriptions / 0% Spying / 100% On-Device` footer, support/crypto copy retained, and `sanesales-vs-spreadsheets.html` download link updated to `SaneSales-1.3.0.zip`.
+- `docs/support.html` now uses the tracked `images/branding.png` asset instead of untracked `images/icon.png`.
+- Mini HTML audit after the fix found `HTML_AUDIT_FAILURES=0`; `./scripts/SaneMaster.rb check_docs` and `./scripts/SaneMaster.rb saneui_guard .` passed.
+- Fresh Mini visual audit screenshots were captured with Playwright after a 4-second animation delay: `/tmp/sanesales-audit-shots/home-desktop-delay.png` and `/tmp/sanesales-audit-shots/home-mobile-delay.png`. Desktop passed cleanly; mobile is usable, with the comparison table still horizontally scrollable on narrow screens.
+- Mini `./scripts/SaneMaster.rb verify --ui` passed 83 tests in 214 seconds on 2026-04-24 after the parallel-run false failure was documented in `.claude/research.md`.
+- App Store Connect check on 2026-04-24: macOS 1.3.0 is `READY_FOR_SALE`; iOS 1.3.0 is still `WAITING_FOR_REVIEW`; public lookup still returned iOS/public version 1.2.6.
+- Remaining launch caveat: Lemon Squeezy hosted file for SaneSales still shows `SaneSales-1.2.7.zip` while appcast/website/webhook/Homebrew are at 1.3.0; replace the hosted file in the Lemon Squeezy dashboard before heavy Product Hunt traffic if direct buyers may use the hosted file.
 
 ## 2026-04-23: SaneSales 1.3.0 Released
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneSales - Bring Sanity to Your Sales Tracking</title>
+    <title>SaneSales - Native Sales Tracking for Indie Apps</title>
     <meta name="description" content="Track sales on-device. Start with today, then unlock 7D, 30D, custom date ranges, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $24.99.">
     <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
     <meta name="author" content="Mr. Sane">
@@ -17,7 +17,7 @@
     <link rel="canonical" href="https://sanesales.com/" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
+    <meta property="og:title" content="SaneSales - Native Sales Tracking for Indie Apps">
     <meta property="og:description" content="Track sales on-device. Start with today, then unlock 7D, 30D, custom date ranges, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $24.99.">
     <meta property="og:image" content="https://sanesales.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -29,7 +29,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SaneSales - Bring Sanity to Your Sales Tracking">
+    <meta name="twitter:title" content="SaneSales - Native Sales Tracking for Indie Apps">
     <meta name="twitter:description" content="Track sales on-device. Start with today, then unlock 7D, 30D, custom date ranges, full order history, CSV export, widgets, and multi-provider tracking in SaneSales Pro for $24.99.">
     <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
     <meta name="twitter:site" content="@saneapps">
@@ -46,16 +46,16 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "SaneSales",
-      "operatingSystem": "iOS, macOS",
+      "operatingSystem": "iOS, iPadOS, macOS, watchOS",
       "applicationCategory": "BusinessApplication",
       "offers": {
         "@type": "Offer",
         "price": "24.99",
         "priceCurrency": "USD"
       },
-      "description": "Universal indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, and products in one app.",
+      "description": "Native indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, products, and custom date ranges in one app.",
       "image": "https://sanesales.com/images/branding.png",
-      "downloadUrl": "https://sanesales.com",
+      "downloadUrl": "https://dist.sanesales.com/updates/SaneSales-1.3.0.zip",
       "author": {
         "@type": "Person",
         "name": "Mr. Sane",
@@ -64,6 +64,7 @@
       "softwareVersion": "1.3.0",
       "featureList": [
         "Multi-Provider Support (LemonSqueezy, Gumroad, Stripe)",
+        "Custom Date Ranges",
         "Interactive Revenue Charts",
         "Order Tracking & Search",
         "Product Breakdown",
@@ -85,7 +86,7 @@
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server in the middle for your sales data."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
         {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales Pro is $24.99 one-time. Basic is included so you can try the app first, and there are no recurring charges or subscriptions."}},
-        {"@type": "Question", "name": "What happens after I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Send $24.99 (or more) to any listed address, then email hi@saneapps.com with your transaction ID or screenshot. I verify it and reply with your Pro download link."}},
+        {"@type": "Question", "name": "Can I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crypto is optional. Send $24.99 to any listed address, then email hi@saneapps.com with your transaction ID or screenshot so your Pro access can be verified."}},
         {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with Basic to connect 1 provider and see today's revenue and orders. Buy Pro for $24.99 when you want 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included."}}
       ]
     }
@@ -308,10 +309,14 @@
         .hero .subtitle {
             font-size: 1.25rem;
             color: var(--text-secondary);
-            max-width: 560px;
+            max-width: 980px;
             margin: 0 auto 48px;
             font-weight: 400;
-            line-height: 1.8;
+            line-height: 1.7;
+        }
+
+        .hero .subtitle-line {
+            display: block;
         }
 
         .hero .subtitle em {
@@ -475,8 +480,9 @@
             height: 100%;
             display: block;
             aspect-ratio: 1280 / 900;
-            object-fit: cover;
-            object-position: center top;
+            object-fit: contain;
+            object-position: center;
+            background: #05070c;
             border-radius: 7px;
             border: none;
         }
@@ -524,11 +530,13 @@
 
         .hero-device-iphone img {
             width: 100%;
-            height: 282px;
+            height: auto;
+            aspect-ratio: 1206 / 2622;
             display: block;
             border-radius: 22px;
-            object-fit: cover;
-            object-position: top center;
+            object-fit: contain;
+            object-position: center;
+            background: #05070c;
         }
 
         .hero-device-ipad {
@@ -722,7 +730,10 @@
         }
 
         .screenshot-pair .iphone-shot .hero-device-iphone img {
-            height: clamp(250px, 30vw, 330px);
+            height: auto;
+            aspect-ratio: 1206 / 2622;
+            object-fit: contain;
+            object-position: center;
         }
 
         .screenshot-pair .ipad-shot .hero-device-ipad img {
@@ -1277,19 +1288,13 @@
         .support {
             padding: 80px 0;
             text-align: center;
-        }
-
-        .support-options {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 24px;
+            border-top: 1px solid var(--border-subtle);
+            scroll-margin-top: 110px;
         }
 
         .support-subtitle {
              font-style: italic;
-             max-width: 500px;
+             max-width: 560px;
              margin: 0 auto 32px;
         }
 
@@ -1312,11 +1317,11 @@
         }
 
         .crypto-addresses {
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
             display: block;
         }
@@ -1341,7 +1346,7 @@
         .crypto-addr {
             background: var(--bg-primary);
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 0.95rem;
             color: var(--text-secondary);
             cursor: pointer;
@@ -1383,23 +1388,23 @@
             margin-top: 12px;
         }
 
-.crypto-how {
-    margin-top: 14px;
-    text-align: left;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
-}
+        .crypto-how {
+            margin-top: 14px;
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
 
-.crypto-how strong { color: var(--text-primary); }
-.crypto-how ol { margin: 12px 0 0; padding-left: 20px; }
-.crypto-how li { margin-bottom: 6px; }
-.crypto-how a { color: var(--accent); text-decoration: none; }
-.crypto-how a:hover { text-decoration: underline; }
+        .crypto-how strong { color: var(--text-primary); }
+        .crypto-how ol { margin: 12px 0 0; padding-left: 20px; }
+        .crypto-how li { margin-bottom: 6px; }
+        .crypto-how a { color: var(--accent); text-decoration: none; }
+        .crypto-how a:hover { text-decoration: underline; }
 
 
         /* Cross-Sell Section */
@@ -1952,8 +1957,13 @@
 
     <section class="hero" id="screenshots">
         <div class="container">
-            <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Sales Tracking</h1>
-            <p class="subtitle animate-in delay-3">See <em>today's sales instantly</em>. Unlock <em>7D, 30D, custom ranges, full history, and export</em> with SaneSales Pro.</p>
+            <h1 class="animate-in delay-2">Stop checking three dashboards to <em>understand your sales</em>.</h1>
+            <p class="subtitle animate-in delay-3">
+                <span class="subtitle-line">SaneSales Pro brings LemonSqueezy, Gumroad, and Stripe into one native dashboard.</span>
+                <span class="subtitle-line">Compare custom date ranges.</span>
+                <span class="subtitle-line">Search full order history.</span>
+                <span class="subtitle-line">Export clean sales data when you need it.</span>
+            </p>
             <div class="trust-badges animate-in delay-3">
                 <span>&#128187; Used by Indie Developers Daily</span>
                 <span>&#128274; 100% On-Device</span>
@@ -2001,18 +2011,18 @@
             <h2 class="section-title animate-in delay-4">See It in Action</h2>
             <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Basic shows today. Pro gives you 7D, 30D, custom ranges, history, export, and the bigger picture.</p>
             <div class="screenshot-tabs animate-in delay-5">
-                <button class="screenshot-tab active" data-screen="charts" onclick="showScreen('charts', this)">Onboarding</button>
-                <button class="screenshot-tab" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
+                <button class="screenshot-tab active" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
                 <button class="screenshot-tab" data-screen="orders" onclick="showScreen('orders', this)">Orders</button>
                 <button class="screenshot-tab" data-screen="products" onclick="showScreen('products', this)">Products</button>
                 <button class="screenshot-tab" data-screen="settings" onclick="showScreen('settings', this)">Settings</button>
+                <button class="screenshot-tab" data-screen="charts" onclick="showScreen('charts', this)">Onboarding</button>
             </div>
-            <div class="screenshot-pair animate-in delay-5" data-screen="dashboard">
+            <div class="screenshot-pair active animate-in delay-5" data-screen="dashboard">
                 <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-dashboard.png" alt="SaneSales macOS dashboard" loading="eager"></div><div class="macbook-base" aria-hidden="true"></div></div>
                 <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-dashboard.png" alt="SaneSales iPhone dashboard" loading="eager"></div></div>
                 <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-dashboard.png" alt="SaneSales iPad dashboard" loading="eager"></div></div>
             </div>
-            <div class="screenshot-pair active animate-in delay-5" data-screen="charts">
+            <div class="screenshot-pair animate-in delay-5" data-screen="charts">
                 <div class="mac-shot"><p class="shot-label">Mac</p><div class="macbook-lid"><img src="images/screenshot-mac-onboarding.png" alt="SaneSales macOS onboarding" loading="lazy"></div><div class="macbook-base" aria-hidden="true"></div></div>
                 <div class="iphone-shot"><p class="shot-label">iPhone</p><div class="hero-device-iphone"><img src="images/screenshot-iphone-onboarding.png" alt="SaneSales iPhone onboarding" loading="lazy"></div></div>
                 <div class="ipad-shot"><p class="shot-label">iPad</p><div class="hero-device-ipad"><img src="images/screenshot-ipad-onboarding.png" alt="SaneSales iPad onboarding" loading="lazy"></div></div>
@@ -2036,11 +2046,11 @@
                 <div class="watch-grid">
                     <div class="watch-shot">
                         <p class="shot-label">Apple Watch Dashboard</p>
-                        <div class="hero-device-watch"><img src="images/screenshot-watch-dashboard.png" alt="SaneSales Apple Watch dashboard" loading="lazy"></div>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-dashboard.png?v=1300-watch-product" alt="SaneSales Apple Watch dashboard" loading="eager"></div>
                     </div>
                     <div class="watch-shot">
                         <p class="shot-label">Apple Watch Recent Sales</p>
-                        <div class="hero-device-watch"><img src="images/screenshot-watch-recent.png" alt="SaneSales Apple Watch recent sales" loading="lazy"></div>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-recent.png?v=1300-watch-product" alt="SaneSales Apple Watch recent sales" loading="eager"></div>
                     </div>
                 </div>
             </div>
@@ -2196,7 +2206,7 @@
     <section class="screenshot-gallery">
         <div class="container">
             <h2 class="section-title">One Price, All Devices</h2>
-            <p class="hero-platform-note">iPhone, iPad, Apple Watch, and Mac are live on the App Store.</p>
+            <p class="hero-platform-note">Built for iPhone, iPad, Apple Watch, and Mac.</p>
             <div class="hero-devices">
                 <div class="hero-device">
                     <p class="hero-device-label">Mac</p>
@@ -2222,7 +2232,7 @@
                 <div class="hero-device hero-device-watch-wrap">
                     <p class="hero-device-label">Apple Watch</p>
                     <div class="hero-device-watch">
-                        <img src="images/screenshot-watch-dashboard.png" alt="SaneSales on Apple Watch — Revenue dashboard on wrist" loading="lazy">
+                        <img src="images/screenshot-watch-dashboard.png?v=1300-watch-product" alt="SaneSales on Apple Watch — Revenue dashboard on wrist" loading="eager">
                     </div>
                 </div>
             </div>
@@ -2416,10 +2426,10 @@
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
-                        What happens after I pay with crypto?
+                        Can I pay with crypto?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Send $24.99 (or more) to one of the addresses below, then email hi@saneapps.com with your transaction ID or screenshot. I verify it and reply with your Pro download link.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Crypto is optional. Send $24.99 to one of the addresses below, then email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot. I verify it and reply with your Pro access details.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2445,11 +2455,11 @@
             <p class="section-subtitle support-subtitle">
                 <em>"The worker is worthy of his wages."</em><br>
                 — 1 Timothy 5:18<br><br>
-                I need your help to keep SaneSales alive.<br>
-                Your support through a one-time Pro purchase or GitHub Sponsors makes this possible.<br><br>
+                SaneSales is public-code software, but it still takes real work to build, test, and support.<br>
+                A one-time Pro purchase, GitHub Sponsors, or optional crypto payment helps keep it alive.<br><br>
                 <span>Thank you. — Mr. Sane</span>
             </p>
-            <a href="https://github.com/sponsors/MrSaneApps" class="btn btn-primary github-sponsor-btn" target="_blank" rel="noopener">
+            <a href="https://github.com/sponsors/MrSaneApps" class="btn btn-primary github-sponsor-btn" data-cta="sponsor_support" target="_blank" rel="noopener">
                 <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
                     <path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/>
                 </svg>
@@ -2475,16 +2485,15 @@
                     </div>
                 </div>
                 <p class="crypto-hint">Click any address to copy</p>
-            
-<div class="crypto-how">
-    <strong>How it works:</strong>
-    <ol>
-        <li>Send $24.99 (or more) to any address above</li>
-        <li>Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot</li>
-        <li>I'll verify and reply with your download link</li>
-    </ol>
-</div>
-</div>
+                <div class="crypto-how">
+                    <strong>How it works:</strong>
+                    <ol>
+                        <li>Send $24.99 or more to any address above</li>
+                        <li>Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot</li>
+                        <li>I verify and reply with your Pro access details</li>
+                    </ol>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -2612,24 +2621,32 @@
 
         @media (max-width: 768px) {
             .testimonial-mask {
-                overflow-x: auto !important;
-                overflow-y: hidden;
+                overflow: visible !important;
                 -webkit-overflow-scrolling: touch;
-                scroll-snap-type: x mandatory;
+                scroll-snap-type: none;
                 mask-image: none !important;
                 -webkit-mask-image: none !important;
-                padding: 0 16px 8px;
+                padding: 0 16px;
             }
 
             .testimonial-track {
+                display: grid !important;
                 animation: none !important;
+                width: 100% !important;
+                max-width: 420px;
+                margin: 0 auto;
                 gap: 14px !important;
             }
 
             .testimonial-card {
-                min-width: 82vw !important;
-                max-width: 82vw !important;
-                scroll-snap-align: start;
+                min-width: 0 !important;
+                max-width: none !important;
+                width: 100%;
+                scroll-snap-align: none;
+            }
+
+            .testimonial-card:nth-child(n + 4) {
+                display: none;
             }
         }
     </style>
@@ -2637,7 +2654,7 @@
     <footer>
         <div class="container">
             <p class="footer-quote" style="font-style: italic; font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 20px; opacity: 0.85;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." — 2 Timothy 1:7</p>
-            <p class="footer-privacy"><strong>0% Telemetry</strong>. <strong>0% Spying</strong>. <strong>100% On-Device</strong>.</p>
+            <p class="footer-privacy"><strong>No Subscriptions</strong>. <strong>0% Spying</strong>. <strong>100% On-Device</strong>.</p>
             <div class="footer-links">
                 <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
                 <a href="privacy.html">Privacy</a>
@@ -2697,7 +2714,7 @@
             setTimeout(function() { el.textContent = orig; }, 1500);
         }
 
-        var screenshotOrder = ['charts', 'dashboard', 'orders', 'products', 'settings'];
+        var screenshotOrder = ['dashboard', 'orders', 'products', 'settings', 'charts'];
         var screenshotIndex = 0;
         var screenshotTimer = null;
 
