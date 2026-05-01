@@ -434,6 +434,9 @@ struct SettingsView: View {
     }
 
     private func triggerUnlock() {
+        Task.detached {
+            await EventTracker.log("checkout_clicked", app: "sanesales")
+        }
         if licenseService.usesAppStorePurchase {
             Task { await licenseService.purchasePro() }
         } else if let url = licenseService.checkoutURL {

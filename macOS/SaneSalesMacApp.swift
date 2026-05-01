@@ -312,6 +312,16 @@ import SwiftUI
                             secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
                             onSecondaryCompletion: {
                                 manager.enableDemoMode()
+                                Task.detached {
+                                    await EventTracker.log("demo_started", app: "sanesales")
+                                }
+                                let key = "SaneApps.EventTracker.logged.sanesales.first_value_action"
+                                if !UserDefaults.standard.bool(forKey: key) {
+                                    UserDefaults.standard.set(true, forKey: key)
+                                    Task.detached {
+                                        await EventTracker.log("first_value_action", app: "sanesales")
+                                    }
+                                }
                             }
                         )
                     }

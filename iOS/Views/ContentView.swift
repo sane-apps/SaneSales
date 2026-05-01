@@ -615,6 +615,10 @@ struct OnboardingView: View {
         Button("Try Demo Data") {
             hasSeenWelcome = true
             manager.enableDemoMode()
+            Task.detached {
+                await EventTracker.log("demo_started", app: "sanesales")
+            }
+            logOnce("first_value_action")
         }
         .buttonStyle(SaneActionButtonStyle())
         .frame(maxWidth: .infinity)
@@ -629,6 +633,9 @@ struct OnboardingView: View {
         isValidating = true
         let key = normalizedAPIKey
         let provider = selectedProvider
+        Task.detached {
+            await EventTracker.log("provider_connect_started", app: "sanesales")
+        }
         Task {
             let success: Bool = switch provider {
             case .lemonSqueezy:
@@ -641,7 +648,11 @@ struct OnboardingView: View {
             isValidating = false
             if success {
                 hasSeenWelcome = true
+                await EventTracker.log("provider_connect_success", app: "sanesales")
+                logOnce("onboarding_completed")
+                logOnce("first_value_action")
             } else {
+                await EventTracker.log("provider_connect_failed", app: "sanesales")
                 switch manager.error {
                 case .invalidAPIKey:
                     errorTitle = "Invalid API Key"
@@ -664,6 +675,15 @@ struct OnboardingView: View {
                 }
                 showError = true
             }
+        }
+    }
+
+    private func logOnce(_ event: String) {
+        let key = "SaneApps.EventTracker.logged.sanesales.\(event)"
+        guard !UserDefaults.standard.bool(forKey: key) else { return }
+        UserDefaults.standard.set(true, forKey: key)
+        Task.detached {
+            await EventTracker.log(event, app: "sanesales")
         }
     }
 
