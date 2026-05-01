@@ -158,3 +158,13 @@ PROMPT4='+
 - The failure happened after `release_preflight` and `verify --ui` were started concurrently. Both wrappers perform stale-process reaping and runtime app dedupe, so they can kill or invalidate each other's xcodebuild/test state.
 - GitHub search for `xcodebuild no xcresult bundle` and `xcodebuild concurrent builds build database` returned no matching SaneSales-specific upstream issue in this environment.
 - Safe verification path: do not run `release_preflight`, `verify`, `verify --ui`, screenshot capture, or other xcodebuild lanes in parallel for the same app. Confirm no active xcodebuild/XCTest/simctl processes, then rerun one SaneMaster verification command sequentially.
+
+## SaneUI EventTracker dependency path | Updated: 2026-05-01 | Status: verified | TTL: 30d
+- Finding: SaneSales resolves SaneUI from `https://github.com/sane-apps/SaneUI.git @ main (df151bb)` in Xcode package resolution, not from the local `~/SaneApps/infra/SaneUI` checkout during `./scripts/SaneMaster.rb verify`.
+- Evidence: `xcodebuild -showBuildSettings -scheme SaneSales -project SaneSales.xcodeproj` printed `SaneUI: https://github.com/sane-apps/SaneUI.git @ main (df151bb)`.
+- Decision: App call sites must use the already-published string `EventTracker.log("event", app:)` API until the SaneUI package update is committed, pushed, and resolved by each app. One-per-install behavior should be implemented with local UserDefaults markers in app code for this release.
+
+## SaneSales onboarding telemetry patch syntax | Updated: 2026-05-01 | Status: verified | TTL: 7d
+- Finding: The onboarding `validateAndSave()` telemetry helper initially landed inside the async `Task` closure because the `else` branch was missing its closing brace after `showError = true`.
+- Evidence: `swiftc`/SaneMaster reported `private can only be used in a non-local scope` at `ContentView.swift:680` and `expected } in struct`.
+- Decision: Keep helper methods at `OnboardingView` struct scope and preserve the original `Task { ... if success { ... } else { switch ...; showError = true } }` brace structure.
