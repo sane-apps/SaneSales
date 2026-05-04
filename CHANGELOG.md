@@ -22,6 +22,12 @@
 - Settings navigation routing was cleaned up so menu-bar and dock paths open the intended settings surface without timer-based drift.
 - Current public assets, website download links, and appcast entries all point at `1.2.6`.
 
+## [1.3.1] - 2026-05-04
+
+Adds a Latest Sale dashboard section so recent paid orders stay visible even when today has no sales, plus clearer sales timestamps across Basic and Pro.
+
+---
+
 ## [1.3.0] - 2026-04-23
 
 Adds Pro custom date ranges with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after offer-code redemption or restore.
