@@ -246,7 +246,7 @@ struct DashboardView: View {
     @AppStorage(SaneSalesDateRangeStore.customStartKey) private var customRangeStartTimestamp = SaneSalesDateRangeStore.defaultCustomStartTimestamp
     @AppStorage(SaneSalesDateRangeStore.customEndKey) private var customRangeEndTimestamp = SaneSalesDateRangeStore.defaultCustomEndTimestamp
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
-    @State private var selectedProviderFilter: SalesProviderType?
+    @State var selectedProviderFilter: SalesProviderType?
     @State private var quickConnectProvider: SalesProviderType?
     @State private var animateCards = false
     @State var didLogChartGateView = false

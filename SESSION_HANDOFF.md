@@ -1,9 +1,17 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-04-24
+**Last updated:** 2026-05-04
 **Current version:** `1.3.0` (build `1300`) direct live; macOS App Store ready; iOS App Store waiting for review
 
 ## Current State
+
+## 2026-05-04: Dashboard Latest Sale Visibility Fix
+
+- Research confirmed current sales trackers avoid empty default dashboards by exposing latest/recent transaction activity and freshness cues alongside range-based charts.
+- Added a compact `Latest Sale` dashboard section showing the newest paid order, timestamp, provider, product, and net amount even when the selected dashboard range would otherwise be empty.
+- Basic gating remains intact: Basic still defaults to Today and keeps 7D/30D/All/Custom and charts/order-history depth behind Pro; Pro shows the same latest sale plus unlocked range/chart views.
+- Mini verification: `./scripts/SaneMaster.rb verify` passed 56 tests; `./scripts/SaneMaster.rb verify --ui` passed 84 tests in 237s; `test_mode --release` and Basic launch mode passed.
+- Visual verification: Mini-generated iPhone and iPad dashboard screenshots for Basic and Pro were inspected; the new section is visible, not crowded, and does not overlap the chart/upgrade sections.
 
 ## 2026-04-24: Product Hunt Readiness / Website Source Sync
 

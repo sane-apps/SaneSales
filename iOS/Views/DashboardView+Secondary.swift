@@ -4,6 +4,8 @@ import SwiftUI
 extension DashboardView {
     @ViewBuilder
     func secondarySection(_ widthClass: WidthClass) -> some View {
+        latestSaleSection
+
         if widthClass.supportsSecondaryColumns {
             HStack(alignment: .top, spacing: DashboardLayout.sectionSpacing) {
                 chartSection(widthClass)
@@ -15,6 +17,55 @@ extension DashboardView {
         } else {
             chartSection(widthClass)
             topProductsSection
+        }
+    }
+
+    @ViewBuilder
+    var latestSaleSection: some View {
+        if let order = latestPaidOrder {
+            GlassSection("Latest Sale", icon: "bolt.fill", iconColor: .salesGreen) {
+                HStack(alignment: .center, spacing: 12) {
+                    Image(systemName: order.provider.icon)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 36, height: 36)
+                        .background(
+                            RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                .fill(order.provider.brandColor.opacity(0.24))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                                        .stroke(order.provider.brandColor.opacity(0.45), lineWidth: 1)
+                                )
+                        )
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(order.productName)
+                            .font(.saneSubheadlineBold)
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+
+                        Text("\(latestSaleTimestamp(for: order)) · \(order.provider.displayName)")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.9))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                    }
+
+                    Spacer(minLength: 10)
+
+                    VStack(alignment: .trailing, spacing: 3) {
+                        Text(formatCents(order.netTotal))
+                            .font(.saneSubheadlineBold)
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.76)
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 11)
+                .accessibilityIdentifier("dashboard.latestSale")
+            }
         }
     }
 
@@ -59,6 +110,30 @@ extension DashboardView {
 
     var chartData: [DailySales] {
         chartSeries
+    }
+
+    var latestPaidOrder: Order? {
+        manager.latestPaidOrder(filteredBy: selectedProviderFilter)
+    }
+
+    func latestSaleTimestamp(for order: Order) -> String {
+        let calendar = Calendar.current
+        let timeFormatter = DateFormatter()
+        timeFormatter.timeStyle = .short
+        timeFormatter.dateStyle = .none
+
+        if calendar.isDateInToday(order.createdAt) {
+            return "Today \(timeFormatter.string(from: order.createdAt))"
+        }
+
+        if calendar.isDateInYesterday(order.createdAt) {
+            return "Yesterday \(timeFormatter.string(from: order.createdAt))"
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+        return dateFormatter.string(from: order.createdAt)
     }
 
     var topProductsSection: some View {
