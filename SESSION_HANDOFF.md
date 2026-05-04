@@ -1,9 +1,18 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-04
-**Current version:** 1.3.1 (build 1301) staged for next direct + App Store release; 1.3.0 remains live until publish/approval
+**Current version:** 1.3.1 (build 1301) released on direct download; macOS and iOS/watch submitted to App Store review
 
 ## Current State
+
+## 2026-05-04: SaneSales 1.3.1 Released + Submitted
+
+- Direct release completed successfully via `release.sh --full --version 1.3.1 --deploy` on the Mini.
+- Notarization accepted, ZIP uploaded and verified at `https://dist.sanesales.com/updates/SaneSales-1.3.1.zip`, appcast propagated with one v1.3.1 entry, website deployed, Homebrew cask updated, and email webhook updated to `SaneSales-1.3.1.zip`.
+- GitHub release `v1.3.1` was created with the ZIP asset.
+- App Store Connect macOS v1.3.1 build 1301 submitted and is `WAITING_FOR_REVIEW`.
+- App Store Connect iOS/watch v1.3.1 build 1301 submitted and is `WAITING_FOR_REVIEW`.
+- Release commits pushed: `acd9a83` version bump, `1f6e25a` metadata/site links, `877c4cd` release metadata.
 
 ## 2026-05-04: Final Mini Screenshot Capture Hardening
 
