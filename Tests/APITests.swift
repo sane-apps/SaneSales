@@ -478,6 +478,30 @@ struct AppStoreReviewPathTests {
         #expect(onboardingSource.contains("onboarding.unlockProButton"))
     }
 
+    @Test("App Store screenshot capture keeps Mini visual fixtures release-safe")
+    func appStoreScreenshotCaptureFixturesStayReleaseSafe() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let captureScript = try String(
+            contentsOf: projectRoot.appendingPathComponent("scripts/capture_appstore_screenshots.sh"),
+            encoding: .utf8
+        )
+        let watchSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("Watch/WatchDashboardView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(captureScript.contains("IOS_SCREENSHOT_DELAY=\"${IOS_SCREENSHOT_DELAY:-8}\""))
+        #expect(captureScript.contains("WATCH_SCREENSHOT_DELAY=\"${WATCH_SCREENSHOT_DELAY:-5}\""))
+        #expect(captureScript.contains("width=1280"))
+        #expect(captureScript.contains("height=900"))
+        #expect(watchSource.contains("SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty"))
+        #expect(watchSource.contains("watchRecentScreenshotContent(snapshot: snapshot)"))
+        #expect(watchSource.contains("snapshot.recentRows.prefix(4)"))
+        #expect(watchSource.contains(".padding(.top, max(38, proxy.safeAreaInsets.top + 22))"))
+    }
+
     @Test("macOS review notes match the real welcome-screen Pro entry point")
     func saneSalesMacReviewNotesMatchCode() throws {
         let projectRoot = URL(fileURLWithPath: #filePath)

@@ -21,6 +21,8 @@ CAPTURE_WATCH="${CAPTURE_WATCH:-auto}"
 CAPTURE_MAC="${CAPTURE_MAC:-1}"
 CAPTURE_SETTINGS_PANES="${CAPTURE_SETTINGS_PANES:-0}"
 REQUIRE_WATCH="${REQUIRE_WATCH:-0}"
+IOS_SCREENSHOT_DELAY="${IOS_SCREENSHOT_DELAY:-8}"
+WATCH_SCREENSHOT_DELAY="${WATCH_SCREENSHOT_DELAY:-5}"
 MINI_HOST="${MINI_HOST:-mini}"
 ALLOW_LOCAL_CAPTURE="${ALLOW_LOCAL_CAPTURE:-0}"
 PRUNE_STALE_SCREENSHOTS="${PRUNE_STALE_SCREENSHOTS:-1}"
@@ -206,7 +208,7 @@ capture_ios_shot() {
 
   xcrun simctl terminate "${udid}" "${bundle_id}" >/dev/null 2>&1 || true
   xcrun simctl launch "${udid}" "${bundle_id}" -- "$@" >/dev/null
-  sleep 2.5
+  sleep "${IOS_SCREENSHOT_DELAY}"
   xcrun simctl io "${udid}" screenshot "${output_file}" >/dev/null
   log "Saved ${output_file}"
 }
@@ -219,7 +221,7 @@ capture_watch_shot() {
 
   xcrun simctl terminate "${udid}" "${bundle_id}" >/dev/null 2>&1 || true
   xcrun simctl launch "${udid}" "${bundle_id}" -- "$@" >/dev/null
-  sleep 3.0
+  sleep "${WATCH_SCREENSHOT_DELAY}"
   xcrun simctl io "${udid}" screenshot --mask "${WATCH_SCREENSHOT_MASK}" "${output_file}" >/dev/null
   log "Saved ${output_file}"
 }
@@ -295,6 +297,10 @@ capture_mac_shot() {
       esac
       ;;
   esac
+
+  # App Store screenshot validation expects a stable macOS canvas.
+  width=1280
+  height=900
 
   pkill -x SaneSales >/dev/null 2>&1 || true
   open -na "${app_path}" --args "$@" >/dev/null 2>&1
