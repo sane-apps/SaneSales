@@ -15,7 +15,7 @@ final class WatchDashboardViewModel: ObservableObject {
         isLoading = true
         let defaults = SharedStore.userDefaults()
 
-        guard SharedStore.isProEnabled(defaults: defaults) else {
+        guard SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty else {
             snapshot = nil
             usingDemoData = false
             isLocked = true
@@ -173,14 +173,85 @@ struct WatchDashboardView: View {
                 .ignoresSafeArea()
 
             if let snapshot = viewModel.snapshot {
-                GeometryReader { proxy in
-                    watchContent(snapshot: snapshot, width: proxy.size.width)
+                if focusRecentOnAppear {
+                    watchRecentScreenshotContent(snapshot: snapshot)
+                } else {
+                    GeometryReader { proxy in
+                        watchContent(snapshot: snapshot, width: proxy.size.width)
+                    }
                 }
             } else if viewModel.isLocked {
                 lockedState
             } else {
                 emptyState
             }
+        }
+    }
+
+    private func watchRecentScreenshotContent(snapshot: WatchSalesSnapshot) -> some View {
+        GeometryReader { proxy in
+            let contentWidth = max(120, proxy.size.width - (WatchLayout.horizontalPadding * 2))
+            let cornerRadius = WatchLayout.cardCornerRadius(for: contentWidth)
+            let amountWidth = max(52, min(68, contentWidth * 0.30))
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 7) {
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(WatchPalette.salesGreen.opacity(0.86))
+                        .frame(width: 30, height: 30)
+                        .overlay {
+                            Image(systemName: "dollarsign")
+                                .font(.system(size: 15, weight: .bold, design: .rounded))
+                                .foregroundStyle(.black.opacity(0.72))
+                        }
+
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Recent Sales")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                        Text(snapshot.lastUpdatedText(usingDemoData: viewModel.usingDemoData))
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(WatchPalette.salesGreenSoft)
+                    }
+                }
+
+                WatchGlassCard(cornerRadius: cornerRadius, accentColor: WatchPalette.salesGreenSoft) {
+                    VStack(alignment: .leading, spacing: 5) {
+                        ForEach(Array(snapshot.recentRows.prefix(4))) { row in
+                            HStack(alignment: .lastTextBaseline, spacing: 6) {
+                                Circle()
+                                    .fill(providerColor(row.provider))
+                                    .frame(width: 5, height: 5)
+
+                                Text(row.productName)
+                                    .font(.system(size: 11, weight: .semibold))
+                                    .foregroundStyle(.white)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.76)
+                                    .layoutPriority(1)
+
+                                Spacer(minLength: 4)
+
+                                Text(row.createdAt, style: .time)
+                                    .font(.system(size: 10, weight: .medium))
+                                    .monospacedDigit()
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.82)
+                                    .foregroundStyle(.white.opacity(0.92))
+
+                                Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.78)
+                                    .frame(width: amountWidth, alignment: .trailing)
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.top, max(38, proxy.safeAreaInsets.top + 22))
+            .padding(.horizontal, WatchLayout.horizontalPadding)
         }
     }
 

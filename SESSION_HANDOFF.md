@@ -5,6 +5,15 @@
 
 ## Current State
 
+## 2026-05-04: Final Mini Screenshot Capture Hardening
+
+- Confirmed the proven Mini GUI capture path is `~/SaneApps/infra/SaneProcess/scripts/mini/capture-mini-screenshot.sh` / `mini-gui-run.sh`; plain SSH `screencapture` is not valid evidence for Mini GUI screenshots.
+- Hardened `scripts/capture_appstore_screenshots.sh` so simulator captures wait for populated UI state, macOS App Store screenshots use the validator's 1280x900 canvas, and `.capture_manifest` records `iphone,ipad,watch,mac`.
+- Fixed Watch screenshot demo behavior so `--demo` can show demo data without a Pro unlock, and added a screenshot-only Recent Sales layout that avoids the Watch clock overlay and rounded-crop clipping.
+- Added a release-safety test that guards the Mini screenshot capture delays, macOS canvas, Watch demo unlock, and Watch Recent Sales screenshot layout.
+- Final Mini verification: `./scripts/SaneMaster.rb verify --ui --timeout 900` passed 85 tests in 161s after cleanup.
+- Final Mini App Store screenshot validation passed for iPhone, iPad, Watch, and Mac. Contact sheets were visually inspected: Latest Sale is visible on iPhone/iPad/Mac, Basic/Pro gates are present without crowding, and Watch recent sales are readable with no clock overlap or row clipping.
+
 ## 2026-05-04: SaneSales 1.3.1 Release Prep
 
 - Bumped all SaneSales targets from 1.3.0 (1300) to 1.3.1 (1301) so App Store Connect macOS and iOS lanes are clear for a new submission.
