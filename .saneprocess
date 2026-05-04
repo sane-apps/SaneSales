@@ -93,7 +93,7 @@ appstore:
         • Desktop widgets and menu bar totals
         • Multiple providers at once
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,merchant,menubar"
-      whats_new: "Adds custom date ranges for Pro, with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after redeeming offer codes or restoring purchases."
+      whats_new: "Adds a Latest Sale dashboard section so recent paid orders stay visible even when today's selected range has no sales, plus clearer sales timestamps across Basic and Pro."
       marketing_url: "https://sanesales.com"
     ios:
       subtitle: "Read-Only Sales Dashboard"
@@ -117,7 +117,7 @@ appstore:
         • Multiple providers at once
         • Shared Pro access across your Apple devices
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,widgets,watch"
-      whats_new: "Adds custom date ranges for Pro, with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after redeeming offer codes or restoring purchases."
+      whats_new: "Adds a Latest Sale dashboard section so recent paid orders stay visible even when today's selected range has no sales, plus clearer sales timestamps across Basic and Pro."
       marketing_url: "https://sanesales.com"
   review_notes: "SaneSales is a freemium, read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. Basic is free in the App Store build. Demo mode is available immediately, so App Review does not need an account, API key, or payment. SaneSales Pro is the only paid app unlock and is sold as a one-time StoreKit In-App Purchase. Connecting a provider is optional and does not unlock paid app features. There are no external checkout links, account signups, or license keys in the App Store build."
   review_notes_by_platform:

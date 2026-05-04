@@ -1,9 +1,19 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-04
-**Current version:** `1.3.0` (build `1300`) direct live; macOS App Store ready; iOS App Store waiting for review
+**Current version:** 1.3.1 (build 1301) staged for next direct + App Store release; 1.3.0 remains live until publish/approval
 
 ## Current State
+
+## 2026-05-04: SaneSales 1.3.1 Release Prep
+
+- Bumped all SaneSales targets from 1.3.0 (1300) to 1.3.1 (1301) so App Store Connect macOS and iOS lanes are clear for a new submission.
+- Updated App Store whats_new metadata for macOS and iOS to describe the Latest Sale dashboard visibility fix instead of the previous custom-range release.
+- Refreshed the canonical iPhone and iPad App Store dashboard screenshots from the Mini-verified Pro dashboard captures that show the new Latest Sale section. Screenshot PNGs are ignored by git but are used by App Store tooling from Screenshots/.
+- Mini verification after release-prep edits: ./scripts/SaneMaster.rb verify --ui --timeout 900 passed 84 tests in 155s.
+- Direct preflight after the bump passed with caution: expected pre-publish appcast/Homebrew/webhook version drift remains at live 1.3.0; pending-email warning still reports 2 pending; UserDefaults/migration warning is covered by existing migration/unit coverage plus a Mini release-style launch pass, but a full over-installed production upgrade visual capture was blocked by headless SSH display access.
+- App Store preflight after the bump passed with warnings only: Watch marketing icon needs manual contrast inspection and AppleEvents usage description remains a provisional/compiled-out review item. Watch icon was manually inspected and is high contrast; Watch screenshots exist but the Recent Sales screenshot is visually cramped at the rounded crop edges.
+- Mini release-style launch after the bump: ./scripts/SaneMaster.rb test_mode --release built Release, staged /Applications/SaneSales.app, launched a single fresh instance, and showed no crash reports/startup failure in logs.
 
 ## 2026-05-04: Dashboard Latest Sale Visibility Fix
 
