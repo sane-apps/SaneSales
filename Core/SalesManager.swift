@@ -149,6 +149,18 @@ final class SalesManager {
         return filtered(source: providerScoped, containedIn: interval)
     }
 
+    func latestPaidOrder(filteredBy provider: SalesProviderType? = nil) -> Order? {
+        let providerScoped: [Order]
+        if let provider {
+            providerScoped = orders.filter { $0.provider == provider }
+        } else {
+            providerScoped = orders
+        }
+        return providerScoped
+            .filter { $0.status == .paid }
+            .max { $0.createdAt < $1.createdAt }
+    }
+
     func planScopedOrders(filteredBy provider: SalesProviderType?, in interval: DateInterval? = nil) -> [Order] {
         let source = planScopedOrders
         let providerScoped: [Order]

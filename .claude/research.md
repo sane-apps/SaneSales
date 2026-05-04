@@ -11,6 +11,13 @@ Graduate verified findings to ARCHITECTURE.md or DEVELOPMENT.md.
 - Finding 2
 -->
 
+## Dashboard Latest Sale Visibility 2026-05-04
+**Updated:** 2026-05-04 | **Status:** verified | **TTL:** 30d
+**Source:** Stripe Dashboard/mobile docs, Lemon Squeezy Orders/API docs, ChartMogul customer activity docs, Mini local code audit, Mini visual/UI verification
+- Competitor/current tracker pattern: dashboards should expose recent/latest transaction activity and freshness cues instead of relying only on the selected chart range.
+- Local root cause: Basic forced the dashboard range to Today and `planScopedOrders` filtered to the current calendar day, so an account with real recent sales could open to an empty-looking daily tracker when the last sale was outside that slice.
+- Decision: show one compact latest paid sale cue independent of the selected date range/provider-scoped when filtered; keep Basic historical ranges, charts, and order history gated.
+
 ## App Store Rejections 2026-03-23
 **Updated:** 2026-03-23 | **Status:** verified | **TTL:** 7d
 **Source:** Mini Safari App Store Connect pages + local code + [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)

@@ -12,7 +12,8 @@ struct MetricsTests {
         status: OrderStatus = .paid,
         productName: String = "TestProduct",
         date: Date = Date(),
-        refundedAmount: Int? = nil
+        refundedAmount: Int? = nil,
+        provider: SalesProviderType = .lemonSqueezy
     ) -> Order {
         Order(
             id: id,
@@ -30,7 +31,7 @@ struct MetricsTests {
             createdAt: date,
             refundedAt: nil,
             refundedAmount: refundedAmount,
-            provider: .lemonSqueezy,
+            provider: provider,
             totalFormatted: nil,
             subtotalFormatted: nil,
             taxFormatted: nil,
@@ -124,6 +125,38 @@ struct MetricsTests {
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.dailyBreakdown.count == 2)
         #expect(metrics.dailyBreakdown.first!.date > metrics.dailyBreakdown.last!.date)
+    }
+
+    @Test("Latest paid order ignores refunds and can filter by provider")
+    @MainActor
+    func latestPaidOrderUsesNewestPaidSale() {
+        let calendar = Calendar.current
+        let olderPaid = makeOrder(
+            id: "older-paid",
+            total: 900,
+            date: calendar.date(byAdding: .day, value: -3, to: Date())!,
+            provider: .lemonSqueezy
+        )
+        let newestRefunded = makeOrder(
+            id: "newest-refunded",
+            total: 5000,
+            status: .refunded,
+            provider: .stripe
+        )
+        let newestPaid = makeOrder(
+            id: "newest-paid",
+            total: 1900,
+            date: calendar.date(byAdding: .day, value: -1, to: Date())!,
+            provider: .gumroad
+        )
+
+        let manager = SalesManager()
+        manager.resetForUITests()
+        manager.orders = [olderPaid, newestRefunded, newestPaid]
+
+        #expect(manager.latestPaidOrder()?.id == "newest-paid")
+        #expect(manager.latestPaidOrder(filteredBy: .lemonSqueezy)?.id == "older-paid")
+        #expect(manager.latestPaidOrder(filteredBy: .stripe) == nil)
     }
 
     @Test("Month revenue includes this month only")
