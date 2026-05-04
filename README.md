@@ -49,11 +49,11 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Current Release
 
-**Current direct-download release: 1.3.0**
+**Current direct-download release: 1.3.1**
 
-- Adds Pro custom date ranges with editable start/end dates and a calendar range picker
-- Keeps Dashboard and Orders synced to the same selected range
-- Improves App Store entitlement refresh after offer-code redemption or purchase restore
+- Adds a Latest Sale dashboard section so the most recent paid order stays visible even when today has no sales
+- Shows clearer sales timestamps across Basic and Pro
+- Keeps the 1.3.0 custom date range and entitlement refresh improvements
 
 ---
 
