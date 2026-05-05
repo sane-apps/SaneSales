@@ -79,7 +79,7 @@ extension DashboardView {
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("Basic stays focused on today.")
+                        Text("Demo mode stays available. Pro keeps live tracking active.")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(Color.textMuted)
                     }

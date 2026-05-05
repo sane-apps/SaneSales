@@ -1,8 +1,7 @@
 import Foundation
+@testable import SaneSales
 import SaneUI
 import Testing
-
-@testable import SaneSales
 
 struct APITests {
     // MARK: - Order Parsing
@@ -34,7 +33,7 @@ struct APITests {
             }
         }
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
 
         #expect(response.data.count == 1)
@@ -71,7 +70,7 @@ struct APITests {
             }
         }
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
 
         #expect(response.data[0].attributes.firstOrderItem == nil)
@@ -96,7 +95,7 @@ struct APITests {
             "meta": { "page": { "lastPage": 1 } }
         }
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
         #expect(response.data[0].attributes.createdAt.timeIntervalSince1970 > 0)
     }
@@ -135,7 +134,7 @@ struct APITests {
             }
         }
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
 
         #expect(response.data.count == 1)
@@ -164,7 +163,7 @@ struct APITests {
             }]
         }
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestStoresResponse.self, from: data)
 
         #expect(response.data.count == 1)
@@ -207,7 +206,7 @@ struct APITests {
         }
         """
 
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
 
         #expect(response.data.count == 1)
@@ -239,7 +238,7 @@ struct APITests {
         }
         """
 
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let response = try JSONDecoder.lemonSqueezy.decode(TestOrdersResponse.self, from: data)
         #expect(response.meta.page.lastPage == 2)
     }
@@ -313,7 +312,7 @@ struct APITests {
         let json = """
         "something_new"
         """
-        let data = json.data(using: .utf8)!
+        let data = try #require(json.data(using: .utf8))
         let status = try JSONDecoder().decode(OrderStatus.self, from: data)
         #expect(status == .unknown)
     }
@@ -403,8 +402,8 @@ struct AppStartupPolicyTests {
 
     #if os(macOS)
         @Test("Dock default stays hidden")
-        func dockDefaultIsHidden() {
-            let defaults = UserDefaults(suiteName: #function)!
+        func dockDefaultIsHidden() throws {
+            let defaults = try #require(UserDefaults(suiteName: #function))
             defaults.removePersistentDomain(forName: #function)
             defer { defaults.removePersistentDomain(forName: #function) }
 
@@ -524,13 +523,14 @@ struct AppStoreReviewPathTests {
 }
 
 struct FreeTierPolicyTests {
-    @Test("Free tier keeps dashboard focused on today")
-    func freeTierDashboardRangesStayFocusedOnToday() {
-        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: false))
+    @Test("Free tier locks live dashboard ranges until trial or Pro access")
+    func freeTierLocksLiveDashboardRangesUntilTrialOrProAccess() {
+        #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.custom, isPro: false))
+        #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: true))
         #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.allTime, isPro: true))
         #expect(!SaneSalesFreeTierPolicy.locksDashboardRange(.custom, isPro: true))
     }
@@ -550,13 +550,6 @@ struct FreeTierPolicyTests {
         ) == .today)
 
         #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
-            currentRange: .today,
-            isPro: false,
-            todayOrders: 2,
-            thirtyDayOrders: 12
-        ) == .today)
-
-        #expect(SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: .allTime,
             isPro: false,
             todayOrders: 0,
@@ -571,22 +564,84 @@ struct FreeTierPolicyTests {
         ) == .allTime)
     }
 
-    @Test("Free tier requires Pro to connect a second provider")
+    @Test("Active trial allows live tracking and multiple providers")
     @MainActor
-    func freeTierRequiresProForAdditionalProviders() {
+    func activeTrialAllowsLiveTrackingAndMultipleProviders() {
         let manager = SalesManager()
         manager.resetForUITests()
-        DemoData.loadInto(manager: manager, connectedProviders: [.lemonSqueezy])
+        manager.isLemonSqueezyConnected = true
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
 
-        #expect(manager.needsProForAdditionalProvider)
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: now)
+
+        #expect(manager.isPro)
+        #expect(manager.trialState.isActive)
+        #expect(!manager.needsProForAdditionalProvider)
         #expect(!manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(!manager.requiresProForProviderConnection(.gumroad))
+        #expect(!manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Expired trial requires Pro for all live provider connections")
+    @MainActor
+    func expiredTrialRequiresProForAllLiveProviderConnections() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        manager.isLemonSqueezyConnected = true
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: now)
+        let afterTrial = now.addingTimeInterval(8 * 24 * 60 * 60)
+
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: afterTrial)
+
+        #expect(!manager.isPro)
+        #expect(manager.trialState.isExpired)
+        #expect(manager.needsProForAdditionalProvider)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
         #expect(manager.requiresProForProviderConnection(.gumroad))
         #expect(manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Free tier still allows the first provider connection")
+    @Test("Expired trial blocks refresh before fetching live data")
     @MainActor
-    func freeTierAllowsInitialProviderConnection() {
+    func expiredTrialBlocksRefreshBeforeFetchingLiveData() async {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+        let sharedDefaults = SharedStore.userDefaults()
+        sharedDefaults.set(
+            Date().addingTimeInterval(-8 * 24 * 60 * 60).timeIntervalSince1970,
+            forKey: SaneSalesTrialPolicy.trialStartedAtKey
+        )
+        manager.isLemonSqueezyConnected = true
+        manager.metrics = SalesMetrics(
+            todayRevenue: 900,
+            todayOrders: 1,
+            thirtyDayRevenue: 900,
+            thirtyDayOrders: 1,
+            monthRevenue: 900,
+            monthOrders: 1,
+            allTimeRevenue: 900,
+            allTimeOrders: 1,
+            dailyBreakdown: [],
+            productBreakdown: []
+        )
+
+        await manager.refresh()
+
+        #expect(!manager.isPro)
+        #expect(manager.trialState.isExpired)
+        #expect(manager.metrics.allTimeRevenue == 0)
+        if case let .proRequired(feature)? = manager.error {
+            #expect(feature == "Live sales tracking")
+        } else {
+            Issue.record("Expected refresh to require Pro after trial expiry")
+        }
+    }
+
+    @Test("Free tier still allows the first provider connection before trial expiry")
+    @MainActor
+    func freeTierAllowsInitialProviderConnectionBeforeTrialExpiry() {
         let manager = SalesManager()
         manager.resetForUITests()
 
@@ -596,13 +651,13 @@ struct FreeTierPolicyTests {
         #expect(!manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Pro allows multiple providers")
+    @Test("Paid Pro allows multiple providers")
     @MainActor
-    func proAllowsMultipleProviders() {
+    func paidProAllowsMultipleProviders() {
         let manager = SalesManager()
         manager.resetForUITests()
-        DemoData.loadInto(manager: manager, connectedProviders: [.lemonSqueezy])
-        manager.isPro = true
+        manager.isLemonSqueezyConnected = true
+        manager.updateProAccess(isPaidPro: true, forcePro: false, demoModeEnabled: false)
 
         #expect(!manager.needsProForAdditionalProvider)
         #expect(!manager.requiresProForProviderConnection(.gumroad))
@@ -618,14 +673,96 @@ struct FreeTierPolicyTests {
         }
 
         defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
         #expect(!SharedStore.isProEnabled(defaults: defaults))
 
+        defaults.set(true, forKey: SharedStore.paidProEnabledKey)
+        #expect(SharedStore.isProEnabled(defaults: defaults))
+
+        defaults.removeObject(forKey: SharedStore.paidProEnabledKey)
         defaults.set(true, forKey: SharedStore.proEnabledKey)
         #expect(SharedStore.isProEnabled(defaults: defaults))
 
         defaults.removeObject(forKey: SharedStore.proEnabledKey)
+        defaults.set(true, forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
+        #expect(SharedStore.isProEnabled(defaults: defaults))
+
+        defaults.removeObject(forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
         defaults.set(true, forKey: SharedStore.macOSWidgetsProEnabledKey)
         #expect(SharedStore.isProEnabled(defaults: defaults))
+    }
+}
+
+struct SaneSalesTrialPolicyTests {
+    @Test("Trial does not start before live data is connected")
+    func trialDoesNotStartBeforeLiveDataConnection() throws {
+        let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let state = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+            defaults: defaults,
+            now: Date(timeIntervalSince1970: 1_775_520_000),
+            isPaidPro: false,
+            hasConnectedProviders: false,
+            demoModeEnabled: false
+        )
+
+        #expect(!state.isActive)
+        #expect(defaults.object(forKey: SaneSalesTrialPolicy.trialStartedAtKey) == nil)
+    }
+
+    @Test("Trial starts for live data and expires after seven days")
+    func trialStartsForLiveDataAndExpiresAfterSevenDays() throws {
+        let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
+
+        let active = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+            defaults: defaults,
+            now: now,
+            isPaidPro: false,
+            hasConnectedProviders: true,
+            demoModeEnabled: false
+        )
+        let expired = SaneSalesTrialPolicy.state(defaults: defaults, now: now.addingTimeInterval(8 * 24 * 60 * 60))
+
+        #expect(active.isActive)
+        if case let .active(startedAt, expiresAt, daysRemaining) = active {
+            #expect(startedAt == now)
+            #expect(expiresAt == now.addingTimeInterval(7 * 24 * 60 * 60))
+            #expect(daysRemaining == 7)
+        } else {
+            Issue.record("Expected active trial")
+        }
+        #expect(expired.isExpired)
+    }
+
+    @Test("Paid Pro and demo mode do not consume the trial")
+    func paidProAndDemoModeDoNotConsumeTrial() throws {
+        let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
+
+        _ = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+            defaults: defaults,
+            now: now,
+            isPaidPro: true,
+            hasConnectedProviders: true,
+            demoModeEnabled: false
+        )
+        #expect(defaults.object(forKey: SaneSalesTrialPolicy.trialStartedAtKey) == nil)
+
+        _ = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+            defaults: defaults,
+            now: now,
+            isPaidPro: false,
+            hasConnectedProviders: true,
+            demoModeEnabled: true
+        )
+        #expect(defaults.object(forKey: SaneSalesTrialPolicy.trialStartedAtKey) == nil)
     }
 }
 
@@ -732,28 +869,31 @@ private func loadSeededLemonSqueezyKey() -> String? {
 
     if let inline = environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY"]?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-       !inline.isEmpty {
+        !inline.isEmpty
+    {
         return inline
     }
 
     if let encoded = environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY_B64"]?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-       !encoded.isEmpty,
-       let data = Data(base64Encoded: encoded),
-       let decoded = String(data: data, encoding: .utf8)?
+        !encoded.isEmpty,
+        let data = Data(base64Encoded: encoded),
+        let decoded = String(data: data, encoding: .utf8)?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-       !decoded.isEmpty {
+        !decoded.isEmpty
+    {
         return decoded
     }
 
     let fallbackURL = URL(fileURLWithPath: "/tmp/saneapps_test_lemonsqueezy_api_key.b64")
     if let encoded = try? String(contentsOf: fallbackURL, encoding: .utf8)
         .trimmingCharacters(in: .whitespacesAndNewlines),
-       !encoded.isEmpty,
-       let data = Data(base64Encoded: encoded),
-       let decoded = String(data: data, encoding: .utf8)?
+        !encoded.isEmpty,
+        let data = Data(base64Encoded: encoded),
+        let decoded = String(data: data, encoding: .utf8)?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-       !decoded.isEmpty {
+        !decoded.isEmpty
+    {
         return decoded
     }
 

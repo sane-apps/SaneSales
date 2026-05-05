@@ -175,3 +175,20 @@ PROMPT4='+
 - Finding: The onboarding `validateAndSave()` telemetry helper initially landed inside the async `Task` closure because the `else` branch was missing its closing brace after `showError = true`.
 - Evidence: `swiftc`/SaneMaster reported `private can only be used in a non-local scope` at `ContentView.swift:680` and `expected } in struct`.
 - Decision: Keep helper methods at `OnboardingView` struct scope and preserve the original `Task { ... if success { ... } else { switch ...; showError = true } }` brace structure.
+
+## [SaneSales trial expiry and 12-hour refresh] | Updated: 2026-05-05 | Status: verified | TTL: 30d
+- Sources: Apple Developer Documentation `ScenePhase` (2026-05-05 web check) says SwiftUI exposes `@Environment(\.scenePhase)` and phase changes can trigger active-state work; Apple Developer Documentation `Task` / `Task.sleep` (2026-05-05 web check) documents async task sleeping for delayed work.
+- GitHub check: `gh issue list --limit 20 --state open` in `sane-apps/SaneSales` returned no open repo issue for trial expiry or periodic refresh at the time of this patch.
+- Local finding: `SalesManager.refresh()` was the correct enforcement boundary because manual refresh, foreground stale refresh, and periodic refresh all flow through it. Trial expiry must be re-evaluated before provider fetch, not only at app launch or license-change handlers.
+- Decision: keep paid/forced/demo inputs in `SalesManager`, re-run `SaneSalesTrialPolicy.ensureTrialStartedIfNeeded` before every refresh, block live fetch with `.proRequired(feature: "Live sales tracking")` after expiry, and add 12-hour app-level refresh loops plus active-scene stale refresh on iOS and macOS.
+- Test target: add unit coverage for trial start/expiry, provider gating after expiry, and refresh blocking after an expired trial so future verify catches long-running-session regressions.
+
+## [SaneSales refresh regression test construction] | Updated: 2026-05-05 | Status: verified | TTL: 7d
+- Source: local Mini compiler output from `./scripts/SaneMaster.rb verify` and local re-read of `Tests/APITests.swift:615`.
+- Finding: the refresh-expiry regression test failed because a mechanical edit fused `true` and `manager.metrics` into `truemanager`, not because of the trial/refresh implementation.
+- Decision: keep the test but use two explicit statements: `manager.isLemonSqueezyConnected = true` and `manager.metrics = SalesMetrics(...)`. Do not construct `Order` directly in APITests; the model has many required fields and MetricsTests already owns the shorter order helper.
+
+## [SaneSales trial defaults domain] | Updated: 2026-05-05 | Status: verified | TTL: 30d
+- Source: local Mini re-read of `Core/SaneSalesTrialPolicy.swift` and `Core/Services/SharedStore.swift` after the failed refresh regression test.
+- Finding: production trial state defaults to `SharedStore.userDefaults()`, which resolves to the app-group suite `group.com.sanesales.app` when available. Seeding `UserDefaults.standard` in tests does not affect `SalesManager.refresh()` trial re-evaluation.
+- Decision: regression tests that need existing/expired trial state must write `SaneSalesTrialPolicy.trialStartedAtKey` into `SharedStore.userDefaults()` or pass an explicit suite into `SaneSalesTrialPolicy` helpers. The refresh regression now seeds shared defaults to match production behavior.

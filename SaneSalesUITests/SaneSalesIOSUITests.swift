@@ -105,12 +105,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.secureTextFields["API Key"].exists)
     }
 
-    func testDisconnectedDashboardProviderRoutesToUpgradeInBasicMode() {
-        let app = launchOnboarding(extraLaunchArguments: ["--demo-connected-provider=lemonsqueezy"])
-
-        let demoButton = app.buttons["onboarding.demoButton"]
-        XCTAssertTrue(demoButton.waitForExistence(timeout: 5))
-        demoButton.tap()
+    func testExpiredTrialDashboardProviderRoutesToUpgrade() {
+        let app = launchExpiredTrialDemo()
 
         let providerMenu = app.buttons["dashboard.providerMenu"]
         XCTAssertTrue(providerMenu.waitForExistence(timeout: 5))
@@ -123,14 +119,15 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
-    func testLaunchDemoLimitsFreeModeToTodayAndLeavesAllProvidersConnectable() {
-        let app = launchFreeDemo()
+    func testActiveTrialAllowsDashboardRangesAndProviderConnections() {
+        let app = launchActiveTrialDemo()
 
         let allTimeButton = app.buttons["dashboard.range.allTime"]
         XCTAssertTrue(allTimeButton.waitForExistence(timeout: 8))
         allTimeButton.tap()
 
-        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["dashboard.range.allTime"].value as? String, "Selected")
+        XCTAssertFalse(app.staticTexts["License"].waitForExistence(timeout: 1))
 
         openMainSection("Settings", in: app)
 
@@ -139,8 +136,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["settings.provider.stripe.connect"].exists)
     }
 
-    func testLaunchDemoInFreeModeLocksOlderOrderHistory() {
-        let app = launchFreeDemo()
+    func testExpiredTrialLocksOlderOrderHistory() {
+        let app = launchExpiredTrialDemo()
 
         openMainSection("Orders", in: app)
 
@@ -151,8 +148,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
-    func testLaunchDemoInFreeModeShowsLockedCSVExport() {
-        let app = launchFreeDemo()
+    func testExpiredTrialShowsLockedCSVExport() {
+        let app = launchExpiredTrialDemo()
 
         openMainSection("Settings", in: app)
 
@@ -160,8 +157,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(lockedExportButton.waitForExistence(timeout: 5))
     }
 
-    func testLaunchDemoInFreeModeLocksSecondProviderConnectionFromSettings() {
-        let app = launchFreeDemo()
+    func testExpiredTrialLocksSecondProviderConnectionFromSettings() {
+        let app = launchExpiredTrialDemo()
 
         openMainSection("Settings", in: app)
 
@@ -348,14 +345,25 @@ final class SaneSalesIOSUITests: XCTestCase {
     }
 
     @discardableResult
-    private func launchFreeDemo() -> XCUIApplication {
+    private func launchActiveTrialDemo() -> XCUIApplication {
+        launchTrialDemo(daysAgo: 0)
+    }
+
+    @discardableResult
+    private func launchExpiredTrialDemo() -> XCUIApplication {
+        launchTrialDemo(daysAgo: 8)
+    }
+
+    @discardableResult
+    private func launchTrialDemo(daysAgo: Int) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "--uitest-reset",
             "--skip-onboarding",
             "--demo",
             "--demo-connected-provider=lemonsqueezy",
-            "--force-free-mode"
+            "--force-free-mode",
+            "--trial-started-days-ago=\(daysAgo)"
         ]
         app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
         app.launchEnvironment["SANEAPPS_FORCE_FREE_MODE"] = "1"

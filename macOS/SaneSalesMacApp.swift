@@ -205,8 +205,12 @@ import SwiftUI
 
         @AppStorage("showInMenuBar") private var showInMenuBar = true
         @AppStorage("showInDock") private var showInDock = SaneBackgroundAppDefaults.showDockIcon
+        @Environment(\.scenePhase) private var scenePhase
         @AppStorage("showRevenueInMenuBar") private var showRevenueInMenuBar = false
         @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
+        @AppStorage("demo_mode") private var demoModeEnabled = false
+
+        private let automaticRefreshInterval: TimeInterval = 12 * 60 * 60
 
         init() {
             if CommandLine.arguments.contains("--uitest-reset") {
@@ -244,11 +248,11 @@ import SwiftUI
                         appDelegate.salesManager = manager
                         licenseService.checkCachedLicense()
 
-                        // Sync license state into manager for Pro gating
-                        manager.isPro = forcedProModeEnabled || licenseService.isPro
+                        // Sync license, trial, and demo state into manager for Pro gating
+                        syncProAccess()
 
                         // Fire launch event based on tier
-                        let tier = (forcedProModeEnabled || licenseService.isPro) ? "pro" : "free"
+                        let tier = manager.isPro ? "pro" : "free"
                         let isFirstLaunch = !hasSeenWelcome
                         if SaneBackgroundAppDefaults.launchAtLogin {
                             _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
@@ -261,18 +265,21 @@ import SwiftUI
                         }
 
                         // Only set up menu bar if Pro
-                        if forcedProModeEnabled || licenseService.isPro {
+                        if manager.isPro {
                             setupMenuBar()
                         }
                     }
                     .task {
-                        if CommandLine.arguments.contains("--demo") ||
-                            UserDefaults.standard.bool(forKey: "loadDemoData") {
+                        if CommandLine.arguments.contains("--demo") || demoModeEnabled ||
+                            UserDefaults.standard.bool(forKey: "loadDemoData")
+                        {
                             DemoData.loadInto(
                                 manager: manager,
                                 connectedProviders: manager.demoConnectedProviders()
                             )
+                            syncProAccess()
                         }
+                        await runAutomaticRefreshLoop()
                     }
                     .sheet(isPresented: Binding(
                         get: { !hasSeenWelcome },
@@ -280,7 +287,7 @@ import SwiftUI
                             if !isShowing {
                                 hasSeenWelcome = true
                                 // Set up menu bar now that welcome is done, if Pro
-                                if forcedProModeEnabled || licenseService.isPro, showInMenuBar, menuBarManager == nil {
+                                if manager.isPro, showInMenuBar, menuBarManager == nil {
                                     menuBarManager = MenuBarManager(
                                         salesManager: manager,
                                         showRevenue: showRevenueInMenuBar
@@ -293,19 +300,19 @@ import SwiftUI
                             appName: "SaneSales",
                             appIcon: "dollarsign.circle.fill",
                             freeFeatures: [
-                                (icon: "link", text: "Connect any sales provider"),
-                                (icon: "clock.badge.checkmark", text: "Live daily sales dashboard"),
-                                (icon: "shippingbox", text: "Orders today and full product catalog"),
-                                (icon: "play.circle", text: "Demo mode to explore")
+                                (icon: "play.circle", text: "Demo mode to explore"),
+                                (icon: "link", text: "Connect live data for a 7-day Pro trial"),
+                                (icon: "lock.open", text: "Trial access to live orders and revenue"),
+                                (icon: "shield", text: "Private on-device storage"),
                             ],
                             proFeatures: [
-                                (icon: "checkmark", text: "Everything in Basic, plus:"),
+                                (icon: "checkmark", text: "Pro keeps live tracking active:"),
                                 (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
                                 (icon: "chart.pie", text: "Deeper product comparisons"),
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
-                                (icon: "widget.small", text: "Desktop widgets")
+                                (icon: "widget.small", text: "Desktop widgets"),
                             ],
                             licenseService: licenseService,
                             secondaryCompletionActionLabel: "Try Demo Data",
@@ -336,14 +343,26 @@ import SwiftUI
             .onChange(of: showRevenueInMenuBar) { _, newValue in
                 menuBarManager?.setShowRevenue(newValue)
             }
+            .onChange(of: demoModeEnabled) { _, _ in
+                syncProAccess()
+            }
+            .onChange(of: manager.isAnyConnected) { _, _ in
+                syncProAccess()
+            }
             .onChange(of: manager.metrics) { _, _ in
                 menuBarManager?.updateTitle()
             }
-            .onChange(of: licenseService.isPro) { _, isPro in
-                manager.isPro = forcedProModeEnabled || isPro
-                if forcedProModeEnabled || isPro, showInMenuBar, menuBarManager == nil {
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    syncProAccess()
+                    Task { await refreshLiveDataIfStale() }
+                }
+            }
+            .onChange(of: licenseService.isPro) { _, _ in
+                syncProAccess()
+                if manager.isPro, showInMenuBar, menuBarManager == nil {
                     menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
-                } else if !(forcedProModeEnabled || isPro) {
+                } else if !manager.isPro {
                     menuBarManager?.tearDown()
                     menuBarManager = nil
                 }
@@ -365,6 +384,31 @@ import SwiftUI
             }
         }
 
+        private func syncProAccess() {
+            manager.updateProAccess(
+                isPaidPro: licenseService.isPro,
+                forcePro: forcedProModeEnabled,
+                demoModeEnabled: demoModeEnabled || CommandLine.arguments.contains("--demo")
+            )
+        }
+
+        private func refreshLiveDataIfStale(force: Bool = false) async {
+            syncProAccess()
+            guard manager.isAnyConnected, !manager.isLoading else { return }
+            if force || manager.lastUpdated == nil || Date().timeIntervalSince(manager.lastUpdated!) >= automaticRefreshInterval {
+                await manager.refresh()
+            }
+        }
+
+        private func runAutomaticRefreshLoop() async {
+            await refreshLiveDataIfStale()
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: UInt64(automaticRefreshInterval * 1_000_000_000))
+                if Task.isCancelled { return }
+                await refreshLiveDataIfStale(force: true)
+            }
+        }
+
         private func setupMenuBar() {
             guard showInMenuBar, menuBarManager == nil else { return }
             menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
@@ -375,7 +419,7 @@ import SwiftUI
         }
 
         private func handleMenuBarToggle(_ show: Bool) {
-            guard forcedProModeEnabled || licenseService.isPro else { return }
+            guard manager.isPro else { return }
             if show {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
             } else {
@@ -397,7 +441,7 @@ import SwiftUI
     }
 
     struct MainWindowCaptureView: NSViewRepresentable {
-        func makeNSView(context: Context) -> NSView {
+        func makeNSView(context _: Context) -> NSView {
             let view = NSView()
             DispatchQueue.main.async {
                 WindowActionStorage.shared.captureMainWindow(view.window)
@@ -405,7 +449,7 @@ import SwiftUI
             return view
         }
 
-        func updateNSView(_ nsView: NSView, context: Context) {
+        func updateNSView(_ nsView: NSView, context _: Context) {
             DispatchQueue.main.async {
                 WindowActionStorage.shared.captureMainWindow(nsView.window)
             }

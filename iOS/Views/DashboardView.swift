@@ -1,8 +1,8 @@
-// swiftlint:disable file_length
-import SwiftUI
+import Foundation
 import SaneUI
 
-import Foundation
+// swiftlint:disable file_length
+import SwiftUI
 
 enum SaneSalesDateRangeStore {
     static let selectedRangeKey = "selectedTimeRange"
@@ -196,7 +196,7 @@ enum SaneSalesDateRangeStore {
 extension Calendar {
     func endOfDay(for date: Date) -> Date {
         let start = startOfDay(for: date)
-        let next = self.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86_400)
+        let next = self.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86400)
         return next.addingTimeInterval(-1)
     }
 }
@@ -212,7 +212,7 @@ enum TimeRange: String, CaseIterable {
 }
 
 enum SaneSalesFreeTierPolicy {
-    static let unlockedDashboardRanges: [TimeRange] = [.today]
+    static let unlockedDashboardRanges: [TimeRange] = []
     static let recentOrderPreviewLimit = 20
 
     static func locksDashboardRange(_ range: TimeRange, isPro: Bool) -> Bool {
@@ -222,8 +222,8 @@ enum SaneSalesFreeTierPolicy {
     static func preferredDashboardRange(
         currentRange: TimeRange,
         isPro: Bool,
-        todayOrders: Int,
-        thirtyDayOrders: Int
+        todayOrders _: Int,
+        thirtyDayOrders _: Int
     ) -> TimeRange {
         guard isPro else { return .today }
         return currentRange
@@ -235,7 +235,9 @@ struct DashboardComparisonItem: Identifiable {
     let value: String
     let isPositive: Bool
 
-    var id: String { label }
+    var id: String {
+        label
+    }
 }
 
 struct DashboardView: View {
@@ -332,7 +334,9 @@ struct DashboardView: View {
             }
         }
 
-        var supportsSecondaryColumns: Bool { self == .wide }
+        var supportsSecondaryColumns: Bool {
+            self == .wide
+        }
 
         var overviewPadding: CGFloat {
             switch self {
@@ -356,7 +360,6 @@ struct DashboardView: View {
             case .wide: 22
             }
         }
-
     }
 
     var body: some View {
@@ -372,6 +375,10 @@ struct DashboardView: View {
                                 errorBanner(error)
                             }
 
+                            if let trialBannerText {
+                                trialStatusBanner(trialBannerText)
+                            }
+
                             overviewSection(widthClass)
 
                             secondarySection(widthClass)
@@ -384,77 +391,85 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
             #if os(iOS)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
-            }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+                }
             #endif
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    if manager.isLoading {
-                        ProgressView()
-                            .tint(.salesGreen)
-                    } else {
-                        Button {
-                            Task { await manager.refresh() }
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.clockwise")
-                                Text(refreshButtonLabel)
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        if manager.isLoading {
+                            ProgressView()
+                                .tint(.salesGreen)
+                        } else {
+                            Button {
+                                Task { await manager.refresh() }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "arrow.clockwise")
+                                    Text(refreshButtonLabel)
+                                }
+                                .font(.saneCallout)
+                                .foregroundStyle(Color.textMuted)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 5)
+                                .background(
+                                    Capsule()
+                                        .fill(AnyShapeStyle(.ultraThinMaterial))
+                                )
                             }
-                            .font(.saneCallout)
-                            .foregroundStyle(Color.textMuted)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
-                            .background(
-                                Capsule()
-                                    .fill(AnyShapeStyle(.ultraThinMaterial))
-                            )
+                            .buttonStyle(.plain)
+                            .disabled(!manager.isConnected)
                         }
-                        .buttonStyle(.plain)
-                        .disabled(!manager.isConnected)
                     }
                 }
-            }
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.inline)
             #endif
-            .refreshable {
-                await manager.refresh()
-            }
-            .task {
-                if manager.orders.isEmpty, manager.isConnected {
+                .refreshable {
                     await manager.refresh()
                 }
-            }
-            .onAppear {
-                enforceFreeTierRange()
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    animateCards = true
+                .task {
+                    if manager.orders.isEmpty, manager.isConnected {
+                        await manager.refresh()
+                    }
                 }
-            }
-            .onChange(of: manager.isPro) { _, _ in
-                enforceFreeTierRange()
-            }
-            .onChange(of: manager.orders.count) { _, _ in
-                enforceFreeTierRange()
-            }
-            .sheet(isPresented: $showingCustomRangeSheet) {
-                SalesCustomDateRangeSheet(
-                    startDate: customRangeStartDate,
-                    endDate: customRangeEndDate,
-                    maximumDate: Date()
-                ) { start, end in
-                    applyCustomRange(start: start, end: end)
+                .onAppear {
+                    enforceFreeTierRange()
+                    #if DEBUG
+                        if CommandLine.arguments.contains("--screenshot-custom-range-sheet") {
+                            selectedRange = .custom
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                showingCustomRangeSheet = true
+                            }
+                        }
+                    #endif
+                    withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                        animateCards = true
+                    }
                 }
-            }
+                .onChange(of: manager.isPro) { _, _ in
+                    enforceFreeTierRange()
+                }
+                .onChange(of: manager.orders.count) { _, _ in
+                    enforceFreeTierRange()
+                }
+                .sheet(isPresented: $showingCustomRangeSheet) {
+                    SalesCustomDateRangeSheet(
+                        startDate: customRangeStartDate,
+                        endDate: customRangeEndDate,
+                        maximumDate: Date()
+                    ) { start, end in
+                        applyCustomRange(start: start, end: end)
+                    }
+                }
             #if os(macOS)
-            .sheet(item: $proUpsellFeature) { feature in
-                ProUpsellView(feature: feature, licenseService: licenseService)
-            }
+                .sheet(item: $proUpsellFeature) { feature in
+                    ProUpsellView(feature: feature, licenseService: licenseService)
+                }
             #endif
-            .sheet(item: $quickConnectProvider) { provider in
-                ProviderConnectionSheet(provider: provider)
-            }
+                .sheet(item: $quickConnectProvider) { provider in
+                    ProviderConnectionSheet(provider: provider)
+                }
         }
     }
 }
@@ -498,9 +513,9 @@ extension DashboardView {
                 Text("SaneSales")
                     .font(.system(size: widthClass.brandTitleSize, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
-                Text(manager.isPro ? "Choose a provider and range" : "Live daily sales")
+                Text(manager.isPro ? "Choose a provider and range" : "Pro required for live sales")
                     .font(isCompact ? .system(size: 11, weight: .medium) : .saneCallout)
-                    .foregroundStyle(Color.textMuted)
+                    .foregroundStyle(.white)
             }
 
             Spacer(minLength: 0)
@@ -516,7 +531,7 @@ extension DashboardView {
                 .textCase(.uppercase)
                 .tracking(0.8)
 
-            Text(formatCents(revenueForRange))
+            Text(manager.isPro ? formatCents(revenueForRange) : "Unlock Pro")
                 .font(.saneCardValue(size: widthClass.heroValueSize))
                 .foregroundStyle(.white)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
@@ -683,7 +698,7 @@ extension DashboardView {
 
     var comparisonItems: [DashboardComparisonItem] {
         var items: [DashboardComparisonItem] = [
-            DashboardComparisonItem(label: "vs prev", value: comparisonText, isPositive: comparisonDelta >= 0)
+            DashboardComparisonItem(label: "vs prev", value: comparisonText, isPositive: comparisonDelta >= 0),
         ]
 
         if selectedRange != .today, let avgDaily = averageDailyRevenue {
@@ -1111,12 +1126,11 @@ extension DashboardView {
         SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
     }
 
-    @ViewBuilder
     var basicPlanNote: some View {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.salesGold)
-            Text("Basic shows live daily sales. Pro unlocks 7D, 30D, custom date ranges, all-time history, charts, and CSV export.")
+            Text("You have seven days left on your free trial after connecting live data. Unlock Pro to keep tracking sales after that.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
             Spacer()
@@ -1135,6 +1149,48 @@ extension DashboardView {
 
     var shouldShowRecentSnapshotNote: Bool {
         false
+    }
+
+    private var trialBannerText: String? {
+        if licenseService.isPro || manager.isDemoModeActive || !manager.isConnected {
+            return nil
+        }
+
+        switch manager.trialState {
+        case let .active(_, _, daysRemaining):
+            return "You have \(daysRemaining) \(daysRemaining == 1 ? "day" : "days") left on your free trial."
+        case .expired:
+            return "Your free trial has ended. Unlock Pro to continue tracking live sales."
+        case .notStarted:
+            return "Connect live data to start your 7-day free trial."
+        }
+    }
+
+    private func trialStatusBanner(_ text: String) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: manager.trialState.isExpired ? "lock.fill" : "timer")
+                .foregroundStyle(.white)
+            Text(text)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 8)
+            Button {
+                showLockedFeature(event: "trial_banner_unlock_tap")
+            } label: {
+                Text("Unlock")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.salesControlSurface)
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.salesPanelStroke, lineWidth: 1))
+        )
     }
 
     func showLockedFeature(event: String) {
@@ -1238,10 +1294,10 @@ extension DashboardView {
             return "\(elapsed)s"
         case ..<3600:
             return "\(elapsed / 60)m"
-        case ..<86_400:
+        case ..<86400:
             return "\(elapsed / 3600)h"
         default:
-            return "\(elapsed / 86_400)d"
+            return "\(elapsed / 86400)d"
         }
     }
 

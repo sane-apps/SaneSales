@@ -31,7 +31,7 @@ You sell on multiple platforms. Every morning you check three dashboards, copy n
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one beautiful, native app. Revenue, orders, products, charts — all on your device, all in real time.
+SaneSales pulls your sales data from all three platforms into one beautiful, native app. Demo data is available immediately; connecting live data starts a 7-day Pro trial. Revenue, orders, products, charts — all on your device, all in real time.
 
 | | |
 |---|---|
@@ -49,11 +49,11 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Current Release
 
-**Current direct-download release: 1.3.1**
+**Current direct-download release: 1.3.2**
 
-- Adds a Latest Sale dashboard section so the most recent paid order stays visible even when today has no sales
-- Shows clearer sales timestamps across Basic and Pro
-- Keeps the 1.3.0 custom date range and entitlement refresh improvements
+- Improves dashboard state handling and sales tracking consistency
+- Keeps recent-sale visibility clear when the selected range has no sales
+- Refines setup and entitlement handling across Mac, iPhone, iPad, and Apple Watch
 
 ---
 
@@ -127,7 +127,7 @@ API keys are stored in the device Keychain with hardware encryption. Sales data 
 **SaneSales does not upload your sales data or API keys to SaneApps servers.**
 
 - No accounts, no sign-up, no email required
-- A few simple anonymous app counts may be sent, such as Basic vs Pro launches or locked-feature views
+- A few simple anonymous app counts may be sent, such as trial vs Pro launches or locked-feature views
 - API keys stored in device Keychain (hardware-encrypted)
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only
