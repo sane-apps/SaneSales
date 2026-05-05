@@ -108,25 +108,9 @@ extension Color {
     // Brand blue for glows (matches SaneBackground ambient)
     static let brandBlueGlow = Color(red: 0.31, green: 0.56, blue: 0.98)
 
-    // Muted text tuned for high contrast in dark mode.
+    // SaneApps dark surfaces require bright white text, including secondary labels.
     static var textMuted: Color {
-        #if os(iOS) || os(tvOS) || os(watchOS)
-            Color(UIColor { trait in
-                if trait.userInterfaceStyle == .dark {
-                    return UIColor.white.withAlphaComponent(0.92)
-                }
-                return UIColor.label.withAlphaComponent(0.88)
-            })
-        #elseif os(macOS)
-            Color(NSColor(name: nil) { appearance in
-                if appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua {
-                    return NSColor.white.withAlphaComponent(0.92)
-                }
-                return NSColor.labelColor.withAlphaComponent(0.88)
-            })
-        #else
-            .primary.opacity(0.9)
-        #endif
+        .white
     }
 
     // Platform background
@@ -413,7 +397,7 @@ struct GlassSection<Content: View>: View {
     init(
         _ title: String,
         icon: String? = nil,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -485,7 +469,7 @@ struct GlassRow<Content: View>: View {
     init(
         _ label: String,
         icon: String? = nil,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         @ViewBuilder content: () -> Content
     ) {
         self.label = label
@@ -498,7 +482,7 @@ struct GlassRow<Content: View>: View {
     init(
         _ label: String,
         iconAssetName: String,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         @ViewBuilder content: () -> Content
     ) {
         self.label = label

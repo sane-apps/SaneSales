@@ -211,7 +211,7 @@ struct WatchDashboardView: View {
                             .foregroundStyle(.white)
                         Text(snapshot.lastUpdatedText(usingDemoData: viewModel.usingDemoData))
                             .font(.system(size: 11, weight: .semibold))
-                            .foregroundStyle(WatchPalette.salesGreenSoft)
+                            .foregroundStyle(.white)
                     }
                 }
 
@@ -237,7 +237,7 @@ struct WatchDashboardView: View {
                                     .monospacedDigit()
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.82)
-                                    .foregroundStyle(.white.opacity(0.92))
+                                    .foregroundStyle(.white)
 
                                 Text(currencyString(cents: row.amountCents, currency: row.currency, compact: true))
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
@@ -271,7 +271,7 @@ struct WatchDashboardView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Today")
                                 .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(WatchPalette.salesGreen)
+                                .foregroundStyle(.white)
 
                             Text(currencyString(cents: snapshot.metrics.todayRevenue, currency: snapshot.currency))
                                 .font(.system(size: 28, weight: .bold, design: .rounded))
@@ -281,7 +281,7 @@ struct WatchDashboardView: View {
 
                             Text("\(snapshot.metrics.todayOrders) paid orders")
                                 .font(.system(size: 12, weight: .medium))
-                                .foregroundStyle(WatchPalette.salesGreenSoft)
+                                .foregroundStyle(.white)
                         }
                     }
                     .frame(height: primaryHeight)
@@ -310,7 +310,7 @@ struct WatchDashboardView: View {
                             VStack(alignment: .leading, spacing: 6) {
                                 Text("Providers")
                                     .font(.system(size: 12, weight: .semibold))
-                                    .foregroundStyle(WatchPalette.providerAccent)
+                                    .foregroundStyle(.white)
                                 ForEach(snapshot.providerRows) { row in
                                     HStack(spacing: 6) {
                                         Circle()
@@ -318,7 +318,7 @@ struct WatchDashboardView: View {
                                             .frame(width: 6, height: 6)
                                         Text(row.provider.displayName)
                                             .font(.system(size: 11, weight: .semibold))
-                                            .foregroundStyle(providerColor(row.provider))
+                                            .foregroundStyle(.white)
                                             .lineLimit(1)
                                         Spacer()
                                         Text(currencyString(cents: row.revenueCents, currency: row.currency, compact: true))
@@ -338,7 +338,7 @@ struct WatchDashboardView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("Recent Sales")
                                     .font(.system(size: 12, weight: .semibold))
-                                    .foregroundStyle(WatchPalette.salesGreenSoft)
+                                    .foregroundStyle(.white)
                                 ForEach(snapshot.recentRows) { row in
                                     HStack(alignment: .lastTextBaseline, spacing: 6) {
                                         Circle()
@@ -361,7 +361,7 @@ struct WatchDashboardView: View {
                                                 .lineLimit(1)
                                                 .minimumScaleFactor(0.8)
                                                 .frame(width: timeWidth, alignment: .trailing)
-                                                .foregroundStyle(.white.opacity(0.92))
+                                                .foregroundStyle(.white)
                                                 .layoutPriority(2)
                                         }
 
@@ -402,7 +402,7 @@ struct WatchDashboardView: View {
 
             Text("Open SaneSales on iPhone to sync sales data.")
                 .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.9))
+                .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
 
             Button {
@@ -435,7 +435,7 @@ struct WatchDashboardView: View {
 
             Text("Unlock Apple Watch access in SaneSales on iPhone.")
                 .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(.white.opacity(0.9))
+                .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
         }
         .padding(12)
@@ -452,7 +452,7 @@ struct WatchDashboardView: View {
                     .foregroundStyle(.white)
                 Text(snapshot.lastUpdatedText(usingDemoData: viewModel.usingDemoData))
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(WatchPalette.brandBlueSoft)
+                    .foregroundStyle(.white)
             }
 
             Spacer(minLength: 4)
@@ -597,7 +597,7 @@ private struct WatchMiniCard: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.system(size: 10, weight: .semibold))
-                    .foregroundStyle(accentColor)
+                    .foregroundStyle(.white)
                 Text(value)
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
@@ -605,7 +605,7 @@ private struct WatchMiniCard: View {
                     .minimumScaleFactor(0.7)
                 Text(subtitle)
                     .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(accentColor.opacity(0.88))
+                    .foregroundStyle(.white)
                     .lineLimit(1)
             }
         }

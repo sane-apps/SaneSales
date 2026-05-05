@@ -1,5 +1,8 @@
 import SaneUI
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 private enum SalesDateBoundary: String, CaseIterable, Identifiable {
     case start
@@ -191,6 +194,7 @@ struct SalesDateRangePicker: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("\(scope).range.\(range.accessibilityToken)")
+                .accessibilityValue(selectedRange == range ? "Selected" : (isRangeLocked(range) ? "Locked" : "Available"))
             }
         }
         .padding(usesCompactPills ? 2 : 3)
@@ -244,14 +248,16 @@ struct SalesCustomDateRangeSheet: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 18) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(title)
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
-                            Text("Pick exact start and end dates, preview the full span, then apply it everywhere in the app.")
-                                .font(.system(size: 14, weight: .medium))
-                                .foregroundStyle(.white.opacity(0.9))
-                                .fixedSize(horizontal: false, vertical: true)
+                        if !usesSingleMonthCalendar {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(title)
+                                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                Text("Pick exact start and end dates, preview the full span, then apply it everywhere in the app.")
+                                    .font(.system(size: 14, weight: .medium))
+                                    .foregroundStyle(.white)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
                         }
 
                         ViewThatFits(in: .horizontal) {
@@ -266,24 +272,7 @@ struct SalesCustomDateRangeSheet: View {
                             }
                         }
 
-                        HStack(spacing: 10) {
-                            Image(systemName: "calendar.badge.clock")
-                                .foregroundStyle(Color.salesGreen)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(SaneSalesDateRangeStore.summaryLabel(for: .custom, customStart: draftStart, customEnd: draftEnd))
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                Text("\(SaneSalesDateRangeStore.dayCount(in: normalizedInterval)) days")
-                                    .font(.system(size: 13, weight: .medium))
-                                    .foregroundStyle(Color.textMuted)
-                            }
-                            Spacer()
-                            Text(activeBoundary.helperCopy)
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(Color.textMuted)
-                                .multilineTextAlignment(.trailing)
-                                .frame(maxWidth: 220, alignment: .trailing)
-                        }
+                        rangeSummaryCard
                         .padding(.horizontal, 14)
                         .padding(.vertical, 12)
                         .background(
@@ -324,6 +313,53 @@ struct SalesCustomDateRangeSheet: View {
         }
     }
 
+    @ViewBuilder
+    private var rangeSummaryCard: some View {
+        if usesSingleMonthCalendar {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 10) {
+                    Image(systemName: "calendar.badge.clock")
+                        .foregroundStyle(Color.salesGreen)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(SaneSalesDateRangeStore.summaryLabel(for: .custom, customStart: draftStart, customEnd: draftEnd))
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.82)
+                        Text("\(SaneSalesDateRangeStore.dayCount(in: normalizedInterval)) days")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Color.textMuted)
+                    }
+                    Spacer(minLength: 0)
+                }
+
+                Text(activeBoundary.helperCopy)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        } else {
+            HStack(spacing: 10) {
+                Image(systemName: "calendar.badge.clock")
+                    .foregroundStyle(Color.salesGreen)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(SaneSalesDateRangeStore.summaryLabel(for: .custom, customStart: draftStart, customEnd: draftEnd))
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Text("\(SaneSalesDateRangeStore.dayCount(in: normalizedInterval)) days")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color.textMuted)
+                }
+                Spacer()
+                Text(activeBoundary.helperCopy)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color.textMuted)
+                    .multilineTextAlignment(.trailing)
+                    .frame(maxWidth: 220, alignment: .trailing)
+            }
+        }
+    }
+
     private var calendarSection: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
@@ -338,6 +374,7 @@ struct SalesCustomDateRangeSheet: View {
                         .font(.system(size: 13, weight: .bold))
                 }
                 .buttonStyle(SaneActionButtonStyle())
+                .accessibilityLabel("Previous Month")
                 .accessibilityIdentifier("customRange.previousMonth")
 
                 Button {
@@ -349,13 +386,16 @@ struct SalesCustomDateRangeSheet: View {
                 .buttonStyle(SaneActionButtonStyle())
                 .disabled(!canMoveForward)
                 .opacity(canMoveForward ? 1 : 0.45)
+                .accessibilityLabel("Next Month")
                 .accessibilityIdentifier("customRange.nextMonth")
             }
 
             ViewThatFits(in: .horizontal) {
-                HStack(alignment: .top, spacing: 12) {
-                    ForEach(visibleMonths, id: \.self) { month in
-                        monthCard(for: month)
+                if !usesSingleMonthCalendar {
+                    HStack(alignment: .top, spacing: 12) {
+                        ForEach(visibleMonths, id: \.self) { month in
+                            monthCard(for: month)
+                        }
                     }
                 }
 
@@ -375,7 +415,6 @@ struct SalesCustomDateRangeSheet: View {
                         .stroke(Color.salesPanelStroke, lineWidth: 1)
                 )
         )
-        .accessibilityIdentifier("customRange.calendar")
     }
 
     private var normalizedInterval: DateInterval {
@@ -383,6 +422,10 @@ struct SalesCustomDateRangeSheet: View {
     }
 
     private var visibleMonths: [Date] {
+        if usesSingleMonthCalendar {
+            return [displayedMonth]
+        }
+
         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: displayedMonth)
         if let nextMonth {
             return [displayedMonth, nextMonth]
@@ -393,7 +436,18 @@ struct SalesCustomDateRangeSheet: View {
     private var latestLeadingMonth: Date {
         let calendar = Calendar.current
         let maximumMonth = calendar.startOfMonth(for: maximumDate)
+        if usesSingleMonthCalendar {
+            return maximumMonth
+        }
         return calendar.date(byAdding: .month, value: -1, to: maximumMonth) ?? maximumMonth
+    }
+
+    private var usesSingleMonthCalendar: Bool {
+#if os(iOS)
+        UIDevice.current.userInterfaceIdiom == .phone
+#else
+        false
+#endif
     }
 
     private var canMoveForward: Bool {
@@ -425,11 +479,12 @@ struct SalesCustomDateRangeSheet: View {
                 .accessibilityIdentifier("customRange.month.\(SalesCalendarFormatters.accessibilityIdentifier.string(from: month))")
 
             LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(calendar.orderedVeryShortWeekdaySymbols(), id: \.self) { symbol in
+                ForEach(Array(calendar.orderedVeryShortWeekdaySymbols().enumerated()), id: \.offset) { index, symbol in
                     Text(symbol)
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Color.textMuted)
                         .frame(maxWidth: .infinity)
+                        .accessibilityIdentifier("customRange.weekday.\(index)")
                 }
 
                 ForEach(days) { day in
@@ -456,10 +511,11 @@ struct SalesCustomDateRangeSheet: View {
         let textColor: Color = {
             if isEndpoint { return .white }
             if day.isEnabled { return day.isCurrentMonth ? .white : Color.textMuted }
-            return Color.textMuted.opacity(0.45)
+            return .white
         }()
 
         return Button {
+            guard day.isEnabled else { return }
             update(activeBoundary, with: day.date)
         } label: {
             ZStack {
@@ -474,15 +530,18 @@ struct SalesCustomDateRangeSheet: View {
                 Text(SalesCalendarFormatters.dayNumber.string(from: day.date))
                     .font(.system(size: 14, weight: isEndpoint ? .bold : .semibold, design: .rounded))
                     .foregroundStyle(textColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+                    .allowsTightening(true)
+                    .fixedSize(horizontal: true, vertical: false)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 36)
             .contentShape(Rectangle())
-            .opacity(day.isEnabled ? 1 : 0.45)
         }
         .buttonStyle(.plain)
-        .disabled(!day.isEnabled)
         .accessibilityIdentifier("customRange.day.\(SalesCalendarFormatters.accessibilityIdentifier.string(from: day.date))")
+        .accessibilityValue(day.isEnabled ? "Available" : "Unavailable")
     }
 
     private func highlightPosition(for date: Date) -> SalesRangeHighlightPosition {
@@ -526,7 +585,7 @@ struct SalesCustomDateRangeSheet: View {
                     .minimumScaleFactor(0.8)
                 Text(isActive ? "Tap a day below to update this boundary" : "Switch focus to edit this boundary")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(14)
@@ -541,6 +600,7 @@ struct SalesCustomDateRangeSheet: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("customRange.endpoint.\(boundary.rawValue)")
+        .accessibilityValue(isActive ? "Active" : "Inactive")
     }
 
     private func update(_ boundary: SalesDateBoundary, with newValue: Date) {

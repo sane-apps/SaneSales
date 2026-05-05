@@ -306,7 +306,7 @@ struct OrdersListView: View {
                     if hasLockedHistory {
                         Text("Basic shows today’s orders. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.9))
+                            .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
@@ -343,7 +343,7 @@ struct OrdersListView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Basic shows today only. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Button {
@@ -358,7 +358,7 @@ struct OrdersListView: View {
             HStack(alignment: .center, spacing: 12) {
                 Text("Basic keeps today front and center. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Spacer(minLength: 0)
@@ -400,7 +400,7 @@ struct OrdersListView: View {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
                 Text(providerFilter?.displayName ?? "All Providers")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
@@ -607,7 +607,7 @@ struct OrdersListView: View {
 
                     Text("Connect a provider to turn this into your live order feed for customers, products, and today's sales.")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.9))
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 540)
                 }
@@ -622,7 +622,7 @@ struct OrdersListView: View {
                 if manager.connectedProviders.isEmpty {
                     Text("Choose the store you already use. SaneSales will sync today's orders after you connect it.")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.85))
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 520)
 
@@ -677,7 +677,7 @@ struct OrdersListView: View {
                             .minimumScaleFactor(0.72)
                         Image(systemName: "arrow.up.right")
                             .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white.opacity(0.78))
+                            .foregroundStyle(.white)
                     }
                     .frame(maxWidth: .infinity)
                 }

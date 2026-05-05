@@ -543,7 +543,7 @@ extension DashboardView {
             if shouldShowCustomRangeSummary {
                 Text(customRangeSummary)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -592,7 +592,7 @@ extension DashboardView {
                 .foregroundStyle(Color.salesGreen)
             Text(customRangeSummary)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white.opacity(0.92))
+                .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
             Button("Edit") {
@@ -643,7 +643,7 @@ extension DashboardView {
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: "line.3.horizontal.decrease.circle.fill")
-                    .foregroundStyle(.white.opacity(0.9))
+                    .foregroundStyle(.white)
                 Text(providerMenuTitle)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(.white)
@@ -1118,7 +1118,7 @@ extension DashboardView {
                 .foregroundStyle(Color.salesGold)
             Text("Basic shows live daily sales. Pro unlocks 7D, 30D, custom date ranges, all-time history, charts, and CSV export.")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white.opacity(0.94))
+                .foregroundStyle(.white)
             Spacer()
         }
         .padding(.horizontal, 14)

@@ -129,7 +129,7 @@ struct MainTabView: View {
                         .foregroundStyle(.white)
                     Text("Read sales clearly")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.84))
+                        .foregroundStyle(.white)
                 }
             }
             .padding(.top, 8)

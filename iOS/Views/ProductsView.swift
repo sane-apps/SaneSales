@@ -199,7 +199,7 @@ struct ProductsView: View {
                                     .foregroundStyle(.white)
                                 Text(manager.isPro ? "Use the chart for the split and the catalog for product details." : "Basic focuses on today's winners. Use Pro for longer history and comparisons.")
                                     .font(.system(size: 13, weight: .medium))
-                                    .foregroundStyle(.white.opacity(0.86))
+                                    .foregroundStyle(.white)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
 
@@ -430,7 +430,7 @@ struct ProductsView: View {
 
                     Text("Connect a provider to turn this into your catalog, today's product revenue view, and product-level sales feed.")
                         .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.9))
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 560)
                 }
@@ -445,7 +445,7 @@ struct ProductsView: View {
                 if manager.connectedProviders.isEmpty {
                     Text("Choose the store you already use. SaneSales will pull in your catalog first, then the revenue breakdown fills in.")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.85))
+                        .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 520)
 
@@ -487,7 +487,7 @@ struct ProductsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Basic focuses on live daily sales. Your catalog is still here, but product revenue cards and charts only fill in after today's orders arrive.")
                     .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.92))
+                    .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text("Upgrade to Pro when you want longer history, product trends, and deeper comparisons.")
@@ -516,7 +516,7 @@ struct ProductsView: View {
                             .minimumScaleFactor(0.72)
                         Image(systemName: "arrow.up.right")
                             .font(.system(size: 11, weight: .bold))
-                            .foregroundStyle(.white.opacity(0.78))
+                            .foregroundStyle(.white)
                     }
                     .frame(maxWidth: .infinity)
                 }

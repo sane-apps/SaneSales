@@ -1,9 +1,19 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-04
+**Last updated:** 2026-05-05
 **Current version:** 1.3.1 (build 1301) released on direct download; macOS and iOS/watch submitted to App Store review
 
 ## Current State
+
+## 2026-05-05: Custom Range Visual Regression Fixed, Not Yet Released
+
+- Release-blocking iPhone custom range sheet regression was found after v1.3.1: the phone sheet reused the larger two-month calendar layout, day labels could wrap/split, disabled future days dimmed gray, and duplicate weekday symbols could disappear because `ForEach` used `id: \.self`.
+- Fixed iPhone to use a single-month calendar while iPad keeps the two-month layout; day labels now stay single-line, unavailable day taps are guarded without SwiftUI disabled dimming, and weekday headers are enumerated by index.
+- Watch dashboard text labels were normalized to white while keeping colored non-text accents.
+- Added/expanded UI tests for Dashboard and Orders range buttons, custom sheet open/cancel/apply, previous/next month buttons, start/end boundary switching, calendar day taps, iPhone one-month layout, iPad two-month layout, and all seven weekday headers.
+- Mini visual evidence copied to the controller: `/tmp/sanesales-custom-range-weekday-iphone.png`, `/tmp/sanesales-custom-range-weekday-ipad.png`, `/tmp/sanesales-watch-demo-white.png`, `/tmp/sanesales-watch-recent-white.png`.
+- Final Mini verification: `./scripts/SaneMaster.rb verify --ui --timeout 420` passed 91 tests in 240s. Targeted iPhone/iPad layout and day-tap tests also passed; Watch simulator build and screenshots passed.
+- Status: source is fixed and verified but uncommitted/unreleased. Next release needs a version bump above 1.3.1 before direct/App Store packaging.
 
 ## 2026-05-04: SaneSales 1.3.1 Released + Submitted
 
