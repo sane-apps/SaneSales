@@ -192,6 +192,108 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts[expectedSummary].waitForExistence(timeout: 5))
     }
 
+    func testProDemoDateRangeControlsClickThroughDashboardAndOrders() {
+        let app = launchProDemo()
+
+        assertRangeButtonsSelect(["today", "sevenDays", "thirtyDays", "allTime"], scope: "dashboard", in: app)
+
+        let dashboardCustom = app.buttons["dashboard.range.custom"]
+        XCTAssertTrue(dashboardCustom.waitForExistence(timeout: 5))
+        dashboardCustom.tap()
+        XCTAssertTrue(app.staticTexts["Calendar"].waitForExistence(timeout: 5))
+        app.buttons["customRange.cancelButton"].tap()
+
+        openMainSection("Orders", in: app)
+        assertRangeButtonsSelect(["today", "sevenDays", "thirtyDays", "allTime"], scope: "orders", in: app)
+
+        let ordersCustom = app.buttons["orders.range.custom"]
+        XCTAssertTrue(ordersCustom.waitForExistence(timeout: 5))
+        ordersCustom.tap()
+        XCTAssertTrue(app.staticTexts["Calendar"].waitForExistence(timeout: 5))
+        app.buttons["customRange.cancelButton"].tap()
+    }
+
+    func testProDemoCustomRangeCalendarAdaptsToDeviceWidth() throws {
+        let app = launchProDemo()
+
+        let customButton = app.buttons["dashboard.range.custom"]
+        XCTAssertTrue(customButton.waitForExistence(timeout: 5))
+        customButton.tap()
+
+        XCTAssertTrue(app.staticTexts["Calendar"].waitForExistence(timeout: 5))
+        for index in 0..<7 {
+            XCTAssertTrue(
+                app.staticTexts["customRange.weekday.\(index)"].waitForExistence(timeout: 5),
+                "Missing weekday header column \(index)"
+            )
+        }
+
+        let screenshotPath = ProcessInfo.processInfo.environment["SANESALES_CUSTOM_RANGE_SCREENSHOT_PATH"]?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedScreenshotPath = screenshotPath?.isEmpty == false
+            ? screenshotPath!
+            : "/tmp/sanesales-custom-range-current.png"
+        let screenshot = XCUIScreen.main.screenshot()
+        try screenshot.pngRepresentation.write(to: URL(fileURLWithPath: resolvedScreenshotPath))
+
+        let startMonth = defaultCustomRangeStartMonth()
+        let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: startMonth) ?? startMonth
+        let startMonthTitle = customRangeMonthTitle(for: startMonth)
+        let nextMonthTitle = customRangeMonthTitle(for: nextMonth)
+        let nextMonthLabel = app.staticTexts[nextMonthTitle]
+
+        XCTAssertTrue(app.staticTexts[startMonthTitle].waitForExistence(timeout: 5))
+        if appFrame(in: app).width < 600 {
+            XCTAssertFalse(
+                nextMonthLabel.exists,
+                "Compact iPhone custom range calendar must not squeeze two months side by side."
+            )
+        } else {
+            XCTAssertTrue(
+                nextMonthLabel.waitForExistence(timeout: 2),
+                "Regular-width iPad custom range calendar should keep the two-month layout."
+            )
+        }
+    }
+
+    func testProDemoCustomRangeCalendarNavigationAndBoundaryClicks() {
+        let app = launchProDemo()
+
+        app.buttons["dashboard.range.custom"].tap()
+        XCTAssertTrue(app.staticTexts["Calendar"].waitForExistence(timeout: 5))
+
+        let startBoundary = app.buttons["customRange.endpoint.start"]
+        let endBoundary = app.buttons["customRange.endpoint.end"]
+        XCTAssertTrue(startBoundary.waitForExistence(timeout: 5))
+        XCTAssertTrue(endBoundary.exists)
+
+        startBoundary.tap()
+        XCTAssertEqual(app.buttons["customRange.endpoint.start"].value as? String, "Active")
+
+        let previousMonth = Calendar.current.date(byAdding: .month, value: -1, to: defaultCustomRangeStartMonth())
+            ?? defaultCustomRangeStartMonth()
+        app.buttons["customRange.previousMonth"].tap()
+        XCTAssertTrue(app.staticTexts[customRangeMonthTitle(for: previousMonth)].waitForExistence(timeout: 5))
+
+        app.buttons["customRange.nextMonth"].tap()
+        XCTAssertTrue(app.staticTexts[customRangeMonthTitle(for: defaultCustomRangeStartMonth())].waitForExistence(timeout: 5))
+
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let targetStart = calendar.date(byAdding: .day, value: -10, to: startOfToday) ?? startOfToday
+        let targetEnd = calendar.date(byAdding: .day, value: -2, to: startOfToday) ?? startOfToday
+
+        startBoundary.tap()
+        app.buttons[customRangeDayIdentifier(for: targetStart)].tap()
+        XCTAssertTrue(app.staticTexts[customRangeSummaryLabel(start: targetStart, end: startOfToday)].waitForExistence(timeout: 5))
+
+        app.buttons["customRange.nextMonth"].tap()
+        endBoundary.tap()
+        XCTAssertEqual(app.buttons["customRange.endpoint.end"].value as? String, "Active")
+        app.buttons[customRangeDayIdentifier(for: targetEnd)].tap()
+        XCTAssertTrue(app.staticTexts[customRangeSummaryLabel(start: targetStart, end: targetEnd)].waitForExistence(timeout: 5))
+    }
+
     func testSeededLemonSqueezyKeySkipsOnboarding() throws {
         let apiKeyB64 = try loadSeededLemonSqueezyKeyBase64()
 
@@ -288,16 +390,64 @@ final class SaneSalesIOSUITests: XCTestCase {
         sidebarButton.tap()
     }
 
+    private func assertRangeButtonsSelect(_ tokens: [String], scope: String, in app: XCUIApplication) {
+        for token in tokens {
+            let identifier = "\(scope).range.\(token)"
+            let button = app.buttons[identifier]
+            XCTAssertTrue(button.waitForExistence(timeout: 5), "Missing range button: \(identifier)")
+            button.tap()
+            XCTAssertEqual(app.buttons[identifier].value as? String, "Selected", "Range did not select: \(identifier)")
+            XCTAssertFalse(app.staticTexts["License"].waitForExistence(timeout: 1), "Pro range unexpectedly routed to License: \(identifier)")
+        }
+    }
+
+    private func appFrame(in app: XCUIApplication) -> CGRect {
+        let window = app.windows.firstMatch
+        if window.waitForExistence(timeout: 2) {
+            return window.frame
+        }
+        return app.frame
+    }
+
     private func defaultCustomRangeSummaryLabel() -> String {
         let calendar = Calendar.current
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
         let start = calendar.date(byAdding: .day, value: -13, to: startOfToday) ?? startOfToday
+        return customRangeSummaryLabel(start: start, end: now)
+    }
+
+    private func customRangeSummaryLabel(start: Date, end: Date) -> String {
+        let calendar = Calendar.current
         let formatter = DateIntervalFormatter()
         formatter.calendar = calendar
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        return formatter.string(from: start, to: now)
+        return formatter.string(from: start, to: end)
+    }
+
+    private func defaultCustomRangeStartMonth() -> Date {
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let start = calendar.date(byAdding: .day, value: -13, to: startOfToday) ?? startOfToday
+        let components = calendar.dateComponents([.year, .month], from: start)
+        return calendar.date(from: components) ?? start
+    }
+
+    private func customRangeMonthTitle(for month: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: month)
+    }
+
+    private func customRangeDayIdentifier(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return "customRange.day.\(formatter.string(from: date))"
     }
 
     private func loadSeededLemonSqueezyKeyBase64() throws -> String {

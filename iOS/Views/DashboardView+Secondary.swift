@@ -47,7 +47,7 @@ extension DashboardView {
 
                         Text("\(latestSaleTimestamp(for: order)) · \(order.provider.displayName)")
                             .font(.system(size: 12, weight: .medium))
-                            .foregroundStyle(.white.opacity(0.9))
+                            .foregroundStyle(.white)
                             .lineLimit(1)
                             .minimumScaleFactor(0.82)
                     }
