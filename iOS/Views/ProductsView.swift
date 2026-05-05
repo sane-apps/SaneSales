@@ -14,7 +14,9 @@ struct ProductsView: View {
         let icon: String
         let color: Color
 
-        var id: String { title }
+        var id: String {
+            title
+        }
     }
 
     private enum WidthClass {
@@ -106,14 +108,14 @@ struct ProductsView: View {
             }
             .navigationTitle("Products")
             #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
-            }
+                .navigationBarTitleDisplayMode(.inline)
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+                }
             #endif
-            .refreshable {
-                await manager.refresh()
-            }
+                .refreshable {
+                    await manager.refresh()
+                }
         }
     }
 
@@ -121,7 +123,7 @@ struct ProductsView: View {
         let summary = [
             SummaryItem(title: "Products", value: "\(manager.products.count)", icon: "shippingbox.fill", color: .salesGreen),
             SummaryItem(title: "Providers", value: "\(manager.connectedProviders.count)", icon: "link.circle.fill", color: .salesGold),
-            SummaryItem(title: manager.isPro ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime)
+            SummaryItem(title: manager.isPro ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime),
         ]
 
         if widthClass == .compact {
@@ -197,7 +199,7 @@ struct ProductsView: View {
                                 Text("Revenue mix")
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white)
-                                Text(manager.isPro ? "Use the chart for the split and the catalog for product details." : "Basic focuses on today's winners. Use Pro for longer history and comparisons.")
+                                Text(manager.isPro ? "Use the chart for the split and the catalog for product details." : "Trial and Pro show live product winners. Demo mode remains available anytime.")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(.white)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -335,7 +337,7 @@ struct ProductsView: View {
     }
 
     private let chartColorPalette: [Color] = [
-        .salesGreen, .blue, .salesGold, .teal, .mint, .cyan, .indigo
+        .salesGreen, .blue, .salesGold, .teal, .mint, .cyan, .indigo,
     ]
 
     private func chartColor(for product: ProductSales) -> Color {
@@ -399,7 +401,7 @@ struct ProductsView: View {
             divisor = 1_000_000
             suffix = "M"
         } else {
-            divisor = 1_000
+            divisor = 1000
             suffix = "K"
         }
 
@@ -438,7 +440,7 @@ struct ProductsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See which products drive the most revenue")
                     emptyStateDetailRow("Track status, pricing, and sales count in one place")
-                    emptyStateDetailRow("Use Basic for live daily sales or Pro for longer history")
+                    emptyStateDetailRow("Connect live data to start a 7-day Pro trial")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
@@ -485,7 +487,7 @@ struct ProductsView: View {
     private var noSalesCallout: some View {
         GlassSection("No Product Sales Today", icon: "sparkles", iconColor: .salesGold) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Basic focuses on live daily sales. Your catalog is still here, but product revenue cards and charts only fill in after today's orders arrive.")
+                Text("Demo mode lets you explore product reporting. Connect live data to start your 7-day trial, then unlock Pro to keep live product revenue tracking.")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)

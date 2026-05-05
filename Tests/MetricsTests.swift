@@ -1,7 +1,6 @@
 import Foundation
-import Testing
-
 @testable import SaneSales
+import Testing
 
 struct MetricsTests {
     // MARK: - Helpers
@@ -67,7 +66,7 @@ struct MetricsTests {
     func todayOrders() {
         let orders = [
             makeOrder(total: 500),
-            makeOrder(total: 1000)
+            makeOrder(total: 1000),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.todayRevenue == 1500)
@@ -78,7 +77,7 @@ struct MetricsTests {
     func refundedExcluded() {
         let orders = [
             makeOrder(total: 500, status: .paid),
-            makeOrder(total: 1000, status: .refunded)
+            makeOrder(total: 1000, status: .refunded),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.allTimeRevenue == 500)
@@ -89,7 +88,7 @@ struct MetricsTests {
     func partialRefundsReduceRevenue() {
         let orders = [
             makeOrder(total: 1000, refundedAmount: 250),
-            makeOrder(total: 500)
+            makeOrder(total: 500),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.allTimeRevenue == 1250)
@@ -101,7 +100,7 @@ struct MetricsTests {
         let orders = [
             makeOrder(total: 500, productName: "SaneBar"),
             makeOrder(total: 500, productName: "SaneBar"),
-            makeOrder(total: 1000, productName: "SaneClip")
+            makeOrder(total: 1000, productName: "SaneClip"),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.productBreakdown.count == 2)
@@ -116,25 +115,25 @@ struct MetricsTests {
     }
 
     @Test("Daily breakdown sorted newest first")
-    func dailyBreakdown() {
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+    func dailyBreakdown() throws {
+        let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
         let orders = [
             makeOrder(total: 500, date: yesterday),
-            makeOrder(total: 1000)
+            makeOrder(total: 1000),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.dailyBreakdown.count == 2)
-        #expect(metrics.dailyBreakdown.first!.date > metrics.dailyBreakdown.last!.date)
+        #expect(try #require(metrics.dailyBreakdown.first?.date) > metrics.dailyBreakdown.last!.date)
     }
 
     @Test("Latest paid order ignores refunds and can filter by provider")
     @MainActor
-    func latestPaidOrderUsesNewestPaidSale() {
+    func latestPaidOrderUsesNewestPaidSale() throws {
         let calendar = Calendar.current
-        let olderPaid = makeOrder(
+        let olderPaid = try makeOrder(
             id: "older-paid",
             total: 900,
-            date: calendar.date(byAdding: .day, value: -3, to: Date())!,
+            date: #require(calendar.date(byAdding: .day, value: -3, to: Date())),
             provider: .lemonSqueezy
         )
         let newestRefunded = makeOrder(
@@ -143,15 +142,16 @@ struct MetricsTests {
             status: .refunded,
             provider: .stripe
         )
-        let newestPaid = makeOrder(
+        let newestPaid = try makeOrder(
             id: "newest-paid",
             total: 1900,
-            date: calendar.date(byAdding: .day, value: -1, to: Date())!,
+            date: #require(calendar.date(byAdding: .day, value: -1, to: Date())),
             provider: .gumroad
         )
 
         let manager = SalesManager()
         manager.resetForUITests()
+        manager.isPro = true
         manager.orders = [olderPaid, newestRefunded, newestPaid]
 
         #expect(manager.latestPaidOrder()?.id == "newest-paid")
@@ -160,11 +160,11 @@ struct MetricsTests {
     }
 
     @Test("Month revenue includes this month only")
-    func monthRevenue() {
-        let lastMonth = Calendar.current.date(byAdding: .month, value: -1, to: Date())!
+    func monthRevenue() throws {
+        let lastMonth = try #require(Calendar.current.date(byAdding: .month, value: -1, to: Date()))
         let orders = [
             makeOrder(total: 500),
-            makeOrder(total: 1000, date: lastMonth)
+            makeOrder(total: 1000, date: lastMonth),
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.monthRevenue == 500)
@@ -236,21 +236,20 @@ struct MetricsTests {
         #expect(revenue(from: orders, daysBack: 30, now: now) > revenue(from: orders, daysBack: 60, untilDaysBack: 30, now: now))
     }
 
-
     @Test("Custom range helpers normalize dates and fill missing days")
-    func customRangeHelpers() {
+    func customRangeHelpers() throws {
         let calendar = Calendar.current
-        let start = calendar.date(from: DateComponents(year: 2026, month: 4, day: 10))!
-        let end = calendar.date(from: DateComponents(year: 2026, month: 4, day: 8))!
+        let start = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 10)))
+        let end = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 8)))
         let interval = SaneSalesDateRangeStore.normalizedInterval(start: start, end: end, maximumDate: start)
 
         #expect(calendar.isDate(interval.start, inSameDayAs: end))
         #expect(calendar.isDate(interval.end, inSameDayAs: start))
         #expect(SaneSalesDateRangeStore.dayCount(in: interval) == 3)
 
-        let orders = [
-            makeOrder(id: "one", total: 500, date: calendar.date(byAdding: .hour, value: 9, to: end)!),
-            makeOrder(id: "two", total: 1200, date: calendar.date(byAdding: .hour, value: 12, to: start)!)
+        let orders = try [
+            makeOrder(id: "one", total: 500, date: #require(calendar.date(byAdding: .hour, value: 9, to: end))),
+            makeOrder(id: "two", total: 1200, date: #require(calendar.date(byAdding: .hour, value: 12, to: start))),
         ]
         let series = SaneSalesDateRangeStore.dailySeries(from: orders, in: interval)
 
@@ -261,23 +260,23 @@ struct MetricsTests {
     }
 
     @Test("Launch overrides persist a custom screenshot range before the view tree loads")
-    func launchOverridesPersistCustomRange() {
+    func launchOverridesPersistCustomRange() throws {
         let suiteName = "SaneSalesLaunchOverridesTests-\(UUID().uuidString)"
-        let defaults = UserDefaults(suiteName: suiteName)!
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer {
             defaults.removePersistentDomain(forName: suiteName)
         }
 
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
-        let now = calendar.date(from: DateComponents(year: 2026, month: 4, day: 22, hour: 12))!
+        calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
+        let now = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 22, hour: 12)))
 
         SaneSalesLaunchOverrides.applyPersistentUIState(
             arguments: [
                 "SaneSales",
                 "--force-pro-mode",
                 "--screenshot-custom-range-start", "2026-04-04",
-                "--screenshot-custom-range-end", "2026-04-18"
+                "--screenshot-custom-range-end", "2026-04-18",
             ],
             userDefaults: defaults,
             now: now,
@@ -289,29 +288,29 @@ struct MetricsTests {
         let storedStart = Date(timeIntervalSince1970: defaults.double(forKey: SaneSalesDateRangeStore.customStartKey))
         let storedEnd = Date(timeIntervalSince1970: defaults.double(forKey: SaneSalesDateRangeStore.customEndKey))
 
-        #expect(calendar.isDate(storedStart, inSameDayAs: calendar.date(from: DateComponents(year: 2026, month: 4, day: 4))!))
-        #expect(calendar.isDate(storedEnd, inSameDayAs: calendar.date(from: DateComponents(year: 2026, month: 4, day: 18))!))
+        #expect(try calendar.isDate(storedStart, inSameDayAs: #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 4)))))
+        #expect(try calendar.isDate(storedEnd, inSameDayAs: #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 18)))))
     }
 
     @Test("Sales manager filters plan scoped orders inside a selected interval")
     @MainActor
-    func salesManagerIntervalFiltering() {
+    func salesManagerIntervalFiltering() throws {
         let manager = SalesManager()
         manager.resetForUITests()
         manager.isPro = true
 
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
-        let inRangeDate = calendar.date(byAdding: .day, value: -2, to: today)!
-        let outOfRangeDate = calendar.date(byAdding: .day, value: -10, to: today)!
+        let inRangeDate = try #require(calendar.date(byAdding: .day, value: -2, to: today))
+        let outOfRangeDate = try #require(calendar.date(byAdding: .day, value: -10, to: today))
 
         manager.orders = [
             makeOrder(id: "recent", total: 900, date: inRangeDate),
-            makeOrder(id: "older", total: 700, date: outOfRangeDate)
+            makeOrder(id: "older", total: 700, date: outOfRangeDate),
         ]
 
-        let interval = SaneSalesDateRangeStore.normalizedInterval(
-            start: calendar.date(byAdding: .day, value: -3, to: today)!,
+        let interval = try SaneSalesDateRangeStore.normalizedInterval(
+            start: #require(calendar.date(byAdding: .day, value: -3, to: today)),
             end: today,
             maximumDate: today
         )
@@ -319,6 +318,23 @@ struct MetricsTests {
         let filtered = manager.planScopedOrders(filteredBy: nil, in: interval)
         #expect(filtered.map(\.id) == ["recent"])
         #expect(manager.metrics(filteredBy: nil, in: interval, scopedToPlan: true).allTimeRevenue == 900)
+    }
+
+    @Test("Expired free users cannot read plan scoped live orders")
+    @MainActor
+    func expiredFreeUsersCannotReadPlanScopedLiveOrders() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        manager.orders = [makeOrder(id: "blocked", total: 900)]
+        manager.trialState = .expired(
+            startedAt: Date(timeIntervalSince1970: 1_775_520_000),
+            expiresAt: Date(timeIntervalSince1970: 1_776_124_800)
+        )
+        manager.isPro = false
+
+        #expect(manager.planScopedOrders(filteredBy: nil).isEmpty)
+        #expect(manager.latestPaidOrder() == nil)
+        #expect(manager.metrics(filteredBy: nil, scopedToPlan: true).allTimeRevenue == 0)
     }
 
     private func revenue(from orders: [Order], daysBack: Int, untilDaysBack: Int = 0, now: Date) -> Int {

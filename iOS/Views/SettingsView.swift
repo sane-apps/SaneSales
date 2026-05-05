@@ -1,6 +1,7 @@
+import SaneUI
+
 // swiftlint:disable file_length
 import SwiftUI
-import SaneUI
 #if os(iOS)
     import UIKit
 #endif
@@ -31,135 +32,131 @@ struct SettingsView: View {
         #if os(macOS)
             SaneSalesMacSettingsView()
         #else
-        NavigationStack {
-            ZStack {
-                SaneBackground().ignoresSafeArea()
-                GeometryReader { proxy in
-                    ScrollView {
-                    VStack(spacing: 16) {
-                        licenseSection
-                        providersSection
-                        dataSection
-                        aboutSection
-                    }
-                    .padding(.horizontal, 18)
-                    .padding(.top, 12)
-                    .padding(.bottom, settingsBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
-                    }
-                }
-            }
-            .navigationTitle("Settings")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
-            }
-            #endif
-            .sheet(
-                isPresented: $showingKeyEntry,
-                onDismiss: {
-                    editingProvider = nil
-                },
-                content: {
-                if let provider = editingProvider {
-                    ProviderConnectionSheet(provider: provider)
-                }
-                }
-            )
-            .sheet(isPresented: $showFeedback) {
-                SaneFeedbackView(diagnosticsService: .shared)
-            }
-            .sheet(isPresented: $showingLicenseEntrySheet) {
-                LicenseEntryView(licenseService: licenseService)
-            }
-            .confirmationDialog(
-                "Disconnect \(removingProvider?.displayName ?? "Provider")?",
-                isPresented: $showRemoveConfirmation
-            ) {
-                Button("Disconnect", role: .destructive) {
-                    if let provider = removingProvider {
-                        disconnectProvider(provider)
+            NavigationStack {
+                ZStack {
+                    SaneBackground().ignoresSafeArea()
+                    GeometryReader { proxy in
+                        ScrollView {
+                            VStack(spacing: 16) {
+                                licenseSection
+                                providersSection
+                                dataSection
+                                aboutSection
+                            }
+                            .padding(.horizontal, 18)
+                            .padding(.top, 12)
+                            .padding(.bottom, settingsBottomPadding(safeAreaBottom: proxy.safeAreaInsets.bottom))
+                        }
                     }
                 }
-            } message: {
-                Text("This will remove the API key and cached data for this provider.")
+                .navigationTitle("Settings")
+                #if os(iOS)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear.frame(height: SaneSalesIOSChrome.floatingTabBarClearance)
+                    }
+                #endif
+                    .sheet(
+                        isPresented: $showingKeyEntry,
+                        onDismiss: {
+                            editingProvider = nil
+                        },
+                        content: {
+                            if let provider = editingProvider {
+                                ProviderConnectionSheet(provider: provider)
+                            }
+                        }
+                    )
+                    .sheet(isPresented: $showFeedback) {
+                        SaneFeedbackView(diagnosticsService: .shared)
+                    }
+                    .sheet(isPresented: $showingLicenseEntrySheet) {
+                        LicenseEntryView(licenseService: licenseService)
+                    }
+                    .confirmationDialog(
+                        "Disconnect \(removingProvider?.displayName ?? "Provider")?",
+                        isPresented: $showRemoveConfirmation
+                    ) {
+                        Button("Disconnect", role: .destructive) {
+                            if let provider = removingProvider {
+                                disconnectProvider(provider)
+                            }
+                        }
+                    } message: {
+                        Text("This will remove the API key and cached data for this provider.")
+                    }
+                    .task {
+                        if licenseService.usesAppStorePurchase {
+                            await licenseService.preloadAppStoreProduct()
+                        }
+                    }
+                    .onAppear {
+                        consumePendingSettingsRoute()
+                    }
+                    .onChange(of: pendingSettingsRoute) { _, _ in
+                        consumePendingSettingsRoute()
+                    }
             }
-            .task {
-                if licenseService.usesAppStorePurchase {
-                    await licenseService.preloadAppStoreProduct()
-                }
-            }
-            .onAppear {
-                consumePendingSettingsRoute()
-            }
-            .onChange(of: pendingSettingsRoute) { _, _ in
-                consumePendingSettingsRoute()
-            }
-        }
         #endif
     }
 
     // MARK: - License Section
 
-        private var licenseSection: some View {
-            GlassSection("License", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
-                VStack(spacing: 0) {
-                    HStack(spacing: 10) {
-                        Image(systemName: licenseService.isPro ? "checkmark.seal.fill" : "lock.open")
-                            .foregroundStyle(licenseService.isPro ? Color.salesSuccess : .white)
-                            .font(.system(size: 15, weight: .semibold))
+    private var licenseSection: some View {
+        GlassSection("License", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
+            VStack(spacing: 0) {
+                HStack(spacing: 10) {
+                    Image(systemName: licenseService.isPro || manager.isPro ? "checkmark.seal.fill" : "lock.fill")
+                        .foregroundStyle(licenseService.isPro || manager.isPro ? Color.salesSuccess : .white)
+                        .font(.system(size: 15, weight: .semibold))
 
-                        licenseTierBadge(
-                            title: licenseService.isPro ? "Pro" : "Basic",
-                            color: licenseService.isPro ? Color.salesSuccess : .white
-                        )
-
-                        Spacer()
-
-                        if let email = licenseService.licenseEmail, licenseService.isPro {
-                            Text(email)
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
-                        }
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, settingsSectionVerticalPadding)
-
-                    GlassDivider()
-
-                    Text(
-                        licenseService.isPro
-                            ? "Pro unlocks custom date ranges, longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
-                            : "Basic includes 1 provider, live daily sales, orders today, and the full product catalog."
+                    licenseTierBadge(
+                        title: licenseTitle,
+                        color: licenseService.isPro || manager.isPro ? Color.salesSuccess : .white
                     )
+
+                    Spacer()
+
+                    if let email = licenseService.licenseEmail, licenseService.isPro {
+                        Text(email)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, settingsSectionVerticalPadding)
+
+                GlassDivider()
+
+                Text(licenseDescription)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 14)
                     .padding(.vertical, settingsSectionVerticalPadding)
 
-                    GlassDivider()
+                GlassDivider()
 
-                    ViewThatFits(in: .horizontal) {
-                        HStack(spacing: 8) {
-                            primaryLicenseAction
-                            secondaryLicenseAction
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, settingsSectionVerticalPadding)
-
-                        VStack(spacing: 8) {
-                            primaryLicenseAction
-                            secondaryLicenseAction
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, settingsSectionVerticalPadding)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        primaryLicenseAction
+                        secondaryLicenseAction
                     }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, settingsSectionVerticalPadding)
+
+                    VStack(spacing: 8) {
+                        primaryLicenseAction
+                        secondaryLicenseAction
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, settingsSectionVerticalPadding)
                 }
             }
         }
+    }
 
     // MARK: - Providers Section
 
@@ -371,6 +368,31 @@ struct SettingsView: View {
         }
     }
 
+    private var licenseTitle: String {
+        if licenseService.isPro { return "Pro" }
+        if manager.isDemoModeActive { return "Demo Mode" }
+        if manager.trialState.isActive { return "Trial" }
+        return "Pro Required"
+    }
+
+    private var licenseDescription: String {
+        if licenseService.isPro {
+            return "Pro unlocks custom date ranges, longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
+        }
+        if manager.isDemoModeActive {
+            return "Demo data is active. Connect live data to start your 7-day free trial, or unlock Pro now."
+        }
+
+        switch manager.trialState {
+        case let .active(_, _, daysRemaining):
+            return "You have \(daysRemaining) \(daysRemaining == 1 ? "day" : "days") left on your free trial. Unlock Pro to keep live sales tracking after that."
+        case .expired:
+            return "Your free trial has ended. Unlock Pro to continue tracking live sales. Demo mode remains available."
+        case .notStarted:
+            return "Connect live data to start your 7-day free trial. Unlock Pro to keep live sales tracking after the trial."
+        }
+    }
+
     private func licenseTierBadge(title: String, color: Color) -> some View {
         Text(title)
             .font(.system(size: 13, weight: .semibold))
@@ -576,8 +598,8 @@ struct SettingsView: View {
         editingProvider = provider
         showingKeyEntry = true
     }
-
 }
+
 struct ProviderConnectionSheet: View {
     @Environment(SalesManager.self) private var manager
     @Environment(\.dismiss) private var dismiss
@@ -743,7 +765,7 @@ private extension SettingsView {
                 centsString(order.discountTotal),
                 String(format: "%.2f", Double(order.total) / 100.0),
                 escapeCSV(order.currency),
-                order.refundedAt.map { dateFormatter.string(from: $0) } ?? ""
+                order.refundedAt.map { dateFormatter.string(from: $0) } ?? "",
             ]
             rows.append(row.joined(separator: ","))
         }
@@ -810,7 +832,7 @@ private func collectSaneSalesSettings() -> String {
     let connectedProviders = [
         KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey) ? "LemonSqueezy" : nil,
         KeychainService.exists(account: KeychainService.gumroadAPIKey) ? "Gumroad" : nil,
-        KeychainService.exists(account: KeychainService.stripeAPIKey) ? "Stripe" : nil
+        KeychainService.exists(account: KeychainService.stripeAPIKey) ? "Stripe" : nil,
     ].compactMap { $0 }
     let providersSummary = connectedProviders.isEmpty ? "None" : connectedProviders.joined(separator: ", ")
     let demoMode = defaults.bool(forKey: "demo_mode")

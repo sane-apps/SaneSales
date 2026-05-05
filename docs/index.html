@@ -55,13 +55,13 @@
       },
       "description": "Native indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, products, and custom date ranges in one app.",
       "image": "https://sanesales.com/images/branding.png",
-      "downloadUrl": "https://dist.sanesales.com/updates/SaneSales-1.3.1.zip",
+      "downloadUrl": "https://dist.sanesales.com/updates/SaneSales-1.3.2.zip",
       "author": {
         "@type": "Person",
         "name": "Mr. Sane",
         "url": "https://github.com/sane-apps"
       },
-      "softwareVersion": "1.3.1",
+      "softwareVersion": "1.3.2",
       "featureList": [
         "Multi-Provider Support (LemonSqueezy, Gumroad, Stripe)",
         "Custom Date Ranges",
@@ -85,9 +85,9 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server in the middle for your sales data."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales Pro is $24.99 one-time. Basic is included so you can try the app first, and there are no recurring charges or subscriptions."}},
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales Pro is $24.99 one-time. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions."}},
         {"@type": "Question", "name": "Can I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crypto is optional. Send $24.99 to any listed address, then email hi@saneapps.com with your transaction ID or screenshot so your Pro access can be verified."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with Basic to connect 1 provider and see today's revenue and orders. Buy Pro for $24.99 when you want 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included."}}
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Buy Pro for $24.99 to keep live revenue, orders, 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included."}}
       ]
     }
     </script>
@@ -1566,7 +1566,7 @@
         }
 
         .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.75rem; vertical-align: super; margin-left: 3px; cursor: default; }
-        .price-note::after { content: "One-time purchase. Basic stays free so you can try it first."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
+        .price-note::after { content: "One-time purchase. Demo mode and a 7-day live-data trial let you try it first."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
         .price-note:hover::after { opacity: 1; }
         @media (max-width: 768px) { .price-note { display: none; } }
 
@@ -1952,7 +1952,7 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.1.zip" class="mobile-nav-cta" data-cta="download_free">Download Free</a>
+        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.2.zip" class="mobile-nav-cta" data-cta="download_free">Download Free</a>
     </div>
 
     <section class="hero" id="screenshots">
@@ -1972,17 +1972,17 @@
             </div>
             <div class="hero-pricing-grid animate-in delay-4" id="pricing">
                 <div class="pricing-card">
-                    <p class="pricing-label">Basic</p>
+                    <p class="pricing-label">Demo + Trial</p>
                     <p class="pricing-price">Free</p>
-                    <p class="pricing-price-note">Start with today — upgrade for the full picture</p>
+                    <p class="pricing-price-note">Start with demo data or a 7-day live trial</p>
                     <ul class="pricing-features">
-                        <li>Connect 1 sales provider</li>
-                        <li>Today's revenue and orders</li>
-                        <li>Demo mode before you connect</li>
+                        <li>Built-in demo mode</li>
+                        <li>7-day Pro trial after connecting live data</li>
+                        <li>Private on-device storage</li>
                         <li>iPhone, iPad, and Mac apps</li>
                         <li>100% On-Device privacy</li>
                     </ul>
-                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.1.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
+                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.2.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
                         </svg>
@@ -2009,7 +2009,7 @@
                 <code style="background: var(--bg-card); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;" onclick="copyToClipboard(this)" title="Click to copy">brew install --cask sane-apps/tap/sanesales</code>
             </p>
             <h2 class="section-title animate-in delay-4">See It in Action</h2>
-            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Basic shows today. Pro gives you 7D, 30D, custom ranges, history, export, and the bigger picture.</p>
+            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Demo shows the workflow. Pro gives you live tracking, 7D, 30D, custom ranges, history, export, and the bigger picture.</p>
             <div class="screenshot-tabs animate-in delay-5">
                 <button class="screenshot-tab active" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
                 <button class="screenshot-tab" data-screen="orders" onclick="showScreen('orders', this)">Orders</button>
@@ -2076,7 +2076,7 @@
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <h3>Track</h3>
-                    <p>See today's numbers immediately. Unlock custom ranges, history, and export in Pro on your iPhone, iPad, or Mac.</p>
+                    <p>Start with the 7-day Pro trial when you connect live data. Pro keeps custom ranges, history, and export available on your iPhone, iPad, or Mac.</p>
                 </div>
             </div>
         </div>
@@ -2085,7 +2085,7 @@
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Everything you need. Nothing you don't.</h2>
-            <p class="section-subtitle">One app. Every platform. Basic gets you started. Pro does the real work.</p>
+            <p class="section-subtitle">One app. Every platform. Demo gets you started. Pro does the real work.</p>
             <div class="feature-grid">
                 <!-- 1. Multi-Provider - THE unique selling point -->
                 <div class="feature-card featured">
@@ -2109,8 +2109,8 @@
                         </svg>
                     </div>
                     <h3>Revenue Dashboard</h3>
-                    <div class="feature-badge basic">Basic + Pro</div>
-                    <p>Basic shows today's revenue and orders. Pro adds 7-day, 30-day, and custom date ranges so you can actually spot movement.</p>
+                    <div class="feature-badge basic">Trial + Pro</div>
+                    <p>Explore with demo data, then connect live sales to start a 7-day Pro trial. Pro keeps revenue, orders, and trends updating after the trial.</p>
                 </div>
                 <!-- 3. Interactive Charts -->
                 <div class="feature-card">
@@ -2423,7 +2423,7 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales Pro is $24.99 one-time. Basic is included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales Pro is $24.99 one-time. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2444,7 +2444,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with Basic to connect 1 provider and see today's revenue and orders. Buy Pro for $24.99 when you want 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Buy Pro for $24.99 to keep live revenue, orders, 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
                 </div>
             </div>
         </div>
@@ -2541,9 +2541,9 @@
                 <div class="sustainability-body">
                     <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great public-code tools die when developers can't sustain them. Upgrading to Pro keeps SaneSales alive and actively maintained.</p>
                     <div class="sustainability-options">
-                        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.1.zip" class="sustainability-option" data-cta="download_free_sustainability">
+                        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.2.zip" class="sustainability-option" data-cta="download_free_sustainability">
                             <h4>Download Free</h4>
-                            <p>Start with 1 provider, today's revenue, today's orders, and demo mode. Upgrade when you want the full picture.</p>
+                            <p>Explore demo mode or start a 7-day live-data Pro trial. Upgrade to keep the full picture.</p>
                         </a>
                         <a href="https://go.saneapps.com/buy/sanesales?ref=sustainability" class="sustainability-option featured" data-cta="buy_pro_sustainability">
                             <h4>Upgrade to Pro — $24.99</h4>

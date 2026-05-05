@@ -85,17 +85,44 @@ final class SalesManager {
     var isGumroadConnected = false
     var isStripeConnected = false
 
-    /// Set by the app entry point — used for Pro feature gating across the app.
-    /// Each platform syncs this from its active licensing backend.
+    var trialState: SaneSalesTrialState = .notStarted
+    var isDemoModeActive = false
+
+    private var paidProAccess = false
+    private var forcedProAccess = false
+    private var demoModeAccess = false
+
+    /// Effective Pro access. This is true for paid Pro, active trial, forced test mode, and demo mode.
     var isPro: Bool = false {
         didSet {
-            let defaults = SharedStore.userDefaults()
-            defaults.set(isPro, forKey: SharedStore.proEnabledKey)
-            #if os(macOS)
-                defaults.set(isPro, forKey: SharedStore.macOSWidgetsProEnabledKey)
-            #endif
             reloadWidgets()
         }
+    }
+
+    func updateProAccess(
+        isPaidPro: Bool,
+        forcePro: Bool = false,
+        demoModeEnabled: Bool = false,
+        now: Date = Date()
+    ) {
+        paidProAccess = isPaidPro
+        forcedProAccess = forcePro
+        demoModeAccess = demoModeEnabled
+        isDemoModeActive = demoModeEnabled
+        reevaluateProAccess(now: now)
+    }
+
+    private func reevaluateProAccess(now: Date = Date()) {
+        let paidOrForced = paidProAccess || forcedProAccess
+        let resolvedTrialState = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+            now: now,
+            isPaidPro: paidOrForced,
+            hasConnectedProviders: isAnyConnected,
+            demoModeEnabled: demoModeAccess
+        )
+        trialState = resolvedTrialState
+        SharedStore.setPaidProEnabled(paidOrForced)
+        isPro = paidOrForced || demoModeAccess || resolvedTrialState.isActive
     }
 
     var isAnyConnected: Bool {
@@ -122,17 +149,18 @@ final class SalesManager {
     /// True when a free-tier user tries to add a second provider.
     /// Used by the UI to show the Pro upsell instead of connecting.
     var needsProForAdditionalProvider: Bool {
-        !isPro && !connectedProviders.isEmpty
+        !isPro && (trialState.isExpired || !connectedProviders.isEmpty)
     }
 
     func requiresProForProviderConnection(_ provider: SalesProviderType) -> Bool {
-        !isPro && !connectedProviders.isEmpty && !connectedProviders.contains(provider)
+        guard !isPro else { return false }
+        if trialState.isExpired { return true }
+        return !connectedProviders.isEmpty && !connectedProviders.contains(provider)
     }
 
     var planScopedOrders: [Order] {
-        guard !isPro else { return orders }
-        let calendar = Calendar.current
-        return orders.filter { calendar.isDateInToday($0.createdAt) }
+        guard isPro else { return [] }
+        return orders
     }
 
     var planScopedMetrics: SalesMetrics {
@@ -150,6 +178,7 @@ final class SalesManager {
     }
 
     func latestPaidOrder(filteredBy provider: SalesProviderType? = nil) -> Order? {
+        guard isPro else { return nil }
         let providerScoped: [Order]
         if let provider {
             providerScoped = orders.filter { $0.provider == provider }
@@ -187,7 +216,9 @@ final class SalesManager {
     }
 
     /// Convenience for backward compat (onboarding checks this)
-    var isConnected: Bool { isAnyConnected }
+    var isConnected: Bool {
+        isAnyConnected
+    }
 
     // MARK: - Providers
 
@@ -204,7 +235,8 @@ final class SalesManager {
         }
 
         if CommandLine.arguments.contains("--demo")
-            || UserDefaults.standard.bool(forKey: "demo_mode") {
+            || UserDefaults.standard.bool(forKey: "demo_mode")
+        {
             DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
             return
         }
@@ -406,8 +438,18 @@ final class SalesManager {
     // MARK: - Data Loading (Multi-Provider)
 
     func refresh() async {
+        reevaluateProAccess()
+
         guard isAnyConnected else {
             error = .noAPIKey
+            return
+        }
+
+        guard isPro else {
+            error = .proRequired(feature: "Live sales tracking")
+            metrics = .empty
+            lastUpdated = Date()
+            reloadWidgets()
             return
         }
 
@@ -594,6 +636,13 @@ final class SalesManager {
         userDefaults.removeObject(forKey: SaneSalesDateRangeStore.selectedRangeKey)
         userDefaults.removeObject(forKey: SaneSalesDateRangeStore.customStartKey)
         userDefaults.removeObject(forKey: SaneSalesDateRangeStore.customEndKey)
+        SaneSalesTrialPolicy.reset(defaults: userDefaults)
+
+        let sharedDefaults = SharedStore.userDefaults()
+        SaneSalesTrialPolicy.reset(defaults: sharedDefaults)
+        SharedStore.setPaidProEnabled(false, defaults: sharedDefaults)
+        sharedDefaults.removeObject(forKey: SharedStore.proEnabledKey)
+        sharedDefaults.removeObject(forKey: SharedStore.macOSWidgetsProEnabledKey)
 
         KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
         KeychainService.delete(account: KeychainService.gumroadAPIKey)
@@ -618,6 +667,12 @@ final class SalesManager {
         lastUpdated = nil
         error = nil
         isLoading = false
+        trialState = .notStarted
+        isDemoModeActive = false
+        paidProAccess = false
+        forcedProAccess = false
+        demoModeAccess = false
+        isPro = false
 
         Task { await cache.clearCache() }
         reloadWidgets()
@@ -657,7 +712,7 @@ final class SalesManager {
 
 // MARK: - Provider Result
 
-private struct ProviderResult: Sendable {
+private struct ProviderResult {
     var orders: [Order] = []
     var products: [Product] = []
     var store: Store?

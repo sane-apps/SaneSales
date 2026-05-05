@@ -1,7 +1,7 @@
 import SaneUI
 import SwiftUI
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 struct ContentView: View {
@@ -38,15 +38,15 @@ private enum MainSection: Int, CaseIterable, Hashable {
 }
 
 #if os(iOS)
-enum SaneSalesIOSChrome {
-    static let floatingTabBarClearance: CGFloat = 108
-}
+    enum SaneSalesIOSChrome {
+        static let floatingTabBarClearance: CGFloat = 108
+    }
 #endif
 
 struct MainTabView: View {
     @State private var selectedSection: MainSection
     #if os(macOS)
-    @State private var previousNonSettingsContentSize: NSSize?
+        @State private var previousNonSettingsContentSize: NSSize?
     #endif
 
     init() {
@@ -66,7 +66,7 @@ struct MainTabView: View {
         .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
             selectedSection = .settings
             #if os(macOS)
-            SettingsTabNavigationStorage.shared.markRequestHandled()
+                SettingsTabNavigationStorage.shared.markRequestHandled()
             #endif
         }
         #if os(macOS)
@@ -83,93 +83,93 @@ struct MainTabView: View {
     }
 
     #if os(iOS)
-    private var iosLayout: some View {
-        TabView(selection: $selectedSection) {
-            DashboardView()
-                .tabItem { Label(MainSection.dashboard.title, systemImage: MainSection.dashboard.icon) }
-                .tag(MainSection.dashboard)
-            OrdersListView()
-                .tabItem { Label(MainSection.orders.title, systemImage: MainSection.orders.icon) }
-                .tag(MainSection.orders)
-            ProductsView()
-                .tabItem { Label(MainSection.products.title, systemImage: MainSection.products.icon) }
-                .tag(MainSection.products)
-            SettingsView()
-                .tabItem { Label(MainSection.settings.title, systemImage: MainSection.settings.icon) }
-                .tag(MainSection.settings)
+        private var iosLayout: some View {
+            TabView(selection: $selectedSection) {
+                DashboardView()
+                    .tabItem { Label(MainSection.dashboard.title, systemImage: MainSection.dashboard.icon) }
+                    .tag(MainSection.dashboard)
+                OrdersListView()
+                    .tabItem { Label(MainSection.orders.title, systemImage: MainSection.orders.icon) }
+                    .tag(MainSection.orders)
+                ProductsView()
+                    .tabItem { Label(MainSection.products.title, systemImage: MainSection.products.icon) }
+                    .tag(MainSection.products)
+                SettingsView()
+                    .tabItem { Label(MainSection.settings.title, systemImage: MainSection.settings.icon) }
+                    .tag(MainSection.settings)
+            }
+            .toolbarBackground(Color.black.opacity(0.94), for: .tabBar)
+            .toolbarBackground(.visible, for: .tabBar)
+            .toolbarColorScheme(.dark, for: .tabBar)
         }
-        .toolbarBackground(Color.black.opacity(0.94), for: .tabBar)
-        .toolbarBackground(.visible, for: .tabBar)
-        .toolbarColorScheme(.dark, for: .tabBar)
-    }
     #endif
 
     #if os(macOS)
-    private var macLayout: some View {
-        HStack(spacing: 0) {
-            macSidebar
-            Divider().overlay(Color.white.opacity(0.08))
-            selectedSectionView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .background(SaneBackground().ignoresSafeArea())
-    }
-
-    private var macSidebar: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(spacing: 12) {
-                Image("CoinColor")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 34, height: 34)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("SaneSales")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
-                    Text("Read sales clearly")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
-                }
+        private var macLayout: some View {
+            HStack(spacing: 0) {
+                macSidebar
+                Divider().overlay(Color.white.opacity(0.08))
+                selectedSectionView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(.top, 8)
+            .background(SaneBackground().ignoresSafeArea())
+        }
 
-            VStack(spacing: 6) {
-                ForEach(MainSection.allCases, id: \.self) { section in
-                    Button {
-                        selectedSection = section
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: section.icon)
-                                .font(.system(size: 15, weight: .semibold))
-                                .frame(width: 18)
-                            Text(section.title)
-                                .font(.system(size: 15, weight: .semibold))
-                            Spacer()
-                        }
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 11)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(selectedSection == section ? Color.salesGreen.opacity(0.22) : Color.clear)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .stroke(selectedSection == section ? Color.salesGreen.opacity(0.45) : Color.clear, lineWidth: 1)
-                                )
-                        )
+        private var macSidebar: some View {
+            VStack(alignment: .leading, spacing: 18) {
+                HStack(spacing: 12) {
+                    Image("CoinColor")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 34, height: 34)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("SaneSales")
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                        Text("Read sales clearly")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white)
                     }
-                    .buttonStyle(.plain)
                 }
-            }
+                .padding(.top, 8)
 
-            Spacer()
+                VStack(spacing: 6) {
+                    ForEach(MainSection.allCases, id: \.self) { section in
+                        Button {
+                            selectedSection = section
+                        } label: {
+                            HStack(spacing: 10) {
+                                Image(systemName: section.icon)
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .frame(width: 18)
+                                Text(section.title)
+                                    .font(.system(size: 15, weight: .semibold))
+                                Spacer()
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 11)
+                            .background(
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(selectedSection == section ? Color.salesGreen.opacity(0.22) : Color.clear)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .stroke(selectedSection == section ? Color.salesGreen.opacity(0.45) : Color.clear, lineWidth: 1)
+                                    )
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+
+                Spacer()
+            }
+            .frame(width: 228, alignment: .topLeading)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 18)
+            .background(Color.black.opacity(0.16))
         }
-        .frame(width: 228, alignment: .topLeading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 18)
-        .background(Color.black.opacity(0.16))
-    }
     #endif
 
     @ViewBuilder
@@ -190,12 +190,14 @@ struct MainTabView: View {
         let args = CommandLine.arguments
 
         if let inlineValue = args.first(where: { $0.hasPrefix("--screenshot-tab=") })?
-            .split(separator: "=", maxSplits: 1).last {
+            .split(separator: "=", maxSplits: 1).last
+        {
             return section(for: String(inlineValue))
         }
 
         if let index = args.firstIndex(of: "--screenshot-tab"),
-           args.indices.contains(index + 1) {
+           args.indices.contains(index + 1)
+        {
             return section(for: args[index + 1])
         }
 
@@ -218,124 +220,129 @@ struct MainTabView: View {
     }
 
     #if os(macOS)
-    private func applyWindowSize(
-        for selectedSection: MainSection,
-        previousSection: MainSection?,
-        attempt: Int = 0
-    ) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-            guard let window = currentWindow() else {
-                guard attempt < 8 else { return }
-                applyWindowSize(for: selectedSection, previousSection: previousSection, attempt: attempt + 1)
-                return
-            }
-
-            let currentContentSize = window.contentRect(forFrameRect: window.frame).size
-            let isSettingsTab = selectedSection == .settings
-            let wasSettingsTab = previousSection == .settings
-            let metrics = SaneSalesWindowSizing.metrics(for: selectedSection)
-            let minimumSize = metrics.minimum
-
-            window.contentMinSize = minimumSize
-
-            if isSettingsTab {
-                if !wasSettingsTab, previousSection != nil {
-                    previousNonSettingsContentSize = currentContentSize
+        private func applyWindowSize(
+            for selectedSection: MainSection,
+            previousSection: MainSection?,
+            attempt: Int = 0
+        ) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                guard let window = currentWindow() else {
+                    guard attempt < 8 else { return }
+                    applyWindowSize(for: selectedSection, previousSection: previousSection, attempt: attempt + 1)
+                    return
                 }
 
-                if currentContentSize.width < metrics.minimum.width ||
-                    currentContentSize.height < metrics.minimum.height {
+                let currentContentSize = window.contentRect(forFrameRect: window.frame).size
+                let isSettingsTab = selectedSection == .settings
+                let wasSettingsTab = previousSection == .settings
+                let metrics = SaneSalesWindowSizing.metrics(for: selectedSection)
+                let minimumSize = metrics.minimum
+
+                window.contentMinSize = minimumSize
+
+                if isSettingsTab {
+                    if !wasSettingsTab, previousSection != nil {
+                        previousNonSettingsContentSize = currentContentSize
+                    }
+
+                    if currentContentSize.width < metrics.minimum.width ||
+                        currentContentSize.height < metrics.minimum.height
+                    {
+                        window.setContentSize(metrics.preferred)
+                        return
+                    }
+
+                    if !wasSettingsTab,
+                       currentContentSize.width > metrics.preferred.width + 140 ||
+                       currentContentSize.height > metrics.preferred.height + 120
+                    {
+                        window.setContentSize(metrics.preferred)
+                        return
+                    }
+
+                    return
+                }
+
+                if previousSection == nil,
+                   currentContentSize.width < metrics.preferred.width ||
+                   currentContentSize.height < metrics.preferred.height
+                {
                     window.setContentSize(metrics.preferred)
                     return
                 }
 
-                if !wasSettingsTab,
-                   currentContentSize.width > metrics.preferred.width + 140 ||
-                    currentContentSize.height > metrics.preferred.height + 120 {
-                    window.setContentSize(metrics.preferred)
+                if currentContentSize.width < metrics.minimum.width
+                    || currentContentSize.height < metrics.minimum.height
+                {
+                    window.setContentSize(metrics.minimum)
                     return
                 }
 
-                return
+                guard wasSettingsTab, let previousNonSettingsContentSize else { return }
+                let restoredSize = NSSize(
+                    width: max(previousNonSettingsContentSize.width, metrics.minimum.width),
+                    height: max(previousNonSettingsContentSize.height, metrics.minimum.height)
+                )
+                guard abs(currentContentSize.width - restoredSize.width) > 1 ||
+                    abs(currentContentSize.height - restoredSize.height) > 1
+                else {
+                    return
+                }
+
+                window.setContentSize(restoredSize)
             }
-
-            if previousSection == nil,
-               currentContentSize.width < metrics.preferred.width ||
-                currentContentSize.height < metrics.preferred.height {
-                window.setContentSize(metrics.preferred)
-                return
-            }
-
-            if currentContentSize.width < metrics.minimum.width
-                || currentContentSize.height < metrics.minimum.height {
-                window.setContentSize(metrics.minimum)
-                return
-            }
-
-            guard wasSettingsTab, let previousNonSettingsContentSize else { return }
-            let restoredSize = NSSize(
-                width: max(previousNonSettingsContentSize.width, metrics.minimum.width),
-                height: max(previousNonSettingsContentSize.height, metrics.minimum.height)
-            )
-            guard abs(currentContentSize.width - restoredSize.width) > 1 ||
-                abs(currentContentSize.height - restoredSize.height) > 1 else {
-                return
-            }
-
-            window.setContentSize(restoredSize)
-        }
-    }
-
-    private func currentWindow() -> NSWindow? {
-        if let mainWindow = WindowActionStorage.shared.mainWindow {
-            return mainWindow
         }
 
-        return NSApp.keyWindow ?? NSApp.windows.first(where: { $0.canBecomeMain && !$0.isSheet })
-    }
+        private func currentWindow() -> NSWindow? {
+            if let mainWindow = WindowActionStorage.shared.mainWindow {
+                return mainWindow
+            }
+
+            return NSApp.keyWindow ?? NSApp.windows.first(where: { $0.canBecomeMain && !$0.isSheet })
+        }
     #endif
 }
 
 #if os(macOS)
-private enum SaneSalesWindowSizing {
-    struct Metrics {
-        let minimum: NSSize
-        let preferred: NSSize
-    }
+    private enum SaneSalesWindowSizing {
+        struct Metrics {
+            let minimum: NSSize
+            let preferred: NSSize
+        }
 
-    static let dashboard = Metrics(
-        minimum: NSSize(width: 920, height: 600),
-        preferred: NSSize(width: 1180, height: 760)
-    )
+        static let dashboard = Metrics(
+            minimum: NSSize(width: 920, height: 600),
+            preferred: NSSize(width: 1180, height: 760)
+        )
 
-    static let orders = Metrics(
-        minimum: NSSize(width: 980, height: 620),
-        preferred: NSSize(width: 1240, height: 780)
-    )
+        static let orders = Metrics(
+            minimum: NSSize(width: 980, height: 620),
+            preferred: NSSize(width: 1240, height: 780)
+        )
 
-    static let products = Metrics(
-        minimum: NSSize(width: 960, height: 600),
-        preferred: NSSize(width: 1200, height: 760)
-    )
+        static let products = Metrics(
+            minimum: NSSize(width: 960, height: 600),
+            preferred: NSSize(width: 1200, height: 760)
+        )
 
-    static let settings = Metrics(
-        minimum: NSSize(width: 860, height: 560),
-        preferred: NSSize(width: 1040, height: 680)
-    )
+        static let settings = Metrics(
+            minimum: NSSize(width: 860, height: 560),
+            preferred: NSSize(width: 1040, height: 680)
+        )
 
-    static func metrics(for section: MainSection) -> Metrics {
-        switch section {
-        case .orders:
-            orders
-        case .products:
-            products
-        case .settings:
-            settings
-        case .dashboard:
-            dashboard
+        static func metrics(for section: MainSection) -> Metrics {
+            switch section {
+            case .orders:
+                orders
+            case .products:
+                products
+            case .settings:
+                settings
+            case .dashboard:
+                dashboard
+            }
         }
     }
-}
 #endif
 
 extension Notification.Name {
@@ -437,9 +444,9 @@ struct OnboardingView: View {
                     .font(.saneSubheadlineBold)
                     .foregroundStyle(.white)
 
-                Text("Try demo data right away, unlock Pro now, or connect your existing store below.")
+                Text("Try demo data right away, unlock Pro now, or connect live data to start your 7-day free trial.")
                     .font(.saneFootnote)
-                    .foregroundStyle(Color.textMuted)
+                    .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
                 demoButton
@@ -563,10 +570,10 @@ struct OnboardingView: View {
                 .textFieldStyle(.roundedBorder)
                 .textContentType(.password)
                 .autocorrectionDisabled()
-#if os(iOS)
+            #if os(iOS)
                 .textInputAutocapitalization(.never)
                 .keyboardType(.asciiCapable)
-#endif
+            #endif
                 .accessibilityIdentifier("onboarding.apiKeyField")
 
             Text(keyHelpText)

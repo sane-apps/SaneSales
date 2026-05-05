@@ -250,21 +250,21 @@ struct OrdersListView: View {
     private func ordersOverview(_ widthClass: WidthClass) -> some View {
         VStack(alignment: .leading, spacing: widthClass == .compact ? 8 : 10) {
             #if os(macOS)
-            if widthClass != .compact {
-                denseMacOrdersOverview
-            } else {
+                if widthClass != .compact {
+                    denseMacOrdersOverview
+                } else {
+                    standardOrdersOverviewHeader(widthClass)
+
+                    if hasLockedHistory {
+                        lockedHistoryCallout(widthClass)
+                    }
+                }
+            #else
                 standardOrdersOverviewHeader(widthClass)
 
                 if hasLockedHistory {
                     lockedHistoryCallout(widthClass)
                 }
-            }
-            #else
-            standardOrdersOverviewHeader(widthClass)
-
-            if hasLockedHistory {
-                lockedHistoryCallout(widthClass)
-            }
             #endif
         }
         .padding(.horizontal, 16)
@@ -281,7 +281,6 @@ struct OrdersListView: View {
         .padding(.horizontal, 16)
     }
 
-    @ViewBuilder
     private func standardOrdersOverviewHeader(_ widthClass: WidthClass) -> some View {
         VStack(alignment: .leading, spacing: widthClass == .compact ? 8 : 10) {
             if widthClass == .compact {
@@ -304,7 +303,7 @@ struct OrdersListView: View {
                     orderSummary(widthClass: .regular, subtitle: orderSummarySubtitle)
 
                     if hasLockedHistory {
-                        Text("Basic shows today’s orders. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
+                        Text("Your trial and Pro unlock live orders, custom date ranges, older orders, deeper search, and CSV export.")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
@@ -341,7 +340,7 @@ struct OrdersListView: View {
     private func lockedHistoryCallout(_ widthClass: WidthClass) -> some View {
         if widthClass == .compact {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Basic shows today only. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
+                Text("Trial and Pro unlock live orders, custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
@@ -356,7 +355,7 @@ struct OrdersListView: View {
             }
         } else {
             HStack(alignment: .center, spacing: 12) {
-                Text("Basic keeps today front and center. Pro unlocks custom date ranges, older orders, deeper search, and CSV export.")
+                Text("Trial and Pro keep live orders front and center, with custom ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
@@ -447,7 +446,7 @@ struct OrdersListView: View {
         }
     }
 
-    private func timeRangePicker(for widthClass: WidthClass) -> some View {
+    private func timeRangePicker(for _: WidthClass) -> some View {
         SalesDateRangePicker(
             scope: "orders",
             selectedRange: selectedRange,
@@ -615,7 +614,7 @@ struct OrdersListView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See the latest sales as they come in")
                     emptyStateDetailRow("Search by customer, product, or order ID")
-                    emptyStateDetailRow("Use Basic for today’s feed or Pro for custom ranges and older history")
+                    emptyStateDetailRow("Connect live data to start a 7-day Pro trial")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 

@@ -167,8 +167,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -264,8 +264,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -346,6 +346,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
+      - Core/SaneSalesTrialPolicy.swift
     info:
       path: Widgets/Info.plist
       properties:
@@ -358,8 +359,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: M78L6FXD48
         ARCHS: arm64
@@ -436,8 +437,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -529,6 +530,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
+      - Core/SaneSalesTrialPolicy.swift
     info:
       path: Widgets/Info.plist
       properties:
@@ -541,8 +543,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesIOSWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ioswidgets
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         SWIFT_VERSION: 6.0
         IPHONEOS_DEPLOYMENT_TARGET: 17.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -579,6 +581,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
+      - Core/SaneSalesTrialPolicy.swift
       - Resources/Assets.xcassets
     dependencies:
       - target: SaneSalesWatchWidgets
@@ -599,8 +602,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWatch
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         ASSETCATALOG_COMPILER_APPICON_NAME: WatchAppIcon
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
@@ -645,6 +648,7 @@ targets:
         excludes:
           - "**/CLAUDE.md"
       - Core/Services/SharedStore.swift
+      - Core/SaneSalesTrialPolicy.swift
     info:
       path: Watch/WidgetInfo.plist
       properties:
@@ -657,8 +661,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWatchWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
-        MARKETING_VERSION: "1.3.1"
-        CURRENT_PROJECT_VERSION: "1301"
+        MARKETING_VERSION: "1.3.2"
+        CURRENT_PROJECT_VERSION: "1302"
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         TARGETED_DEVICE_FAMILY: "4"
