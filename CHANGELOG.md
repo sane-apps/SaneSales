@@ -6,6 +6,12 @@ Improves dashboard state handling, setup reliability, and sales tracking consist
 
 ---
 
+## [1.3.2] - 2026-05-05
+
+Improves dashboard state handling, setup reliability, and sales tracking consistency across devices.
+
+---
+
 ## 1.3.0
 
 - Adds Pro custom date ranges with a dedicated calendar range picker and editable start/end dates.
