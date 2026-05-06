@@ -35,15 +35,18 @@ struct ChartsView: View {
                 .cornerRadius(4)
             }
             .chartXSelection(value: $selectedDate)
+            .chartYScale(domain: 0...SaneSalesChartAxisPolicy.yAxisUpperBound(for: dailySales.map(\.revenueDecimal).max() ?? 0))
             .chartYAxis {
                 AxisMarks(position: .leading) { value in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4]))
                         .foregroundStyle(Color.primary.opacity(0.15))
                     AxisValueLabel {
                         if let decimal = value.as(Decimal.self) {
-                            Text("$\(NSDecimalNumber(decimal: decimal).intValue)")
+                            Text(SaneSalesChartAxisPolicy.compactCurrencyLabel(for: decimal, currency: currency))
                                 .font(.callout)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(.white)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
                         }
                     }
                 }
@@ -54,7 +57,9 @@ struct ChartsView: View {
                         if let date = value.as(Date.self) {
                             Text(xAxisLabel(for: date))
                                 .font(.callout)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(.white)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.75)
                         }
                     }
                 }
@@ -89,9 +94,7 @@ struct ChartsView: View {
     }
 
     private var xAxisStride: Int {
-        if dailySales.count <= 7 { return 1 }
-        if dailySales.count <= 14 { return 2 }
-        return 5
+        SaneSalesChartAxisPolicy.xAxisStride(for: dailySales.count)
     }
 
     private var xAxisDates: [Date] {
@@ -112,5 +115,65 @@ struct ChartsView: View {
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
         return formatter.string(from: Decimal(cents) / 100 as NSDecimalNumber) ?? "$\(cents / 100)"
+    }
+}
+
+enum SaneSalesChartAxisPolicy {
+    static func xAxisStride(for pointCount: Int) -> Int {
+        switch pointCount {
+        case ...7:
+            return 1
+        case 8...14:
+            return 2
+        case 15...31:
+            return 7
+        case 32...90:
+            return 14
+        default:
+            return 30
+        }
+    }
+
+    static func yAxisUpperBound(for maxRevenue: Decimal) -> Decimal {
+        let rawValue = NSDecimalNumber(decimal: maxRevenue).doubleValue
+        guard rawValue > 0 else { return 1 }
+
+        let target = rawValue * 1.15
+        let magnitude = pow(10, floor(log10(target)))
+        let normalized = target / magnitude
+        let niceStep: Double
+        switch normalized {
+        case ...1:
+            niceStep = 1
+        case ...2:
+            niceStep = 2
+        case ...5:
+            niceStep = 5
+        default:
+            niceStep = 10
+        }
+
+        return Decimal(niceStep * magnitude)
+    }
+
+    static func compactCurrencyLabel(for value: Decimal, currency: String) -> String {
+        let number = NSDecimalNumber(decimal: value).doubleValue
+        let absolute = abs(number)
+        let prefix = currency.uppercased() == "USD" ? "$" : "\(currency.uppercased()) "
+
+        if absolute >= 1_000_000 {
+            return "\(prefix)\(formatCompact(number / 1_000_000))M"
+        }
+        if absolute >= 1_000 {
+            return "\(prefix)\(formatCompact(number / 1_000))K"
+        }
+        return "\(prefix)\(Int(number.rounded()))"
+    }
+
+    private static func formatCompact(_ value: Double) -> String {
+        if value >= 10 || value.rounded() == value {
+            return String(format: "%.0f", value)
+        }
+        return String(format: "%.1f", value)
     }
 }

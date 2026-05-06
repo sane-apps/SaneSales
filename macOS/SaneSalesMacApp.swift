@@ -303,7 +303,7 @@ import SwiftUI
                                 (icon: "play.circle", text: "Demo mode to explore"),
                                 (icon: "link", text: "Connect live data for a 7-day Pro trial"),
                                 (icon: "lock.open", text: "Trial access to live orders and revenue"),
-                                (icon: "shield", text: "Private on-device storage"),
+                                (icon: "shield", text: "iCloud Keychain provider sync")
                             ],
                             proFeatures: [
                                 (icon: "checkmark", text: "Pro keeps live tracking active:"),
@@ -312,7 +312,7 @@ import SwiftUI
                                 (icon: "tablecells", text: "CSV export"),
                                 (icon: "chart.pie", text: "Deeper product comparisons"),
                                 (icon: "menubar.rectangle", text: "Menu bar quick glance"),
-                                (icon: "widget.small", text: "Desktop widgets"),
+                                (icon: "widget.small", text: "Desktop widgets")
                             ],
                             licenseService: licenseService,
                             secondaryCompletionActionLabel: "Try Demo Data",

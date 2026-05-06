@@ -1,14 +1,8 @@
 # Changelog
 
-## [1.3.2] - 2026-05-05
+## [1.3.3] - 2026-05-06
 
-Improves dashboard state handling, setup reliability, and sales tracking consistency across devices.
-
----
-
-## [1.3.2] - 2026-05-05
-
-Improves dashboard state handling, setup reliability, and sales tracking consistency across devices.
+Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots.
 
 ---
 
@@ -45,4 +39,3 @@ Adds a Latest Sale dashboard section so recent paid orders stay visible even whe
 Adds Pro custom date ranges with shared Dashboard and Orders filtering, plus automatic App Store entitlement refresh after offer-code redemption or restore.
 
 ---
-

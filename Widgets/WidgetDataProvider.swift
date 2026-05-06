@@ -23,19 +23,13 @@ struct SalesWidgetProvider: TimelineProvider {
         guard SharedStore.isProEnabled(defaults: defaults) else {
             return .locked
         }
-        guard let data = defaults.data(forKey: SharedStore.cachedOrdersKey) else { return nil }
-        guard let orders = try? JSONDecoder().decode([Order].self, from: data) else { return nil }
-
-        let metrics = SalesMetrics.compute(from: orders)
-        let currency = Dictionary(grouping: orders, by: \.currency)
-            .mapValues(\.count)
-            .max(by: { $0.value < $1.value })?.key ?? "USD"
+        guard let snapshot = SharedStore.loadSalesSnapshot(defaults: defaults) else { return nil }
         return SalesWidgetEntry(
             date: Date(),
-            todayRevenue: metrics.todayRevenue,
-            todayOrders: metrics.todayOrders,
-            monthRevenue: metrics.monthRevenue,
-            currency: currency
+            todayRevenue: snapshot.todayRevenue,
+            todayOrders: snapshot.todayOrders,
+            monthRevenue: snapshot.monthRevenue,
+            currency: snapshot.currency
         )
     }
 }

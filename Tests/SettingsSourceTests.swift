@@ -155,4 +155,42 @@ struct SettingsSourceTests {
         #expect(productsSource.contains("DispatchQueue.main.async"))
         #expect(settingsSource.contains("DispatchQueue.main.async"))
     }
+
+    @Test("Orders empty state distinguishes connected empty ranges from provider setup")
+    func ordersEmptyStateDistinguishesConnectedEmptyRange() {
+        let disconnected = OrdersEmptyStateCopy.make(
+            isConnected: false,
+            isPro: false,
+            cachedOrderCount: 0,
+            rangeLabel: "Today"
+        )
+        let connectedRangeEmpty = OrdersEmptyStateCopy.make(
+            isConnected: true,
+            isPro: true,
+            cachedOrderCount: 479,
+            rangeLabel: "Today"
+        )
+
+        #expect(disconnected.title == "No Orders Yet")
+        #expect(disconnected.message.contains("Connect a provider"))
+        #expect(connectedRangeEmpty.title == "No Orders in Range")
+        #expect(!connectedRangeEmpty.message.contains("Connect a provider"))
+        #expect(connectedRangeEmpty.message.contains("479 cached orders"))
+        #expect(connectedRangeEmpty.secondaryActionTitle == "Show All Orders")
+    }
+
+    @Test("Orders empty state can clear a provider filter with no matching orders")
+    func ordersEmptyStateCanClearProviderFilterWithNoMatchingOrders() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let source = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/OrdersListView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(source.contains("Show All Providers"))
+        #expect(source.contains("providerFilter = nil"))
+        #expect(source.contains("availableOrderCountForEmptyState"))
+    }
 }

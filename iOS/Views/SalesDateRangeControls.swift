@@ -4,6 +4,70 @@ import SwiftUI
 import UIKit
 #endif
 
+struct OrdersEmptyStateCopy: Equatable {
+    let title: String
+    let message: String
+    let details: [String]
+    let secondaryActionTitle: String
+
+    static func make(
+        isConnected: Bool,
+        isPro: Bool,
+        cachedOrderCount: Int,
+        rangeLabel: String
+    ) -> OrdersEmptyStateCopy {
+        guard isConnected else {
+            return OrdersEmptyStateCopy(
+                title: "No Orders Yet",
+                message: "Connect a provider to turn this into your live order feed for customers, products, and today's sales.",
+                details: [
+                    "See the latest sales as they come in",
+                    "Search by customer, product, or order ID",
+                    "Connect live data to start a 7-day Pro trial"
+                ],
+                secondaryActionTitle: "Open Provider Settings"
+            )
+        }
+
+        guard cachedOrderCount > 0 else {
+            return OrdersEmptyStateCopy(
+                title: "No Synced Orders Yet",
+                message: "Your providers are connected, but SaneSales has not synced any orders yet. Refresh now or check the connected provider settings.",
+                details: [
+                    "Refresh to fetch the latest sales",
+                    "Manage provider settings if a key changed",
+                    "New sales will appear here after the first sync"
+                ],
+                secondaryActionTitle: "Open Provider Settings"
+            )
+        }
+
+        if isPro {
+            return OrdersEmptyStateCopy(
+                title: "No Orders in Range",
+                message: "Your providers are connected and \(cachedOrderCount) cached \(cachedOrderCount == 1 ? "order is" : "orders are") available, but none match \(rangeLabel).",
+                details: [
+                    "Selected range: \(rangeLabel)",
+                    "Cached orders: \(cachedOrderCount)",
+                    "Switch ranges or refresh to confirm the latest data"
+                ],
+                secondaryActionTitle: "Show All Orders"
+            )
+        }
+
+        return OrdersEmptyStateCopy(
+            title: "No Orders Today",
+            message: "Your providers are connected, but there are no orders today. Pro unlocks custom ranges and full order history.",
+            details: [
+                "Basic shows today's orders only",
+                "Cached orders: \(cachedOrderCount)",
+                "Upgrade to Pro for custom ranges and full history"
+            ],
+            secondaryActionTitle: "Open Provider Settings"
+        )
+    }
+}
+
 private enum SalesDateBoundary: String, CaseIterable, Identifiable {
     case start
     case end

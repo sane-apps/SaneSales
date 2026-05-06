@@ -136,25 +136,25 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["settings.provider.stripe.connect"].exists)
     }
 
-    func testExpiredTrialLocksOlderOrderHistory() {
+    func testExpiredTrialClearsOlderOrderHistory() {
         let app = launchExpiredTrialDemo()
 
         openMainSection("Orders", in: app)
 
         let unlockHistoryButton = app.buttons["orders.unlockHistoryButton"]
-        XCTAssertTrue(unlockHistoryButton.waitForExistence(timeout: 5))
-        unlockHistoryButton.tap()
-
-        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
+        XCTAssertFalse(unlockHistoryButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(app.staticTexts["No Synced Orders Yet"].waitForExistence(timeout: 5))
     }
 
-    func testExpiredTrialShowsLockedCSVExport() {
+    func testExpiredTrialHidesCSVExportWithoutRetainedOrders() {
         let app = launchExpiredTrialDemo()
 
         openMainSection("Settings", in: app)
 
         let lockedExportButton = app.buttons["settings.data.export.lockedButton"]
-        XCTAssertTrue(lockedExportButton.waitForExistence(timeout: 5))
+        XCTAssertFalse(lockedExportButton.waitForExistence(timeout: 2))
+        XCTAssertFalse(app.buttons["settings.data.export.button"].exists)
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
     func testExpiredTrialLocksSecondProviderConnectionFromSettings() {

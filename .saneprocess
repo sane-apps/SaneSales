@@ -84,7 +84,7 @@ appstore:
         • Built-in sample dashboard
         • Sample orders and product catalog
         • Built-in demo mode
-        • Private on-device storage
+        • iCloud Keychain provider sync across your Apple devices
 
         Pro unlocks:
         • Ongoing live sales tracking after the trial
@@ -94,7 +94,7 @@ appstore:
         • Desktop widgets and menu bar totals
         • Multiple providers at once
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,merchant,menubar"
-      whats_new: "Improves dashboard state handling, setup reliability, and sales tracking consistency across devices."
+      whats_new: "Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots."
       marketing_url: "https://sanesales.com"
     ios:
       subtitle: "Read-Only Sales Dashboard"
@@ -109,7 +109,7 @@ appstore:
         • Built-in sample dashboard
         • Sample orders and product catalog
         • Built-in demo mode
-        • Private on-device storage
+        • iCloud Keychain provider sync across your Apple devices
 
         Pro unlocks:
         • Ongoing live sales tracking after the trial
@@ -119,7 +119,7 @@ appstore:
         • Multiple providers at once
         • Shared Pro access across your Apple devices
       keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,widgets,watch"
-      whats_new: "Improves dashboard state handling, setup reliability, and sales tracking consistency across devices."
+      whats_new: "Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots."
       marketing_url: "https://sanesales.com"
   review_notes: "SaneSales is a freemium, read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. Basic is free in the App Store build and includes built-in demo mode, so App Review does not need an account, API key, or payment. Connecting live data starts a 7-day Pro trial. SaneSales Pro is the only paid app unlock and is sold as a one-time StoreKit In-App Purchase through the Unlock Pro button in onboarding or Settings > License. There is no website license flow, no license key flow, no account signup, and no external checkout flow in the App Store build."
   review_notes_by_platform:

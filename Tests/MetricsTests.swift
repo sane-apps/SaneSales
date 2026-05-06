@@ -49,6 +49,19 @@ struct MetricsTests {
 
     // MARK: - Tests
 
+    @Test("Chart axis policy keeps long ranges readable and large values compact")
+    func chartAxisPolicyKeepsLongRangesReadableAndLargeValuesCompact() {
+        #expect(SaneSalesChartAxisPolicy.xAxisStride(for: 7) == 1)
+        #expect(SaneSalesChartAxisPolicy.xAxisStride(for: 30) == 7)
+        #expect(SaneSalesChartAxisPolicy.xAxisStride(for: 90) == 14)
+        #expect(SaneSalesChartAxisPolicy.xAxisStride(for: 180) == 30)
+
+        #expect(SaneSalesChartAxisPolicy.yAxisUpperBound(for: 3_000) > 3_000)
+        #expect(SaneSalesChartAxisPolicy.compactCurrencyLabel(for: 3_000, currency: "USD") == "$3K")
+        #expect(SaneSalesChartAxisPolicy.compactCurrencyLabel(for: 3_500, currency: "USD") == "$3.5K")
+        #expect(SaneSalesChartAxisPolicy.compactCurrencyLabel(for: 2_000_000, currency: "EUR") == "EUR 2M")
+    }
+
     @Test("Empty orders produce zero metrics")
     func emptyMetrics() {
         let metrics = SalesMetrics.compute(from: [])
@@ -335,6 +348,28 @@ struct MetricsTests {
         #expect(manager.planScopedOrders(filteredBy: nil).isEmpty)
         #expect(manager.latestPaidOrder() == nil)
         #expect(manager.metrics(filteredBy: nil, scopedToPlan: true).allTimeRevenue == 0)
+    }
+
+    @Test("Losing Pro access clears loaded and shared sales data")
+    @MainActor
+    func losingProAccessClearsLoadedAndSharedSalesData() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { manager.resetForUITests() }
+
+        manager.orders = [makeOrder(id: "private", total: 900)]
+        manager.metrics = SalesMetrics.compute(from: manager.orders)
+        manager.isPro = true
+        SharedStore.writeSalesSnapshot(from: manager.orders)
+
+        #expect(!manager.orders.isEmpty)
+        #expect(SharedStore.loadSalesSnapshot() != nil)
+
+        manager.updateProAccess(isPaidPro: false)
+
+        #expect(manager.orders.isEmpty)
+        #expect(manager.metrics == .empty)
+        #expect(SharedStore.loadSalesSnapshot() == nil)
     }
 
     private func revenue(from orders: [Order], daysBack: Int, untilDaysBack: Int = 0, now: Date) -> Int {

@@ -1,9 +1,21 @@
 import Foundation
+import Security
 import Testing
 
 @testable import SaneSales
 
 struct KeychainServiceTests {
+    @Test("Provider API keys sync through the user's iCloud Keychain")
+    func providerKeysSyncThroughUsersICloudKeychain() {
+        #expect(KeychainService.synchronizesProviderKeysWithICloud)
+
+        let localQuery = KeychainService.localKeychainQuery(account: KeychainService.lemonSqueezyAPIKey)
+        #expect(localQuery[kSecAttrSynchronizable as String] == nil)
+
+        let syncedQuery = KeychainService.synchronizableKeychainQuery(account: KeychainService.lemonSqueezyAPIKey)
+        #expect(syncedQuery[kSecAttrSynchronizable as String] as? Bool == true)
+    }
+
     @Test("Release-style no-keychain bypass stays available outside debug builds")
     func releaseStyleBypassStillWorks() {
         #expect(KeychainService.shouldBypassKeychain(

@@ -192,3 +192,8 @@ PROMPT4='+
 - Source: local Mini re-read of `Core/SaneSalesTrialPolicy.swift` and `Core/Services/SharedStore.swift` after the failed refresh regression test.
 - Finding: production trial state defaults to `SharedStore.userDefaults()`, which resolves to the app-group suite `group.com.sanesales.app` when available. Seeding `UserDefaults.standard` in tests does not affect `SalesManager.refresh()` trial re-evaluation.
 - Decision: regression tests that need existing/expired trial state must write `SaneSalesTrialPolicy.trialStartedAtKey` into `SharedStore.userDefaults()` or pass an explicit suite into `SaneSalesTrialPolicy` helpers. The refresh regression now seeds shared defaults to match production behavior.
+
+## [SaneSales source-reading tests] | Updated: 2026-05-06 | Status: verified | TTL: 30d
+- Source: local Mini `./scripts/SaneMaster.rb verify` failure, existing `Tests/SettingsSourceTests.swift` source-reading tests, and local repo path inspection.
+- Finding: Xcode's test process working directory is not guaranteed to be the SaneSales repo root. A test that uses `String(contentsOfFile: "iOS/Views/OrdersListView.swift")` fails with NSCocoaErrorDomain Code=260 even though the file exists in the repo.
+- Decision: source-reading tests must derive the project root from `#filePath`, then read files through `projectRoot.appendingPathComponent(...)`. This matches the existing SaneSales test pattern and keeps verify independent of the test runner working directory.

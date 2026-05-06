@@ -163,7 +163,7 @@ enum SaneSalesSettingsCopy {
     )
     static let apiKeyReadOnlyHint = String(
         localized: "sanesales.settings.sheet.api_key_read_only_hint",
-        defaultValue: "Reads your existing sales data. Nothing is modified."
+        defaultValue: "Reads your existing sales data. Nothing is modified. Saved in iCloud Keychain for your own Apple devices."
     )
     static let cancelButtonTitle = String(
         localized: "sanesales.settings.sheet.cancel_button",

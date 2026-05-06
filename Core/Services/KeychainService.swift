@@ -5,6 +5,7 @@ import Security
 struct KeychainService: Sendable {
     static let service = Bundle.main.bundleIdentifier ?? "com.sanesales.app"
     static let legacyFallbackSuiteName = "com.sanesales.no-keychain"
+    static let synchronizesProviderKeysWithICloud = true
 
     static let lemonSqueezyAPIKey = "lemonsqueezy-api-key"
     static let gumroadAPIKey = "gumroad-api-key"
@@ -21,14 +22,11 @@ struct KeychainService: Sendable {
         fallbackDefaults.removeObject(forKey: fallbackKey(account))
         legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
         delete(account: account)
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
+        let query = synchronizableKeychainQuery(account: account).merging([
             kSecValueData as String: data,
-            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock,
-            kSecAttrSynchronizable as String: true
-        ]
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+        ]) { _, new in new }
+
         let status = SecItemAdd(query as CFDictionary, nil)
         return status == errSecSuccess
     }
@@ -41,19 +39,14 @@ struct KeychainService: Sendable {
             return data
         }
 
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: true,
-            kSecMatchLimit as String: kSecMatchLimitOne,
-            kSecAttrSynchronizable as String: true
-        ]
-        var result: AnyObject?
-        let status = SecItemCopyMatching(query as CFDictionary, &result)
-        if status == errSecSuccess {
-            return result as? Data
+        if let syncedData = loadSynchronizableKeychainData(account: account) {
+            return syncedData
         }
+
+        if let migratedData = migrateLocalKeyToSynchronizableIfNeeded(account: account) {
+            return migratedData
+        }
+
         return migrateFallbackToKeychainIfNeeded(account: account)
     }
 
@@ -65,16 +58,14 @@ struct KeychainService: Sendable {
             return true
         }
 
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service,
-            kSecAttrAccount as String: account,
-            kSecAttrSynchronizable as String: true
-        ]
-        let status = SecItemDelete(query as CFDictionary)
+        let localStatus = SecItemDelete(localKeychainQuery(account: account) as CFDictionary)
+        let syncedStatus = SecItemDelete(synchronizableKeychainQuery(account: account) as CFDictionary)
         fallbackDefaults.removeObject(forKey: fallbackKey(account))
         legacyFallbackDefaults?.removeObject(forKey: fallbackKey(account))
-        return status == errSecSuccess || status == errSecItemNotFound
+
+        return [localStatus, syncedStatus].allSatisfy { status in
+            status == errSecSuccess || status == errSecItemNotFound
+        }
     }
 
     static func exists(account: String) -> Bool {
@@ -108,6 +99,58 @@ struct KeychainService: Sendable {
             return false
         }
         return environment["SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG"] == "1"
+    }
+
+    static func localKeychainQuery(account: String) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account
+        ]
+    }
+
+    static func synchronizableKeychainQuery(account: String) -> [String: Any] {
+        [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: service,
+            kSecAttrAccount as String: account,
+            kSecAttrSynchronizable as String: true
+        ]
+    }
+
+    private static func loadLocalKeychainData(account: String) -> Data? {
+        loadKeychainData(query: localKeychainQuery(account: account))
+    }
+
+    private static func loadSynchronizableKeychainData(account: String) -> Data? {
+        loadKeychainData(query: synchronizableKeychainQuery(account: account))
+    }
+
+    private static func loadKeychainData(query: [String: Any]) -> Data? {
+        var lookupQuery = query
+        lookupQuery[kSecReturnData as String] = true
+        lookupQuery[kSecMatchLimit as String] = kSecMatchLimitOne
+
+        var result: AnyObject?
+        let status = SecItemCopyMatching(lookupQuery as CFDictionary, &result)
+        guard status == errSecSuccess else { return nil }
+        return result as? Data
+    }
+
+    private static func migrateLocalKeyToSynchronizableIfNeeded(account: String) -> Data? {
+        guard let data = loadLocalKeychainData(account: account) else { return nil }
+
+        let query = synchronizableKeychainQuery(account: account).merging([
+            kSecValueData as String: data,
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+        ]) { _, new in new }
+
+        let saved = SecItemAdd(query as CFDictionary, nil)
+        if saved == errSecSuccess {
+            SecItemDelete(localKeychainQuery(account: account) as CFDictionary)
+            return data
+        }
+        return nil
     }
 
     private static var buildIsDebug: Bool {

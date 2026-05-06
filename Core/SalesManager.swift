@@ -113,6 +113,7 @@ final class SalesManager {
     }
 
     private func reevaluateProAccess(now: Date = Date()) {
+        let hadAccess = isPro
         let paidOrForced = paidProAccess || forcedProAccess
         let resolvedTrialState = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
             now: now,
@@ -123,6 +124,10 @@ final class SalesManager {
         trialState = resolvedTrialState
         SharedStore.setPaidProEnabled(paidOrForced)
         isPro = paidOrForced || demoModeAccess || resolvedTrialState.isActive
+        if !isPro, hadAccess || !orders.isEmpty || !products.isEmpty || !stores.isEmpty {
+            clearLoadedSalesData()
+            Task { await cache.clearCache() }
+        }
     }
 
     var isAnyConnected: Bool {
@@ -323,6 +328,7 @@ final class SalesManager {
                     ordersCount: orders.count,
                     productsCount: products.count
                 ) {
+                    rollbackProviderConnection(.lemonSqueezy)
                     return false
                 }
                 return true
@@ -339,8 +345,10 @@ final class SalesManager {
         KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
         lemonSqueezyProvider = nil
         isLemonSqueezyConnected = false
-        removeProviderData(for: .lemonSqueezy)
-        reloadWidgets()
+        Task {
+            await removeProviderData(for: .lemonSqueezy)
+            reloadWidgets()
+        }
     }
 
     // MARK: - Gumroad Key Management
@@ -369,6 +377,7 @@ final class SalesManager {
                     ordersCount: orders.count,
                     productsCount: products.count
                 ) {
+                    rollbackProviderConnection(.gumroad)
                     return false
                 }
                 return true
@@ -385,8 +394,10 @@ final class SalesManager {
         KeychainService.delete(account: KeychainService.gumroadAPIKey)
         gumroadProvider = nil
         isGumroadConnected = false
-        removeProviderData(for: .gumroad)
-        reloadWidgets()
+        Task {
+            await removeProviderData(for: .gumroad)
+            reloadWidgets()
+        }
     }
 
     // MARK: - Stripe Key Management
@@ -415,6 +426,7 @@ final class SalesManager {
                     ordersCount: orders.count,
                     productsCount: products.count
                 ) {
+                    rollbackProviderConnection(.stripe)
                     return false
                 }
                 return true
@@ -431,8 +443,10 @@ final class SalesManager {
         KeychainService.delete(account: KeychainService.stripeAPIKey)
         stripeProvider = nil
         isStripeConnected = false
-        removeProviderData(for: .stripe)
-        reloadWidgets()
+        Task {
+            await removeProviderData(for: .stripe)
+            reloadWidgets()
+        }
     }
 
     // MARK: - Data Loading (Multi-Provider)
@@ -447,7 +461,8 @@ final class SalesManager {
 
         guard isPro else {
             error = .proRequired(feature: "Live sales tracking")
-            metrics = .empty
+            clearLoadedSalesData()
+            await cache.clearCache()
             lastUpdated = Date()
             reloadWidgets()
             return
@@ -488,17 +503,21 @@ final class SalesManager {
         // Sort orders newest first
         allOrders.sort { $0.createdAt > $1.createdAt }
 
+        guard !allOrders.isEmpty || !allProducts.isEmpty || !allStores.isEmpty || error == nil else {
+            // A total provider failure should not wipe usable offline history.
+            isLoading = false
+            reloadWidgets()
+            return
+        }
+
         orders = allOrders
         products = allProducts
         stores = allStores
         metrics = SalesMetrics.compute(from: allOrders)
         lastUpdated = Date()
 
-        await cache.cacheOrders(allOrders)
-        await cache.cacheProducts(allProducts)
-        if let firstStore = allStores.first {
-            await cache.cacheStore(firstStore)
-        }
+        await cache.cacheSalesData(orders: allOrders, products: allProducts, stores: allStores)
+        SharedStore.writeSalesSnapshot(from: allOrders)
 
         isLoading = false
         reloadWidgets()
@@ -550,14 +569,44 @@ final class SalesManager {
 
     // MARK: - Helpers
 
-    private func removeProviderData(for provider: SalesProviderType) {
+    private func rollbackProviderConnection(_ provider: SalesProviderType) {
+        switch provider {
+        case .lemonSqueezy:
+            KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
+            lemonSqueezyProvider = nil
+            isLemonSqueezyConnected = false
+        case .gumroad:
+            KeychainService.delete(account: KeychainService.gumroadAPIKey)
+            gumroadProvider = nil
+            isGumroadConnected = false
+        case .stripe:
+            KeychainService.delete(account: KeychainService.stripeAPIKey)
+            stripeProvider = nil
+            isStripeConnected = false
+        }
+    }
+
+    private func removeProviderData(for provider: SalesProviderType) async {
         orders.removeAll { $0.provider == provider }
         products.removeAll { $0.provider == provider }
         stores.removeAll { $0.provider == provider }
         metrics = SalesMetrics.compute(from: orders)
         if !isAnyConnected {
-            Task { await cache.clearCache() }
+            clearLoadedSalesData()
+            await cache.clearCache()
+        } else {
+            await cache.cacheSalesData(orders: orders, products: products, stores: stores)
+            SharedStore.writeSalesSnapshot(from: orders)
         }
+    }
+
+    private func clearLoadedSalesData() {
+        orders = []
+        products = []
+        stores = []
+        metrics = .empty
+        lastUpdated = nil
+        SharedStore.clearSharedSalesData()
     }
 
     // MARK: - Cache
@@ -567,6 +616,7 @@ final class SalesManager {
             if let cached = await cache.loadCachedOrders() {
                 orders = cached
                 metrics = SalesMetrics.compute(from: cached)
+                SharedStore.writeSalesSnapshot(from: cached)
             }
             if let cached = await cache.loadCachedProducts() {
                 products = cached

@@ -6,7 +6,12 @@ import Testing
 struct CacheTests {
     private let cache = CacheService(defaults: UserDefaults(suiteName: "SaneSalesTests")!)
 
-    private func makeOrder(id: String = "1", total: Int = 500) -> Order {
+    private func makeOrder(
+        id: String = "1",
+        total: Int = 500,
+        date: Date = Date(),
+        provider: SalesProviderType = .lemonSqueezy
+    ) -> Order {
         Order(
             id: id,
             orderNumber: nil,
@@ -20,10 +25,10 @@ struct CacheTests {
             customerName: "Test",
             productName: "Product",
             variantName: nil,
-            createdAt: Date(),
+            createdAt: date,
             refundedAt: nil,
             refundedAmount: nil,
-            provider: .lemonSqueezy,
+            provider: provider,
             totalFormatted: nil,
             subtotalFormatted: nil,
             taxFormatted: nil,
@@ -99,5 +104,104 @@ struct CacheTests {
         #expect(loaded == nil)
         let updated = await cache.lastUpdated
         #expect(updated == nil)
+    }
+
+    @Test("Shared snapshot excludes customer and receipt data")
+    func sharedSnapshotExcludesPrivateOrderFields() throws {
+        let suiteName = "SaneSalesSharedSnapshotTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let order = makeOrder(id: "private-order-1")
+        SharedStore.writeSalesSnapshot(from: [order], defaults: defaults)
+
+        let snapshot = try #require(SharedStore.loadSalesSnapshot(defaults: defaults))
+        #expect(snapshot.todayOrders == 1)
+        #expect(snapshot.recentRows.first?.productName == "Product")
+
+        let data = try #require(defaults.data(forKey: SharedStore.salesSnapshotKey))
+        let encoded = String(decoding: data, as: UTF8.self)
+        #expect(!encoded.contains("test@test.com"))
+        #expect(!encoded.contains("private-order-1"))
+        #expect(defaults.data(forKey: SharedStore.cachedOrdersKey) == nil)
+    }
+
+    @Test("Legacy app group cache migrates to app-local cache and sanitized snapshot")
+    func legacyAppGroupCacheMigratesToAppLocalCacheAndSanitizedSnapshot() async throws {
+        let standardSuiteName = "SaneSalesStandardCacheTests.\(UUID().uuidString)"
+        let legacySuiteName = "SaneSalesLegacyCacheTests.\(UUID().uuidString)"
+        let standardDefaults = try #require(UserDefaults(suiteName: standardSuiteName))
+        let legacyDefaults = try #require(UserDefaults(suiteName: legacySuiteName))
+        standardDefaults.removePersistentDomain(forName: standardSuiteName)
+        legacyDefaults.removePersistentDomain(forName: legacySuiteName)
+        defer {
+            standardDefaults.removePersistentDomain(forName: standardSuiteName)
+            legacyDefaults.removePersistentDomain(forName: legacySuiteName)
+        }
+
+        let orders = [
+            makeOrder(id: "legacy-private-order", total: 1_200),
+            makeOrder(id: "legacy-stripe-order", total: 3_000, provider: .stripe)
+        ]
+        let data = try JSONEncoder().encode(orders)
+        legacyDefaults.set(data, forKey: SharedStore.cachedOrdersKey)
+
+        let cache = CacheService(defaults: standardDefaults, legacyDefaults: legacyDefaults)
+        let loaded = try #require(await cache.loadCachedOrders())
+
+        #expect(loaded.count == 2)
+        #expect(standardDefaults.data(forKey: SharedStore.cachedOrdersKey) != nil)
+        #expect(legacyDefaults.data(forKey: SharedStore.cachedOrdersKey) == nil)
+
+        let snapshot = try #require(SharedStore.loadSalesSnapshot(defaults: legacyDefaults))
+        #expect(snapshot.todayOrders == 2)
+        #expect(snapshot.allTimeOrders == 2)
+        #expect(snapshot.allTimeRevenue == 4_200)
+        #expect(snapshot.providerRows.count == 2)
+
+        let encodedSnapshot = String(decoding: try #require(legacyDefaults.data(forKey: SharedStore.salesSnapshotKey)), as: UTF8.self)
+        #expect(!encodedSnapshot.contains("test@test.com"))
+        #expect(!encodedSnapshot.contains("legacy-private-order"))
+    }
+
+    @Test("Corrupt cached order payload is discarded")
+    func corruptCachedOrderPayloadIsDiscarded() async throws {
+        let suiteName = "SaneSalesCorruptCacheTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        defaults.set(Data("not-json".utf8), forKey: SharedStore.cachedOrdersKey)
+
+        let cache = CacheService(defaults: defaults)
+        let loaded = await cache.loadCachedOrders()
+
+        #expect(loaded == nil)
+        #expect(defaults.data(forKey: SharedStore.cachedOrdersKey) == nil)
+    }
+
+    @Test("Shared snapshot carries watch aggregates beyond today")
+    func sharedSnapshotCarriesWatchAggregatesBeyondToday() throws {
+        let suiteName = "SaneSalesSharedAggregateTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suiteName))
+        defaults.removePersistentDomain(forName: suiteName)
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        let olderDate = Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date()
+        SharedStore.writeSalesSnapshot(
+            from: [
+                makeOrder(id: "today", total: 500),
+                makeOrder(id: "older", total: 1_500, date: olderDate)
+            ],
+            defaults: defaults
+        )
+
+        let snapshot = try #require(SharedStore.loadSalesSnapshot(defaults: defaults))
+        #expect(snapshot.todayOrders == 1)
+        #expect(snapshot.thirtyDayOrders == 2)
+        #expect(snapshot.thirtyDayRevenue == 2_000)
+        #expect(snapshot.allTimeOrders == 2)
+        #expect(snapshot.allTimeRevenue == 2_000)
     }
 }
