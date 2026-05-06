@@ -228,6 +228,21 @@ enum SaneSalesFreeTierPolicy {
         guard isPro else { return .today }
         return currentRange
     }
+
+    static func preferredOrdersRange(
+        currentRange: TimeRange,
+        isPro: Bool,
+        isSearching: Bool,
+        visibleOrderCount: Int,
+        availableOrderCount: Int
+    ) -> TimeRange {
+        guard isPro else { return .today }
+        guard !isSearching else { return currentRange }
+        guard currentRange == .today, visibleOrderCount == 0, availableOrderCount > 0 else {
+            return currentRange
+        }
+        return .allTime
+    }
 }
 
 struct DashboardComparisonItem: Identifiable {

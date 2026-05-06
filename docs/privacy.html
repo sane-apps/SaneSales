@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - SaneSales</title>
-    <meta name="description" content="SaneSales keeps your sales data and API keys on your device. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta name="description" content="SaneSales keeps sales data off SaneApps servers and stores provider keys in iCloud Keychain for your own Apple devices.">
     <meta name="author" content="Mr. Sane">
     <meta name="robots" content="index, follow">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
@@ -16,7 +16,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Privacy Policy - SaneSales">
-    <meta property="og:description" content="SaneSales keeps your sales data and API keys on your device. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta property="og:description" content="SaneSales keeps sales data off SaneApps servers and stores provider keys in iCloud Keychain for your own Apple devices.">
     <meta property="og:image" content="https://sanesales.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -27,7 +27,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Privacy Policy - SaneSales">
-    <meta name="twitter:description" content="SaneSales keeps your sales data and API keys on your device. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta name="twitter:description" content="SaneSales keeps sales data off SaneApps servers and stores provider keys in iCloud Keychain for your own Apple devices.">
     <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
     <meta name="twitter:site" content="@saneapps">
     <meta name="twitter:url" content="https://sanesales.com/privacy.html">
@@ -109,10 +109,10 @@
         <a href="/" class="back-link">&larr; Back to SaneSales</a>
 
         <h1>Privacy Policy</h1>
-        <p class="updated">Last updated: February 2026</p>
+        <p class="updated">Last updated: May 2026</p>
 
         <h2>Summary</h2>
-        <p><strong>SaneSales does not upload your sales data or API keys to SaneApps servers.</strong> Your sales data and API keys stay on your device unless you choose to connect directly to LemonSqueezy, Gumroad, or Stripe. The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro or whether a locked feature was viewed.</p>
+        <p><strong>SaneSales does not upload your sales data or API keys to SaneApps servers.</strong> Your provider API keys are stored in iCloud Keychain so your own Apple devices can reconnect automatically. Your sales data is fetched directly from LemonSqueezy, Gumroad, or Stripe. The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro or whether a locked feature was viewed.</p>
 
         <h2>Data Collection</h2>
         <p>The SaneSales app does not collect:</p>
@@ -125,18 +125,18 @@
         </ul>
 
         <h2>Local Storage</h2>
-        <p>SaneSales stores the following data locally on your device:</p>
+        <p>SaneSales stores the following data locally or in your Apple-provided Keychain storage:</p>
         <ul>
             <li><strong>Preferences:</strong> Standard iOS/macOS UserDefaults</li>
-            <li><strong>API Keys:</strong> Stored securely in the device Keychain (never leaves your device)</li>
+            <li><strong>API Keys:</strong> Stored securely in iCloud Keychain for your own Apple devices</li>
             <li><strong>Sales Data:</strong> Cached locally for offline viewing (never transmitted to SaneApps servers)</li>
         </ul>
-        <p>This data never leaves your device.</p>
+        <p>Sales data is not transmitted to SaneApps servers. Provider keys may sync through Apple's iCloud Keychain when that Apple feature is enabled for your account.</p>
 
         <h2>API Credentials</h2>
         <p>SaneSales connects directly to LemonSqueezy, Gumroad, and Stripe APIs using your API keys. These keys are:</p>
         <ul>
-            <li>Stored in the device Keychain with hardware encryption</li>
+            <li>Stored in iCloud Keychain for your own Apple devices</li>
             <li>Never transmitted to SaneApps servers</li>
             <li>Only used to fetch your sales data directly from the provider APIs</li>
         </ul>
@@ -145,7 +145,7 @@
         <p>SaneSales accesses the network for:</p>
         <ul>
             <li><strong>API Requests:</strong> Direct communication with LemonSqueezy, Gumroad, and Stripe to fetch your sales data</li>
-            <li><strong>App Updates:</strong> Checking for updates via Sparkle (can be disabled in Settings). No personal content is transmitted.</li>
+            <li><strong>App Updates:</strong> Direct-download macOS builds check for updates via Sparkle (can be disabled in Settings). App Store builds use Apple's update system. No personal content is transmitted.</li>
             <li><strong>Simple anonymous app counts:</strong> The app may send a few simple counts, such as whether it opened in Basic or Pro or whether a locked feature was viewed. These do not include your API keys, order history, or revenue data.</li>
         </ul>
         <p>All API communication is encrypted (HTTPS). No sales data is sent to SaneApps servers.</p>
@@ -153,7 +153,8 @@
         <h2>Third-Party Services</h2>
         <p>SaneSales uses:</p>
         <ul>
-            <li><strong>Sparkle:</strong> For checking app updates. Only checks for updates from sanesales.com. No personal content is transmitted.</li>
+            <li><strong>Apple iCloud Keychain:</strong> For syncing provider keys across your own Apple devices when enabled for your Apple account.</li>
+            <li><strong>Sparkle:</strong> For checking updates in direct-download macOS builds only. Only checks for updates from sanesales.com. No personal content is transmitted.</li>
             <li><strong>LemonSqueezy API:</strong> To fetch your sales data (optional, only if you configure it)</li>
             <li><strong>Gumroad API:</strong> To fetch your sales data (optional, only if you configure it)</li>
             <li><strong>Stripe API:</strong> To fetch your sales data (optional, only if you configure it)</li>

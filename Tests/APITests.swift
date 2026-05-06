@@ -564,6 +564,41 @@ struct FreeTierPolicyTests {
         ) == .allTime)
     }
 
+    @Test("Pro orders default to all history when today is empty")
+    func proOrdersDefaultToAllHistoryWhenTodayIsEmpty() {
+        #expect(SaneSalesFreeTierPolicy.preferredOrdersRange(
+            currentRange: .today,
+            isPro: true,
+            isSearching: false,
+            visibleOrderCount: 0,
+            availableOrderCount: 12
+        ) == .allTime)
+
+        #expect(SaneSalesFreeTierPolicy.preferredOrdersRange(
+            currentRange: .today,
+            isPro: true,
+            isSearching: true,
+            visibleOrderCount: 0,
+            availableOrderCount: 12
+        ) == .today)
+
+        #expect(SaneSalesFreeTierPolicy.preferredOrdersRange(
+            currentRange: .custom,
+            isPro: true,
+            isSearching: false,
+            visibleOrderCount: 0,
+            availableOrderCount: 12
+        ) == .custom)
+
+        #expect(SaneSalesFreeTierPolicy.preferredOrdersRange(
+            currentRange: .allTime,
+            isPro: false,
+            isSearching: false,
+            visibleOrderCount: 0,
+            availableOrderCount: 12
+        ) == .today)
+    }
+
     @Test("Active trial allows live tracking and multiple providers")
     @MainActor
     func activeTrialAllowsLiveTrackingAndMultipleProviders() {

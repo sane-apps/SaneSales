@@ -11,7 +11,7 @@
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
 [![Price](https://img.shields.io/badge/Price-$24.99_one--time-green?style=flat-square)](https://sanesales.com)
-[![Privacy: 100% On-Device](https://img.shields.io/badge/Privacy-100%25%20On--Device-success?style=flat-square)](PRIVACY.md)
+[![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
 [![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
 > **Star this repo if you find it useful!** &middot; **[Buy — $24.99](https://sanesales.com)** &middot; Keeps development alive
@@ -43,17 +43,17 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 | **CSV Export** | Export your full order history for accounting or email marketing |
 | **Widgets + Watch Glance** | Glance at today's revenue from Home Screen, Lock Screen, or Apple Watch Smart Stack |
 | **macOS Menu Bar** | See today's revenue in the menu bar. Right-click for quick actions |
-| **100% On-Device** | API keys in Keychain. Data cached locally. No SaneApps server in the middle |
+| **iCloud Keychain Sync** | Provider keys sync through your Apple ID. Sales data stays off SaneApps servers |
 
 ---
 
 ## Current Release
 
-**Current direct-download release: 1.3.2**
+**Current direct-download release: 1.3.3**
 
-- Improves dashboard state handling and sales tracking consistency
-- Keeps recent-sale visibility clear when the selected range has no sales
-- Refines setup and entitlement handling across Mac, iPhone, iPad, and Apple Watch
+- Adds cleaner custom date ranges across Dashboard and Orders
+- Improves chart scaling for larger sales totals and long date ranges
+- Refines no-orders states, provider sync, and Apple Watch snapshots
 
 ---
 
@@ -118,7 +118,7 @@ Or [build from source](#development) — it's PolyForm Shield licensed, always w
 2. **Sync** — SaneSales fetches your orders, products, and revenue directly from the provider APIs
 3. **Track** — See everything in one dashboard with charts, shared date ranges, search, and export
 
-API keys are stored in the device Keychain with hardware encryption. Sales data is cached locally for offline access. Nothing is ever transmitted to SaneApps servers.
+API keys are stored in iCloud Keychain so your own Apple devices can reconnect automatically. Sales data is cached locally for offline access. Nothing is ever transmitted to SaneApps servers.
 
 ---
 
@@ -128,7 +128,7 @@ API keys are stored in the device Keychain with hardware encryption. Sales data 
 
 - No accounts, no sign-up, no email required
 - A few simple anonymous app counts may be sent, such as trial vs Pro launches or locked-feature views
-- API keys stored in device Keychain (hardware-encrypted)
+- API keys stored in iCloud Keychain for your own Apple devices
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only
 - 100% transparent code — [verify yourself](https://github.com/sane-apps/SaneSales)

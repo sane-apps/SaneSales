@@ -25,53 +25,28 @@ final class WatchDashboardViewModel: ObservableObject {
 
         isLocked = false
 
-        let orders = loadOrders()
-        let resolvedOrders: [Order]
-        if orders.isEmpty, useDemoIfEmpty {
-            resolvedOrders = demoOrders()
+        let sharedSnapshot = SharedStore.loadSalesSnapshot(defaults: defaults)
+        let resolvedSnapshot: WatchSalesSnapshot?
+        if let sharedSnapshot {
+            resolvedSnapshot = WatchSalesSnapshot(sharedSnapshot: sharedSnapshot)
+            usingDemoData = false
+        } else if useDemoIfEmpty {
+            resolvedSnapshot = WatchSalesSnapshot(orders: demoOrders(), lastUpdated: nil)
             usingDemoData = true
         } else {
-            resolvedOrders = orders
+            resolvedSnapshot = nil
             usingDemoData = false
         }
 
-        guard !resolvedOrders.isEmpty else {
+        guard let resolvedSnapshot else {
             snapshot = nil
             isLoading = false
             return
         }
 
-        let metrics = SalesMetrics.compute(from: resolvedOrders)
-        let currency = dominantCurrency(for: resolvedOrders)
-        let providerRows = providerRows(from: resolvedOrders)
-        let recentRows = resolvedOrders.sorted(by: { $0.createdAt > $1.createdAt }).prefix(15).map {
-            WatchRecentSaleRow(
-                productName: $0.productName,
-                provider: $0.provider,
-                amountCents: $0.netTotal,
-                currency: $0.currency,
-                createdAt: $0.createdAt
-            )
-        }
-
-        let lastUpdated = defaults.double(forKey: SharedStore.cacheLastUpdatedKey)
-        let lastUpdatedDate = lastUpdated > 0 ? Date(timeIntervalSince1970: lastUpdated) : nil
-
-        snapshot = WatchSalesSnapshot(
-            metrics: metrics,
-            currency: currency,
-            providerRows: providerRows,
-            recentRows: recentRows,
-            lastUpdated: lastUpdatedDate
-        )
+        snapshot = resolvedSnapshot
 
         isLoading = false
-    }
-
-    private func loadOrders() -> [Order] {
-        let defaults = SharedStore.userDefaults()
-        guard let data = defaults.data(forKey: SharedStore.cachedOrdersKey) else { return [] }
-        return (try? JSONDecoder().decode([Order].self, from: data)) ?? []
     }
 
     private func dominantCurrency(for orders: [Order]) -> String {
@@ -679,6 +654,83 @@ struct WatchSalesSnapshot {
     let providerRows: [WatchProviderRow]
     let recentRows: [WatchRecentSaleRow]
     let lastUpdated: Date?
+
+    init(
+        metrics: SalesMetrics,
+        currency: String,
+        providerRows: [WatchProviderRow],
+        recentRows: [WatchRecentSaleRow],
+        lastUpdated: Date?
+    ) {
+        self.metrics = metrics
+        self.currency = currency
+        self.providerRows = providerRows
+        self.recentRows = recentRows
+        self.lastUpdated = lastUpdated
+    }
+
+    init(sharedSnapshot: SharedSalesSnapshot) {
+        metrics = SalesMetrics(
+            todayRevenue: sharedSnapshot.todayRevenue,
+            todayOrders: sharedSnapshot.todayOrders,
+            thirtyDayRevenue: sharedSnapshot.thirtyDayRevenue,
+            thirtyDayOrders: sharedSnapshot.thirtyDayOrders,
+            monthRevenue: sharedSnapshot.monthRevenue,
+            monthOrders: sharedSnapshot.monthOrders,
+            allTimeRevenue: sharedSnapshot.allTimeRevenue,
+            allTimeOrders: sharedSnapshot.allTimeOrders,
+            dailyBreakdown: [],
+            productBreakdown: []
+        )
+        currency = sharedSnapshot.currency
+        providerRows = sharedSnapshot.providerRows.map {
+            WatchProviderRow(
+                provider: $0.provider,
+                orderCount: $0.orderCount,
+                revenueCents: $0.revenueCents,
+                currency: $0.currency
+            )
+        }
+        recentRows = sharedSnapshot.recentRows.map {
+            WatchRecentSaleRow(
+                productName: $0.productName,
+                provider: $0.provider,
+                amountCents: $0.amountCents,
+                currency: $0.currency,
+                createdAt: $0.createdAt
+            )
+        }
+        lastUpdated = sharedSnapshot.lastUpdated
+    }
+
+    init(orders: [Order], lastUpdated: Date?) {
+        metrics = SalesMetrics.compute(from: orders)
+        currency = Dictionary(grouping: orders, by: \.currency)
+            .mapValues(\.count)
+            .max(by: { $0.value < $1.value })?.key ?? "USD"
+        providerRows = Dictionary(grouping: orders.filter { $0.status == .paid }, by: \.provider)
+            .map { provider, providerOrders in
+                WatchProviderRow(
+                    provider: provider,
+                    orderCount: providerOrders.count,
+                    revenueCents: providerOrders.reduce(0) { $0 + $1.netTotal },
+                    currency: Dictionary(grouping: providerOrders, by: \.currency)
+                        .mapValues(\.count)
+                        .max(by: { $0.value < $1.value })?.key ?? "USD"
+                )
+            }
+            .sorted(by: { $0.revenueCents > $1.revenueCents })
+        recentRows = orders.sorted(by: { $0.createdAt > $1.createdAt }).prefix(15).map {
+            WatchRecentSaleRow(
+                productName: $0.productName,
+                provider: $0.provider,
+                amountCents: $0.netTotal,
+                currency: $0.currency,
+                createdAt: $0.createdAt
+            )
+        }
+        self.lastUpdated = lastUpdated
+    }
 
     func lastUpdatedText(usingDemoData: Bool) -> String {
         if usingDemoData {

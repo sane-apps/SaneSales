@@ -92,11 +92,46 @@ struct OrdersListView: View {
     }
 
     private var shouldShowOrdersOverview: Bool {
-        manager.isLoading || hasOrders || hasLockedHistory
+        manager.isLoading || manager.isConnected || hasOrders || hasLockedHistory
     }
 
     private var shouldShowSearch: Bool {
         hasOrders || !searchText.isEmpty
+    }
+
+    private var emptyOrdersCopy: OrdersEmptyStateCopy {
+        if isProviderFilterBlockingResults {
+            let providerName = providerFilter?.displayName ?? "Selected provider"
+            return OrdersEmptyStateCopy(
+                title: "No Orders for \(providerName)",
+                message: "\(providerName) is connected, but no cached orders match this provider. Show all providers to review the rest of your synced order history.",
+                details: [
+                    "Selected provider: \(providerName)",
+                    "Cached orders across providers: \(manager.orders.count)",
+                    "Switch providers or refresh to confirm the latest data"
+                ],
+                secondaryActionTitle: "Show All Providers"
+            )
+        }
+
+        return OrdersEmptyStateCopy.make(
+            isConnected: manager.isConnected,
+            isPro: manager.isPro,
+            cachedOrderCount: availableOrderCountForEmptyState,
+            rangeLabel: rangeSummaryLabel
+        )
+    }
+
+    private var availableOrdersForCurrentProvider: [Order] {
+        manager.allOrders(filteredBy: providerFilter)
+    }
+
+    private var availableOrderCountForEmptyState: Int {
+        availableOrdersForCurrentProvider.count
+    }
+
+    private var isProviderFilterBlockingResults: Bool {
+        manager.isPro && providerFilter != nil && availableOrdersForCurrentProvider.isEmpty && !manager.orders.isEmpty
     }
 
     private var orderSummaryTitle: String {
@@ -171,13 +206,16 @@ struct OrdersListView: View {
                 await manager.refresh()
             }
             .onAppear {
-                enforceFreeTierRange()
+                enforceOrdersRange()
             }
             .onChange(of: manager.isPro) { _, _ in
-                enforceFreeTierRange()
+                enforceOrdersRange()
             }
             .onChange(of: manager.orders.count) { _, _ in
-                enforceFreeTierRange()
+                enforceOrdersRange()
+            }
+            .onChange(of: providerFilter) { _, _ in
+                enforceOrdersRange()
             }
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
@@ -486,14 +524,20 @@ struct OrdersListView: View {
         customRangeEndTimestamp = normalized.end.timeIntervalSince1970
     }
 
-    private func enforceFreeTierRange() {
+    private func enforceOrdersRange() {
         normalizeStoredCustomRange()
-        selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
+        let preferredRange = SaneSalesFreeTierPolicy.preferredOrdersRange(
             currentRange: selectedRange,
             isPro: manager.isPro,
-            todayOrders: manager.metrics(filteredBy: providerFilter, scopedToPlan: true).todayOrders,
-            thirtyDayOrders: manager.metrics(filteredBy: providerFilter, scopedToPlan: true).thirtyDayOrders
+            isSearching: !searchText.isEmpty,
+            visibleOrderCount: scopedOrders.count,
+            availableOrderCount: manager.allOrders(filteredBy: providerFilter).count
         )
+
+        guard selectedRange != preferredRange else { return }
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+            selectedRange = preferredRange
+        }
     }
 
     private func isLockedRange(_ range: TimeRange) -> Bool {
@@ -600,11 +644,12 @@ struct OrdersListView: View {
                     .foregroundStyle(Color.salesGreen)
 
                 VStack(spacing: 8) {
-                    Text("No Orders Yet")
+                    Text(emptyOrdersCopy.title)
                         .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
 
-                    Text("Connect a provider to turn this into your live order feed for customers, products, and today's sales.")
+                    Text(emptyOrdersCopy.message)
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
@@ -612,9 +657,9 @@ struct OrdersListView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    emptyStateDetailRow("See the latest sales as they come in")
-                    emptyStateDetailRow("Search by customer, product, or order ID")
-                    emptyStateDetailRow("Connect live data to start a 7-day Pro trial")
+                    ForEach(emptyOrdersCopy.details, id: \.self) { detail in
+                        emptyStateDetailRow(detail)
+                    }
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
@@ -633,8 +678,19 @@ struct OrdersListView: View {
                         }
                         .buttonStyle(SaneActionButtonStyle(prominent: true))
 
-                        Button("Open Provider Settings") {
-                            queueSettingsRoute(for: manager.connectedProviders.first)
+                        Button(emptyOrdersCopy.secondaryActionTitle) {
+                            if emptyOrdersCopy.secondaryActionTitle == "Show All Orders" {
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                    selectedRange = .allTime
+                                }
+                            } else if emptyOrdersCopy.secondaryActionTitle == "Show All Providers" {
+                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
+                                    providerFilter = nil
+                                    selectedRange = .allTime
+                                }
+                            } else {
+                                queueSettingsRoute(for: manager.connectedProviders.first)
+                            }
                         }
                         .buttonStyle(SaneActionButtonStyle())
                     }

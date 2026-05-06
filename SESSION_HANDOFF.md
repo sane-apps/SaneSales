@@ -1,9 +1,40 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-05
-**Current version:** 1.3.1 (build 1301) released on direct download; macOS and iOS/watch submitted to App Store review
+**Last updated:** 2026-05-06
+**Current version:** 1.3.3 (build 1303) prepared locally; App Store preflight is non-blocking after retargeting the stale macOS 1.3.2 lane to 1.3.3
 
 ## Current State
+
+## 2026-05-06: Release-Stabilization Pass Completed After Critic Findings
+
+- Withdrew the broken macOS App Store 1.3.2 lane, then repaired App Store Connect state by retargeting the editable macOS lane from `1.3.2 (DEVELOPER_REJECTED)` to `1.3.3 (DEVELOPER_REJECTED)`.
+- Fixed additional critic-found blockers after the first privacy/cache pass: legacy App Group raw order cache now migrates into app-local cache plus sanitized shared snapshot; malformed cache/snapshot payloads are discarded; provider removal now rewrites cache instead of resurrecting removed-provider data on next launch; total provider refresh failure preserves existing offline history instead of wiping it.
+- Watch widgets now receive full sanitized aggregate fields for Today, 30D, Month, and All Time instead of showing bogus zeroes for non-today ranges.
+- Expired/free access behavior is now intentionally stricter: loaded order/product/store data and shared widget/watch snapshots are cleared when Pro/trial access is lost. UI tests were updated to assert that expired trial does not retain older history or CSV export rows.
+- Orders empty states now account for provider filters: if a selected provider has no matching orders while other provider data exists, the empty state offers `Show All Providers` instead of a no-op `Show All Orders`.
+- Chart axis policy was hardened for high-volume sellers and long ranges: y-axis labels get headroom and compact `$3K`/`$2M` formatting, x-axis labels thin out for 30/90/180-day ranges, and chart labels render bright white.
+- Privacy docs were corrected to describe iCloud Keychain provider-key sync and to clarify that Sparkle update checks apply only to direct-download macOS builds.
+- Tests: `./scripts/SaneMaster.rb verify` passed 73 tests; `./scripts/SaneMaster.rb verify --ui --timeout 600` passed 107 tests in 243s on the Mini after fixing stale expired-trial UI expectations.
+- Preflights: `./scripts/SaneMaster.rb appstore_preflight` now passes with warnings only: manual Watch marketing icon contrast inspection, provisional AppleEvents usage description reference, and uncommitted files. `./scripts/SaneMaster.rb release_preflight` passes with warnings only: uncommitted files, static UserDefaults/migration warning, expected appcast/Homebrew/webhook drift from live 1.3.2, and 6 pending emails.
+- Visual verification: regenerated official App Store screenshots for iPhone/iPad/Watch and macOS. Mac screenshots required launching the capture script from Terminal inside the Mini GUI session because SSH `screencapture` lacks display access. Inspected screenshots show Watch product screens instead of Pro locks, Settings provider rows inline, Orders no-today fallback opening All with orders visible, and chart labels no longer cut off or garbled.
+- Remaining before actual publish: commit the verified diff, submit 1.3.3 to App Store Connect, and handle direct-release expected drift during the release command. Pending support emails are a release-warning but not an app binary blocker.
+
+## 2026-05-06: SaneSales Provider-Key Privacy + Stale Cache Fix Prepared
+
+- User reported a serious SaneSales contradiction: iPhone showed SaneApps provider data/cached orders while Pro state appeared inconsistent, raising concern that private SaneApps sales might be broadcast to public users.
+- Security audit found no public broadcast path, no embedded live provider secrets, no real SaneApps fixture payload, and aggregate-only SaneUI event telemetry. The screenshot issue was a UI/state contradiction: Settings correctly showed Pro, connected providers, and cached orders, while Orders showed first-run/no-provider empty-state copy.
+- iCloud Keychain provider-key sync is intentional product behavior, not a bug. Provider keys remain synchronizable across the customer's own Apple devices.
+- Stopped sharing full `Order` payloads through the App Group. App cache now stays app-local; widgets/watch read a sanitized `SharedSalesSnapshot` with aggregate revenue/order counts, provider rows, recent product/provider/amount/time only, and no customer emails, order IDs, receipts, or payment metadata.
+- Fixed stale state on Pro/trial loss and provider removal: loaded sales data and shared widget/watch snapshots are cleared instead of leaving old private orders visible after access is lost.
+- Fixed the iPhone Orders empty state so connected providers with cached orders but no orders in the selected range now says `No Orders in Range`, explains the selected range and cached order count, and offers `Show All Orders` instead of incorrectly saying to connect a provider.
+- Fixed the Pro Orders default path: when the default Today range has zero visible orders but cached history exists, Orders now automatically opens All time instead of showing an empty/provider-settings card. Search and explicit custom ranges keep their no-result states.
+- Fixed the iPhone Settings provider row: the long Lemon Squeezy row no longer stacks `Connected` above `Manage`; connected controls stay inline with a compact badge/button cluster.
+- Added regression tests for iCloud Keychain provider sync, sanitized shared snapshots excluding private fields, Pro-loss cache clearing, connected-empty-range copy, and Pro Orders defaulting to all history when Today is empty.
+- Updated in-app provider connection copy, README, website, support, privacy policy, and App Store metadata source to advertise iCloud Keychain provider sync accurately.
+- Version bumped to `1.3.3 (1303)` and Xcode project regenerated from `project.yml`.
+- Mini verification: `./scripts/SaneMaster.rb verify` passed 68 tests; watchOS target build passed; iOS Release-AppStore simulator build and macOS Release-AppStore build passed; release binary string scan found no test keys/live secrets (only expected Keychain account label strings).
+- Visual verification: Mini simulator screenshot `/tmp/sanesales-audit-empty-range-orders-fixed.png` inspected cleanly; the affected Orders empty-state screen is not clipped/truncated and no longer shows the provider-setup contradiction. Follow-up Mini captures `/tmp/sanesales-orders-fallback.png` and `/tmp/sanesales-settings-provider-row.png` verify the Pro/no-Today fallback opens All time with orders visible and the Settings `Connected`/`Manage` row is inline.
+- App Store preflight after the bump is blocked only by App Store Connect state: macOS `1.3.2` is still `WAITING_FOR_REVIEW`, while local is `1.3.3`. Next step is to withdraw/clear the macOS 1.3.2 review lane or wait for Apple to finish it, then rerun `./scripts/SaneMaster.rb appstore_preflight`.
 
 ## 2026-05-05: Custom Range Visual Regression Fixed, Not Yet Released
 

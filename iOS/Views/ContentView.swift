@@ -584,7 +584,12 @@ struct OnboardingView: View {
 
             Text("Reads your existing sales data. Nothing is modified.")
                 .font(.saneFootnote)
-                .foregroundStyle(Color.textMuted)
+                .foregroundStyle(.white)
+                .padding(.leading, 4)
+
+            Text("Saved in iCloud Keychain so your own Apple devices can reconnect automatically.")
+                .font(.saneFootnote)
+                .foregroundStyle(.white)
                 .padding(.leading, 4)
         }
     }

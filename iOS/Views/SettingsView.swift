@@ -181,21 +181,14 @@ struct SettingsView: View {
 
             Text(provider.displayName)
                 .font(.saneSubheadline)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
 
-            Spacer()
+            Spacer(minLength: 8)
 
             if isConnected {
-                ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 8) {
-                        StatusBadge("Connected", color: .salesSuccess, icon: "checkmark.circle.fill")
-                        providerManagementMenu(provider)
-                    }
-
-                    VStack(alignment: .trailing, spacing: 8) {
-                        StatusBadge("Connected", color: .salesSuccess, icon: "checkmark.circle.fill")
-                        providerManagementMenu(provider)
-                    }
-                }
+                connectedProviderControls(provider)
+                    .layoutPriority(1)
             } else {
                 #if os(macOS)
                     Button("Connect Account") {
@@ -466,6 +459,29 @@ struct SettingsView: View {
         }
     }
 
+    private func connectedProviderControls(_ provider: SalesProviderType) -> some View {
+        HStack(spacing: 6) {
+            compactConnectedBadge
+            providerManagementMenu(provider)
+        }
+        .fixedSize(horizontal: true, vertical: false)
+    }
+
+    private var compactConnectedBadge: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 12, weight: .semibold))
+            Text("Connected")
+                .font(.system(size: 12, weight: .semibold))
+                .lineLimit(1)
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 4)
+        .background(Color.salesSuccess.opacity(0.28))
+        .clipShape(Capsule())
+    }
+
     private func providerManagementMenu(_ provider: SalesProviderType) -> some View {
         Menu {
             Button {
@@ -485,7 +501,7 @@ struct SettingsView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
         }
-        .buttonStyle(SaneActionButtonStyle())
+        .buttonStyle(SaneActionButtonStyle(compact: true))
         .modifier(SettingsProviderManagementAccessibilityModifier(provider: provider))
     }
 
@@ -639,7 +655,11 @@ struct ProviderConnectionSheet: View {
 
                     Text("Reads your existing sales data. Nothing is modified.")
                         .font(.saneFootnote)
-                        .foregroundStyle(Color.textMuted)
+                        .foregroundStyle(.white)
+
+                    Text("Saved in iCloud Keychain so your own Apple devices can reconnect automatically.")
+                        .font(.saneFootnote)
+                        .foregroundStyle(.white)
                 }
                 .padding(.horizontal)
 

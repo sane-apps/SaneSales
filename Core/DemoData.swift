@@ -10,8 +10,11 @@ enum DemoData {
             manager: SalesManager,
             connectedProviders: Set<SalesProviderType> = Set(SalesProviderType.allCases)
         ) {
+            let shouldDropTodayOrders = CommandLine.arguments.contains("--screenshot-no-today-orders")
+            let calendar = Calendar.current
             let filteredOrders = allOrders
                 .filter { connectedProviders.contains($0.provider) }
+                .filter { !shouldDropTodayOrders || !calendar.isDateInToday($0.createdAt) }
                 .sorted { $0.createdAt > $1.createdAt }
             let filteredProducts = allProducts.filter { connectedProviders.contains($0.provider) }
             let filteredStores = allStores.filter { connectedProviders.contains($0.provider) }
