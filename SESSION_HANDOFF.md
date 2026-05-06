@@ -1,9 +1,18 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-06
-**Current version:** 1.3.3 (build 1303) prepared locally; App Store preflight is non-blocking after retargeting the stale macOS 1.3.2 lane to 1.3.3
+**Current version:** 1.3.3 (build 1303) deployed for direct download; macOS and iOS App Store lanes are submitted and waiting for review
 
 ## Current State
+
+## 2026-05-06: SaneSales 1.3.3 Shipped
+
+- Direct release shipped from the Mac Mini with `release.sh --full --version 1.3.3 --deploy`.
+- Release artifacts verified: notarization accepted, `https://dist.sanesales.com/updates/SaneSales-1.3.3.zip` returns 200, appcast has v1.3.3, website JSON-LD/download links are v1.3.3, Homebrew cask is v1.3.3, and the signed-download email webhook serves `SaneSales-1.3.3.zip`.
+- GitHub release `v1.3.3` was created and release metadata committed/pushed. Latest SaneSales commits: `9696694` release prep, `b74b11a` version bump, `5ef0104` release metadata.
+- App Store Connect state verified after submission: macOS `1.3.3` is `WAITING_FOR_REVIEW` with submission `2e6a1a7a-0ab5-409e-815d-2b240a60bdb3`; iOS/watch `1.3.3` is `WAITING_FOR_REVIEW` with submission `14ca9e06-9cb7-4c8d-9c90-14e7e5617959`.
+- Final post-release `release_preflight` passed with warnings only: static UserDefaults/migration warning, 3 pending customer emails, and evening-release timing. Appcast/Homebrew/webhook drift is resolved.
+- Visual note: App Store screenshots were regenerated and inspected before submission. Live-site screenshot capture from SSH on the Mini is still not valid evidence because `screencapture` cannot access the Mini GUI display from SSH; live site was verified by HTTP/text checks after deploy.
 
 ## 2026-05-06: Release-Stabilization Pass Completed After Critic Findings
 
