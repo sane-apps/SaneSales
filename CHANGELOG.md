@@ -2,6 +2,12 @@
 
 ## [1.3.3] - 2026-05-06
 
+Improves custom date ranges, chart readability, no-order states, provider sync, and Apple Watch snapshots.
+
+---
+
+## [1.3.3] - 2026-05-06
+
 Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots.
 
 ---
