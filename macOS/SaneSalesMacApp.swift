@@ -1,3 +1,4 @@
+import AppKit
 import SaneUI
 import SwiftUI
 #if !APP_STORE
@@ -47,25 +48,25 @@ import SwiftUI
     @MainActor
     final class SettingsTabNavigationStorage {
         static let shared = SettingsTabNavigationStorage()
-        private var pendingShowSettingsTab = false
+        private var pendingShowSettingsTab: SaneSalesSettingsTab?
 
-        func requestShowSettingsTab() {
-            pendingShowSettingsTab = true
+        func requestShowSettingsTab(_ tab: SaneSalesSettingsTab = .general) {
+            pendingShowSettingsTab = tab
             WindowActionStorage.shared.showMainWindow()
 
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: .showSettingsTab, object: nil)
+                NotificationCenter.default.post(name: .showSettingsTab, object: tab)
             }
         }
 
-        func consumePendingRequest() -> Bool {
-            guard pendingShowSettingsTab else { return false }
-            pendingShowSettingsTab = false
-            return true
+        func consumePendingRequest() -> SaneSalesSettingsTab? {
+            let tab = pendingShowSettingsTab
+            pendingShowSettingsTab = nil
+            return tab
         }
 
         func markRequestHandled() {
-            pendingShowSettingsTab = false
+            pendingShowSettingsTab = nil
         }
     }
 
@@ -75,10 +76,19 @@ import SwiftUI
         @MainActor
         class UpdateService: NSObject, ObservableObject {
             static let shared = UpdateService()
+            nonisolated static let releaseBundleIdentifier = "com.sanesales.app"
             private var updaterController: SPUStandardUpdaterController?
+            private let updateEligibility: SaneUpdateEligibility
 
             override init() {
+                updateEligibility = Self.sparkleUpdateEligibility(
+                    bundleIdentifier: Bundle.main.bundleIdentifier,
+                    bundlePath: Bundle.main.bundlePath
+                )
                 super.init()
+                guard updateEligibility.canUseInAppUpdates else {
+                    return
+                }
                 updaterController = SPUStandardUpdaterController(
                     startingUpdater: true,
                     updaterDelegate: nil,
@@ -88,14 +98,19 @@ import SwiftUI
             }
 
             func checkForUpdates() {
+                guard updateEligibility.canUseInAppUpdates else {
+                    NSSound.beep()
+                    return
+                }
                 updaterController?.checkForUpdates(nil)
             }
 
             var automaticallyChecksForUpdates: Bool {
                 get {
-                    updaterController?.updater.automaticallyChecksForUpdates ?? false
+                    updateEligibility.canUseInAppUpdates && (updaterController?.updater.automaticallyChecksForUpdates ?? false)
                 }
                 set {
+                    guard updateEligibility.canUseInAppUpdates else { return }
                     updaterController?.updater.automaticallyChecksForUpdates = newValue
                 }
             }
@@ -106,8 +121,25 @@ import SwiftUI
                     return SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
                 }
                 set {
+                    guard updateEligibility.canUseInAppUpdates else { return }
                     updaterController?.updater.updateCheckInterval = newValue.interval
                 }
+            }
+
+            var isUpdateChannelEnabled: Bool { updateEligibility.canUseInAppUpdates }
+            var updateUnavailableStatus: String { updateEligibility.userFacingStatus }
+
+            nonisolated static func sparkleUpdateEligibility(
+                bundleIdentifier: String?,
+                bundlePath: String = Bundle.main.bundlePath,
+                homeDirectory: String = NSHomeDirectory()
+            ) -> SaneUpdateEligibility {
+                SaneUpdateEligibility.resolve(
+                    bundleIdentifier: bundleIdentifier,
+                    releaseBundleIdentifier: releaseBundleIdentifier,
+                    bundlePath: bundlePath,
+                    homeDirectory: homeDirectory
+                )
             }
 
             private func normalizeUpdateCheckFrequency() {
@@ -136,29 +168,19 @@ import SwiftUI
         }
 
         func applicationDockMenu(_: NSApplication) -> NSMenu? {
-            let menu = NSMenu()
-
-            let showItem = NSMenuItem(title: "Show SaneSales", action: #selector(dockShowWindow), keyEquivalent: "")
-            showItem.target = self
-            menu.addItem(showItem)
-
-            let refreshItem = NSMenuItem(title: "Refresh", action: #selector(dockRefresh), keyEquivalent: "")
-            refreshItem.target = self
-            menu.addItem(refreshItem)
-
-            menu.addItem(.separator())
-
-            #if !APP_STORE
-                let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(dockCheckForUpdates), keyEquivalent: "")
-                updateItem.target = self
-                menu.addItem(updateItem)
-            #endif
-
-            let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(dockOpenSettings), keyEquivalent: "")
-            settingsItem.target = self
-            menu.addItem(settingsItem)
-
-            return menu
+            SaneSalesContextMenu.make(
+                target: self,
+                actions: .init(
+                    open: #selector(dockShowWindow),
+                    refresh: #selector(dockRefresh),
+                    settings: #selector(dockOpenSettings),
+                    license: #selector(dockOpenLicense),
+                    checkForUpdates: directUpdateAction,
+                    about: #selector(dockOpenAbout),
+                    quit: #selector(dockQuit)
+                ),
+                configureCheckForUpdates: directUpdateConfigurator,
+            )
         }
 
         @objc private func dockShowWindow() {
@@ -173,13 +195,44 @@ import SwiftUI
         }
 
         #if !APP_STORE
+            private var directUpdateAction: Selector? {
+                #selector(dockCheckForUpdates)
+            }
+
+            private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
+                { [weak self] item in
+                    self?.configureUpdateItem(item)
+                }
+            }
+
+            private func configureUpdateItem(_ item: NSMenuItem) {
+                let updateService = UpdateService.shared
+                item.isEnabled = updateService.isUpdateChannelEnabled
+                item.toolTip = updateService.isUpdateChannelEnabled ? nil : updateService.updateUnavailableStatus
+            }
+
             @objc private func dockCheckForUpdates() {
                 UpdateService.shared.checkForUpdates()
             }
+        #else
+            private var directUpdateAction: Selector? { nil }
+            private var directUpdateConfigurator: ((NSMenuItem) -> Void)? { nil }
         #endif
 
         @objc private func dockOpenSettings() {
             SettingsTabNavigationStorage.shared.requestShowSettingsTab()
+        }
+
+        @objc private func dockOpenLicense() {
+            SettingsTabNavigationStorage.shared.requestShowSettingsTab(.license)
+        }
+
+        @objc private func dockOpenAbout() {
+            SettingsTabNavigationStorage.shared.requestShowSettingsTab(.about)
+        }
+
+        @objc private func dockQuit() {
+            NSApp.terminate(nil)
         }
     }
 
@@ -254,9 +307,6 @@ import SwiftUI
                         // Fire launch event based on tier
                         let tier = manager.isPro ? "pro" : "free"
                         let isFirstLaunch = !hasSeenWelcome
-                        if SaneBackgroundAppDefaults.launchAtLogin {
-                            _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
-                        }
                         Task.detached {
                             await EventTracker.log("app_launch_\(tier)", app: "sanesales")
                             if isFirstLaunch, tier == "free" {
@@ -264,10 +314,7 @@ import SwiftUI
                             }
                         }
 
-                        // Only set up menu bar if Pro
-                        if manager.isPro {
-                            setupMenuBar()
-                        }
+                        setupMenuBar()
                     }
                     .task {
                         if CommandLine.arguments.contains("--demo") || demoModeEnabled ||
@@ -286,11 +333,10 @@ import SwiftUI
                         set: { isShowing in
                             if !isShowing {
                                 hasSeenWelcome = true
-                                // Set up menu bar now that welcome is done, if Pro
-                                if manager.isPro, showInMenuBar, menuBarManager == nil {
+                                if showInMenuBar, menuBarManager == nil {
                                     menuBarManager = MenuBarManager(
                                         salesManager: manager,
-                                        showRevenue: showRevenueInMenuBar
+                                        showRevenue: effectiveShowRevenueInMenuBar
                                     )
                                 }
                             }
@@ -341,7 +387,7 @@ import SwiftUI
                 SaneActivationPolicy.applyPolicy(showDockIcon: newValue)
             }
             .onChange(of: showRevenueInMenuBar) { _, newValue in
-                menuBarManager?.setShowRevenue(newValue)
+                menuBarManager?.setShowRevenue(manager.isPro && newValue)
             }
             .onChange(of: demoModeEnabled) { _, _ in
                 syncProAccess()
@@ -360,25 +406,24 @@ import SwiftUI
             }
             .onChange(of: licenseService.isPro) { _, _ in
                 syncProAccess()
-                if manager.isPro, showInMenuBar, menuBarManager == nil {
-                    menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
-                } else if !manager.isPro {
-                    menuBarManager?.tearDown()
-                    menuBarManager = nil
+                if showInMenuBar, menuBarManager == nil {
+                    menuBarManager = MenuBarManager(salesManager: manager, showRevenue: effectiveShowRevenueInMenuBar)
                 }
             }
             .commands {
                 CommandGroup(replacing: .appSettings) {
-                    Button("Settings\u{2026}") {
+                    Button(SaneStandardMenu.settingsTitle) {
                         showSettingsTab()
                     }
                     .keyboardShortcut(",", modifiers: .command)
                 }
                 #if !APP_STORE
                     CommandGroup(after: .appInfo) {
-                        Button("Check for Updates\u{2026}") {
+                        Button(SaneStandardMenu.checkForUpdatesTitle) {
                             UpdateService.shared.checkForUpdates()
                         }
+                        .disabled(!UpdateService.shared.isUpdateChannelEnabled)
+                        .help(UpdateService.shared.isUpdateChannelEnabled ? "" : UpdateService.shared.updateUnavailableStatus)
                     }
                 #endif
             }
@@ -390,6 +435,7 @@ import SwiftUI
                 forcePro: forcedProModeEnabled,
                 demoModeEnabled: demoModeEnabled || CommandLine.arguments.contains("--demo")
             )
+            menuBarManager?.setShowRevenue(effectiveShowRevenueInMenuBar)
         }
 
         private func refreshLiveDataIfStale(force: Bool = false) async {
@@ -411,7 +457,7 @@ import SwiftUI
 
         private func setupMenuBar() {
             guard showInMenuBar, menuBarManager == nil else { return }
-            menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
+            menuBarManager = MenuBarManager(salesManager: manager, showRevenue: effectiveShowRevenueInMenuBar)
         }
 
         private func showSettingsTab() {
@@ -419,13 +465,16 @@ import SwiftUI
         }
 
         private func handleMenuBarToggle(_ show: Bool) {
-            guard manager.isPro else { return }
             if show {
-                menuBarManager = MenuBarManager(salesManager: manager, showRevenue: showRevenueInMenuBar)
+                menuBarManager = MenuBarManager(salesManager: manager, showRevenue: effectiveShowRevenueInMenuBar)
             } else {
                 menuBarManager?.tearDown()
                 menuBarManager = nil
             }
+        }
+
+        private var effectiveShowRevenueInMenuBar: Bool {
+            manager.isPro && showRevenueInMenuBar
         }
     }
 

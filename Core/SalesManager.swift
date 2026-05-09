@@ -24,6 +24,14 @@ enum SalesSetupFlowPolicy {
         ordersCount > 0 || productsCount > 0
     }
 
+    static func shouldTreatInitialRefreshFailureAsConnectionFailure(
+        error: SalesAPIError?,
+        ordersCount: Int,
+        productsCount: Int
+    ) -> Bool {
+        error != nil && !hasUsableContent(ordersCount: ordersCount, productsCount: productsCount)
+    }
+
     static func shouldShowInitialSetup(
         hasSeenWelcome: Bool,
         demoModeEnabled: Bool,
@@ -46,6 +54,10 @@ enum SalesSetupFlowPolicy {
         }
 
         guard hasConnectedProviders else {
+            return true
+        }
+
+        if hasError && !hasAnyData {
             return true
         }
 

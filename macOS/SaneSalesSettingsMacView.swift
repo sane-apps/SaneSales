@@ -3,7 +3,7 @@ import AppKit
 import SaneUI
 import SwiftUI
 
-private enum SaneSalesSettingsTab: String, SaneSettingsTab {
+enum SaneSalesSettingsTab: String, SaneSettingsTab {
     case general = "General"
     case providers = "Providers"
     case data = "Data"
@@ -113,6 +113,11 @@ struct SaneSalesMacSettingsView: View {
                 ShareSheet(activityItems: [url])
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { notification in
+            if let tab = notification.object as? SaneSalesSettingsTab {
+                selectedTab = tab
+            }
+        }
         .onAppear {
             #if !APP_STORE
                 automaticallyChecksForUpdates = UpdateService.shared.automaticallyChecksForUpdates
@@ -140,14 +145,14 @@ struct SaneSalesMacSettingsView: View {
     private var generalTab: some View {
         settingsScrollView {
             CompactSection(SaneSalesSettingsCopy.appearanceSectionTitle, icon: "paintpalette", iconColor: SaneSettingsIconSemantic.appearance.color) {
-                if licenseService.isPro {
-                    CompactToggle(
-                        label: SaneSalesSettingsCopy.showInMenuBarLabel,
-                        icon: "menubar.rectangle",
-                        iconColor: .white,
-                        isOn: showInMenuBarBinding
-                    )
+                CompactToggle(
+                    label: SaneSalesSettingsCopy.showInMenuBarLabel,
+                    icon: "menubar.rectangle",
+                    iconColor: .white,
+                    isOn: showInMenuBarBinding
+                )
 
+                if manager.isPro {
                     if showInMenuBar {
                         CompactDivider()
                         CompactToggle(
@@ -163,14 +168,6 @@ struct SaneSalesMacSettingsView: View {
                         StatusBadge(widgetsStatusTitle, color: widgetsStatusColor)
                     }
                 } else {
-                    CompactRow(SaneSalesSettingsCopy.showInMenuBarLabel, icon: "menubar.rectangle", iconColor: .white) {
-                        StatusBadge(
-                            SaneSalesSettingsCopy.licenseLabels.proBadgeTitle,
-                            color: SaneSettingsIconSemantic.license.color,
-                            icon: "lock.fill"
-                        )
-                    }
-
                     CompactDivider()
                     CompactRow(SaneSalesSettingsCopy.desktopWidgetsLabel, icon: "widget.small", iconColor: .white) {
                         StatusBadge(
@@ -199,6 +196,8 @@ struct SaneSalesMacSettingsView: View {
                 }
 
                 CompactDivider()
+                SaneLoginItemToggle()
+                CompactDivider()
                 SaneDockIconToggle(showDockIcon: showInDockBinding)
                 CompactDivider()
                 hint(SaneSalesSettingsCopy.availabilityHint)
@@ -215,6 +214,8 @@ struct SaneSalesMacSettingsView: View {
                     SaneSparkleRow(
                         automaticallyChecks: $automaticallyChecksForUpdates,
                         checkFrequency: $updateCheckFrequency,
+                        isAvailable: UpdateService.shared.isUpdateChannelEnabled,
+                        unavailableStatus: UpdateService.shared.updateUnavailableStatus,
                         labels: SaneSalesSettingsCopy.sparkleLabels,
                         onCheckNow: { UpdateService.shared.checkForUpdates() }
                     )

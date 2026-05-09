@@ -21,11 +21,36 @@ struct SettingsSourceTests {
         #expect(macSettingsSource.contains("LicenseSettingsView("))
         #expect(macSettingsSource.contains("SaneAboutView("))
         #expect(macSettingsSource.contains("SaneSparkleRow("))
+        #expect(macSettingsSource.contains("SaneLoginItemToggle()"))
+        #expect(macSettingsSource.contains("isAvailable: UpdateService.shared.isUpdateChannelEnabled"))
         #expect(macSettingsSource.contains("SaneLanguageSettingsRow("))
         #expect(macSettingsSource.contains("labels: SaneSalesSettingsCopy.aboutLabels"))
         #expect(macSettingsSource.contains("SaneSalesSettingsCopy.providersSectionTitle"))
         #expect(macSettingsSource.contains("SaneSalesSettingsCopy.snapshotSectionTitle"))
         #expect(macSettingsSource.contains("SaneSalesSettingsCopy.actionsSectionTitle"))
+    }
+
+    @Test("macOS menu bar revenue stays gated to Pro access")
+    func macMenuBarRevenueStaysGatedToProAccess() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let appSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesMacApp.swift"),
+            encoding: .utf8
+        )
+        let macSettingsSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesSettingsMacView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(appSource.contains("private var effectiveShowRevenueInMenuBar: Bool"))
+        #expect(appSource.contains("manager.isPro && showRevenueInMenuBar"))
+        #expect(appSource.contains("showRevenue: effectiveShowRevenueInMenuBar"))
+        #expect(appSource.contains("menuBarManager?.setShowRevenue(effectiveShowRevenueInMenuBar)"))
+        #expect(macSettingsSource.contains("if manager.isPro"))
+        #expect(macSettingsSource.contains("SaneSalesSettingsCopy.showRevenueInMenuBarLabel"))
     }
 
     @Test("SaneSales settings source avoids legacy mail and local updater drift")
@@ -104,8 +129,12 @@ struct SettingsSourceTests {
 
         #expect(appSource.contains("final class SettingsTabNavigationStorage"))
         #expect(appSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab()"))
+        #expect(appSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab(.license)"))
+        #expect(appSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab(.about)"))
         #expect(!appSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.1)"))
         #expect(menuSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab()"))
+        #expect(menuSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab(.license)"))
+        #expect(menuSource.contains("SettingsTabNavigationStorage.shared.requestShowSettingsTab(.about)"))
         #expect(!menuSource.contains("DispatchQueue.main.asyncAfter(deadline: .now() + 0.15)"))
         #expect(contentSource.contains("SettingsTabNavigationStorage.shared.consumePendingRequest()"))
         #expect(contentSource.contains("SettingsTabNavigationStorage.shared.markRequestHandled()"))

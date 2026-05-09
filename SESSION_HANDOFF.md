@@ -5,6 +5,12 @@
 
 ## Current State
 
+## 2026-05-09: Research Cache Compacted
+
+- `.claude/research.md` was compacted back under the active-cache cap after validation found 204 lines.
+- Stale March/April release and App Store findings were already promoted into this handoff, app metadata, tests, and source; the remaining active cache now keeps only current May 2026 operational findings.
+- A corrupted shell environment dump under the old `OrdersListView split access control` topic was removed as invalid research content.
+
 ## 2026-05-09: Provider Setup Reliability Fix
 
 - A validated provider connection should not be rolled back only because the first refresh after saving credentials hits a refresh/decoding/network error.
