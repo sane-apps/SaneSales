@@ -6,7 +6,27 @@
     <description>SaneSales updates</description>
     <language>en</language>
 
-                                                                            <item>
+                                                                                    <item>
+            <title>1.3.5</title>
+            <link>https://sanesales.com/download</link>
+            <pubDate>Sat, 09 May 2026 19:42:38 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Improves dashboard and settings reliability, keeps menu and Dock access consistent, and updates shared App Store-safe UI compatibility.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanesales.com/updates/SaneSales-1.3.5.zip"
+                       sparkle:version="1305"
+                       sparkle:shortVersionString="1.3.5"
+                       length="7812690"
+                       type="application/octet-stream"
+                       sparkle:edSignature="+InRBQRkvBX85Ks/jzaaA6BEvZ+1zAlxRRDmcke1FsQ2Toqj3Kg8h8Tuno0c+FRUwKG8mp8wMhP+xgj4voUPCQ=="/>
+        </item>
+<item>
             <title>1.3.4</title>
             <link>https://sanesales.com/download</link>
             <pubDate>Sat, 09 May 2026 02:22:31 -0400</pubDate>
