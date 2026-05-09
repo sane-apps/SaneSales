@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.5] - 2026-05-09
+
+Improves dashboard and settings reliability, keeps menu and Dock access consistent, and updates shared App Store-safe UI compatibility.
+
+---
+
 ## [1.3.4] - 2026-05-09
 
 Keeps connected providers connected when a first refresh has no sales data yet, so setup does not appear again after credentials are saved.
