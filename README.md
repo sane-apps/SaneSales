@@ -49,11 +49,11 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Current Release
 
-**Current direct-download release: 1.3.3**
+**Current direct-download release: 1.3.4**
 
-- Adds cleaner custom date ranges across Dashboard and Orders
-- Improves chart scaling for larger sales totals and long date ranges
-- Refines no-orders states, provider sync, and Apple Watch snapshots
+- Keeps connected providers connected when a first refresh has no sales data yet
+- Prevents setup from reappearing after valid credentials have been saved
+- Preserves the 1.3.3 dashboard, chart scaling, no-orders, and Apple Watch snapshot refinements
 
 ---
 
