@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.4] - 2026-05-09
+
+Keeps connected providers connected when a first refresh has no sales data yet, so setup does not appear again after credentials are saved.
+
+---
+
 ## [1.3.3] - 2026-05-06
 
 Improves custom date ranges, chart readability, no-order states, provider sync, and Apple Watch snapshots.
