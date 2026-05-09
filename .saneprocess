@@ -22,6 +22,59 @@ release:
   r2_bucket: sanebar-downloads
   use_sparkle: true
   min_system_version: "14.0"
+  reviewed_auto_reconcile_stashes:
+    - stash_sha: "1ae75fcd61190e0f4f60c42b1b9a8885de48c077"
+      subject: "On main: auto-reconcile-20260508-215529-stephans-macbook-air"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. App/menu/settings/UI/test work is represented in the current tree. The stash's local ../../infra/SaneUI package wiring is intentionally not applied; current remote SaneUI pin is the intended release-facing dependency path."
+    - stash_sha: "9fbf79297248cdfea0fbea565827f9ec39b10542"
+      subject: "On main: auto-reconcile-20260505-215537-stephans-macbook-air"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. Research/demo-script drift is not release-facing."
+    - stash_sha: "c3c5404d9882f50ae43effa0d1655a567e7f5e62"
+      subject: "On main: auto-reconcile-20260501-215526-stephans-macbook-air"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. Analytics instrumentation is not required for this release."
+    - stash_sha: "0dc7bb0e1f05dc1bec296d2fe34e4fb7c16b867b"
+      subject: "On main: auto-reconcile-20260430-215529-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "e5a6ba4b3c29229d2a775484a86bcb659bac40ec"
+      subject: "On main: auto-reconcile-20260429-215525-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Dashboard/date-range work is already represented or superseded by the current tree."
+    - stash_sha: "f514a854495a1983c5c95f0246e4ec3ba45a8252"
+      subject: "On main: auto-reconcile-20260425-215529-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "86e13bbf1957b07a6b8cd802262c7ae303df68fe"
+      subject: "On main: auto-reconcile-20260424-153503-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "ac24f1bab67b4d6a2fa2e3ff754b48342375cf93"
+      subject: "On main: auto-reconcile-20260423-215529-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "eae3c9a785935f58b7b64cbdef6763b12ad151a9"
+      subject: "On main: auto-reconcile-20260422-215530-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Dashboard/date-range work is already represented or superseded by the current tree."
+    - stash_sha: "d5f03f60a419fec48dbe1ef6f966eef28a41a31e"
+      subject: "On main: auto-reconcile-20260418-055526-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "4e600b543326640f36bc2406e3afc7bef167c468"
+      subject: "On main: auto-reconcile-20260413-152145-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "3f222956bc4275c8e602b3834dd1fceafc86d67e"
+      subject: "On main: auto-reconcile-20260411-055525-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "8799f28bf2ddee98fd4dc11030c367f2d514ea2c"
+      subject: "On main: auto-reconcile-20260410-215527-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
   export:
     options_plist: ExportOptions-DevID.plist
     profiles:

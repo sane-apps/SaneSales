@@ -71,7 +71,7 @@ struct MainTabView: View {
         }
         #if os(macOS)
         .onAppear {
-            if SettingsTabNavigationStorage.shared.consumePendingRequest() {
+            if SettingsTabNavigationStorage.shared.consumePendingRequest() != nil {
                 selectedSection = .settings
             }
             applyWindowSize(for: selectedSection, previousSection: nil)

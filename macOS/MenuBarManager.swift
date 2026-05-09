@@ -1,5 +1,56 @@
 import AppKit
+import SaneUI
 import SwiftUI
+
+@MainActor
+enum SaneSalesContextMenu {
+    struct Actions {
+        let open: Selector
+        let refresh: Selector
+        let settings: Selector
+        let license: Selector
+        let checkForUpdates: Selector?
+        let about: Selector
+        let quit: Selector
+    }
+
+    static func make(
+        target: AnyObject,
+        actions: Actions,
+        configureCheckForUpdates: ((NSMenuItem) -> Void)?
+    ) -> NSMenu {
+        let menu = NSMenu()
+
+        menu.addItem(SaneStandardMenu.openAppItem(
+            appName: "SaneSales",
+            target: target,
+            action: actions.open
+        ))
+
+        menu.addItem(SaneStandardMenu.item(
+            title: "Refresh",
+            target: target,
+            action: actions.refresh
+        ))
+
+        menu.addItem(.separator())
+
+        SaneStandardMenu.addCoreUtilityItems(
+            to: menu,
+            appName: "SaneSales",
+            target: target,
+            settingsAction: actions.settings,
+            licenseAction: actions.license,
+            checkForUpdatesAction: actions.checkForUpdates,
+            configureCheckForUpdates: configureCheckForUpdates,
+            aboutAndBugReportAction: actions.about,
+            quitAction: actions.quit,
+            settingsKeyEquivalent: ""
+        )
+
+        return menu
+    }
+}
 
 @MainActor
 final class MenuBarManager: NSObject {
@@ -75,35 +126,19 @@ final class MenuBarManager: NSObject {
     }
 
     private func showMenu() {
-        let menu = NSMenu()
-
-        let showItem = NSMenuItem(title: "Show SaneSales", action: #selector(menuShowWindow), keyEquivalent: "")
-        showItem.target = self
-        menu.addItem(showItem)
-
-        menu.addItem(.separator())
-
-        let refreshItem = NSMenuItem(title: "Refresh", action: #selector(menuRefresh), keyEquivalent: "r")
-        refreshItem.target = self
-        menu.addItem(refreshItem)
-
-        menu.addItem(.separator())
-
-        #if !APP_STORE
-            let updateItem = NSMenuItem(title: "Check for Updates\u{2026}", action: #selector(menuCheckForUpdates), keyEquivalent: "")
-            updateItem.target = self
-            menu.addItem(updateItem)
-        #endif
-
-        let settingsItem = NSMenuItem(title: "Settings\u{2026}", action: #selector(menuOpenSettings), keyEquivalent: ",")
-        settingsItem.target = self
-        menu.addItem(settingsItem)
-
-        menu.addItem(.separator())
-
-        let quitItem = NSMenuItem(title: "Quit SaneSales", action: #selector(menuQuit), keyEquivalent: "q")
-        quitItem.target = self
-        menu.addItem(quitItem)
+        let menu = SaneSalesContextMenu.make(
+            target: self,
+            actions: .init(
+                open: #selector(menuShowWindow),
+                refresh: #selector(menuRefresh),
+                settings: #selector(menuOpenSettings),
+                license: #selector(menuOpenLicense),
+                checkForUpdates: directUpdateAction,
+                about: #selector(menuOpenAbout),
+                quit: #selector(menuQuit)
+            ),
+            configureCheckForUpdates: directUpdateConfigurator,
+        )
 
         statusItem?.menu = menu
         statusItem?.button?.performClick(nil)
@@ -123,13 +158,40 @@ final class MenuBarManager: NSObject {
     }
 
     #if !APP_STORE
+        private var directUpdateAction: Selector? {
+            #selector(menuCheckForUpdates)
+        }
+
+        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
+            { [weak self] item in
+                self?.configureUpdateItem(item)
+            }
+        }
+
+        private func configureUpdateItem(_ item: NSMenuItem) {
+            let updateService = UpdateService.shared
+            item.isEnabled = updateService.isUpdateChannelEnabled
+            item.toolTip = updateService.isUpdateChannelEnabled ? nil : updateService.updateUnavailableStatus
+        }
+
         @objc private func menuCheckForUpdates() {
             UpdateService.shared.checkForUpdates()
         }
+    #else
+        private var directUpdateAction: Selector? { nil }
+        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? { nil }
     #endif
 
     @objc private func menuOpenSettings() {
         SettingsTabNavigationStorage.shared.requestShowSettingsTab()
+    }
+
+    @objc private func menuOpenLicense() {
+        SettingsTabNavigationStorage.shared.requestShowSettingsTab(.license)
+    }
+
+    @objc private func menuOpenAbout() {
+        SettingsTabNavigationStorage.shared.requestShowSettingsTab(.about)
     }
 
     @objc private func menuQuit() {

@@ -2685,22 +2685,54 @@
         }
 
         const APP_ID = 'sanesales';
+        const EVENT_ENDPOINT = 'https://dist.saneapps.com/api/event';
 
-        function trackCta(eventName, metadata) {
-            const detail = Object.assign({ app: APP_ID, event: eventName }, metadata || {});
-            if (typeof window.plausible === 'function') {
-                window.plausible(eventName, { props: detail });
+        function eventForCta(name) {
+            if (!name) return null;
+            if (name.indexOf('buy_pro') !== -1) {
+                return { event: 'website_buy_clicked', tier: 'pro' };
             }
-            if (typeof window.sa_event === 'function') {
-                window.sa_event(eventName, detail);
+            if (name.indexOf('download_free') !== -1) {
+                return { event: 'website_download_clicked', tier: 'free' };
             }
-            window.dispatchEvent(new CustomEvent('saneapps:cta', { detail }));
+            return null;
+        }
+
+        function sendAggregateEvent(eventName, tier) {
+            const params = new URLSearchParams({
+                app: APP_ID,
+                event: eventName,
+                platform: 'unknown',
+                channel: 'direct',
+                tier: tier || 'unknown'
+            });
+            const url = EVENT_ENDPOINT + '?' + params.toString();
+            try {
+                if (navigator.sendBeacon && navigator.sendBeacon(url)) {
+                    return;
+                }
+            } catch (err) {}
+            try {
+                fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    keepalive: true,
+                    credentials: 'omit'
+                });
+            } catch (err) {}
+        }
+
+        function trackCta(eventName) {
+            const aggregateEvent = eventForCta(eventName);
+            if (aggregateEvent) {
+                sendAggregateEvent(aggregateEvent.event, aggregateEvent.tier);
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('[data-cta]').forEach(function(el) {
                 el.addEventListener('click', function() {
-                    trackCta(el.getAttribute('data-cta'), { href: el.getAttribute('href') || '' });
+                    trackCta(el.getAttribute('data-cta'));
                 });
             });
         });
