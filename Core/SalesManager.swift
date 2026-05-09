@@ -24,14 +24,6 @@ enum SalesSetupFlowPolicy {
         ordersCount > 0 || productsCount > 0
     }
 
-    static func shouldTreatInitialRefreshFailureAsConnectionFailure(
-        error: SalesAPIError?,
-        ordersCount: Int,
-        productsCount: Int
-    ) -> Bool {
-        error != nil && !hasUsableContent(ordersCount: ordersCount, productsCount: productsCount)
-    }
-
     static func shouldShowInitialSetup(
         hasSeenWelcome: Bool,
         demoModeEnabled: Bool,
@@ -53,12 +45,12 @@ enum SalesSetupFlowPolicy {
             return false
         }
 
-        if !hasSeenWelcome || !hasConnectedProviders {
+        guard hasConnectedProviders else {
             return true
         }
 
-        if hasError && !hasAnyData {
-            return true
+        if !hasSeenWelcome {
+            return false
         }
 
         return false
@@ -323,14 +315,6 @@ final class SalesManager {
                 lemonSqueezyProvider = provider
                 isLemonSqueezyConnected = true
                 await refresh()
-                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-                    error: error,
-                    ordersCount: orders.count,
-                    productsCount: products.count
-                ) {
-                    rollbackProviderConnection(.lemonSqueezy)
-                    return false
-                }
                 return true
             }
             error = .invalidAPIKey
@@ -372,14 +356,6 @@ final class SalesManager {
                 gumroadProvider = provider
                 isGumroadConnected = true
                 await refresh()
-                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-                    error: error,
-                    ordersCount: orders.count,
-                    productsCount: products.count
-                ) {
-                    rollbackProviderConnection(.gumroad)
-                    return false
-                }
                 return true
             }
             error = .invalidAPIKey
@@ -421,14 +397,6 @@ final class SalesManager {
                 stripeProvider = provider
                 isStripeConnected = true
                 await refresh()
-                if SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-                    error: error,
-                    ordersCount: orders.count,
-                    productsCount: products.count
-                ) {
-                    rollbackProviderConnection(.stripe)
-                    return false
-                }
                 return true
             }
             error = .invalidAPIKey
@@ -568,23 +536,6 @@ final class SalesManager {
     }
 
     // MARK: - Helpers
-
-    private func rollbackProviderConnection(_ provider: SalesProviderType) {
-        switch provider {
-        case .lemonSqueezy:
-            KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
-            lemonSqueezyProvider = nil
-            isLemonSqueezyConnected = false
-        case .gumroad:
-            KeychainService.delete(account: KeychainService.gumroadAPIKey)
-            gumroadProvider = nil
-            isGumroadConnected = false
-        case .stripe:
-            KeychainService.delete(account: KeychainService.stripeAPIKey)
-            stripeProvider = nil
-            isStripeConnected = false
-        }
-    }
 
     private func removeProviderData(for provider: SalesProviderType) async {
         orders.removeAll { $0.provider == provider }

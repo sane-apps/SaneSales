@@ -335,7 +335,16 @@ struct AppStartupPolicyTests {
             arguments: []
         ))
 
-        #expect(SalesSetupFlowPolicy.shouldShowInitialSetup(
+        #expect(!SalesSetupFlowPolicy.shouldShowInitialSetup(
+            hasSeenWelcome: false,
+            demoModeEnabled: false,
+            hasConnectedProviders: true,
+            hasAnyData: false,
+            hasError: false,
+            arguments: []
+        ))
+
+        #expect(!SalesSetupFlowPolicy.shouldShowInitialSetup(
             hasSeenWelcome: true,
             demoModeEnabled: false,
             hasConnectedProviders: true,
@@ -379,25 +388,18 @@ struct AppStartupPolicyTests {
         #expect(SalesSetupFlowPolicy.hasUsableContent(ordersCount: 0, productsCount: 1))
     }
 
-    @Test("Initial refresh failure only blocks setup completion when no usable content was loaded")
-    func initialRefreshFailureBlocksOnlyBlankDashboards() {
-        #expect(SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-            error: .decodingError(underlying: NSError(domain: "test", code: 1)),
-            ordersCount: 0,
-            productsCount: 0
-        ))
+    @Test("Validated provider connections are not rolled back after refresh errors")
+    func validatedProviderConnectionsSurviveInitialRefreshErrors() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let source = try String(
+            contentsOf: projectRoot.appendingPathComponent("Core/SalesManager.swift"),
+            encoding: .utf8
+        )
 
-        #expect(!SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-            error: .decodingError(underlying: NSError(domain: "test", code: 1)),
-            ordersCount: 12,
-            productsCount: 0
-        ))
-
-        #expect(!SalesSetupFlowPolicy.shouldTreatInitialRefreshFailureAsConnectionFailure(
-            error: nil,
-            ordersCount: 0,
-            productsCount: 0
-        ))
+        #expect(!source.contains("shouldTreatInitialRefreshFailureAsConnectionFailure"))
+        #expect(!source.contains("rollbackProviderConnection"))
     }
 
     #if os(macOS)

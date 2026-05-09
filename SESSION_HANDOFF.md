@@ -1,9 +1,18 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-06
+**Last updated:** 2026-05-09
 **Current version:** 1.3.3 (build 1303) deployed for direct download; macOS and iOS App Store lanes are submitted and waiting for review
 
 ## Current State
+
+## 2026-05-09: Provider Setup Reliability Fix
+
+- A validated provider connection should not be rolled back only because the first refresh after saving credentials hits a refresh/decoding/network error.
+- `SalesSetupFlowPolicy` now treats a connected provider as enough to avoid reopening first-run setup even if the welcome flag is old and there is not yet cached sales data.
+- `SalesManager` no longer deletes provider credentials after an initial refresh failure; the connection remains available for retry and normal offline/error handling.
+- Regression tests assert the old `shouldTreatInitialRefreshFailureAsConnectionFailure` / `rollbackProviderConnection` path is gone.
+- Latest recorded Mini verification for this pass: SaneSales verify passed with 74 tests.
+- Live GitHub state at closeout: `#3 It keeps saying it’s not connected but it clearly is.` remains open and maps to this local provider setup reliability fix. Do not close or comment publicly without exact draft approval.
 
 ## 2026-05-06: SaneSales 1.3.3 Shipped
 
