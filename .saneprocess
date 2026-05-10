@@ -23,6 +23,54 @@ release:
   use_sparkle: true
   min_system_version: "14.0"
   reviewed_auto_reconcile_stashes:
+    - stash_sha: "a7ab976932f554047102fb6fff853886fdeb5a99"
+      subject: "On main: auto-reconcile-20260508-215519-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. HEAD already contains the shared SaneUI menu/context-menu, settings routing, and application-mover work; remaining delta is local SaneUI path wiring plus research/handoff notes, which should not ship in the release tree."
+    - stash_sha: "2747effb6c1e44e1ada21af92f6e6e9a7adb4aff"
+      subject: "On main: auto-reconcile-20260505-215526-stephans-mac-mini"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. Product Hunt/demo-video capture script plus research note only; not release-facing for the current app or live docs."
+    - stash_sha: "54a5de3b51c984b056da02359199c000a5bb0381"
+      subject: "On main: auto-reconcile-20260425-215520-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The privacy and website-CTA telemetry disclosures are already present in HEAD/live docs; this stash is an older wording pass plus handoff notes."
+    - stash_sha: "031a87067e82f6dab2060dba0ceb988ae043a1b7"
+      subject: "On main: auto-reconcile-20260424-215517-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Single-page website comparison-table wording/layout tweaks were overtaken by later docs/index revisions that shipped after this stash."
+    - stash_sha: "76c6e1801981abe8796a364f1cb8fd4e5108be24"
+      subject: "On main: auto-reconcile-20260424-153452-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. The customer-facing outcome shipped through later code: current HEAD and changelog already cover custom-range/chart-readability/watch-snapshot work; remaining delta is alternate demo/screenshot/test scaffolding."
+    - stash_sha: "e704b6b4780f7a0260c3e60d34591110fd91f049"
+      subject: "On main: auto-reconcile-20260424-055517-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Older website hero/meta/support refinements still point at the 1.3.0 launch state and were replaced by current 1.3.5 site copy and download wiring."
+    - stash_sha: "142cb47efabf776c16637730223f7d97916f3f48"
+      subject: "On main: auto-reconcile-20260423-215519-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Watch/demo/docs screenshot pass predates the later shipped Apple Watch snapshot refresh and current site state; remaining DEBUG/demo capture tweaks are not release-facing."
+    - stash_sha: "2d162add43226e7b3c133f0e4397d3a3e6960ba7"
+      subject: "On main: auto-reconcile-20260422-215521-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Custom-range, no-orders, and history-upsell work already shipped via later implementation; current HEAD has shared Dashboard/Orders ranges, unlock CTA price labels, UI coverage, and matching changelog notes."
+    - stash_sha: "32234575c5eaea6a9d11f8704a518242d3392738"
+      subject: "On main: auto-reconcile-20260417-055518-stephans-mac-mini"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. App Store screenshot capture/metadata tooling only. Potentially useful for a future screenshot lane revisit, but not a current direct-release blocker for v1.3.5."
+    - stash_sha: "9d93f29e3f315260dbbc2314edb0515bed924320"
+      subject: "On main: auto-reconcile-20260416-215512-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. This hardcodes $24.99 into macOS/direct strings, but current HEAD uses the newer displayPriceLabel/fallback-price path; nothing here is missing from shipped runtime behavior."
+    - stash_sha: "fe143c282dac344de909cc5c6accaa6c69dd52b5"
+      subject: "On main: auto-reconcile-20260416-055517-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The download-page work is already in HEAD; only a stale research note still differs, so nothing customer-facing is missing from v1.3.5."
+    - stash_sha: "32267657fd4c9f99f6ed59cdbcb984b623745f79"
+      subject: "On main: auto-reconcile-20260415-055522-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The $24.99 pricing rollout already landed in HEAD/live docs and iOS unlock CTAs; remaining delta is an older intermediate docs/project state."
     - stash_sha: "1ae75fcd61190e0f4f60c42b1b9a8885de48c077"
       subject: "On main: auto-reconcile-20260508-215529-stephans-macbook-air"
       decision: recovered

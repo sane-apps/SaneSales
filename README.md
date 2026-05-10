@@ -49,7 +49,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Current Release
 
-**Current direct-download release: 1.3.4**
+**Current direct-download release: 1.3.5**
 
 - Keeps connected providers connected when a first refresh has no sales data yet
 - Prevents setup from reappearing after valid credentials have been saved
