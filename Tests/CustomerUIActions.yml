@@ -1,0 +1,781 @@
+---
+version: 1
+app: SaneSales
+actions:
+- id: main-navigation-tabs
+  title: Main dashboard, orders, products, and settings navigation is live
+  surfaces:
+  - macOS sidebar
+  - iOS tab bar
+  - Main window content
+  steps:
+  - Open the release-like app on the Mini.
+  - Select Dashboard, Orders, Products, and Settings from the primary navigation.
+  - Verify the selected section renders the expected customer content and preserves
+    window sizing.
+  assertions:
+  - Every shipped primary section is reachable from the platform navigation.
+  - Settings routing from in-app and macOS menu entry points lands in the same Settings
+    surface.
+  - No section is a decorative or dead tab.
+  evidence:
+  - Source guard for MainSection and selected section routing
+  - Mini screenshot fixtures for dashboard, orders, products, and settings
+  required_proof_level: runtime_visual
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open the release-like app on the Mini.
+  - Select Dashboard, Orders, Products, and Settings from the primary navigation.
+  - Verify the selected section renders the expected customer content and preserves
+    window sizing.
+  expected_outputs:
+  - Every shipped primary section is reachable from the platform navigation.
+  - Settings routing from in-app and macOS menu entry points lands in the same Settings
+    surface.
+  - No section is a decorative or dead tab.
+- id: onboarding-demo-provider-pro-entry
+  title: Onboarding lets customers try demo data, choose providers, and reach Pro
+  surfaces:
+  - iOS onboarding view
+  - macOS welcome gate
+  - Demo data action
+  - Provider picker
+  - Unlock Pro and restore purchase controls
+  steps:
+  - Start from a first-launch state.
+  - Exercise provider selection, API key first surface, Try Demo Data, Unlock Pro,
+    and Restore Purchases.
+  - Stop at StoreKit, checkout, or provider credential validation unless an isolated
+    fixture is present.
+  assertions:
+  - Demo mode completes without credentials or payment.
+  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present.
+  - Purchase and restore controls reach the first safe purchase surface only.
+  - Real purchase and provider-secret completion are not marked complete by this contract.
+  evidence:
+  - Source guard for onboarding accessibility identifiers
+  - Setup-flow unit guard
+  - Review-note entry-point guard
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - permission_recovery_dead_end
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Start from a first-launch state.
+  - Exercise provider selection, API key first surface, Try Demo Data, Unlock Pro,
+    and Restore Purchases.
+  - Stop at StoreKit, checkout, or provider credential validation unless an isolated
+    fixture is present.
+  expected_outputs:
+  - Demo mode completes without credentials or payment.
+  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present.
+  - Purchase and restore controls reach the first safe purchase surface only.
+- id: dashboard-range-refresh-filter-actions
+  title: Dashboard range, refresh, provider filter, and Pro gates behave
+  surfaces:
+  - Dashboard
+  - Date range controls
+  - Custom range sheet
+  - Provider filter
+  - Pull-to-refresh or refresh action
+  - Pro upsell
+  steps:
+  - Change Today, 7D, 30D, All, and Custom ranges.
+  - Open and apply the custom range sheet.
+  - Change provider filters and clear them.
+  - Refresh data and verify Basic/Trial/Pro gates.
+  assertions:
+  - Date range state updates shared dashboard and order scopes.
+  - Basic mode routes locked ranges to a visible Pro surface.
+  - Refresh does not run live provider calls after trial expiry.
+  - Provider filters update visible metrics without hiding setup recovery.
+  evidence:
+  - Source guard for dashboard range controls and filter state
+  - Metrics and trial policy tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Change Today, 7D, 30D, All, and Custom ranges.
+  - Open and apply the custom range sheet.
+  - Change provider filters and clear them.
+  expected_outputs:
+  - Date range state updates shared dashboard and order scopes.
+  - Basic mode routes locked ranges to a visible Pro surface.
+  - Refresh does not run live provider calls after trial expiry.
+- id: orders-search-filter-detail-actions
+  title: Orders search, filters, row navigation, empty states, and detail links work
+  surfaces:
+  - Orders tab
+  - Search field
+  - Provider filter
+  - Date range controls
+  - Order rows
+  - Order detail view
+  - Empty-state actions
+  steps:
+  - Search customer, product, and order identifiers.
+  - Switch provider and date filters.
+  - Open a representative order detail.
+  - Trigger empty-state actions such as refresh, show all providers, connect provider,
+    and unlock Pro.
+  assertions:
+  - Search and filters are scoped to the selected plan and range.
+  - Row navigation opens detail for the selected order only.
+  - Empty-state actions are contextual and do not ask customers to reconnect when
+    a range is simply empty.
+  evidence:
+  - Source guard for OrdersListView search, filters, navigation, and empty states
+  - SettingsSourceTests empty-state guards
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Search customer, product, and order identifiers.
+  - Switch provider and date filters.
+  - Open a representative order detail.
+  expected_outputs:
+  - Search and filters are scoped to the selected plan and range.
+  - Row navigation opens detail for the selected order only.
+  - Empty-state actions are contextual and do not ask customers to reconnect when
+    a range is simply empty.
+- id: products-chart-catalog-actions
+  title: Products catalog and revenue chart interactions work
+  surfaces:
+  - Products tab
+  - Product revenue donut chart
+  - Product catalog rows
+  - Empty products state
+  - Provider setup and refresh actions
+  steps:
+  - Open Products with demo or cached data.
+  - Select chart sectors and catalog rows.
+  - Open refresh, connect provider, and unlock surfaces from empty states.
+  assertions:
+  - Chart selection highlights the matching product and can be cleared.
+  - Catalog sorting follows revenue, provider, and product-name order.
+  - Empty states route to provider setup or refresh without dead buttons.
+  evidence:
+  - Source guard for ProductsView chart selection and catalog actions
+  - Metrics product-breakdown tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open Products with demo or cached data.
+  - Select chart sectors and catalog rows.
+  - Open refresh, connect provider, and unlock surfaces from empty states.
+  expected_outputs:
+  - Chart selection highlights the matching product and can be cleared.
+  - Catalog sorting follows revenue, provider, and product-name order.
+  - Empty states route to provider setup or refresh without dead buttons.
+- id: provider-key-entry-safe-surfaces
+  title: Provider connection surfaces are present without completing real secret flows
+  surfaces:
+  - Settings Providers
+  - Onboarding provider picker
+  - API key sheets
+  - LemonSqueezy, Gumroad, and Stripe provider adapters
+  steps:
+  - Open each provider connection sheet.
+  - Verify secure key entry, help text, Cancel, disabled Save for empty input, and
+    validation error surfaces.
+  - Do not submit real provider secrets unless running an isolated fixture.
+  assertions:
+  - Every advertised provider has a safe first setup surface.
+  - API keys are treated as secrets and stored through Keychain paths.
+  - Real provider-secret validation remains blocked unless fixture evidence exists.
+  evidence:
+  - Source guard for provider rows and secure key sheets
+  - Keychain tests
+  - Provider adapter tests with fixtures
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - permission_recovery_dead_end
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open each provider connection sheet.
+  - Verify secure key entry, help text, Cancel, disabled Save for empty input, and
+    validation error surfaces.
+  - Do not submit real provider secrets unless running an isolated fixture.
+  expected_outputs:
+  - Every advertised provider has a safe first setup surface.
+  - API keys are treated as secrets and stored through Keychain paths.
+  - Real provider-secret validation remains blocked unless fixture evidence exists.
+- id: provider-management-destructive-safe-surfaces
+  title: Provider management and disconnect flows require confirmation
+  surfaces:
+  - Connected provider Manage menu
+  - Change Key action
+  - Disconnect action
+  - Disconnect confirmation dialog
+  steps:
+  - Open Manage for each connected provider fixture.
+  - Verify Change Key opens the same secret-entry surface.
+  - Open Disconnect and cancel unless using isolated temporary credentials.
+  assertions:
+  - Destructive disconnect is never one-click destructive.
+  - Change Key and Disconnect are available only from connected provider rows.
+  - Cached sales data is not removed without confirmation.
+  evidence:
+  - Source guard for Manage menus and confirmation dialog
+  - Cache clearing tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open Manage for each connected provider fixture.
+  - Verify Change Key opens the same secret-entry surface.
+  - Open Disconnect and cancel unless using isolated temporary credentials.
+  expected_outputs:
+  - Destructive disconnect is never one-click destructive.
+  - Change Key and Disconnect are available only from connected provider rows.
+  - Cached sales data is not removed without confirmation.
+- id: settings-general-macos-availability-updates
+  title: macOS General settings, availability, language, and updates are live
+  surfaces:
+  - macOS Settings General tab
+  - Menu bar and Dock availability toggles
+  - Login item toggle
+  - App language row
+  - Sparkle update row
+  steps:
+  - Open Settings > General.
+  - Toggle menu bar, Dock, and login item controls in a safe fixture.
+  - Open language settings and Check Now update surface.
+  - Stop at OS or update UI boundaries.
+  assertions:
+  - SaneSales keeps either Dock or menu bar access available.
+  - Menu bar revenue remains Pro-gated.
+  - Sparkle update checks are gated out of App Store builds.
+  evidence:
+  - Source guard for shared SaneUI settings controls
+  - SettingsSourceTests macOS settings guards
+  required_proof_level: safe_first_surface
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open Settings > General.
+  - Toggle menu bar, Dock, and login item controls in a safe fixture.
+  - Open language settings and Check Now update surface.
+  expected_outputs:
+  - SaneSales keeps either Dock or menu bar access available.
+  - Menu bar revenue remains Pro-gated.
+  - Sparkle update checks are gated out of App Store builds.
+- id: settings-data-demo-refresh-export-actions
+  title: Data settings demo, refresh, and CSV export controls work safely
+  surfaces:
+  - Settings Data tab
+  - Demo mode toggle
+  - Refresh Data action
+  - CSV export and share/reveal surface
+  steps:
+  - Toggle demo mode in a fixture and verify cached demo data appears.
+  - Trigger Refresh Data with fixture data.
+  - Export CSV for fixture orders and validate the generated file header.
+  - Stop at share sheet or Finder reveal surface.
+  assertions:
+  - Demo mode does not consume the live-data trial.
+  - Refresh respects expired-trial and Pro gating.
+  - CSV export contains order fields and does not leak secrets.
+  evidence:
+  - Source guard for demo, refresh, and export code
+  - Demo, trial, cache, and export source guards
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - context_menu_extension_missing
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Toggle demo mode in a fixture and verify cached demo data appears.
+  - Trigger Refresh Data with fixture data.
+  - Export CSV for fixture orders and validate the generated file header.
+  expected_outputs:
+  - Demo mode does not consume the live-data trial.
+  - Refresh respects expired-trial and Pro gating.
+  - CSV export contains order fields and does not leak secrets.
+- id: license-purchase-restore-direct-key-safe-surfaces
+  title: License, purchase, restore, direct key, and deactivation surfaces are safe
+  surfaces:
+  - Settings License
+  - App Store Unlock Pro
+  - Restore Purchases
+  - Direct checkout or license key entry
+  - Deactivate Pro
+  steps:
+  - Open Settings > License from primary UI, menu bar, and Dock routes.
+  - Trigger Unlock Pro and Restore Purchases to the first StoreKit or checkout surface.
+  - Open direct license entry where available.
+  - Open deactivation only in an isolated Pro fixture.
+  assertions:
+  - Pro purchase paths are visible and match platform policy.
+  - Real purchases, external checkout, and deactivation are not completed by this
+    sweep.
+  - Review notes describe the same Pro entry points present in code.
+  evidence:
+  - Source guard for LicenseSettingsView usage and direct copy
+  - App Store IAP metadata tests
+  - Review-note tests
+  required_proof_level: safe_first_surface
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - persistence_or_relaunch_reset
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open Settings > License from primary UI, menu bar, and Dock routes.
+  - Trigger Unlock Pro and Restore Purchases to the first StoreKit or checkout surface.
+  - Open direct license entry where available.
+  expected_outputs:
+  - Pro purchase paths are visible and match platform policy.
+  - Real purchases, external checkout, and deactivation are not completed by this
+    sweep.
+  - Review notes describe the same Pro entry points present in code.
+- id: about-support-diagnostics-links
+  title: About, support, diagnostics, website, privacy, and issue links are reachable
+  surfaces:
+  - Settings About
+  - SaneAboutView
+  - Report a Bug
+  - Website, Privacy Policy, and View Issues links
+  - Diagnostics attachment
+  steps:
+  - Open About.
+  - Open Report a Bug and verify diagnostics are prepared.
+  - Verify external links point at the expected public destinations without submitting
+    anything.
+  assertions:
+  - Support and diagnostics paths do not use stale mailto-only flows.
+  - Bug reports include the GitHub bug template and settings summary.
+  - Public privacy and website URLs are available.
+  evidence:
+  - Source guard for SaneAboutView and iOS About links
+  - Diagnostics URL unit guard
+  required_proof_level: safe_first_surface
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - permission_recovery_dead_end
+  - persistence_or_relaunch_reset
+  - external_integration_stub
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Open About.
+  - Open Report a Bug and verify diagnostics are prepared.
+  - Verify external links point at the expected public destinations without submitting
+    anything.
+  expected_outputs:
+  - Support and diagnostics paths do not use stale mailto-only flows.
+  - Bug reports include the GitHub bug template and settings summary.
+  - Public privacy and website URLs are available.
+- id: macos-menubar-dock-command-actions
+  title: macOS menu bar, Dock, app commands, and update routes are wired
+  surfaces:
+  - Menu bar status item
+  - Status menu
+  - Dock menu
+  - App Settings command
+  - Check for Updates command
+  steps:
+  - Left-click the status item and confirm the main window opens.
+  - Open the status menu and Dock menu.
+  - Verify Open, Refresh, Settings, License, Check for Updates, About / Report a Bug,
+    and Quit availability.
+  - Do not quit except in an isolated end-of-run check.
+  assertions:
+  - Menu and Dock commands use shared SaneUI utility menu wiring.
+  - Refresh reaches SalesManager refresh.
+  - Settings, License, and About route through queued navigation without timer delays.
+  evidence:
+  - Source guard for MenuBarManager and SaneSalesMacApp Dock menu
+  - macOS menu source tests
+  required_proof_level: safe_first_surface
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Left-click the status item and confirm the main window opens.
+  - Open the status menu and Dock menu.
+  - Verify Open, Refresh, Settings, License, Check for Updates, About / Report a Bug,
+    and Quit availability.
+  expected_outputs:
+  - Menu and Dock commands use shared SaneUI utility menu wiring.
+  - Refresh reaches SalesManager refresh.
+  - Settings, License, and About route through queued navigation without timer delays.
+- id: widgets-ios-macos-lockscreen-actions
+  title: iOS, macOS, Lock Screen, and accessory widgets render Pro and data states
+  surfaces:
+  - iOS Home Screen widget
+  - macOS desktop widget
+  - Lock Screen accessory widgets
+  - Widget locked state
+  steps:
+  - Render small, medium, inline, circular, and rectangular supported families.
+  - Verify cached sales values and locked Pro states.
+  - Confirm widgets read the sanitized shared snapshot, not full customer records.
+  assertions:
+  - Widget families match platform support.
+  - Locked widgets show Pro requirements without exposing private sales details.
+  - Shared snapshots exclude customer and receipt data.
+  evidence:
+  - Source guard for WidgetKit families and locked view
+  - Cache snapshot privacy tests
+  required_proof_level: fixture_completion
+  required_evidence_types:
+  - fixture
+  - state_receipt
+  historical_failure_classes:
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Render small, medium, inline, circular, and rectangular supported families.
+  - Verify cached sales values and locked Pro states.
+  - Confirm widgets read the sanitized shared snapshot, not full customer records.
+  expected_outputs:
+  - Widget families match platform support.
+  - Locked widgets show Pro requirements without exposing private sales details.
+  - Shared snapshots exclude customer and receipt data.
+- id: watch-dashboard-complication-actions
+  title: Apple Watch dashboard and complication surfaces render sales snapshots
+  surfaces:
+  - watchOS app dashboard
+  - Watch recent-sales screenshot mode
+  - watchOS accessory widget families
+  - Demo fallback
+  steps:
+  - Launch the Watch dashboard with cached or demo data.
+  - Verify Today, recent sales, provider rows, and Pro/demo fallback states.
+  - Render watch accessory families from the shared widget provider.
+  assertions:
+  - Watch can show demo data when there is no synced snapshot.
+  - Pro-gated data respects SharedStore flags.
+  - Recent rows and provider rows are bounded for watch display.
+  evidence:
+  - Source guard for WatchDashboardView and watch app launch
+  - Watch review and shared snapshot tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Launch the Watch dashboard with cached or demo data.
+  - Verify Today, recent sales, provider rows, and Pro/demo fallback states.
+  - Render watch accessory families from the shared widget provider.
+  expected_outputs:
+  - Watch can show demo data when there is no synced snapshot.
+  - Pro-gated data respects SharedStore flags.
+  - Recent rows and provider rows are bounded for watch display.
+- id: cache-offline-privacy-recovery-actions
+  title: Cache, offline recovery, corrupt data, and privacy boundaries are safe
+  surfaces:
+  - Cached dashboard/orders/products
+  - Last updated settings row
+  - Startup recovery
+  - Shared widget/watch snapshot
+  steps:
+  - Load cached orders, products, and store data.
+  - Simulate corrupt cached payloads and verify recovery.
+  - Verify startup setup only reappears for blank or unusable content.
+  - Confirm shared snapshots omit customer-identifying fields.
+  assertions:
+  - Offline cache keeps the app useful without provider calls.
+  - Corrupt cache is discarded safely.
+  - Privacy-sensitive order fields stay out of widgets and watch snapshots.
+  evidence:
+  - Cache tests
+  - Startup setup-flow tests
+  - Shared snapshot tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - permission_recovery_dead_end
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded sales dashboard with representative providers, products, orders,
+      revenue metrics, chart data, empty states, and no real secret submission.
+    setup_steps:
+    - Load deterministic LemonSqueezy, Gumroad, and Stripe fixture data before dashboard,
+      order, product, and chart tests.
+    - Use isolated fake provider credentials only for validation/error surfaces.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/sales-dashboard/
+  user_inputs:
+  - Load cached orders, products, and store data.
+  - Simulate corrupt cached payloads and verify recovery.
+  - Verify startup setup only reappears for blank or unusable content.
+  expected_outputs:
+  - Offline cache keeps the app useful without provider calls.
+  - Corrupt cache is discarded safely.
+  - Privacy-sensitive order fields stay out of widgets and watch snapshots.

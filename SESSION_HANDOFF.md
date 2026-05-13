@@ -1,9 +1,15 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-09
+**Last updated:** 2026-05-12
 **Current version:** 1.3.3 (build 1303) deployed for direct download; macOS and iOS App Store lanes are submitted and waiting for review
 
 ## Current State
+
+## 2026-05-12: Customer UI Action Release Gate
+
+- Added `Tests/CustomerUIActions.yml`, `scripts/customer_ui_action_sweep.rb`, and `.sane/customer_ui_action_receipt.json`.
+- `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passes with 15 required actions covered; receipt generated `2026-05-12T03:46:32Z` on host `mini`.
+- Mini `./scripts/SaneMaster.rb verify` passed 74 tests.
 
 ## 2026-05-09: Research Cache Compacted
 
