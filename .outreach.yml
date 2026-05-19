@@ -1,5 +1,5 @@
 product: SaneSales
-updated: "2026-05-18"
+updated: "2026-05-19"
 positioning:
   one_liner: "Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe"
   offer: "Direct Pro is $9.99 with code SANE60 through May 21, 2026; regular price is $24.99; checkout may show $24.99 before the discount applies"
@@ -72,8 +72,8 @@ launch_calendar:
       action: "Submit/finish MacUpdate, LaunchingNext, G2, and optional SaaSHub/BetaList listings with the canonical pricing and privacy copy."
       gate: "Use live website and hosted assets only; if a directory requires irreversible public submission or payment, pause for explicit approval."
       success_metric: "At least 2 accepted/submitted directory listings with URLs or receipt screenshots recorded in .outreach.yml."
-      last_reviewed: "2026-05-18"
-      result: "Directory work remains complete for the only low-friction lane. The fresh Mini `launch_readiness --json` check stayed green on 2026-05-18 and the previously submitted Launching Next receipt remains `https://www.launchingnext.com/thanks/?i=134060`. MacUpdate still redirects to member login at `https://member.macupdate.com/member/login/%20content%20submit`; G2 create-profile still hands off into `https://my.g2.com/signup?login=true` with no seller/profile session; SaaSHub still requires a longer second-step form with categories, competitors, contact email, and a free-vs-`$75 / One Off` choice, so it is still not low-friction enough to justify distracting from the core launch schedule; BetaList remains sign-in-gated."
+      last_reviewed: "2026-05-19"
+      result: "Re-checked all live directory lanes on 2026-05-19 after a fresh green Mini `launch_readiness --json` gate. Launching Next still shows the existing free-path receipt at `https://www.launchingnext.com/thanks/?i=134060` with `Status: In Queue (Estimated Wait: 4 Months)` and no paid fast-track was taken. MacUpdate still redirects straight into member login with Sign in/Create account options. G2 still requires existing seller access on the public profile path and the direct add-product path still falls into anti-bot access restriction. Optional SaaSHub still requires categories, competitors, contact email, and an explicit `Free` vs `$75 / One Off` submission-type choice, so it remains intentionally unsubmitted."
     - date: "2026-05-16"
       time: "10:00"
       channel: "X opportunity scan"
@@ -95,10 +95,12 @@ launch_calendar:
     - date: "2026-05-19"
       time: "10:00"
       channel: "Indie Hackers"
-      status: "scheduled_conditional"
+      status: "blocked_no_authenticated_session"
       action: "Post the Indie Hackers feedback-oriented launch story only if Product Hunt is not approved or still pending and the user approves the exact final draft."
-      gate: "Exact draft approval required; keep it feedback-first, not coupon spam."
+      gate: "Exact draft approval plus an authenticated Indie Hackers session are required; keep it feedback-first, not coupon spam."
       success_metric: "Post URL recorded and comments monitored same day."
+      last_reviewed: "2026-05-19"
+      result: "Fresh Mini `launch_readiness` stayed green on 2026-05-19 even though the global validation report remained broadly red. Product Hunt is still no-go for launch-week timing, so Indie Hackers is the active fallback. At 10:01 EDT the exact prepared draft was surfaced for posting, web checks still found no public SaneSales Indie Hackers post, and the in-app browser showed an anonymous Indie Hackers state with no authenticated posting session available. A follow-up Chrome-profile AppleScript probe stalled before it could even read the front-tab URL, so there was no safe authenticated fallback to reuse. No post, URL, or comment-monitoring pass exists for May 19; do not claim launch execution unless a signed-in session is available."
     - date: "2026-05-20"
       time: "11:00"
       channel: "Hacker News Show HN fallback"
@@ -114,16 +116,17 @@ launch_calendar:
       gate: "Do not spam a dead channel; use only one final-day public post unless there is a strong reply opportunity."
       success_metric: "Offer-end traffic/sales report captured after the post or a documented no-go."
   last_launch_readiness:
-    date: "2026-05-18"
+    date: "2026-05-19"
     status: "green_with_release_preflight_warnings"
     launch_readiness_exit: 0
     blocker_summary:
-      - "Mini launch_readiness returned ok: true on the 2026-05-18 recheck."
-      - "release_preflight passed with warnings only: dirty worktree, pending customer email at receipt time, evening release timing."
-      - "Product Hunt relaunch is no-go for launch-week timing after no approval/rejection arrived by Monday May 18 noon EDT; one official support follow-up was delivered and fallback moves to Indie Hackers/HN."
-      - "Launch-week price copy remains valid on 2026-05-18 because active user-facing references include the May 21, 2026 cutoff; remove or replace all $9.99/SANE60 copy after that date."
-      - "Any public posting, scheduling, or direct reply still requires exact user approval."
-    next_date: "2026-05-19"
+      - "Mini launch_readiness returned ok: true on the 2026-05-19 recheck."
+      - "release_preflight passed with warnings only on the app gate, but the global validation report at 2026-05-19 09:02:38 EDT still flagged stale SaneSales customer UI proof in the broader release pipeline."
+      - "Product Hunt relaunch remains no-go for launch-week timing after no approval/rejection arrived by Monday May 18 noon EDT; fallback stays Indie Hackers on May 19 and Show HN on May 20."
+      - "The May 19 Indie Hackers fallback was due and the exact prepared copy was surfaced, but no authenticated Indie Hackers posting session was available from the in-app browser or Chrome automation path."
+      - "Launch-week price copy remains valid on 2026-05-19 because active user-facing references include the May 21, 2026 cutoff; remove or replace all $9.99/SANE60 copy after that date."
+      - "Do not claim Indie Hackers launch execution until a signed-in posting session exists and a real post URL can be recorded."
+    next_date: "2026-05-20"
 public_posting_policy:
   approval_required: true
   disclosure_required: "Always say 'I built SaneSales' when recommending it in public replies."
@@ -315,7 +318,7 @@ queued_drafts:
     status: "ready_for_approval"
     text: "If you sell on LemonSqueezy, Gumroad, and Stripe, the daily sales check gets annoying fast. I built SaneSales to make it one glance: native app, order history, CSV export, widgets, Watch, and menu bar revenue. Direct Pro is $9.99 with code SANE60 through May 21, 2026: https://sanesales.com"
   indie_hackers:
-    status: "ready_for_approval"
+    status: "ready_but_unposted_no_authenticated_session"
     title: "I built a private native sales tracker for LemonSqueezy, Gumroad, and Stripe"
     body: "I built SaneSales because I was tired of checking LemonSqueezy, Gumroad, and Stripe separately, then copying numbers into a spreadsheet just to answer 'how are we actually doing?' SaneSales is a private native sales tracker for indie sellers: direct provider connections, no SaneApps sales-data server, one-time purchase, CSV export, widgets, Watch support, and menu bar revenue on Mac. I’d especially love feedback on the positioning: does 'private native sales tracker' land better than 'analytics dashboard' for indie sellers?"
   hacker_news_show_hn:
@@ -358,10 +361,11 @@ directory_submissions:
     newsletter_opt_in: false
     anti_spam_answer: "5"
     submission_url: "https://www.launchingnext.com/submit/"
-    last_reviewed: "2026-05-17"
+    last_reviewed: "2026-05-19"
     receipt_url: "https://www.launchingnext.com/thanks/?i=134060"
     receipt_status: "In Queue (Estimated Wait: 4 Months)"
-    receipt_note: "Launching Next showed `SUBMITTED` and then upsold Fast-Track for $99 on the thank-you page. The free path is complete; no paid upgrade was taken."
+    receipt_note: "Launching Next still shows `Submitted` -> `Fast-Track` on the thank-you page and `Status: In Queue (Estimated Wait: 4 Months)` on 2026-05-19. The free path remains complete; no paid upgrade was taken."
+    receipt_screenshot: "outputs/playwright/page-2026-05-19T14-02-07-708Z.png"
   macupdate:
     status: "blocked_member_portal_access_required"
     app_name: "SaneSales"
@@ -372,16 +376,19 @@ directory_submissions:
     download_url: "https://dist.sanesales.com/updates/SaneSales-1.3.5.zip"
     buy_url: "https://go.saneapps.com/buy/sanesales"
     submission_url: "https://member.macupdate.com/content/submit"
-    last_reviewed: "2026-05-18"
-    blocker: "The MacUpdate submit path still redirects into `https://member.macupdate.com/member/login/%20content%20submit` with Sign in/Create account options. No existing member-portal session or approved account-creation step was available in this 2026-05-18 automation run."
+    last_reviewed: "2026-05-19"
+    blocker: "The MacUpdate submit path still redirects into `https://member.macupdate.com/member/login/%20content%20submit` and shows Sign in/Create account instead of any app-submission form. No existing member-portal session or approved account-creation step was available in this 2026-05-19 automation run."
+    blocker_screenshot: "outputs/playwright/page-2026-05-19T14-02-17-485Z.png"
   g2:
     status: "blocked_unless_existing_profile_access_exists"
     product_name: "SaneSales"
     url: "https://sanesales.com"
     intended_action: "Claim existing profile if present, otherwise create one, but only if access exists and the launch gate is green."
     create_profile_url: "https://sell.g2.com/create-a-profile"
-    last_reviewed: "2026-05-18"
-    blocker: "The public G2 create-profile page is still reachable, but the visible `Get Started` path still hands off into `https://my.g2.com/signup?login=true` and no seller/profile login was present. The direct add-product path `https://www.g2.com/products/new` now lands in an anti-bot verification iframe instead of a usable create/claim flow, so claim/create still could not proceed on 2026-05-18 without existing access."
+    last_reviewed: "2026-05-19"
+    blocker: "The public G2 create-profile page is still reachable, but the visible `Get Started` CTA hands off into `https://my.g2.com/~/upgrade` and the header `Login` path still points at `https://my.g2.com/signup?login=true`, so no seller/profile access is present in this session. The direct add-product path `https://www.g2.com/products/new` still lands in an anti-bot access-restricted iframe, so claim/create still could not proceed on 2026-05-19 without existing access."
+    blocker_screenshot: "outputs/playwright/page-2026-05-19T14-02-26-770Z.png"
+    anti_bot_screenshot: "outputs/playwright/page-2026-05-19T14-02-38-272Z.png"
   saashub:
     status: "optional_second_step_reached_not_submitted"
     product_name: "SaneSales"
@@ -389,9 +396,10 @@ directory_submissions:
     one_line: "Private native sales tracker for LemonSqueezy, Gumroad, and Stripe"
     categories: ["Finance", "Analytics", "Productivity", "Mac"]
     submission_url: "https://www.saashub.com/services/submit"
-    last_reviewed: "2026-05-18"
+    last_reviewed: "2026-05-19"
     staging_url: "https://www.saashub.com/services/new?url=https%3A%2F%2Fsanesales.com&commit=Continue"
-    blocker: "The public submit page is reachable and the website URL step still advances into a longer second-step form with categories, competitors, contact email, and a submission-type choice between `Free` and `$75 / One Off`. That is more friction than the core launch schedule justifies, so the optional path was intentionally left unsubmitted."
+    blocker: "The public submit page is still reachable and the website URL step still advances into a longer second-step form with a prefilled 152-character tagline plus required categories, competitors, contact email, and a submission-type choice between `Free` and `$75 / One Off`. That is still more friction than the core launch schedule justifies, so the optional path was intentionally left unsubmitted."
+    staging_screenshot: "outputs/playwright/page-2026-05-19T14-02-51-490Z.png"
   betalist:
     status: "blocked_sign_in_required"
     startup_name: "SaneSales"

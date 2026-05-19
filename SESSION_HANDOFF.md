@@ -1,9 +1,28 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-18
+**Last updated:** 2026-05-19
 **Current version:** 1.3.5 deployed for direct download; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-19 Directory Schedule Recheck
+
+- Re-ran the canonical Mini gate before touching any directory surface: [`./scripts/SaneMaster.rb launch_readiness --app SaneSales --json`](/Users/sj/SaneApps/apps/SaneSales/scripts/SaneMaster.rb) returned `ok: true` on 2026-05-19 with warning-only `release_preflight` carryover, so the lane stayed eligible for safe review work.
+- Launching Next remains the only completed low-friction submission. The existing free-path receipt at [`https://www.launchingnext.com/thanks/?i=134060`](https://www.launchingnext.com/thanks/?i=134060) still shows `Status: In Queue (Estimated Wait: 4 Months)` and the thank-you upsell page still offers Fast-Track for $99. Fresh evidence: [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-07-708Z.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-07-708Z.png).
+- MacUpdate is still blocked before any submission form. [`https://member.macupdate.com/content/submit`](https://member.macupdate.com/content/submit) still resolves to a sign-in/create-account page with no member session present. Fresh evidence: [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-17-485Z.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-17-485Z.png).
+- G2 still does not expose a usable claim/create path in this session. The public create-profile page still routes actual action into seller login/upgrade flows, and the direct add-product path [`https://www.g2.com/products/new`](https://www.g2.com/products/new) still lands in an anti-bot access-restricted iframe. Fresh evidence: [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-26-770Z.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-26-770Z.png) and [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-38-272Z.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-38-272Z.png).
+- Optional SaaSHub is still not low-friction enough to justify launch-time diversion. The second-step form remains reachable, but it still requires categories, competitors, contact email, and an explicit `Free` vs `$75 / One Off` submission choice before any confirmation step. Fresh evidence: [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-51-490Z.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/page-2026-05-19T14-02-51-490Z.png).
+- No irreversible public action, no paid directory upgrade, and no account-creation step were taken in this run. Durable tracker updates were written back into [`.outreach.yml`](/Users/sj/SaneApps/apps/SaneSales/.outreach.yml).
+
+## 2026-05-19 Indie Hackers Fallback Check
+
+- Re-ran the canonical Mini gate before touching the fallback lane: [`./scripts/SaneMaster.rb launch_readiness --json`](/Users/sj/SaneApps/apps/SaneSales/scripts/SaneMaster.rb) stayed green on 2026-05-19 with only the known `release_preflight` warning carryover.
+- Re-ran the global validation report as required for launch context. It remained broadly red across the wider SaneApps release pipeline, and SaneSales still shows stale customer UI receipt warnings in that global report.
+- Product Hunt remains no-go for launch-week timing because no approval or rejection arrived by the Monday, May 18, 2026 noon EDT checkpoint. The fallback branch is still Indie Hackers first, then Show HN.
+- Confirmed the prepared Indie Hackers draft is still the exact copy recorded in [`.outreach.yml`](/Users/sj/SaneApps/apps/SaneSales/.outreach.yml):
+  `I built a private native sales tracker for LemonSqueezy, Gumroad, and Stripe`
+- Checked the live site state and web search before posting. Web search still found no public SaneSales Indie Hackers post, and the in-app browser opened Indie Hackers in an anonymous visitor state with `Join` visible and no authenticated posting session available.
+- Result: the May 19 Indie Hackers fallback did not execute. There is no post URL and no comment-monitoring run because there was no signed-in session available for safe posting. Do not mark the channel launched unless an authenticated Indie Hackers session exists and the exact copy is approved at send time.
 
 ## 2026-05-18 Noon Product Hunt Decision
 
