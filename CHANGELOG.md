@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.6] - 2026-05-19
+
+Fixes license-key paste reliability in activation and settings.
+
+---
+
 ## [1.3.5] - 2026-05-09
 
 Improves dashboard and settings reliability, keeps menu and Dock access consistent, and updates shared App Store-safe UI compatibility.
