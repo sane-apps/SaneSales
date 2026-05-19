@@ -249,6 +249,27 @@ struct MetricsTests {
         #expect(revenue(from: orders, daysBack: 30, now: now) > revenue(from: orders, daysBack: 60, untilDaysBack: 30, now: now))
     }
 
+    @Test("Demo data marketing screenshot range is not visually flat")
+    func demoDataMarketingScreenshotRangeIsNotVisuallyFlat() throws {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
+        let start = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 4)))
+        let end = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 18)))
+        let interval = SaneSalesDateRangeStore.normalizedInterval(
+            start: start,
+            end: end,
+            maximumDate: end,
+            calendar: calendar
+        )
+        let series = SaneSalesDateRangeStore.dailySeries(from: DemoData.allOrders, in: interval)
+        let nonZeroRevenue = series.map(\.revenue).filter { $0 > 0 }
+        let distinctRevenue = Set(nonZeroRevenue)
+
+        #expect(series.count >= 15)
+        #expect(distinctRevenue.count >= 6)
+        #expect((nonZeroRevenue.max() ?? 0) > (nonZeroRevenue.min() ?? 0) * 2)
+    }
+
     @Test("Custom range helpers normalize dates and fill missing days")
     func customRangeHelpers() throws {
         let calendar = Calendar.current

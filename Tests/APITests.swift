@@ -463,6 +463,50 @@ struct AppStoreReviewPathTests {
         #expect(manifest.localizedCaseInsensitiveContains("one-time non-consumable StoreKit purchase"))
     }
 
+    @Test("App Store metadata leads with the buyer wedge")
+    func appStoreMetadataLeadsWithBuyerWedge() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
+
+        #expect(manifest.contains("subtitle: \"Private Revenue Tracker\""))
+        #expect(manifest.contains("Track Lemon Squeezy, Gumroad, and Stripe revenue"))
+        #expect(manifest.contains("makers who sell from more than one storefront"))
+        #expect(manifest.contains("lemon squeezy,gumroad,stripe,revenue,orders,sales"))
+    }
+
+    @Test("Settings checkout tracking is source specific")
+    func settingsCheckoutTrackingIsSourceSpecific() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let settingsSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"),
+            encoding: .utf8
+        )
+
+        #expect(settingsSource.contains("appstore_purchase_started"))
+        #expect(settingsSource.contains("direct_checkout_opened"))
+        #expect(!settingsSource.contains("EventTracker.log(\"checkout_clicked\", app: \"sanesales\")"))
+    }
+
+    @Test("Website home page leads with provider-specific buyer intent")
+    func websiteHomePageLeadsWithProviderSpecificBuyerIntent() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let homePage = try String(
+            contentsOf: projectRoot.appendingPathComponent("docs/index.html"),
+            encoding: .utf8
+        )
+
+        #expect(homePage.contains("Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe"))
+        #expect(homePage.contains("lemon squeezy dashboard, gumroad sales tracker, stripe revenue widget"))
+        #expect(homePage.contains("website_buy_hero_clicked"))
+        #expect(homePage.contains("website_buy_pricing_clicked"))
+    }
+
     @Test("iOS review notes match real Pro entry points")
     func saneSalesIosReviewNotesMatchCode() throws {
         let projectRoot = URL(fileURLWithPath: #filePath)
@@ -497,10 +541,82 @@ struct AppStoreReviewPathTests {
         #expect(captureScript.contains("WATCH_SCREENSHOT_DELAY=\"${WATCH_SCREENSHOT_DELAY:-5}\""))
         #expect(captureScript.contains("width=1280"))
         #expect(captureScript.contains("height=900"))
-        #expect(watchSource.contains("SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty"))
+        #expect(watchSource.contains("SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty || forceProMode"))
+        #expect(watchSource.contains("environment[\"SANEAPPS_FORCE_PRO_MODE\"] == \"1\" || arguments.contains(\"--force-pro-mode\")"))
         #expect(watchSource.contains("watchRecentScreenshotContent(snapshot: snapshot)"))
         #expect(watchSource.contains("snapshot.recentRows.prefix(4)"))
         #expect(watchSource.contains(".padding(.top, max(38, proxy.safeAreaInsets.top + 22))"))
+    }
+
+    @Test("Marketing video tooling is repeatable and Mini-first")
+    func marketingVideoToolingIsRepeatableAndMiniFirst() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let captureScript = try String(
+            contentsOf: projectRoot.appendingPathComponent("scripts/capture_demo_videos.sh"),
+            encoding: .utf8
+        )
+        let buildScript = try String(
+            contentsOf: projectRoot.appendingPathComponent("scripts/build_launch_video.py"),
+            encoding: .utf8
+        )
+        let website = try String(
+            contentsOf: projectRoot.appendingPathComponent("docs/index.html"),
+            encoding: .utf8
+        )
+
+        #expect(captureScript.contains("require_mini_host"))
+        #expect(captureScript.contains("SANE_ALLOW_LOCAL_VIDEO_CAPTURE"))
+        #expect(captureScript.contains("write_capture_receipt"))
+        #expect(captureScript.contains("EXTRA_APP_ARGS"))
+        #expect(buildScript.contains("launch-week-pro-all-devices.mp4"))
+        #expect(buildScript.contains("sanesales-launch-video-poster.png"))
+        #expect(buildScript.contains("launch-week-pro-contact-sheet.png"))
+        #expect(buildScript.contains("launch-week-pro-video-contact-sheet.jpg"))
+        #expect(buildScript.contains("APP_ICON_SOURCE = ROOT / \"Resources\" / \"Assets.xcassets\" / \"AppIcon.appiconset\" / \"icon_1024x1024.png\""))
+        #expect(buildScript.contains("def logo_icon(size: int) -> Image.Image:"))
+        #expect(buildScript.contains("saturation = cyan - r"))
+        #expect(buildScript.contains("if cyan < 78 or saturation < 30:"))
+        #expect(buildScript.contains("icon_size = 96"))
+        #expect(buildScript.contains("ACCENT_BRIGHT = (82, 224, 240)"))
+        #expect(buildScript.contains("def callout(draw: ImageDraw.ImageDraw"))
+        #expect(!buildScript.contains("def badge("))
+        #expect(buildScript.contains("LEFT_X = 126"))
+        #expect(buildScript.contains("PROOF_X = 860"))
+        #expect(buildScript.contains("MUSIC_SOURCE = VIDEO_DIR / \"pulse-ledger.mp3\""))
+        #expect(buildScript.contains("-stream_loop"))
+        #expect(buildScript.contains("loudnorm=I=-18"))
+        #expect(buildScript.contains("Tired of sales apps that spy and charge forever?"))
+        #expect(buildScript.contains("(\"slide-02-privacy.png\", slide_privacy)"))
+        #expect(buildScript.contains("Track sales privately.\\nNo subscription."))
+        #expect(!buildScript.contains("Private tracking."))
+        #expect(buildScript.contains("There is a cleaner way."))
+        #expect(buildScript.contains("See what sold today."))
+        #expect(buildScript.contains("Launch week special."))
+        #expect(!buildScript.contains("Launch offer:"))
+        #expect(buildScript.contains("font_obj.getmetrics()"))
+        #expect(buildScript.contains("Everything important in one place"))
+        #expect(buildScript.contains("No customer lists sent to SaneApps"))
+        #expect(buildScript.contains("No analytics cloud collecting your history"))
+        #expect(buildScript.contains("concat=n={len(slides)}:v=1:a=0[vout]"))
+        #expect(buildScript.contains("fade=t=in"))
+        #expect(!buildScript.contains("xfade=transition="))
+        #expect(!buildScript.contains("License checks only verify Pro access"))
+        #expect(!buildScript.contains("Provider keys stay in iCloud Keychain"))
+        #expect(!buildScript.contains("No SaneApps sales-data server"))
+        #expect(buildScript.contains("CHART_ASSET_CHECKS"))
+        #expect(buildScript.contains("chart QA failed"))
+        #expect(buildScript.contains("tile=4x2"))
+        #expect(website.contains("Private by Design"))
+        #expect(website.contains("SaneApps never receives your customer lists, orders, or revenue history"))
+        #expect(!website.contains("Public Code & iCloud Keychain"))
+        #expect(!website.contains("Provider keys are saved in iCloud Keychain"))
+        #expect(!website.contains("brew install --cask sane-apps/tap/sanesales"))
+        #expect(!website.contains("No server in the middle"))
+        #expect(!website.contains("No middleman."))
+        #expect(!website.contains("Made by a cool dev"))
+        #expect(!website.contains("FOSS alternative"))
     }
 
     @Test("macOS review notes match the real welcome-screen Pro entry point")

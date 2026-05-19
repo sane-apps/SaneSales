@@ -68,6 +68,10 @@ let expected = expectedPlatformsList.flatMap { expectedByPlatform[$0] ?? [] }
 let blacklist = [
   "youtube", "premium", "forbes", "trump", "codex", "claude", "github", "watch?v", "babish", "create"
 ]
+let marketingBlockers = [
+  "would like to access", "access data from other apps", "don't allow", "unlock pro", "basic stays",
+  "basic ", "demo data", "$24.99", "saneclip"
+]
 
 func tabHints(_ file: String) -> [String] {
   if file.contains("watch") && file.contains("dashboard") { return ["today", "sanesales", "month", "all time"] }
@@ -158,6 +162,11 @@ for name in expected {
     }
     for bad in blacklist where text.contains(bad) {
       reasons.append("blacklist_\(bad)")
+    }
+    if !name.contains("onboarding") {
+      for blocker in marketingBlockers where text.contains(blocker) {
+        reasons.append("marketing_blocker_\(blocker.replacingOccurrences(of: " ", with: "_"))")
+      }
     }
   } catch {
     reasons.append("ocr_error")

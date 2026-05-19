@@ -449,8 +449,9 @@ struct SettingsView: View {
     }
 
     private func triggerUnlock() {
+        let eventName = licenseService.usesAppStorePurchase ? "appstore_purchase_started" : "direct_checkout_opened"
         Task.detached {
-            await EventTracker.log("checkout_clicked", app: "sanesales")
+            await EventTracker.log(eventName, app: "sanesales")
         }
         if licenseService.usesAppStorePurchase {
             Task { await licenseService.purchasePro() }

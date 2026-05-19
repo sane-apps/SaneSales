@@ -1,9 +1,308 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-12
-**Current version:** 1.3.3 (build 1303) deployed for direct download; macOS and iOS App Store lanes are submitted and waiting for review
+**Last updated:** 2026-05-18
+**Current version:** 1.3.5 deployed for direct download; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-18 Noon Product Hunt Decision
+
+- Noon EDT checkpoint completed. Product Hunt API still shows the May 6 SaneSales post as live but unfeatured: post `1139905`, `featuredAt: null`, `votesCount: 1`, `commentsCount: 1`, `dailyRank: 565`, `monthlyRank: 6382`.
+- Standard work-email check found no Product Hunt moderation approval or rejection.
+- Official Product Hunt Help Center lists `hello@producthunt.com` as the safe support path. Sent the one allowed follow-up through `check-inbox.sh compose`; delivery confirmed via Resend `3ddd62e3-5d38-448f-8735-105c275c6aa6`.
+- Product Hunt is now no-go for launch-week timing. Do not create a duplicate Product Hunt launch unless Product Hunt explicitly approves later.
+- Active fallback remains: Indie Hackers on Tuesday May 19, 2026 at 10:00 AM EDT, then Show HN on Wednesday May 20, 2026 at 11:00 AM EDT if exact final drafts are approved.
+- Updated `.outreach.yml` to mark PH no-go for this launch-week slot and move the launch path to the existing Indie Hackers/HN fallback schedule.
+
+## 2026-05-18 Directory Schedule Follow-up
+
+- Re-ran the canonical Mini gate before touching any directory surface: [`./scripts/SaneMaster.rb launch_readiness --json`](/Users/sj/SaneApps/apps/SaneSales/scripts/SaneMaster.rb) stayed green on 2026-05-18 with warning-only cleanup (`release_preflight` still passed; 3 warnings remain).
+- No new irreversible submission was taken because the only low-friction lane was already complete: Launching Next remains submitted with receipt [`https://www.launchingnext.com/thanks/?i=134060`](https://www.launchingnext.com/thanks/?i=134060) and there was nothing new to re-submit.
+- MacUpdate still blocks immediately on account access. `https://member.macupdate.com/content/submit` redirects to [`https://member.macupdate.com/member/login/%20content%20submit`](https://member.macupdate.com/member/login/%20content%20submit) with Sign in/Create account, so no safe progress is possible without an existing member session or explicit approval to create one.
+- G2 still does not expose usable access in this browser session. The public page at [`https://sell.g2.com/create-a-profile`](https://sell.g2.com/create-a-profile) remains visible, `Get Started` still hands off into [`https://my.g2.com/signup?login=true`](https://my.g2.com/signup?login=true), and the direct add-product path at [`https://www.g2.com/products/new`](https://www.g2.com/products/new) now falls into an anti-bot verification iframe. Claim/create is still blocked unless seller/profile access already exists.
+- Optional SaaSHub is still not low-friction enough to justify distracting from the core launch schedule. The public flow accepts `https://sanesales.com`, but the second step requires categories, competitors, contact email, and a submission-type choice between `Free` and `$75 / One Off` before `Confirm`.
+- Durable tracker updates were written back into [`.outreach.yml`](/Users/sj/SaneApps/apps/SaneSales/.outreach.yml) for the May 15 `Directories` slot plus the MacUpdate, G2, and SaaSHub entries.
+
+## 2026-05-18 Launch Ops
+
+- Re-ran the canonical Mini gate before touching any due launch work: `./scripts/SaneMaster.rb launch_readiness` stayed green for SaneSales with warning-level cleanup only.
+- Executed the due 10:00 EDT `Product Hunt moderation check` without posting or scheduling anything irreversible. Product Hunt API still shows the old May 6 page as live but unfeatured: post `1139905`, `featuredAt: null`, `votesCount: 1`, `commentsCount: 1`, `dailyRank: 565`, `weeklyRank: 2464`, `monthlyRank: 6382`.
+- Work inbox check via `~/SaneApps/infra/scripts/check-inbox.sh check` returned `0` actionable threads, so there is no new Product Hunt moderation email to act on today.
+- Rechecked launch-week price references on 2026-05-18. Active user-facing surfaces found by `rg` include the explicit cutoff `May 21, 2026`; keep the $9.99/SANE60 copy until then, then remove/replace it everywhere in the `.outreach.yml` sunset checklist.
+- No Product Hunt relaunch scheduling, no public reply, and no fallback Indie Hackers / Hacker News action was taken because external approval is still pending and all public copy remains exact-approval-gated.
+- Public support-surface URLs remain unchanged: [Product Hunt product page](https://www.producthunt.com/products/sanesales), [website](https://sanesales.com), [Hosted YouTube demo](https://youtu.be/FmyGTWpBF4M), [direct download ZIP](https://dist.sanesales.com/updates/SaneSales-1.3.5.zip), and [direct checkout](https://go.saneapps.com/buy/sanesales).
+- Next launch-ops date is 2026-05-19 for the Indie Hackers conditional, but only if Product Hunt is still pending/no-go and the exact draft is approved first.
+
+## 2026-05-17: Directory Schedule Execution Recheck
+
+- Re-opened the live May 15 support-surface directory targets after the fresh green Mini launch gate and advanced each one only to the latest safe pre-approval state.
+- Launching Next remains the only clean approval-ready lane. The live form at `https://www.launchingnext.com/submit/` was re-filled from `.outreach.yml`, the newsletter box stayed off, and a fresh review screenshot was captured at [`/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/launchingnext-review-20260517.png`](/Users/sj/SaneApps/apps/SaneSales/outputs/playwright/launchingnext-review-20260517.png).
+- Important correction before any submission: the first browser fill dropped the literal dollar signs from `$9.99` and `$24.99` because the shell expanded them. That was caught before submit, corrected in the live form, and the exact staged copy now matches the canonical pricing again.
+- MacUpdate still redirects `https://member.macupdate.com/content/submit` into `https://member.macupdate.com/member/login/%20content%20submit` with Sign in/Create account, so no member-portal progress was possible.
+- G2 still exposes the public create-profile marketing page at `https://sell.g2.com/create-a-profile`, but the real action still hands off into `my.g2.com` login/upgrade flows. No existing seller/profile session was available, so claim/create remains blocked.
+- SaaSHub is slightly further than the prior run: `https://www.saashub.com/services/submit` now accepts `https://sanesales.com` and advances to the longer second-step form. That form still requires categories, competitors, contact email, and a free-vs-paid submission choice, so it is not low-friction enough to justify distracting from the core launch schedule.
+- BetaList no longer looks merely approval-gated. `https://betalist.com/submissions/new` now redirects straight to `https://betalist.com/sign_in`, so it is blocked on account access before any submission work.
+- Durable tracker updates were written back into `.outreach.yml` for the May 15 `Directories` slot plus the Launching Next, SaaSHub, and BetaList entries.
+
+## 2026-05-17: Conversion Positioning + Launch Gate Repair
+
+- Reframed the App Store metadata source in `.saneprocess` around the narrower buyer wedge: private native revenue tracking for indie sellers using Lemon Squeezy, Gumroad, and Stripe. Both macOS and iOS subtitles now use `Private Revenue Tracker`, and descriptions/keywords now lead with provider-specific buyer intent instead of generic `Read-Only Sales Dashboard`.
+- Updated the website/README positioning to match the same wedge and added homepage CTA-specific aggregate events (`website_buy_hero_clicked`, `website_buy_pricing_clicked`, `website_download_hero_clicked`) while keeping the existing aggregate buy/download events.
+- Split the iOS Settings unlock event into source-specific events: `appstore_purchase_started` for StoreKit and `direct_checkout_opened` for direct checkout, so `checkout_clicked` is no longer inflated by that surface.
+- Fixed `scripts/customer_ui_action_sweep.rb` so visual evidence gets unique per-action proof artifacts instead of reusing the same screenshot path across release-required actions.
+- Verification completed on the Mini:
+  - `./scripts/SaneMaster.rb verify` passed 79 tests.
+  - `./scripts/SaneMaster.rb appstore_preflight` passed with warnings only: manual Watch icon contrast inspection and dirty worktree.
+  - `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passed with 15 release-required actions covered.
+  - `./scripts/SaneMaster.rb release_preflight` passed with warnings only: dirty worktree, 1 pending customer email, evening release timing.
+  - `./scripts/SaneMaster.rb launch_readiness --json` returned `ok: true`.
+- Product Hunt state is not changed by this code/docs fix. Relaunch is still waiting on Product Hunt moderation approval; the May 18 Product Hunt moderation check remains the next go/no-go point.
+
+## 2026-05-16: Directory Schedule Recheck
+
+- Re-ran the canonical Mini gate before touching public support surfaces: `ruby /Users/sj/SaneApps/infra/SaneProcess/scripts/SaneMaster.rb launch_readiness --app SaneSales --json`.
+- Result at 10:02 AM EDT: `ok: false`. The gate is still red because the latest `release_preflight` is `failed` with 1 issue and 3 warnings, so no directory submission was allowed to move past blocker review.
+- Live public surface recheck:
+  - Launching Next still has the same ready-to-submit fields at `https://www.launchingnext.com/submit/`; the live form was re-filled, the newsletter checkbox was intentionally left off, and the tab is staged at `Submit Startup`. Exact copy in `.outreach.yml` remains valid, but `Submit Startup` is still an irreversible public action that needs exact approval once the gate is green.
+  - MacUpdate still redirects `https://member.macupdate.com/content/submit` into `https://member.macupdate.com/member/login/%20content%20submit` with Sign in/Create account. No access session was available.
+  - G2 still exposes the public create-profile marketing page at `https://sell.g2.com/create-a-profile` and routes actual action into `my.g2.com`. No seller/profile session was available, so claim/create could not proceed.
+  - SaaSHub is no longer just “unknown friction.” Entering `https://sanesales.com` into `https://www.saashub.com/services/submit` left `Continue` disabled in the in-app browser, so it is not low-friction enough to justify more launch time.
+- Durable tracker updates were written back into `.outreach.yml` for the May 15 `Directories` slot plus the Launching Next, MacUpdate, G2, and SaaSHub entries.
+
+## 2026-05-15: App Store Offer Code Recovery
+
+- Recovered the active SaneSales App Store one-time-use offer-code values through the App Store Connect API after local memory/file searches did not locate a prior saved SaneSales export.
+- Secure local path: `/Users/sj/SaneApps/outputs/license-campaign/sanesales_ios_appstore_codes_20260515/`.
+- Secure Mini path: `/Users/stephansmac/SaneApps/outputs/license-campaign/sanesales_ios_appstore_codes_20260515/`.
+- Files: `appstore_offer_codes.csv` contains 500 code/redemption URL rows; `reserved_codes.csv` tracks codes already assigned so future outreach does not reuse them.
+- ASC source: app `6759010976`, IAP `6761268205`, offer-code batch `096f3fef-bd74-46d9-a94b-37762003ea37` (`Noah Demo 2026-04-17`), one-time-use set `c119b93a-b57a-4fc5-a343-dbd9d01a529f`.
+- User hit Apple's "already redeemed maximum number of these codes per Apple Account" message while the iPhone still appeared Basic. Interpretation: the Apple Account has already consumed an offer code, but the installed app did not surface the StoreKit entitlement.
+- Shared SaneUI fix applied: `LicenseService` now processes `Transaction.unfinished`, preserves restored unfinished unlocks, and falls back to `Transaction.latest(for:)` in addition to `Transaction.currentEntitlements` after `AppStore.sync()`.
+- Mini verification: `cd ~/SaneApps/infra/SaneUI && swift test --filter SaneLicenseServiceTests` passed; `cd ~/SaneApps/apps/SaneSales && ./scripts/SaneMaster.rb verify` passed 76 tests.
+- Release implication: the current App Store build may still require Restore Purchases and may not include this hardened path until the next SaneSales App Store update ships.
+
+## 2026-05-15: Support-Surface Directory Access Review
+
+- Launching Next is the only clean public submission surface confirmed in this run. The live form fields were verified against `https://www.launchingnext.com/submit/`, and `.outreach.yml` now stores the exact ready-to-submit payload:
+  startup name `SaneSales`, headline `Private native sales tracker for indie sellers`, the full privacy-first description, tags, `Bootstrapped startup`, `$0` marketing budget, submitter `Mr. Sane`, email `hi@saneapps.com`, and anti-spam answer `5`.
+- Launching Next was intentionally not submitted. `Submit Startup` is an irreversible public action, so the lane is waiting on exact approval rather than form discovery.
+- MacUpdate is blocked on member-portal access. The current submit URL is `https://member.macupdate.com/content/submit`, but it redirects into a sign-in/create-account flow when unauthenticated.
+- G2 is blocked unless seller/profile access already exists. Public docs at `https://sell.g2.com/create-a-profile` still describe the create-then-claim workflow, but the real `my.g2.com` creation path requires login and the unauthenticated endpoint was protected in this environment.
+- SaaSHub remains optional. The public first step at `https://www.saashub.com/services/submit` exposes a Website URL plus `Continue`, but the continuation path was not verified as account-free, so it was left unsent rather than burning time off the core launch schedule.
+
+## 2026-05-15: Launch Readiness Cleanup
+
+- Mini `./scripts/SaneMaster.rb launch_readiness --json` passes for support surfaces and targeted replies only. Product Hunt relaunch still requires moderation approval, and directory submissions still require exact approval before irreversible public posting.
+- Live Product Hunt API still shows the original May 6, 2026 post as unfeatured: post `1139905`, `featuredAt: null`, `votesCount: 1`, `commentsCount: 1`, `dailyRank: 565`, `monthlyRank: 5657`.
+- Launch-week price copy is currently intentional but date-bound. `.outreach.yml` now has a May 21, 2026 sunset checklist for README, website, guide pages, Product Hunt package copy, and outreach metadata.
+- `macOS/SaneSalesSettingsCopy.swift` fallback price now uses the regular `$24.99` price so the app does not show stale `$9.99` copy if live pricing cannot load after the offer window.
+
+## 2026-05-14: Full-Frame Video QA Correction
+
+- User-provided QuickTime evidence at 5:34 PM showed the previous
+  `launch-week-pro-all-devices.mp4` still had a broken text overlap on the
+  iPhone slide. Root causes: contact-sheet review was treated as sufficient, the
+  old transition path blended adjacent text-heavy slides, and body text positions
+  were not always based on rendered title height.
+- Story correction: the video now follows the intended sales order:
+  1. problem: sales apps can mine private data and charge forever;
+  2. solution: track sales privately, no subscription, no private sales data collected, pay once;
+  3. product proof across dashboard, Mac, iPhone, iPad, and Apple Watch;
+  4. launch-week CTA.
+- Approved canonical artifact: the current video is final. Keep
+  `Videos/launch-week-pro-all-devices.mp4` and
+  `docs/videos/sanesales-launch-week-pro-all-devices.mp4` as the canonical
+  SaneSales launch-week video. SHA-256:
+  `164297c4cc171a641b03c2df1aca8831260294a88b97c4187b80b3f8915786f6`.
+- Generator correction: `scripts/build_launch_video.py` uses per-slide fades plus
+  `concat` instead of `xfade`, dynamic title/body spacing, and the CTA now uses
+  short copy with no overlapping URL/body text.
+- Current local rebuilt cache tag: `164297c4cc17`.
+- Full-size frames inspected after rebuild:
+  `/tmp/sanesales-final-review/full-1.png`, `full-8.png`, `full-15.png`,
+  `full-22.png`, `full-29.png`, `full-36.png`, `full-43.png`, `full-50.png`.
+  Midpoint and transition sheets inspected:
+  `/tmp/sanesales-final-review/midpoints.png`,
+  `/tmp/sanesales-final-review/boundaries-a.png`,
+  `/tmp/sanesales-final-review/boundaries-b.png`.
+- Local media metadata after rebuild: 1920x1080, 30fps, 55.977s, H.264 + AAC,
+  mean volume `-19.0 dB`, max volume `-1.8 dB`.
+- Critic follow-up applied after the first full-frame correction: opener now
+  stays problem-led with `There is a cleaner way.`, the chart slide says
+  `See what sold today.`, and the privacy line now says
+  `No analytics cloud collecting your history`.
+- Final line-break/copy correction: removed the contradictory phrase
+  `Private tracking`. The privacy solution heading now renders as two deliberate
+  lines: `Track sales privately.` and `No subscription.` The pay-once/no-monthly
+  bill claims are also split into separate bullet lines.
+- SOP correction recorded in project and shared docs: full-size every-slide
+  inspection and transition-boundary inspection are mandatory; contact sheets are
+  navigation only. Storyboard order must answer a privacy/subscription problem
+  immediately with the privacy/pay-once solution.
+- Final verification and publish: Mini `./scripts/SaneMaster.rb verify` passed
+  76 tests after the final copy/layout rebuild. Website-only deploy to
+  Cloudflare Pages completed, live homepage references cache tag
+  `164297c4cc17`, and the live MP4 returned `200` with
+  `content-type: video/mp4` / `content-length: 2616980`.
+
+## 2026-05-14: Launch Video Attempt Failure Log
+
+- Process failure: the first video pass was treated like a design task instead of a customer-facing release asset. It reused/combined screenshots without first proving each platform was in a Pro-safe state.
+- Rejected frames/assets:
+  - old Watch screenshots that showed `Demo data` or a locked Pro state;
+  - Mac screenshots with permission dialogs or stale unlock/price bubbles;
+  - slide layouts where headings were clipped or covered by device mockups;
+  - dashboard/chart frames where the revenue bars were nearly identical across the selected range.
+- Tooling gap found: `scripts/capture_appstore_screenshots.sh` had Mini-first and validation discipline, but `scripts/capture_demo_videos.sh` did not pass Pro/test args into clips before this session. It now supports `EXTRA_APP_ARGS`, including Watch, iPhone, iPad, and Mac clip launches.
+- Second tooling gap found: the final launch video was originally generated by
+  ad-hoc terminal code. That made it too easy to rebuild inconsistently. The
+  repeatable builder is now `python3 scripts/build_launch_video.py`; it writes
+  the MP4, poster, source contact sheet, sampled video contact sheet, audio bed,
+  and website copy path in one command.
+- Watch capture fix: `Watch/WatchDashboardView.swift` now honors `--force-pro-mode` / `SANEAPPS_FORCE_PRO_MODE=1` so Watch marketing captures can show a Pro-style dashboard/recent-sales view without `Demo data` or locked copy.
+- Demo fixture fix: `Core/DemoData.swift` now creates visibly varied daily
+  revenue for the April 4-18, 2026 marketing range, with a regression test in
+  `Tests/MetricsTests.swift` so the selected chart range cannot silently flatten
+  again.
+- Generator QA failures caught and fixed in this pass:
+  - first generator run failed because Pillow masking used the wrong API;
+  - the first rebuilt hero clipped the headline;
+  - the chart/iPad slides had text colliding with device frames at full size;
+  - the background used ornamental circular glows/line-like texture that did
+    not match SaneUI;
+  - automated Mac screenshots reintroduced a permission dialog with `SaneClip`
+    text into a SaneSales settings frame;
+  - Watch recent-sales screenshots exposed unrelated SaneApps product names;
+  - Mac screenshots exposed `Basic`/stale unlock pricing in tiny UI text.
+- Current correction: the launch video now uses a gentle Sane-style blue
+  gradient background, full-frame inspected screenshots, and curated Mac/Watch
+  inputs where the automated capture path is not yet marketing-safe.
+- Final chart correction: the clean Mac dashboard website asset still had flat
+  revenue bars. It was corrected to show varied daily sales that match the
+  visible `$3,240` / `$216 avg/day` summary, and `build_launch_video.py` now
+  fails if chart-bearing source assets are missing bars or visually flat.
+- Final critic correction: mobile headline spacing no longer reads `Sanityto`,
+  iPad marketing frames are cropped to the useful dashboard/product regions,
+  the sampled video contact sheet uses a 4x2 tile instead of leaving an empty
+  black row, and awkward slide copy was changed to `Daily sales, clearly` /
+  `Review sales from your Mac`.
+- Branding correction: the video generator no longer draws a substitute `$`
+  logo. It uses the official SaneSales `docs/images/branding.png` asset for
+  generated video logo lockups, and the shared/project SOPs now block placeholder
+  logos in marketing assets.
+- Audio correction: the launch video now uses the repo-local
+  `Videos/pulse-ledger.mp3` music source. `build_launch_video.py` loops, trims,
+  normalizes, and fades that track to match the final MP4 duration instead of
+  using a synthetic placeholder bed or a Downloads-only source.
+- Logo/layout correction: the generated video lockup now uses the larger
+  official app icon source at
+  `Resources/Assets.xcassets/AppIcon.appiconset/icon_1024x1024.png`, keys out
+  the baked-in dark square so the mark blends into the Sane blue background, and
+  keeps every slide on a stable left-column/right-proof layout so the eye path
+  does not jump around between transitions.
+- Highlight correction: non-clickable filled pills were removed from the video
+  because they looked like buttons and the yellow/blue choices drifted from
+  SaneApps colors. Highlights now use Sane teal/cyan callouts with an accent
+  rule and no rounded filled background.
+- Tooling correction: app-store screenshots now sync to website image names for
+  safe iPhone/iPad/Watch dashboard sources, while Mac settings/screens and Watch
+  recent-sales frames are intentionally held as curated inputs until reviewed.
+- Accepted current artifacts:
+  - canonical final MP4: `Videos/launch-week-pro-all-devices.mp4`
+  - website copy: `docs/videos/sanesales-launch-week-pro-all-devices.mp4`
+  - poster: `docs/images/sanesales-launch-video-poster.png`
+  - source contact sheet: `Videos/launch-week-pro-contact-sheet.png`
+  - sampled final-video contact sheet: `Videos/launch-week-pro-video-contact-sheet.jpg`
+- Verification completed before the chart critique:
+  - Mini `./scripts/SaneMaster.rb verify` passed 74 tests.
+  - Mini Watch screenshot validator passed for the fresh Watch captures.
+  - `ffprobe` confirmed the MP4 is 1920x1080, 30fps, 46.43s, H.264 + AAC.
+  - OCR banned-term scan passed for slides.
+  - Cloudflare Pages deploy succeeded and the live MP4 returned `200 video/mp4`.
+- Latest verification after the final visual corrections:
+  - Mini `./scripts/SaneMaster.rb verify` passed 76 tests on May 14, 2026 after the final chart/contact-sheet/mobile-spacing pass.
+  - `python3 -m py_compile scripts/build_launch_video.py` passed.
+  - `bash -n scripts/capture_appstore_screenshots.sh` and
+    `bash -n scripts/capture_demo_videos.sh` passed locally and on the Mini.
+  - `ffprobe` confirmed the final MP4 is 1920x1080, 30fps, 49.70s, H.264.
+  - Chart QA measured non-flat bars in `screenshot-mac-dashboard.png`,
+    `screenshot-ipad-dashboard.png`, and `screenshot-iphone-dashboard.png`.
+  - Playwright screenshots verified desktop, mobile, and device-grid website
+    renders with no permission dialogs, no popup blocks, readable spacing, and
+    visible chart variation.
+  - A GPT critic subagent reviewed the updated rendered screenshots/contact
+    sheet and returned PASS with no remaining launch-blocking issues.
+  - OCR banned-term scan passed across all 8 final slides for `Unlock Pro`,
+    `Basic`, `Demo data`, stale prices, permission prompts, `SaneClip`,
+    debug/internal text, and popup terms.
+- Final publish verification:
+  - Website-only deploy to Cloudflare Pages completed on May 14, 2026.
+  - Live MP4 `https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17`
+    returned `200` with `content-type: video/mp4` after the official-logo,
+    Pulse Ledger audio, and final buyer-copy rebuild.
+  - Live homepage HTML references the rebuilt poster/video cache tag
+    `164297c4cc17` and includes the current privacy and launch-week copy.
+  - Latest local rebuild uses the consistent layout grid, blended 1024px logo
+    source, and non-clickable Sane teal/cyan callouts. Mini
+    `./scripts/SaneMaster.rb verify` passed 76 tests after the generator/test
+    updates, and a GPT critic pass returned PASS with no blocking visual issues.
+  - Live Playwright screenshots in `outputs/playwright/` verify mobile headline
+    spacing, the updated video poster, and the device grid with non-flat charts.
+  - `./scripts/SaneMaster.rb check_docs` exits 0 cleanly after the
+    SaneProcess README operator docs map was added.
+  - Live homepage bad-copy scan passes for removed buyer-irrelevant lines:
+    Homebrew install command, support/sponsor funnel, weak testimonial quotes,
+    `No server in the middle`, provider-key storage mechanics, and license-check
+    mechanics.
+  - Mini Playwright runtime was confirmed/installed (`playwright@1.60.0` plus
+    Chromium v1223), and a Mini headless render smoke passed against the synced
+    `docs/` site. Evidence screenshot:
+    `/tmp/sanesales-local-page-after-copy-cleanup.png` on the Mini.
+- Marketing distribution pass on May 14, 2026:
+  - Website redeployed through the standard Cloudflare Pages path after adding
+    Open Graph video metadata and `VideoObject` JSON-LD for the canonical video.
+  - Live homepage verifies `og:video`, `VideoObject`, and the MP4 cache tag
+    `164297c4cc17`.
+  - X search evidence is saved in `outputs/marketing/x-opportunities-20260514.json`
+    and `outputs/marketing/x-opportunities-focused-20260514.json`; no high-fit
+    reply target was worth forcing.
+  - Standalone launch post is live at
+    `https://x.com/i/web/status/2055078497328980172`.
+  - A first post with shell-expanded `.99` was deleted immediately
+    (`2055078406362943614`), and global `x-post.py` now supports `--text-file`
+    plus blocks `.99` without `$` so the failure does not repeat.
+  - Product Hunt/G2 remain blocked on a YouTube/Vimeo-style hosted video URL.
+    App Store preview upload remains blocked on separate 15-30s
+    device/display-specific preview cuts; the canonical 55.98s all-device
+    marketing video is not App Store-ready.
+  - Created a 30.000s all-content YouTube upload candidate at
+    `Videos/sanesales-launch-week-pro-all-devices-30s.mp4` by reducing each of
+    the eight approved sections to 3.75s. It was copied to the Mini desktop at
+    `/Users/stephansmac/Desktop/SaneSales-launch-week-pro-all-devices-30s.mp4`;
+    SHA-256 verified on both machines:
+    `5ea0c9c1952506d66e03aa1a60f8e09106f5cdb139f727d9c3e064c7eb272662`.
+  - YouTube hosted video is live at `https://youtu.be/FmyGTWpBF4M`; oEmbed
+    verifies the title/channel. The website `VideoObject` was updated and
+    redeployed so `embedUrl` points to the YouTube embed while the direct MP4
+    remains `contentUrl`.
+  - Posted the YouTube demo to X at
+    `https://x.com/i/web/status/2055082714080969139`, using `x-post.py
+    --text-file` to preserve `$9.99`.
+  - Product Hunt launch package is staged at
+    `outputs/marketing/product-hunt-sanesales-20260514/` with `thumbnail-240.png`,
+    three 1270x760 gallery images, YouTube URL, and maker copy. Assets were
+    visually checked; the thumbnail uses the keyed logo treatment to avoid hard
+    icon edges.
+
+## 2026-05-14: SaneSales 60% Off Direct Launch Offer Live
+
+- Created LemonSqueezy discount `SANE60` for SaneSales direct checkout: effective direct price is $9.99 from the normal $24.99, expiring May 21, 2026 at end-of-day Eastern.
+- Deployed `go.saneapps.com` checkout worker so `/buy/sanesales` redirects to the LemonSqueezy checkout with `checkout[discount_code]=SANE60`; verified live 302 includes the encoded discount parameter.
+- Updated and deployed `sanesales.com` hero, pricing card, FAQ/guide CTAs, comparison copy, JSON-LD pricing, and README around the stronger positioning: private native sales tracking, no SaneApps sales-data server, one-time Pro, multi-provider views, order history, CSV export, widgets, Watch, and menu bar revenue.
+- Corrected competitor claims: do not say Baremetrics or ChartMogul are Stripe-only. Current positioning should contrast SaneSales as native/private/one-time/direct-to-provider, while those tools are cloud SaaS analytics platforms with monthly pricing.
+- Generated launch video assets in `Videos/`: `launch-week-60-off.mp4`, `launch-week-contact-sheet.png`, and `launch-week-slides/`. Final pass removes permission dialogs, stale $24.99 screenshot bubbles, and popup artifacts; includes dashboard, orders, products, export, privacy/no-subscription, and $9.99 direct CTA.
+- Verification: `./scripts/SaneMaster.rb check_docs` exits 0 with only the pre-existing README/SaneProcess operator-docs warning; Cloudflare Pages deploy succeeded; live homepage text and guide CTA were verified by HTTP; live Playwright screenshot `/tmp/sanesales-home-live-cta.png` shows prominent SaneSales branding and the top $9.99 CTA; live checkout route redirects with `checkout%5Bdiscount_code%5D=SANE60`.
+- Remaining: direct app/Sparkle recovery update has not been shipped; App Store IAP price was not changed; local SaneUI fallback price edit still needs commit/push/package resolution before a future app build will inherit it.
 
 ## 2026-05-12: Customer UI Action Release Gate
 
@@ -275,3 +574,68 @@
 
 ### Key Lesson
 Per-app R2 buckets were never wired to the sane-dist Worker — only `sanebar-downloads` was. This caused broken download links for SaneHosts customers and stale versions in webhook emails for all other apps. Now standardized: ONE shared bucket, ONE Worker, all apps upload to `sanebar-downloads`.
+
+## Session 7: Launch Video + Website Brand Recovery
+
+> Last updated: 2026-05-14
+
+### Done
+1. **SaneSales website hero restored to SaneApps brand** — Compared SaneBar, SaneClip, SaneClick, SaneHosts, and brand docs; changed SaneSales hero to `Bring Sanity to your Sales Tracking`, concise human copy, simple trust badges, and clear Download / Pro CTAs.
+2. **Dense pricing moved below product proof** — Removed long pricing/server/Homebrew copy from the first viewport and added a dedicated pricing section lower on the page.
+3. **Public website deployed** — `release.sh --website-only` deployed to Cloudflare Pages and verified `https://sanesales.com/` contains the corrected H1 and App Store marker.
+4. **App Store download path restored** — Added the iPhone/iPad App Store CTA with `data-appstore-ios-link` so website deploy preflight can verify the live App Store listing.
+5. **First-paint animation failure fixed** — Playwright screenshots showed the hero could render nearly unreadable while delayed animations started from `opacity: 0`; animation now stays legible at first paint.
+6. **Launch video copy hardened** — Removed buyer-irrelevant implementation details from the SaneSales launch video. Current rule: every visible line must be a problem, benefit, proof point, or CTA; license-check mechanics, provider-key mechanics, and backend labels are cut.
+7. **Website sales copy tightened** — Removed the Homebrew command from the pricing offer, removed the separate donation/support funnel from the main sales page, replaced technical privacy phrasing with buyer language, and removed weak testimonials that diluted purchase intent.
+
+### Verification
+- Local Browser DOM/title/console: passed for `http://127.0.0.1:8765/`.
+- Local Playwright desktop + mobile screenshots: passed after animation fix.
+- Live curl check: `https://sanesales.com/` contains `Bring <em>Sanity</em> to your Sales Tracking` and one `data-appstore-ios-link`.
+- Live Playwright interaction: Products tab switches to product screenshot content; no site-code console errors. Headless environment blocks Cloudflare beacon, which is external analytics noise.
+- Mini `./scripts/SaneMaster.rb verify`: passed, 76 tests in 15s after strengthening recent demo data so the rolling positive-momentum test remains true.
+- `SaneMaster.rb check_docs`: exits 0 cleanly after updating the SaneProcess README operator docs map.
+
+### Open Issues
+- Large uncommitted launch-video / website / screenshot change set remains unstaged.
+
+### 2026-05-14 Launch Marketing Follow-Up
+- **Pricing consistency pass completed** — Website, guide CTAs, README, Product Hunt package, and `.outreach.yml` now state the same offer: direct Pro is `$9.99` with code `SANE60` through May 21, 2026; regular price is `$24.99`. Hero copy now explains that checkout may show regular `$24.99` first and SANE60 drops it to `$9.99`.
+- **Website deployed and verified** — Cloudflare Pages deploy completed at `https://e491479d.sanesales-site.pages.dev`; live `https://sanesales.com/` contains the hero SANE60 caveat, pricing-section caveat, comparison full date, and valid JSON-LD. Checkout redirect verified to Lemon Squeezy with `checkout[discount_code]=SANE60`.
+- **Product Hunt page refreshed** — Signed-in Mini Safari updated the public Product Hunt product page tagline, description, GitHub URL, pricing type, and thumbnail. Public page now shows `Private native sales tracker for indie sellers`, stronger privacy/no-subscription description, `Free Options`, and GitHub link.
+- **Product Hunt launch state corrected** — Existing Product Hunt page is live, but it was an unfeatured/low-distribution launch. API evidence: `featuredAt: null`, `dailyRank: 565`, `votesCount: 1`, `commentsCount: 1`, scheduled/launched May 6, 2026.
+- **Product Hunt relaunch review requested** — Signed-in Mini Safari `New launch` flow said `SaneSales recently launched on Product Hunt. Is this new launch a major update?`. Submitted an honest moderation request explaining the incomplete/unfeatured first launch and refreshed launch package. Product Hunt showed: `Thank you! We're reviewing your request and will be in contact with you shortly.`
+- **Product Hunt maker comment updated** — Existing public maker comment now includes the YouTube demo, privacy/no-private-sales-data claim, and SANE60 launch-week offer.
+- **Product Hunt limitation found** — Existing launch-post API data still reports the original launch tagline/media; Product Hunt product-page settings do not expose a video field, and the API schema has no mutation for editing existing launch post media. Relaunch requires Product Hunt moderation approval because SaneSales recently launched.
+- **Hosted Product Hunt assets** — Refreshed Product Hunt images are now live under `https://sanesales.com/images/product-hunt-*.png` and copied to the Mini Desktop in `~/Desktop/SaneSales-Product-Hunt-Package/`.
+- **Meaningful launch schedule added** — `.outreach.yml` now has a `launch_calendar` with exact gates and automation IDs. Active automations: `submit-sanesales-directories` (May 15 support surfaces), `check-product-hunt-relaunch-review` (daily through May 18), `sanesales-x-opportunity-scan` (May 16), `sanesales-indie-hackers-launch` (May 19 fallback / May 21 follow-on if PH approved), `sanesales-show-hn-fallback` (May 20 fallback), and `sanesales-offer-final-day-check` (May 21). Core rule: PH/IH/HN are meaningful conversation launches; MacUpdate/G2/LaunchingNext/SaaSHub are support surfaces, not launch substitutes.
+- **Launch-readiness gate current** — On 2026-05-14, Mini `customer_ui_sweep --no-exit` passed and Mini `release_preflight` passed with 0 issues / 4 warnings. `./scripts/SaneMaster.rb launch_readiness --json` now returns `ok: true` for the current SaneSales direct/support-surface launch window. Product Hunt relaunch still remains channel-gated on moderation approval; directory receipts must be recorded after submission.
+
+## 2026-05-15 Launch Ops
+
+- 10:01 EDT recheck changed the lane from yesterday's go to today's no-go. Mini `./scripts/SaneMaster.rb launch_readiness` now fails because `outputs/release_preflight_status.json` flipped to `failed` with 1 issue: `Customer UI action contract: Receipt source fingerprint is stale; rerun customer UI QA after the latest code change`.
+- Repair attempt failed before app QA started. Mini `./scripts/SaneMaster.rb customer_ui_sweep --json` returned `Mini visual precheck failed before customer UI sweep: 1 Peekaboo command(s) failed`; the new receipt is [`outputs/visual_smoke/visual_smoke_20260515-100332_66128/summary.md`](/Users/sj/SaneApps/apps/SaneSales/outputs/visual_smoke/visual_smoke_20260515-100332_66128/summary.md), where `menu-image` failed and `screen-image` still passed.
+- Today’s 10:00 Eastern `Directories` slot was not executed. Per the launch gate rule, I did not open or submit MacUpdate, LaunchingNext, G2, SaaSHub, or BetaList forms once the current gate went red.
+- Prepared-but-not-submitted support-surface targets remain:
+  - [Product Hunt product page](https://www.producthunt.com/products/sanesales)
+  - [Website](https://sanesales.com)
+  - [Hosted YouTube demo](https://youtu.be/FmyGTWpBF4M)
+  - [Direct download ZIP](https://dist.sanesales.com/updates/SaneSales-1.3.5.zip)
+  - [Direct checkout](https://go.saneapps.com/buy/sanesales)
+- `.outreach.yml` now marks LaunchingNext, MacUpdate, G2, and optional SaaSHub as `blocked_by_launch_gate` with the exact 2026-05-15 blocker, while BetaList remains intentionally unattempted because it is not part of today's core support-surface schedule.
+
+## 2026-05-16 Launch Ops
+
+- Mini `./scripts/SaneMaster.rb launch_readiness --json` stayed red again. The current blocker is still `outputs/release_preflight_status.json` failing with 1 issue: `Customer UI action contract: Receipt source fingerprint is stale; rerun customer UI QA after the latest code change`.
+- No due launch-calendar work was executed. The overdue `Directories` lane stayed paused and the 10:00 Eastern `X opportunity scan` was skipped because the launch gate was not green.
+- No public reply, no listing submission, and no Product Hunt scheduling action was taken. Public support-surface state is unchanged: [Product Hunt product page](https://www.producthunt.com/products/sanesales), [website](https://sanesales.com), [Hosted YouTube demo](https://youtu.be/FmyGTWpBF4M), [direct download ZIP](https://dist.sanesales.com/updates/SaneSales-1.3.5.zip), and [direct checkout](https://go.saneapps.com/buy/sanesales).
+- Next launch-ops date is 2026-05-18 for the Product Hunt moderation check, but only if the stale customer UI receipt blocker is cleared first.
+
+## 2026-05-17 Launch Ops
+
+- Mini `./scripts/SaneMaster.rb launch_readiness --json` returned green again at 09:03 EDT. The current receipt is go for support-surface work only: `release_preflight` passed and still reports 3 warnings (dirty worktree, 1 pending customer email, evening release timing).
+- Re-ran the overdue `Directories` lane with the green gate. Launching Next accepted the canonical free submission and returned receipt [`https://www.launchingnext.com/thanks/?i=134060`](https://www.launchingnext.com/thanks/?i=134060) with status `In Queue (Estimated Wait: 4 Months)`. No paid Fast-Track upgrade was taken.
+- Exact submitted Launching Next copy matched `.outreach.yml`: headline `Private native sales tracker for indie sellers`; privacy-first description with direct Pro `$9.99` + code `SANE60` through May 21, 2026 and regular `$24.99`; tags `sales analytics, mac app, ios app, lemonsqueezy, gumroad, stripe, indie hackers, revenue tracking`; company type `Bootstrapped startup`; marketing budget `$0`; submitter `Mr. Sane`; email `hi@saneapps.com`; newsletter opt-in `false`; anti-spam answer `5`.
+- Remaining directory blockers were re-verified live: MacUpdate still redirects to member login at [`https://member.macupdate.com/member/login/%20content%20submit`](https://member.macupdate.com/member/login/%20content%20submit); G2 create-profile is visible at [`https://sell.g2.com/create-a-profile`](https://sell.g2.com/create-a-profile) but no seller/profile session was present; optional SaaSHub now reaches second-step staging at [`https://www.saashub.com/services/new?url=https%3A%2F%2Fsanesales.com&commit=Continue`](https://www.saashub.com/services/new?url=https%3A%2F%2Fsanesales.com&commit=Continue) but was intentionally not carried further because it is no longer low-friction.
+- Public support-surface URLs otherwise remain unchanged: [Product Hunt product page](https://www.producthunt.com/products/sanesales), [website](https://sanesales.com), [Hosted YouTube demo](https://youtu.be/FmyGTWpBF4M), [direct download ZIP](https://dist.sanesales.com/updates/SaneSales-1.3.5.zip), and [direct checkout](https://go.saneapps.com/buy/sanesales).
+- Next launch-ops date stays 2026-05-18 for the Product Hunt moderation check.

@@ -14,8 +14,9 @@ final class WatchDashboardViewModel: ObservableObject {
     func refresh(useDemoIfEmpty: Bool = false) {
         isLoading = true
         let defaults = SharedStore.userDefaults()
+        let forceProMode = Self.forcedProModeEnabled()
 
-        guard SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty else {
+        guard SharedStore.isProEnabled(defaults: defaults) || useDemoIfEmpty || forceProMode else {
             snapshot = nil
             usingDemoData = false
             isLocked = true
@@ -30,9 +31,10 @@ final class WatchDashboardViewModel: ObservableObject {
         if let sharedSnapshot {
             resolvedSnapshot = WatchSalesSnapshot(sharedSnapshot: sharedSnapshot)
             usingDemoData = false
-        } else if useDemoIfEmpty {
-            resolvedSnapshot = WatchSalesSnapshot(orders: demoOrders(), lastUpdated: nil)
-            usingDemoData = true
+        } else if useDemoIfEmpty || forceProMode {
+            let previewLastUpdated = Date().addingTimeInterval(-3 * 60)
+            resolvedSnapshot = WatchSalesSnapshot(orders: demoOrders(), lastUpdated: forceProMode ? previewLastUpdated : nil)
+            usingDemoData = useDemoIfEmpty && !forceProMode
         } else {
             resolvedSnapshot = nil
             usingDemoData = false
@@ -47,6 +49,13 @@ final class WatchDashboardViewModel: ObservableObject {
         snapshot = resolvedSnapshot
 
         isLoading = false
+    }
+
+    private static func forcedProModeEnabled(
+        arguments: [String] = CommandLine.arguments,
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Bool {
+        environment["SANEAPPS_FORCE_PRO_MODE"] == "1" || arguments.contains("--force-pro-mode")
     }
 
     private func dominantCurrency(for orders: [Order]) -> String {
@@ -74,25 +83,25 @@ final class WatchDashboardViewModel: ObservableObject {
             // 5 products x 3 providers = 15 orders.
             // Each product appears multiple times across different sources.
             // Product 1
-            makeDemoOrder(id: "watch_demo_p1_ls", product: "SaneBar", cents: 1900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-8 * 60)),
-            makeDemoOrder(id: "watch_demo_p1_gr", product: "SaneBar", cents: 1800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-14 * 60)),
-            makeDemoOrder(id: "watch_demo_p1_st", product: "SaneBar", cents: 1700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-20 * 60)),
+            makeDemoOrder(id: "watch_demo_p1_ls", product: "IconForge", cents: 1900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-8 * 60)),
+            makeDemoOrder(id: "watch_demo_p1_gr", product: "IconForge", cents: 1800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-14 * 60)),
+            makeDemoOrder(id: "watch_demo_p1_st", product: "IconForge", cents: 1700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-20 * 60)),
             // Product 2
-            makeDemoOrder(id: "watch_demo_p2_ls", product: "SaneClip", cents: 1200, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-26 * 60)),
-            makeDemoOrder(id: "watch_demo_p2_gr", product: "SaneClip", cents: 1150, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-32 * 60)),
-            makeDemoOrder(id: "watch_demo_p2_st", product: "SaneClip", cents: 1100, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-38 * 60)),
+            makeDemoOrder(id: "watch_demo_p2_ls", product: "PixelSnap", cents: 1200, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-26 * 60)),
+            makeDemoOrder(id: "watch_demo_p2_gr", product: "PixelSnap", cents: 1150, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-32 * 60)),
+            makeDemoOrder(id: "watch_demo_p2_st", product: "PixelSnap", cents: 1100, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-38 * 60)),
             // Product 3
-            makeDemoOrder(id: "watch_demo_p3_ls", product: "SaneSales", cents: 699, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-44 * 60)),
-            makeDemoOrder(id: "watch_demo_p3_gr", product: "SaneSales", cents: 699, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-50 * 60)),
-            makeDemoOrder(id: "watch_demo_p3_st", product: "SaneSales", cents: 699, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-56 * 60)),
+            makeDemoOrder(id: "watch_demo_p3_ls", product: "TemplateKit", cents: 699, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-44 * 60)),
+            makeDemoOrder(id: "watch_demo_p3_gr", product: "TemplateKit", cents: 699, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-50 * 60)),
+            makeDemoOrder(id: "watch_demo_p3_st", product: "TemplateKit", cents: 699, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-56 * 60)),
             // Product 4
-            makeDemoOrder(id: "watch_demo_p4_ls", product: "SaneSync", cents: 2900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-62 * 60)),
-            makeDemoOrder(id: "watch_demo_p4_gr", product: "SaneSync", cents: 2800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-68 * 60)),
-            makeDemoOrder(id: "watch_demo_p4_st", product: "SaneSync", cents: 2700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-74 * 60)),
+            makeDemoOrder(id: "watch_demo_p4_ls", product: "LaunchPack", cents: 2900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-62 * 60)),
+            makeDemoOrder(id: "watch_demo_p4_gr", product: "LaunchPack", cents: 2800, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-68 * 60)),
+            makeDemoOrder(id: "watch_demo_p4_st", product: "LaunchPack", cents: 2700, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-74 * 60)),
             // Product 5
-            makeDemoOrder(id: "watch_demo_p5_ls", product: "SaneHosts", cents: 4900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-80 * 60)),
-            makeDemoOrder(id: "watch_demo_p5_gr", product: "SaneHosts", cents: 4700, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-86 * 60)),
-            makeDemoOrder(id: "watch_demo_p5_st", product: "SaneHosts", cents: 4500, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-92 * 60))
+            makeDemoOrder(id: "watch_demo_p5_ls", product: "CreatorSuite", cents: 4900, currency: "USD", provider: .lemonSqueezy, createdAt: now.addingTimeInterval(-80 * 60)),
+            makeDemoOrder(id: "watch_demo_p5_gr", product: "CreatorSuite", cents: 4700, currency: "USD", provider: .gumroad, createdAt: now.addingTimeInterval(-86 * 60)),
+            makeDemoOrder(id: "watch_demo_p5_st", product: "CreatorSuite", cents: 4500, currency: "USD", provider: .stripe, createdAt: now.addingTimeInterval(-92 * 60))
         ]
     }
 
