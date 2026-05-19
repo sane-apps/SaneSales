@@ -54,7 +54,7 @@ enum DemoData {
                 provider: .stripe, url: nil, avatarURL: nil,
                 plan: nil, country: "US", countryNicename: "United States",
                 totalSales: 614, thirtyDaySales: 97, createdAt: date(2024, 9, 10),
-                gumroadUserID: nil, stripeAccountID: "acct_demo", stripeEmail: "hello@pixelstudio.dev"
+                gumroadUserID: nil, stripeAccountID: "acct_demo", stripeEmail: "hello@example.com"
             )
         ]
 
@@ -127,14 +127,30 @@ enum DemoData {
                 counter += 1
             }
 
+            for sale in fixedMarketingRangeSales(calendar: cal) {
+                orders.append(makeOrder(
+                    id: counter,
+                    product: sale.product.name,
+                    total: sale.product.total,
+                    provider: sale.product.provider,
+                    customer: sale.customer.name,
+                    email: sale.customer.email,
+                    date: sale.date
+                ))
+                counter += 1
+            }
+
             // Deterministic history over the prior 90 days, gradually ramping up.
             for daysAgo in 2 ... 90 {
                 guard let dayDate = cal.date(byAdding: .day, value: -daysAgo, to: now) else { continue }
-                let ordersThisDay = 2 + ((90 - daysAgo) / 12) // 2...9, higher near present
+                let momentum = 2 + ((90 - daysAgo) / 14) // 2...8, higher near present
+                let weeklyPattern = [0, 2, 1, 4, 2, 5, 1][daysAgo % 7]
+                let ordersThisDay = momentum + weeklyPattern
 
                 for slot in 0 ..< ordersThisDay {
                     let product = demoProducts[(daysAgo + slot) % demoProducts.count]
                     let customer = demoCustomers[(counter + slot) % demoCustomers.count]
+                    let total = product.total + demoOrderAdjustment(dayOffset: daysAgo, slot: slot)
 
                     var comps = cal.dateComponents([.year, .month, .day], from: dayDate)
                     comps.hour = 9 + ((daysAgo + slot * 3) % 11) // 9am...7pm
@@ -144,7 +160,7 @@ enum DemoData {
                     orders.append(makeOrder(
                         id: counter,
                         product: product.name,
-                        total: product.total,
+                        total: total,
                         provider: product.provider,
                         customer: customer.name,
                         email: customer.email,
@@ -205,27 +221,42 @@ enum DemoData {
         ]
 
         private static let demoCustomers: [DemoCustomer] = [
-            DemoCustomer(name: "Alex Johnson", email: "alex.j@gmail.com"),
-            DemoCustomer(name: "Sarah Chen", email: "sarah.chen@outlook.com"),
-            DemoCustomer(name: "Marcus Rivera", email: "marcus@rivera.dev"),
-            DemoCustomer(name: "Priya Sharma", email: "priya.s@yahoo.com"),
-            DemoCustomer(name: "James O'Brien", email: "james.ob@proton.me"),
-            DemoCustomer(name: "Yuki Tanaka", email: "yuki.t@icloud.com"),
-            DemoCustomer(name: "Fatima Hassan", email: "fatima.h@gmail.com"),
-            DemoCustomer(name: "Lucas Schmidt", email: "lucas@schmidt.io"),
-            DemoCustomer(name: "Olivia Park", email: "olivia.park@gmail.com"),
-            DemoCustomer(name: "Noah Williams", email: "noah.w@hey.com"),
-            DemoCustomer(name: "Mia Anderson", email: "mia.a@fastmail.com"),
-            DemoCustomer(name: "Ethan Brown", email: "ethan.b@gmail.com"),
-            DemoCustomer(name: "Sofia Garcia", email: "sofia.g@outlook.com"),
-            DemoCustomer(name: "Liam Davis", email: "liam.d@proton.me"),
-            DemoCustomer(name: "Isabella Martinez", email: "isabella.m@gmail.com"),
-            DemoCustomer(name: "Benjamin Lee", email: "ben.lee@icloud.com"),
-            DemoCustomer(name: "Charlotte Wang", email: "charlotte.w@hey.com"),
-            DemoCustomer(name: "Daniel Kim", email: "daniel.k@gmail.com"),
-            DemoCustomer(name: "Amelia Taylor", email: "amelia.t@fastmail.com"),
-            DemoCustomer(name: "Oliver White", email: "oliver.w@gmail.com")
+            DemoCustomer(name: "Demo Buyer 01", email: "buyer01@example.com"),
+            DemoCustomer(name: "Demo Buyer 02", email: "buyer02@example.com"),
+            DemoCustomer(name: "Demo Buyer 03", email: "buyer03@example.com"),
+            DemoCustomer(name: "Demo Buyer 04", email: "buyer04@example.com"),
+            DemoCustomer(name: "Demo Buyer 05", email: "buyer05@example.com"),
+            DemoCustomer(name: "Demo Buyer 06", email: "buyer06@example.com"),
+            DemoCustomer(name: "Demo Buyer 07", email: "buyer07@example.com"),
+            DemoCustomer(name: "Demo Buyer 08", email: "buyer08@example.com"),
+            DemoCustomer(name: "Demo Buyer 09", email: "buyer09@example.com"),
+            DemoCustomer(name: "Demo Buyer 10", email: "buyer10@example.com"),
+            DemoCustomer(name: "Demo Buyer 11", email: "buyer11@example.com"),
+            DemoCustomer(name: "Demo Buyer 12", email: "buyer12@example.com"),
+            DemoCustomer(name: "Demo Buyer 13", email: "buyer13@example.com"),
+            DemoCustomer(name: "Demo Buyer 14", email: "buyer14@example.com"),
+            DemoCustomer(name: "Demo Buyer 15", email: "buyer15@example.com"),
+            DemoCustomer(name: "Demo Buyer 16", email: "buyer16@example.com"),
+            DemoCustomer(name: "Demo Buyer 17", email: "buyer17@example.com"),
+            DemoCustomer(name: "Demo Buyer 18", email: "buyer18@example.com"),
+            DemoCustomer(name: "Demo Buyer 19", email: "buyer19@example.com"),
+            DemoCustomer(name: "Demo Buyer 20", email: "buyer20@example.com")
         ]
+
+        private static func fixedMarketingRangeSales(calendar: Calendar) -> [FeaturedSale] {
+            let dailyTotals = [2800, 2300, 2300, 1200, 1500, 1800, 2200, 3000, 2100, 3300, 2200, 2200, 1400, 2600, 3100]
+            return dailyTotals.enumerated().flatMap { index, total in
+                let day = 4 + index
+                let dateBase = calendar.date(from: DateComponents(year: 2026, month: 4, day: day)) ?? Date()
+                let product = demoProducts[index % demoProducts.count]
+                let firstTotal = max(900, total / 2)
+                let secondTotal = max(900, total - firstTotal)
+                return [
+                    FeaturedSale(product: DemoProductTemplate(name: product.name, total: firstTotal, provider: product.provider), customer: demoCustomers[(index * 2) % demoCustomers.count], date: calendar.date(byAdding: .hour, value: 10, to: dateBase) ?? dateBase),
+                    FeaturedSale(product: DemoProductTemplate(name: product.name, total: secondTotal, provider: product.provider), customer: demoCustomers[(index * 2 + 1) % demoCustomers.count], date: calendar.date(byAdding: .hour, value: 15, to: dateBase) ?? dateBase)
+                ]
+            }
+        }
 
         private static func featuredRecentSales(now: Date, calendar: Calendar) -> [FeaturedSale] {
             func dated(_ daysAgo: Int, _ hour: Int, _ minute: Int) -> Date {
@@ -238,7 +269,8 @@ enum DemoData {
 
             // Keep recent demo data obviously positive.
             return [
-                // Today (8 orders)
+                // Today (10 orders)
+                FeaturedSale(product: demoProducts[3], customer: demoCustomers[15], date: dated(0, 8, 45)),
                 FeaturedSale(product: demoProducts[3], customer: demoCustomers[0], date: dated(0, 9, 20)),
                 FeaturedSale(product: demoProducts[0], customer: demoCustomers[1], date: dated(0, 10, 12)),
                 FeaturedSale(product: demoProducts[1], customer: demoCustomers[2], date: dated(0, 11, 5)),
@@ -247,15 +279,21 @@ enum DemoData {
                 FeaturedSale(product: demoProducts[0], customer: demoCustomers[5], date: dated(0, 15, 28)),
                 FeaturedSale(product: demoProducts[1], customer: demoCustomers[6], date: dated(0, 17, 9)),
                 FeaturedSale(product: demoProducts[2], customer: demoCustomers[7], date: dated(0, 18, 32)),
+                FeaturedSale(product: demoProducts[3], customer: demoCustomers[8], date: dated(0, 10, 45)),
 
                 // Yesterday (6 orders, intentionally lower than today)
-                FeaturedSale(product: demoProducts[0], customer: demoCustomers[8], date: dated(1, 9, 44)),
-                FeaturedSale(product: demoProducts[1], customer: demoCustomers[9], date: dated(1, 11, 2)),
-                FeaturedSale(product: demoProducts[2], customer: demoCustomers[10], date: dated(1, 12, 19)),
-                FeaturedSale(product: demoProducts[0], customer: demoCustomers[11], date: dated(1, 14, 7)),
-                FeaturedSale(product: demoProducts[1], customer: demoCustomers[12], date: dated(1, 15, 33)),
-                FeaturedSale(product: demoProducts[2], customer: demoCustomers[13], date: dated(1, 17, 25))
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[9], date: dated(1, 9, 44)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[10], date: dated(1, 11, 2)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[11], date: dated(1, 12, 19)),
+                FeaturedSale(product: demoProducts[0], customer: demoCustomers[12], date: dated(1, 14, 7)),
+                FeaturedSale(product: demoProducts[1], customer: demoCustomers[13], date: dated(1, 15, 33)),
+                FeaturedSale(product: demoProducts[2], customer: demoCustomers[14], date: dated(1, 17, 25))
             ]
+        }
+
+        private static func demoOrderAdjustment(dayOffset: Int, slot: Int) -> Int {
+            let pattern = [-500, 0, 300, 700, -200, 1_100, 500]
+            return pattern[(dayOffset + slot) % pattern.count]
         }
 
         private static func formatCents(_ cents: Int) -> String {

@@ -18,18 +18,118 @@ CAPTURE_IPAD="${CAPTURE_IPAD:-1}"
 CAPTURE_WATCH="${CAPTURE_WATCH:-auto}"
 CAPTURE_MAC="${CAPTURE_MAC:-1}"
 REQUIRE_WATCH="${REQUIRE_WATCH:-0}"
+DEFAULT_MARKETING_APP_ARGS="--force-pro-mode --screenshot-custom-range-start=2026-04-04 --screenshot-custom-range-end=2026-04-18"
+EXTRA_APP_ARGS="${EXTRA_APP_ARGS:-${DEFAULT_MARKETING_APP_ARGS}}"
+SANE_ALLOW_LOCAL_VIDEO_CAPTURE="${SANE_ALLOW_LOCAL_VIDEO_CAPTURE:-0}"
 
 CLIP_SECONDS="${CLIP_SECONDS:-6}"
 MAC_RECT="${MAC_RECT:-80,60,1280,900}"
 HIDE_DESKTOP_ICONS="${HIDE_DESKTOP_ICONS:-1}"
 
-ORIGINAL_KEYBOARD_UI_MODE="__UNSET__"
-ORIGINAL_CREATE_DESKTOP="__UNSET__"
+ORIGINAL_KEYBOARD_UI_MODE="__NOT_CAPTURED__"
+ORIGINAL_CREATE_DESKTOP="__NOT_CAPTURED__"
+APP_EXTRA_ARGS=()
 
 mkdir -p "${OUT_DIR}"
 
 log() {
   printf '[demo-video] %s\n' "$1"
+}
+
+parse_extra_app_args() {
+  APP_EXTRA_ARGS=()
+  [[ -n "${EXTRA_APP_ARGS}" ]] || return 0
+  while IFS= read -r -d '' arg; do
+    APP_EXTRA_ARGS[${#APP_EXTRA_ARGS[@]}]="${arg}"
+  done < <(
+    EXTRA_APP_ARGS_VALUE="${EXTRA_APP_ARGS}" python3 - <<'PY'
+import os
+import shlex
+import sys
+
+for value in shlex.split(os.environ.get("EXTRA_APP_ARGS_VALUE", "")):
+    sys.stdout.write(value + "\0")
+PY
+  )
+}
+
+require_marketing_args() {
+  local joined=" ${APP_EXTRA_ARGS[*]} "
+  for required in "--force-pro-mode" "--screenshot-custom-range-start=2026-04-04" "--screenshot-custom-range-end=2026-04-18"; do
+    if [[ "${joined}" != *" ${required} "* ]]; then
+      echo "Missing required marketing capture arg: ${required}" >&2
+      exit 1
+    fi
+  done
+}
+
+prepare_output_files() {
+  find "${OUT_DIR}" -maxdepth 1 \( -name '*.mov' -o -name '*.mp4' \) -type f -print | while read -r path; do
+    case "$(basename "${path}")" in
+      launch-week-pro-all-devices.mp4|launch-week-60-off.mp4)
+        continue
+        ;;
+      *)
+        if command -v trash >/dev/null 2>&1; then
+          trash "${path}" >/dev/null 2>&1 || mv "${path}" "${path}.stale"
+        else
+          mv "${path}" "${path}.stale"
+        fi
+        ;;
+    esac
+  done
+}
+
+assert_file_written() {
+  local output_file="$1"
+  if [[ ! -s "${output_file}" ]]; then
+    echo "Expected capture output was not written: ${output_file}" >&2
+    exit 1
+  fi
+}
+
+require_mini_host() {
+  local host
+  host="$(hostname -s 2>/dev/null | tr '[:upper:]' '[:lower:]')"
+  if [[ "${host}" == *mini* ]]; then
+    return 0
+  fi
+
+  if [[ "${SANE_ALLOW_LOCAL_VIDEO_CAPTURE}" == "1" ]]; then
+    log "Local video capture override enabled on ${host:-unknown-host}."
+    return 0
+  fi
+
+  cat >&2 <<EOF
+Demo video capture must run on the Mac Mini.
+
+Run:
+  ssh mini 'cd ~/SaneApps/apps/SaneSales && bash scripts/capture_demo_videos.sh'
+
+Set SANE_ALLOW_LOCAL_VIDEO_CAPTURE=1 only for an explicitly approved local fallback.
+EOF
+  exit 1
+}
+
+write_capture_receipt() {
+  local receipt="${OUT_DIR}/demo-video-capture-receipt.txt"
+  {
+    printf 'SaneSales demo video capture receipt\n'
+    printf 'generated_at=%s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+    printf 'host=%s\n' "$(hostname -s 2>/dev/null || hostname)"
+    printf 'root=%s\n' "${ROOT_DIR}"
+    printf 'extra_app_args=%s\n' "${EXTRA_APP_ARGS}"
+    printf 'clip_seconds=%s\n' "${CLIP_SECONDS}"
+    printf 'capture_iphone=%s\n' "${WANT_IPHONE:-unset}"
+    printf 'capture_ipad=%s\n' "${WANT_IPAD:-unset}"
+    printf 'capture_watch=%s\n' "${WANT_WATCH:-unset}"
+    printf 'capture_mac=%s\n' "${WANT_MAC:-unset}"
+    printf 'outputs:\n'
+    find "${OUT_DIR}" -maxdepth 1 \( -name '*.mov' -o -name '*.mp4' \) -type f -print | sort | while read -r path; do
+      printf '  - %s (%s bytes)\n' "${path}" "$(stat -f '%z' "${path}" 2>/dev/null || stat -c '%s' "${path}")"
+    done
+  } >"${receipt}"
+  log "Wrote ${receipt}"
 }
 
 has_scheme() {
@@ -120,6 +220,7 @@ record_simulator_clip() {
   sleep "${seconds}"
   kill -INT "${rec_pid}" >/dev/null 2>&1 || true
   wait "${rec_pid}" >/dev/null 2>&1 || true
+  assert_file_written "${output_file}"
   log "Saved ${output_file}"
 }
 
@@ -158,13 +259,17 @@ prepare_mac_recording_env() {
 }
 
 restore_mac_recording_env() {
+  if [[ "${ORIGINAL_KEYBOARD_UI_MODE}" == "__NOT_CAPTURED__" && "${ORIGINAL_CREATE_DESKTOP}" == "__NOT_CAPTURED__" ]]; then
+    return 0
+  fi
+
   if [[ "${ORIGINAL_KEYBOARD_UI_MODE}" == "__UNSET__" ]]; then
     defaults delete -g AppleKeyboardUIMode >/dev/null 2>&1 || true
-  else
+  elif [[ "${ORIGINAL_KEYBOARD_UI_MODE}" != "__NOT_CAPTURED__" ]]; then
     defaults write -g AppleKeyboardUIMode -int "${ORIGINAL_KEYBOARD_UI_MODE}" >/dev/null 2>&1 || true
   fi
 
-  if [[ "${HIDE_DESKTOP_ICONS}" == "1" ]]; then
+  if [[ "${HIDE_DESKTOP_ICONS}" == "1" && "${ORIGINAL_CREATE_DESKTOP}" != "__NOT_CAPTURED__" ]]; then
     if [[ "${ORIGINAL_CREATE_DESKTOP}" == "__UNSET__" ]]; then
       defaults delete com.apple.finder CreateDesktop >/dev/null 2>&1 || true
     else
@@ -202,6 +307,7 @@ EOF
   sleep 0.8
 
   screencapture -x -v -V "${CLIP_SECONDS}" -R "${x},${y},${width},${height}" "${output_file}"
+  assert_file_written "${output_file}"
   log "Saved ${output_file}"
 }
 
@@ -211,6 +317,11 @@ cleanup() {
 }
 
 trap cleanup EXIT
+
+parse_extra_app_args
+require_marketing_args
+require_mini_host
+prepare_output_files
 
 SUPPORTS_WATCH=0
 if has_scheme "${WATCH_SCHEME}"; then
@@ -248,10 +359,10 @@ if [[ "${WANT_IPHONE}" == "1" || "${WANT_IPAD}" == "1" ]]; then
     clean_simulator_app_variants "${IPHONE_UDID}" "${IOS_BUNDLE_ID}"
     xcrun simctl install "${IPHONE_UDID}" "${IOS_APP}"
     capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-onboarding.mov" --force-onboarding
-    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-dashboard.mov" --demo --screenshot-tab dashboard
-    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-orders.mov" --demo --screenshot-tab orders
-    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-products.mov" --demo --screenshot-tab products
-    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-settings.mov" --demo --screenshot-tab settings
+    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-dashboard.mov" --demo --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-orders.mov" --demo --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-products.mov" --demo --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPHONE_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/iphone-settings.mov" --demo --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
   fi
 
   if [[ "${WANT_IPAD}" == "1" ]]; then
@@ -264,10 +375,10 @@ if [[ "${WANT_IPHONE}" == "1" || "${WANT_IPAD}" == "1" ]]; then
     clean_simulator_app_variants "${IPAD_UDID}" "${IOS_BUNDLE_ID}"
     xcrun simctl install "${IPAD_UDID}" "${IOS_APP}"
     capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-onboarding.mov" --force-onboarding
-    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-dashboard.mov" --demo --screenshot-tab dashboard
-    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-orders.mov" --demo --screenshot-tab orders
-    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-products.mov" --demo --screenshot-tab products
-    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-settings.mov" --demo --screenshot-tab settings
+    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-dashboard.mov" --demo --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-orders.mov" --demo --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-products.mov" --demo --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+    capture_ios_clip "${IPAD_UDID}" "${IOS_BUNDLE_ID}" "${OUT_DIR}/ipad-settings.mov" --demo --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
   fi
 fi
 
@@ -293,8 +404,8 @@ if [[ "${WANT_WATCH}" == "1" ]]; then
     WATCH_BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "${WATCH_APP}/Info.plist")"
     boot_device "${WATCH_UDID}"
     xcrun simctl install "${WATCH_UDID}" "${WATCH_APP}"
-    capture_watch_clip "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/watch-dashboard.mov" --demo
-    capture_watch_clip "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/watch-recent.mov" --demo --focus-recent
+    capture_watch_clip "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/watch-dashboard.mov" --demo "${APP_EXTRA_ARGS[@]-}"
+    capture_watch_clip "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/watch-recent.mov" --demo --focus-recent "${APP_EXTRA_ARGS[@]-}"
   fi
 fi
 
@@ -313,10 +424,11 @@ if [[ "${WANT_MAC}" == "1" ]]; then
 
   MAC_APP="${DERIVED_DATA}/Build/Products/Debug/SaneSales.app"
   capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-onboarding.mov" --force-onboarding
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-dashboard.mov" --demo --skip-onboarding --screenshot-tab dashboard
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-orders.mov" --demo --skip-onboarding --screenshot-tab orders
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-products.mov" --demo --skip-onboarding --screenshot-tab products
-  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-settings.mov" --demo --skip-onboarding --screenshot-tab settings
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-dashboard.mov" --demo --skip-onboarding --screenshot-tab dashboard "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-orders.mov" --demo --skip-onboarding --screenshot-tab orders "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-products.mov" --demo --skip-onboarding --screenshot-tab products "${APP_EXTRA_ARGS[@]-}"
+  capture_mac_clip "${MAC_APP}" "${OUT_DIR}/mac-settings.mov" --demo --skip-onboarding --screenshot-tab settings "${APP_EXTRA_ARGS[@]-}"
 fi
 
+write_capture_receipt
 log "Done. Demo clips saved in ${OUT_DIR}"

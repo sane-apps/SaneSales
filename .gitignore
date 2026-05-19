@@ -114,9 +114,11 @@ releases/
 # Node/Wrangler
 node_modules/
 .wrangler/
+.playwright-cli/
 
 # Serena
 .serena/
+.sane/
 
 # ═══════════════════════════════════════════════════════════════
 # Media (keep app assets, ignore test/marketing/root)
@@ -156,6 +158,12 @@ fastlane/coverage/
 fastlane/keys/
 fastlane/report.xml
 fastlane/test_output/
+
+# Local agent/research artifacts
+.claude/research.md
+.claude/.gitignore
+.codex/research.md
+DOCS_AUDIT_FINDINGS.md
 fastlane/gym_output/
 
 # Code coverage

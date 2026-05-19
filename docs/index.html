@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneSales - Native Sales Tracking for Indie Apps</title>
-    <meta name="description" content="Track sales privately across LemonSqueezy, Gumroad, and Stripe. Unlock custom date ranges, full order history, CSV export, widgets, iCloud Keychain provider sync, and multi-provider tracking in SaneSales Pro.">
-    <meta name="keywords" content="iOS, macOS, sales tracker, LemonSqueezy, Gumroad, Stripe, indie hacker, revenue analytics, universal app">
+    <title>SaneSales - Bring Sanity to your Sales Tracking</title>
+    <meta name="description" content="Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe. Mac, iPhone, iPad, Apple Watch, widgets, menu bar, and CSV export.">
+    <meta name="keywords" content="lemon squeezy dashboard, gumroad sales tracker, stripe revenue widget, indie seller revenue, private sales tracker, mac sales dashboard">
     <meta name="author" content="Mr. Sane">
     <meta name="robots" content="index, follow">
     <meta name="apple-mobile-web-app-title" content="SaneSales">
@@ -17,11 +17,16 @@
     <link rel="canonical" href="https://sanesales.com/" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="SaneSales - Native Sales Tracking for Indie Apps">
-    <meta property="og:description" content="Track sales privately across LemonSqueezy, Gumroad, and Stripe. Unlock custom date ranges, full order history, CSV export, widgets, iCloud Keychain provider sync, and multi-provider tracking in SaneSales Pro.">
+    <meta property="og:title" content="SaneSales - Bring Sanity to your Sales Tracking">
+    <meta property="og:description" content="Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe across Mac, iPhone, iPad, Apple Watch, widgets, and menu bar.">
     <meta property="og:image" content="https://sanesales.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
+    <meta property="og:video" content="https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17">
+    <meta property="og:video:secure_url" content="https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="1920">
+    <meta property="og:video:height" content="1080">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sanesales.com/">
     <meta property="og:site_name" content="SaneSales">
@@ -29,8 +34,8 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SaneSales - Native Sales Tracking for Indie Apps">
-    <meta name="twitter:description" content="Track sales privately across LemonSqueezy, Gumroad, and Stripe. Unlock custom date ranges, full order history, CSV export, widgets, iCloud Keychain provider sync, and multi-provider tracking in SaneSales Pro.">
+    <meta name="twitter:title" content="SaneSales - Bring Sanity to your Sales Tracking">
+    <meta name="twitter:description" content="Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe across Mac, iPhone, iPad, Apple Watch, widgets, and menu bar.">
     <meta name="twitter:image" content="https://sanesales.com/images/og-image.png">
     <meta name="twitter:site" content="@saneapps">
     <meta name="twitter:url" content="https://sanesales.com/">
@@ -50,8 +55,10 @@
       "applicationCategory": "BusinessApplication",
       "offers": {
         "@type": "Offer",
-        "price": "24.99",
-        "priceCurrency": "USD"
+        "price": "9.99",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2026-05-21",
+        "url": "https://go.saneapps.com/buy/sanesales?checkout%5Bdiscount_code%5D=SANE60"
       },
       "description": "Native indie sales tracker for LemonSqueezy, Gumroad, and Stripe. Track revenue, orders, products, and custom date ranges in one app.",
       "image": "https://sanesales.com/images/branding.png",
@@ -71,8 +78,32 @@
         "CSV Export",
         "Home Screen Widgets",
         "macOS Menu Bar Revenue",
-        "No SaneApps Cloud for Sales Data"
+        "Direct Provider API Sync From Your Devices"
       ]
+    }
+    </script>
+
+    <!-- Structured Data - Launch Video -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "SaneSales Launch Week Pro Demo",
+      "description": "See SaneSales Pro across Mac, iPhone, iPad, and Apple Watch: private sales tracking, no subscription, charts, order history, CSV export, widgets, and menu bar revenue.",
+      "thumbnailUrl": "https://sanesales.com/images/sanesales-launch-video-poster.png?v=164297c4cc17",
+      "uploadDate": "2026-05-14",
+      "duration": "PT56S",
+      "contentUrl": "https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17",
+      "embedUrl": "https://www.youtube.com/embed/FmyGTWpBF4M",
+      "sameAs": "https://youtu.be/FmyGTWpBF4M",
+      "publisher": {
+        "@type": "Organization",
+        "name": "SaneSales",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://sanesales.com/images/branding.png"
+        }
+      }
     }
     </script>
 
@@ -85,9 +116,9 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server in the middle for your sales data."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales Pro is $24.99 one-time. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions."}},
-        {"@type": "Question", "name": "Can I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crypto is optional. Send $24.99 to any listed address, then email hi@saneapps.com with your transaction ID or screenshot so your Pro access can be verified."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Buy Pro for $24.99 to keep live revenue, orders, 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included."}}
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. Direct SaneSales Pro is $9.99 with code SANE60 through May 21, 2026. The regular one-time price is $24.99. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions."}},
+        {"@type": "Question", "name": "Can I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crypto is optional. Send $9.99 during the SANE60 launch offer, then email hi@saneapps.com with your transaction ID or screenshot so your Pro access can be verified."}},
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Use code SANE60 through May 21, 2026 to keep SaneSales Pro for $9.99. Regular price is $24.99. Demo mode is included."}}
       ]
     }
     </script>
@@ -146,10 +177,10 @@
             line-height: 1.7;
             overflow-x: hidden;
             font-weight: 400;
-            letter-spacing: -0.01em;
+            letter-spacing: 0;
         }
 
-        /* Elegant gradient background with subtle noise */
+        /* Soft Sane-style blue gradient background */
         .gradient-bg {
             position: fixed;
             top: 0;
@@ -157,29 +188,20 @@
             right: 0;
             bottom: 0;
             background:
-                radial-gradient(ellipse at 15% 10%, rgba(79, 143, 250, 0.12) 0%, transparent 45%),
-                radial-gradient(ellipse at 85% 90%, rgba(139, 92, 246, 0.1) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+                radial-gradient(ellipse at 68% 18%, rgba(79, 143, 250, 0.12) 0%, transparent 54%),
+                linear-gradient(160deg, #081121 0%, #0c1b34 42%, #07101f 100%);
             z-index: -1;
         }
 
         .gradient-bg::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            opacity: 0.03;
-            pointer-events: none;
+            content: none;
         }
 
         /* Animation keyframes */
         @keyframes fadeInUp {
             from {
-                opacity: 0;
-                transform: translateY(30px);
+                opacity: 0.88;
+                transform: translateY(14px);
             }
             to {
                 opacity: 1;
@@ -194,7 +216,7 @@
 
         .animate-in {
             animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
+            opacity: 1;
         }
 
         .delay-1 { animation-delay: 0.1s; }
@@ -202,6 +224,20 @@
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
         .delay-5 { animation-delay: 0.5s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: 0.001ms !important;
+            }
+
+            .animate-in {
+                opacity: 1;
+                transform: none;
+            }
+        }
 
         .container {
             max-width: 1100px;
@@ -287,32 +323,34 @@
 
         /* Hero Section */
         .hero {
-            padding: 180px 0 100px;
+            padding: 168px 0 100px;
             text-align: center;
         }
 
         .hero h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(2.75rem, 7vw, 4.5rem);
+            font-size: clamp(4rem, 10vw, 7.25rem);
             font-weight: 600;
-            margin-bottom: 24px;
-            letter-spacing: -0.03em;
+            margin-bottom: 18px;
+            letter-spacing: 0;
             color: var(--text-primary);
-            line-height: 1.1;
+            line-height: 0.98;
         }
 
         .hero h1 em {
+            display: inline-block;
             font-style: italic;
             color: var(--accent);
+            margin-right: 0.08em;
         }
 
         .hero .subtitle {
             font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 980px;
-            margin: 0 auto 48px;
-            font-weight: 400;
-            line-height: 1.7;
+            color: var(--text-primary);
+            max-width: 760px;
+            margin: 0 auto 34px;
+            font-weight: 500;
+            line-height: 1.55;
         }
 
         .hero .subtitle-line {
@@ -331,8 +369,8 @@
             justify-content: center;
             flex-wrap: wrap;
             margin-bottom: 32px;
-            font-size: 1.17rem;
-            color: var(--text-muted);
+            font-size: 1rem;
+            color: var(--text-primary);
         }
 
         .trust-badges span {
@@ -346,7 +384,15 @@
             gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 60px;
+            margin-bottom: 14px;
+        }
+
+        .hero-offer-note {
+            max-width: 720px;
+            margin: 0 auto 42px;
+            color: var(--text-primary);
+            font-size: 0.98rem;
+            line-height: 1.6;
         }
 
         .btn {
@@ -394,6 +440,35 @@
             border-color: var(--accent);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
             transform: translateY(-2px);
+        }
+
+        .hero-proof-heading {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0 0 8px;
+        }
+
+        .pricing-section {
+            padding: 90px 0;
+            background: rgba(8, 13, 24, 0.7);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .pricing-section .section-subtitle {
+            margin-bottom: 34px;
+        }
+
+        .pricing-section .hero-pricing-grid {
+            margin-bottom: var(--phi-md);
+        }
+
+        .pricing-section .hero-pricing-footer {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 0;
         }
 
         .hero-devices {
@@ -614,6 +689,21 @@
 
     .screenshot-gallery {
         padding: 80px 0;
+    }
+
+    .launch-video {
+        width: min(960px, 100%);
+        margin: 0 auto 44px;
+    }
+
+    .launch-video video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: 8px;
+        background: #05070c;
+        border: 1px solid var(--border);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
     }
 
     .screenshot-gallery .hero-devices {
@@ -879,7 +969,7 @@
             font-weight: 600;
             text-align: center;
             margin-bottom: 20px;
-            letter-spacing: -0.02em;
+            letter-spacing: 0;
             line-height: 1.2;
         }
 
@@ -962,7 +1052,7 @@
             font-size: 1.2rem;
             margin-bottom: 12px;
             font-weight: 600;
-            letter-spacing: -0.01em;
+            letter-spacing: 0;
         }
 
         .feature-card p {
@@ -1803,8 +1893,8 @@
             font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
+            letter-spacing: 0;
+            color: var(--text-primary);
             margin-bottom: var(--phi-sm);
         }
 
@@ -1823,7 +1913,7 @@
 
         .pricing-price-note {
             font-size: 0.875rem;
-            color: var(--text-muted);
+            color: var(--text-primary);
             margin-bottom: var(--phi-lg);
         }
 
@@ -1835,7 +1925,7 @@
         .pricing-features li {
             padding: var(--phi-xs) 0;
             font-size: 0.95rem;
-            color: var(--text-secondary);
+            color: var(--text-primary);
             display: flex;
             align-items: flex-start;
             gap: var(--phi-xs);
@@ -1863,6 +1953,10 @@
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
+        }
+
+        .pricing-cta + .pricing-cta {
+            margin-top: 10px;
         }
 
         .pricing-cta-free {
@@ -1914,7 +2008,6 @@
                     <img src="images/branding.png" alt="SaneSales">
                     SaneSales
                 </a>
-                <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
             </div>
             <div class="nav-links">
                 <a href="#features">Features</a>
@@ -1946,7 +2039,6 @@
         <a href="guides.html">Guides</a>
         <a href="https://github.com/sane-apps/SaneSales">GitHub</a>
         <a href="mailto:hi@saneapps.com" onclick="toggleMobileNav()">Contact</a>
-        <a href="#support" onclick="toggleMobileNav()">Donate</a>
         <p class="mobile-nav-section">More SaneApps</p>
         <a href="https://sanebar.com">SaneBar &mdash; Menu Bar Manager</a>
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
@@ -1957,59 +2049,34 @@
 
     <section class="hero" id="screenshots">
         <div class="container">
-            <h1 class="animate-in delay-2">Stop checking three dashboards to <em>understand your sales</em>.</h1>
+            <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Sales Tracking</h1>
             <p class="subtitle animate-in delay-3">
-                <span class="subtitle-line">SaneSales Pro brings LemonSqueezy, Gumroad, and Stripe into one native dashboard.</span>
-                <span class="subtitle-line">Compare custom date ranges.</span>
-                <span class="subtitle-line">Search full order history.</span>
-                <span class="subtitle-line">Export clean sales data when you need it.</span>
+                <span class="subtitle-line">For indie sellers using Lemon Squeezy, Gumroad, and Stripe.</span>
+                <span class="subtitle-line">Track revenue privately across Mac, iPhone, iPad, Apple Watch, widgets, and menu bar. Pay once.</span>
             </p>
             <div class="trust-badges animate-in delay-3">
-                <span>&#128187; Used by Indie Developers Daily</span>
-                <span>&#128274; No SaneApps Cloud</span>
-                <span>&#128176; No Subscriptions</span>
-                <span>&#128269; 100% Public Code</span>
+                <span>&#128274; No private data collected</span>
+                <span>&#128176; No subscription</span>
+                <span>&#128269; 100% Transparent Code</span>
             </div>
-            <div class="hero-pricing-grid animate-in delay-4" id="pricing">
-                <div class="pricing-card">
-                    <p class="pricing-label">Demo + Trial</p>
-                    <p class="pricing-price">Free</p>
-                    <p class="pricing-price-note">Start with demo data or a 7-day live trial</p>
-                    <ul class="pricing-features">
-                        <li>Built-in demo mode</li>
-                        <li>7-day Pro trial after connecting live data</li>
-                        <li>iCloud Keychain provider sync</li>
-                        <li>iPhone, iPad, and Mac apps</li>
-                        <li>No SaneApps server in the middle</li>
-                    </ul>
-                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.5.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Download Free
-                    </a>
-                </div>
-                <div class="pricing-card featured">
-                    <p class="pricing-label">Pro</p>
-                    <p class="pricing-price">$24.99<span class="price-note">*</span></p>
-                    <p class="pricing-price-note">One-time — full sales picture</p>
-                    <ul class="pricing-features">
-                        <li class="extra">Compare today vs yesterday instantly</li>
-                        <li class="extra">7-day, 30-day, and custom date ranges</li>
-                        <li class="extra">Full order history &amp; search</li>
-                        <li class="extra">CSV export for accounting</li>
-                        <li class="extra">Multiple providers in one view</li>
-                        <li class="extra">macOS menu bar revenue</li>
-                        <li class="extra">Home Screen &amp; Watch widgets</li>
-                    </ul>
-                    <a href="https://go.saneapps.com/buy/sanesales?ref=website-hero" class="pricing-cta pricing-cta-pro" data-cta="buy_pro">Buy Pro</a>
-                </div>
+            <div class="cta-buttons animate-in delay-4">
+                <a href="https://dist.sanesales.com/updates/SaneSales-1.3.5.zip" class="btn btn-secondary" data-cta="download_free">Download Free</a>
+                <a href="https://go.saneapps.com/buy/sanesales?ref=website-hero-primary" class="btn btn-primary" data-cta="buy_pro_hero_primary">Buy Pro for $9.99 with SANE60</a>
             </div>
-            <p class="animate-in delay-4 hero-pricing-footer" style="color: var(--text-muted); font-size: 0.85rem; margin-top: var(--phi-sm); margin-bottom: 36px;">
-                <code style="background: var(--bg-card); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;" onclick="copyToClipboard(this)" title="Click to copy">brew install --cask sane-apps/tap/sanesales</code>
-            </p>
-            <h2 class="section-title animate-in delay-4">See It in Action</h2>
-            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Demo shows the workflow. Pro gives you live tracking, 7D, 30D, custom ranges, history, export, and the bigger picture.</p>
+            <p class="hero-offer-note animate-in delay-4">Use code SANE60 through May 21, 2026 to drop checkout from the regular $24.99 price to $9.99.</p>
+            <h2 class="hero-proof-heading animate-in delay-4">See it in action</h2>
+            <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Built for makers who want one private read on what sold today.</p>
+            <div class="launch-video animate-in delay-5">
+                <video
+                    controls
+                    preload="metadata"
+                    playsinline
+                    poster="images/sanesales-launch-video-poster.png?v=164297c4cc17"
+                    aria-label="SaneSales Pro launch video showing Mac, iPhone, iPad, and Apple Watch"
+                >
+                    <source src="videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17" type="video/mp4">
+                </video>
+            </div>
             <div class="screenshot-tabs animate-in delay-5">
                 <button class="screenshot-tab active" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
                 <button class="screenshot-tab" data-screen="orders" onclick="showScreen('orders', this)">Orders</button>
@@ -2046,12 +2113,55 @@
                 <div class="watch-grid">
                     <div class="watch-shot">
                         <p class="shot-label">Apple Watch Dashboard</p>
-                        <div class="hero-device-watch"><img src="images/screenshot-watch-dashboard.png?v=1300-watch-product" alt="SaneSales Apple Watch dashboard" loading="eager"></div>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-dashboard.png?v=20260514-watch-clean" alt="SaneSales Apple Watch dashboard" loading="eager"></div>
                     </div>
                     <div class="watch-shot">
                         <p class="shot-label">Apple Watch Recent Sales</p>
-                        <div class="hero-device-watch"><img src="images/screenshot-watch-recent.png?v=1300-watch-product" alt="SaneSales Apple Watch recent sales" loading="eager"></div>
+                        <div class="hero-device-watch"><img src="images/screenshot-watch-recent.png?v=20260514-watch-clean" alt="SaneSales Apple Watch recent sales" loading="eager"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Start free. Keep Pro for $9.99 with SANE60.</h2>
+            <p class="section-subtitle">Demo data is included. Connect live data when you are ready, then keep every Pro view with one purchase.</p>
+            <div class="hero-pricing-grid">
+                <div class="pricing-card">
+                    <p class="pricing-label">Demo + Trial</p>
+                    <p class="pricing-price">Free</p>
+                    <p class="pricing-price-note">Start with demo data or a 7-day live trial</p>
+                    <ul class="pricing-features">
+                        <li>Built-in demo mode</li>
+                        <li>7-day Pro trial after connecting live data</li>
+                        <li>Your data stays on your devices</li>
+                        <li>iPhone, iPad, and Mac apps</li>
+                        <li>No separate analytics cloud to trust</li>
+                    </ul>
+                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.5.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download Free
+                    </a>
+                    <a href="https://apps.apple.com/us/app/sanesales/id6759010976" class="pricing-cta pricing-cta-free" data-appstore-ios-link data-appstore-ios-url="https://apps.apple.com/us/app/sanesales/id6759010976">Download for iPhone &amp; iPad on the App Store</a>
+                </div>
+                <div class="pricing-card featured">
+                    <p class="pricing-label">Launch Week Special</p>
+                    <p class="pricing-price">$9.99<span class="price-note">*</span></p>
+                    <p class="pricing-price-note">Checkout may show the regular $24.99 price first. Use code SANE60 through May 21, 2026 and the total drops to $9.99.</p>
+                    <ul class="pricing-features">
+                        <li class="extra">Compare today vs yesterday instantly</li>
+                        <li class="extra">7-day, 30-day, and custom date ranges</li>
+                        <li class="extra">Full order history &amp; search</li>
+                        <li class="extra">CSV export for accounting</li>
+                        <li class="extra">Multiple providers in one view</li>
+                        <li class="extra">macOS menu bar revenue</li>
+                        <li class="extra">Home Screen &amp; Watch widgets</li>
+                    </ul>
+                    <a href="https://go.saneapps.com/buy/sanesales?ref=website-pricing" class="pricing-cta pricing-cta-pro" data-cta="buy_pro">Get $9.99 with code SANE60</a>
                 </div>
             </div>
         </div>
@@ -2061,17 +2171,17 @@
     <section class="how-it-works">
         <div class="container">
             <h2 class="section-title">Simple Setup</h2>
-            <p class="section-subtitle">No accounts, no sign-up, no email. Just paste your API key and go.</p>
+            <p class="section-subtitle">Try the demo first. When you connect live data, SaneSales talks directly to each provider from your device.</p>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <h3>Connect</h3>
-                    <p>Paste your API key from LemonSqueezy, Gumroad, and/or Stripe. Stored in iCloud Keychain for your own Apple devices.</p>
+                    <p>Connect Lemon Squeezy, Gumroad, and/or Stripe. Your credentials stay with your Apple account, not SaneApps.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
                     <h3>Sync</h3>
-                    <p>SaneSales fetches your orders, products, and revenue directly from each platform. No middleman.</p>
+                    <p>SaneSales fetches your orders, products, and revenue directly from each platform. Your sales data stays on your devices.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
@@ -2188,7 +2298,7 @@
                     <h3>Product Breakdown</h3>
                     <p>Donut chart showing revenue by product across all providers. Tap segments to explore. Know exactly what's selling.</p>
                 </div>
-                <!-- 9. Privacy + iCloud Keychain -->
+                <!-- 9. Privacy + transparent code -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
@@ -2196,8 +2306,8 @@
                             <path d="M9 12l2 2 4-4"/>
                         </svg>
                     </div>
-                    <h3>&#128269; Public Code & iCloud Keychain</h3>
-                    <p>Sales data stays on your devices. Provider keys are saved in iCloud Keychain so your own Apple devices can reconnect automatically. Audit the code yourself on GitHub.</p>
+                    <h3>&#128269; Private by Design</h3>
+                    <p>Your sales data stays on your devices. SaneApps never receives your customer lists, orders, or revenue history. Audit the code yourself on GitHub.</p>
                 </div>
             </div>
         </div>
@@ -2232,7 +2342,7 @@
                 <div class="hero-device hero-device-watch-wrap">
                     <p class="hero-device-label">Apple Watch</p>
                     <div class="hero-device-watch">
-                        <img src="images/screenshot-watch-dashboard.png?v=1300-watch-product" alt="SaneSales on Apple Watch — Revenue dashboard on wrist" loading="eager">
+                        <img src="images/screenshot-watch-dashboard.png?v=20260514-watch-clean" alt="SaneSales on Apple Watch — Revenue dashboard on wrist" loading="eager">
                     </div>
                 </div>
             </div>
@@ -2242,8 +2352,8 @@
     <section class="comparison" id="compare">
         <div class="container">
             <h2 class="section-title">Why Not Baremetrics or ChartMogul?</h2>
-            <p class="section-subtitle">They route your revenue data through their cloud servers. They only support Stripe. They charge $29–$99/month — forever. And they have no native app, no widgets, no offline access. Your sales numbers shouldn't live on someone else's infrastructure.</p>
-            <p class="section-subtitle" style="margin-top: -10px; font-size: 0.95rem;">This table reflects SaneSales Pro. For plan details, see the Basic vs Pro comparison above.</p>
+            <p class="section-subtitle">Baremetrics and ChartMogul are browser-based billing analytics tools. SaneSales is for indie sellers who want to see sales at a glance on their own devices, connect directly to LemonSqueezy, Gumroad, and Stripe, and skip the monthly analytics bill.</p>
+            <p class="section-subtitle" style="margin-top: -10px; font-size: 0.95rem;">This table compares SaneSales Pro. For Demo vs Pro details, see the pricing section above.</p>
             <div class="comparison-table-wrapper">
                 <table class="comparison-table">
                     <thead>
@@ -2351,7 +2461,7 @@
                         <tr>
                             <td class="feature-name">
                                 <span class="feature-label">Your Data Stays Yours</span>
-                                <span class="feature-desc">Revenue data never leaves your device</span>
+                                <span class="feature-desc">SaneApps never receives your sales data</span>
                             </td>
                             <td class="highlight-col"><span class="check">&#10003;</span></td>
                             <td>Their servers</td>
@@ -2360,7 +2470,7 @@
                         </tr>
                         <tr>
                             <td class="feature-name">
-                                <span class="feature-label">&#128269; 100% Public Code</span>
+                                <span class="feature-label">&#128269; 100% Transparent Code</span>
                                 <span class="feature-desc">Audit the code yourself</span>
                             </td>
                             <td class="highlight-col">PolyForm Shield</td>
@@ -2373,15 +2483,15 @@
                                 <span class="feature-label">Price</span>
                                 <span class="feature-desc">What it costs to use</span>
                             </td>
-                            <td class="highlight-col">$24.99 once</td>
-                            <td>$29+/mo</td>
-                            <td>$99+/mo</td>
+                            <td class="highlight-col">$9.99 with SANE60 through May 21, 2026. Regular $24.99.</td>
+                            <td>$75+/mo</td>
+                            <td>Free tier, then $59+/mo</td>
                             <td>Free</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <p class="comparison-footnote">SaneSales connects directly to each platform. Your sales data never touches any server — or anyone else's. No intermediary. No cloud dependency. Just your device, talking to your sales platforms. Want the spreadsheet angle spelled out? <a href="sanesales-vs-spreadsheets.html">See the full comparison.</a></p>
+            <p class="comparison-footnote">SaneSales connects directly to each platform from your device. Your sales data, customer list, products, orders, refunds, and provider keys are never sent to SaneApps. No intermediary. No cloud analytics workspace. Want the spreadsheet angle spelled out? <a href="sanesales-vs-spreadsheets.html">See the full comparison.</a></p>
         </div>
     </section>
 
@@ -2402,7 +2512,7 @@
                         Is my data sent to SaneApps servers?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales talks directly to LemonSqueezy, Gumroad, and Stripe from your device. There is no SaneApps server in the middle for your sales data. Provider keys are saved in iCloud Keychain so your own Apple devices can reconnect automatically.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales talks directly to LemonSqueezy, Gumroad, and Stripe from your device. SaneApps never receives your customer lists, orders, or revenue history. No separate analytics cloud to trust.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2423,14 +2533,14 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. SaneSales Pro is $24.99 one-time. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. Direct SaneSales Pro is $9.99 with code SANE60 through May 21, 2026. The regular one-time price is $24.99. Demo mode and a 7-day live-data Pro trial are included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
                         Can I pay with crypto?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Crypto is optional. Send $24.99 to one of the addresses below, then email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot. I verify it and reply with your Pro access details.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Crypto is optional. Send $9.99 during the SANE60 launch offer, then email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot. I verify it and reply with your Pro access details.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2444,55 +2554,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Buy Pro for $24.99 to keep live revenue, orders, 7D, 30D, custom date ranges, full history, CSV export, widgets, and multi-provider tracking. Demo mode is included so you can explore before connecting your own API keys.</div></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="support" id="support">
-        <div class="container">
-            <h2 class="section-title">Support SaneSales</h2>
-            <p class="section-subtitle support-subtitle">
-                <em>"The worker is worthy of his wages."</em><br>
-                — 1 Timothy 5:18<br><br>
-                SaneSales is public-code software, but it still takes real work to build, test, and support.<br>
-                A one-time Pro purchase, GitHub Sponsors, or optional crypto payment helps keep it alive.<br><br>
-                <span>Thank you. — Mr. Sane</span>
-            </p>
-            <a href="https://github.com/sponsors/MrSaneApps" class="btn btn-primary github-sponsor-btn" data-cta="sponsor_support" target="_blank" rel="noopener">
-                <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
-                    <path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/>
-                </svg>
-                Sponsor on GitHub
-            </a>
-            <div class="crypto-addresses">
-                <div class="crypto-grid">
-                    <div class="crypto-item crypto-btc">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg" alt="BTC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="BTC">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
-                    </div>
-                    <div class="crypto-item crypto-eth">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="ETH">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
-                    </div>
-                    <div class="crypto-item crypto-sol">
-                        <img class="crypto-logo" src="https://solana.com/src/img/branding/solanaLogoMark.svg" alt="SOL" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="SOL">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
-                    </div>
-                    <div class="crypto-item crypto-zec">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)" data-asset="ZEC">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
-                    </div>
-                </div>
-                <p class="crypto-hint">Click any address to copy</p>
-                <div class="crypto-how">
-                    <strong>How it works:</strong>
-                    <ol>
-                        <li>Send $24.99 or more to any address above</li>
-                        <li>Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> with your transaction ID or screenshot</li>
-                        <li>I verify and reply with your Pro access details</li>
-                    </ol>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with demo data, or connect live data to begin a 7-day Pro trial. Use code SANE60 through May 21, 2026 to keep SaneSales Pro for $9.99. Regular price is $24.99. Demo mode is included so you can explore before connecting your own API keys.</div></div>
                 </div>
             </div>
         </div>
@@ -2501,7 +2563,7 @@
     <section class="more-apps">
         <div class="container">
             <h2 class="section-title">More from SaneApps</h2>
-            <p class="more-apps-subtitle">Privacy-first Mac utilities that don't suck</p>
+            <p class="more-apps-subtitle">Privacy-first Mac utilities built to stay out of your way.</p>
             <div class="more-apps-grid">
                 <a href="https://sanebar.com" class="app-card">
                     <div class="app-card-header">
@@ -2534,27 +2596,6 @@
         </div>
     </section>
 
-    <section class="sustainability">
-        <div class="container">
-            <div class="sustainability-card">
-                <h2 style="font-family: 'Playfair Display', serif; font-size: 2.25rem; margin-bottom: 20px;">&#128269; 100% Public Code ≠ Free</h2>
-                <div class="sustainability-body">
-                    <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">Great public-code tools die when developers can't sustain them. Upgrading to Pro keeps SaneSales alive and actively maintained.</p>
-                    <div class="sustainability-options">
-                        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.5.zip" class="sustainability-option" data-cta="download_free_sustainability">
-                            <h4>Download Free</h4>
-                            <p>Explore demo mode or start a 7-day live-data Pro trial. Upgrade to keep the full picture.</p>
-                        </a>
-                        <a href="https://go.saneapps.com/buy/sanesales?ref=sustainability" class="sustainability-option featured" data-cta="buy_pro_sustainability">
-                            <h4>Upgrade to Pro — $24.99</h4>
-                            <p>One-time purchase. Custom date ranges, full history, export, widgets, menu bar revenue, and multi-provider tracking.</p>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section style="padding: 60px 0 80px; text-align: center; overflow: hidden;">
         <div class="container">
             <h2 class="section-title">Built by an Indie Dev, for Indie Devs</h2>
@@ -2571,20 +2612,12 @@
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@3ryooo (X)</div>
                 </div>
                 <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Made by a cool dev @MrSaneApps"</p>
-                    <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@codepinedev (X)</div>
-                </div>
-                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"This is awesome! Congrats man!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@dyoburon (X)</div>
                 </div>
                 <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"We all appreciate your rapid attention to all these recent concerns."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">MartySkinner (GitHub)</div>
-                </div>
-                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Damn! This looks great. I have been desperately looking for a FOSS alternative."</p>
-                    <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">u/JustABro_2321 (Reddit)</div>
                 </div>
                 <!-- Duplicated for seamless loop -->
                 <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
@@ -2596,20 +2629,12 @@
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@3ryooo (X)</div>
                 </div>
                 <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Made by a cool dev @MrSaneApps"</p>
-                    <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@codepinedev (X)</div>
-                </div>
-                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"This is awesome! Congrats man!"</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@dyoburon (X)</div>
                 </div>
                 <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"We all appreciate your rapid attention to all these recent concerns."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">MartySkinner (GitHub)</div>
-                </div>
-                <div class="testimonial-card" style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Damn! This looks great. I have been desperately looking for a FOSS alternative."</p>
-                    <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">u/JustABro_2321 (Reddit)</div>
                 </div>
             </div>
         </div>
@@ -2726,6 +2751,13 @@
             const aggregateEvent = eventForCta(eventName);
             if (aggregateEvent) {
                 sendAggregateEvent(aggregateEvent.event, aggregateEvent.tier);
+                if (eventName === 'buy_pro_hero_primary') {
+                    sendAggregateEvent('website_buy_hero_clicked', aggregateEvent.tier);
+                } else if (eventName === 'buy_pro') {
+                    sendAggregateEvent('website_buy_pricing_clicked', aggregateEvent.tier);
+                } else if (eventName === 'download_free') {
+                    sendAggregateEvent('website_download_hero_clicked', aggregateEvent.tier);
+                }
             }
         }
 

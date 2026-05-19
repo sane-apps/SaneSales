@@ -173,13 +173,15 @@ appstore:
   marketing_url: "https://sanesales.com"
   metadata:
     macos:
-      subtitle: "Read-Only Sales Dashboard"
-      promotional_text: "Try demo data first. Connecting live data starts a 7-day Pro trial. Pro keeps live tracking, custom date ranges, full history, CSV export, and multi-provider views available."
+      subtitle: "Private Revenue Tracker"
+      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Try demo data first, then connect live data when you are ready."
       description: >-
-        Track LemonSqueezy, Gumroad, and Stripe revenue in one private read-only desktop dashboard.
+        Track Lemon Squeezy, Gumroad, and Stripe revenue in one private native app for indie sellers.
 
-        No account is required to explore the app: start with built-in demo data right away, then connect your own accounts when you are ready.
-        Review orders, products, refunds, and trends without bouncing between storefront tabs.
+        SaneSales is built for makers who sell from more than one storefront and just want to know what sold today without opening three dashboards or copying numbers into a spreadsheet.
+        Start with built-in demo data, then connect your own provider accounts when you are ready. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+
+        On Mac, SaneSales gives you a fast desktop dashboard, menu bar revenue, widgets, order search, product breakdowns, refund-aware totals, custom date ranges, and CSV export.
 
         Demo includes:
         • Built-in sample dashboard
@@ -194,17 +196,19 @@ appstore:
         • CSV export
         • Desktop widgets and menu bar totals
         • Multiple providers at once
-      keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,merchant,menubar"
-      whats_new: "Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots."
+      keywords: "lemon squeezy,gumroad,stripe,revenue,orders,sales,refunds,merchant,menu bar"
+      whats_new: "Keeps saved providers connected more reliably, improves setup state handling, and preserves the latest dashboard, chart, order, and Apple Watch refinements."
       marketing_url: "https://sanesales.com"
     ios:
-      subtitle: "Read-Only Sales Dashboard"
-      promotional_text: "Try demo data first. Connecting live data starts a 7-day Pro trial. Pro keeps live tracking, custom date ranges, full history, CSV export, and multi-provider views available."
+      subtitle: "Private Revenue Tracker"
+      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Try demo data first, then connect live data when you are ready."
       description: >-
-        Track LemonSqueezy, Gumroad, and Stripe revenue on iPhone, iPad, and Apple Watch in one private read-only dashboard.
+        Track Lemon Squeezy, Gumroad, and Stripe revenue on iPhone, iPad, and Apple Watch in one private native app for indie sellers.
 
-        No account is required to explore the app: start with built-in demo data right away, then connect your own accounts when you are ready.
-        Check orders, products, refunds, and trends anywhere.
+        SaneSales is built for makers who sell from more than one storefront and just want to know what sold today without opening three dashboards or copying numbers into a spreadsheet.
+        Start with built-in demo data, then connect your own provider accounts when you are ready. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+
+        On iPhone, iPad, and Apple Watch, SaneSales gives you a quick revenue dashboard, widgets, order search, product breakdowns, refund-aware totals, custom date ranges, and CSV export.
 
         Demo includes:
         • Built-in sample dashboard
@@ -219,8 +223,8 @@ appstore:
         • CSV export
         • Multiple providers at once
         • Shared Pro access across your Apple devices
-      keywords: "lemonsqueezy,gumroad,stripe,revenue,analytics,orders,refunds,widgets,watch"
-      whats_new: "Adds cleaner custom ranges, sharper chart scaling for larger sales totals, better no-orders states, safer provider sync, and refreshed Apple Watch snapshots."
+      keywords: "lemon squeezy,gumroad,stripe,revenue,orders,sales,refunds,widgets,watch"
+      whats_new: "Keeps saved providers connected more reliably, improves setup state handling, and preserves the latest dashboard, chart, order, and Apple Watch refinements."
       marketing_url: "https://sanesales.com"
   review_notes: "SaneSales is a freemium, read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. Basic is free in the App Store build and includes built-in demo mode, so App Review does not need an account, API key, or payment. Connecting live data starts a 7-day Pro trial. SaneSales Pro is the only paid app unlock and is sold as a one-time StoreKit In-App Purchase through the Unlock Pro button in onboarding or Settings > License. There is no website license flow, no license key flow, no account signup, and no external checkout flow in the App Store build."
   review_notes_by_platform:

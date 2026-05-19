@@ -4,17 +4,17 @@
 
 ### Bring Sanity to Your Sales Tracking
 
-**LemonSqueezy + Gumroad + Stripe — finally unified**
+**Private revenue tracking for indie sellers using Lemon Squeezy, Gumroad, and Stripe**
 
 [![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneSales?style=flat-square)](https://github.com/sane-apps/SaneSales/stargazers)
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg?style=flat-square)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
-[![Price](https://img.shields.io/badge/Price-$24.99_one--time-green?style=flat-square)](https://sanesales.com)
+[![Price](https://img.shields.io/badge/Launch_Offer-60%25_off-green?style=flat-square)](https://sanesales.com)
 [![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
-[![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
+[![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Star this repo if you find it useful!** &middot; **[Buy — $24.99](https://sanesales.com)** &middot; Keeps development alive
+> **Launch week:** SaneSales Pro is **$9.99** with code **SANE60** through **May 21, 2026**. Normally **$24.99**. One-time purchase. No subscription.
 
 </div>
 
@@ -22,16 +22,16 @@
 
 ## The Problem
 
-You sell on multiple platforms. Every morning you check three dashboards, copy numbers into a spreadsheet, and try to answer: *"How are we actually doing?"*
+You sell on more than one storefront. Every morning you check three dashboards, copy numbers into a spreadsheet, and try to answer: *"What sold today, and how are we actually doing?"*
 
-- LemonSqueezy has your licenses
+- Lemon Squeezy has your licenses
 - Gumroad has your digital products
 - Stripe has your subscriptions
 - Your spreadsheet is already out of date
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one beautiful, native app. Demo data is available immediately; connecting live data starts a 7-day Pro trial. Revenue, orders, products, charts — all on your device, all in real time.
+SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; connecting live data starts a 7-day Pro trial. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
 
 | | |
 |---|---|
@@ -43,7 +43,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 | **CSV Export** | Export your full order history for accounting or email marketing |
 | **Widgets + Watch Glance** | Glance at today's revenue from Home Screen, Lock Screen, or Apple Watch Smart Stack |
 | **macOS Menu Bar** | See today's revenue in the menu bar. Right-click for quick actions |
-| **iCloud Keychain Sync** | Provider keys sync through your Apple ID. Sales data stays off SaneApps servers |
+| **iCloud Keychain Sync** | Provider keys sync through your Apple ID. SaneApps never receives your sales data, customers, products, orders, revenue, or API keys |
 
 ---
 
@@ -61,7 +61,7 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 | Provider | Revenue | Orders | Products | Refunds | Pagination |
 |----------|:-------:|:------:|:--------:|:-------:|:----------:|
-| **LemonSqueezy** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Lemon Squeezy** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Gumroad** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **Stripe** | ✅ | ✅ | ✅ | ✅ | ✅ |
 
@@ -69,19 +69,18 @@ SaneSales pulls your sales data from all three platforms into one beautiful, nat
 
 ## Why Not Just Use Baremetrics or ChartMogul?
 
-They're cloud dashboards. That means:
+They're cloud SaaS dashboards built for teams that want billing analytics in a browser. That means:
 
 - **Your revenue data lives on their servers** — every sale, every customer, every refund, stored and processed by a third party
-- **They only support Stripe** — sell on LemonSqueezy or Gumroad? Tough luck
-- **$29–$99/month forever** — that's $350–$1,200/year to look at your own sales numbers
-- **No native app** — just a browser tab competing with your other 47 tabs
+- **They are priced like SaaS tools** — monthly analytics bills add up fast when you only need to read your own sales numbers
+- **No native app** — another browser tab to check when you want a quick read
 - **No offline access** — no internet, no data
 
 SaneSales is the opposite:
 
 | Feature | SaneSales | Baremetrics | ChartMogul | Spreadsheets |
 |---------|:---------:|:-----------:|:----------:|:------------:|
-| **Multi-provider** | ✅ | ❌ Stripe only | ❌ Stripe only | Manual |
+| **Multi-provider** | ✅ LemonSqueezy + Gumroad + Stripe | Cloud integrations | Cloud integrations | Manual |
 | **LemonSqueezy support** | ✅ | ❌ | ❌ | Manual |
 | **Gumroad support** | ✅ | ❌ | ❌ | Manual |
 | **Refund-aware revenue** | ✅ Net after refunds | ✅ | ✅ | Manual |
@@ -89,10 +88,10 @@ SaneSales is the opposite:
 | **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
-| **No subscription** | **$24.99 once** | $29+/mo | $99+/mo | Free |
+| **No subscription** | **$9.99 with SANE60 through May 21, 2026. Regular $24.99.** | $75+/mo | Free tier, then $59+/mo | Free |
 | **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
 
-> **$24.99 once vs $350+/year.** Your sales data on your device, not theirs. **[Get SaneSales →](https://sanesales.com)**
+> **Private, native, and one-time priced.** SaneSales keeps your sales data on your devices and gives you dashboard views, order history, exports, widgets, and menu bar revenue without a monthly SaaS bill. **[Get SaneSales ->](https://sanesales.com)**
 
 ---
 
@@ -100,7 +99,7 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — free to start, Pro is $24.99 once
+**[Download from sanesales.com](https://sanesales.com)** — free demo + 7-day live-data Pro trial. Direct SaneSales Pro is **$9.99** with code **SANE60** through **May 21, 2026**; regular price is **$24.99**.
 
 Also available on the iOS and Mac App Store.
 
@@ -124,7 +123,7 @@ API keys are stored in iCloud Keychain so your own Apple devices can reconnect a
 
 ## Privacy
 
-**SaneSales does not upload your sales data or API keys to SaneApps servers.**
+**No private data collected. SaneSales never sends your sales data, orders, customers, products, or API keys to SaneApps servers.**
 
 - No accounts, no sign-up, no email required
 - A few simple anonymous app counts may be sent, such as trial vs Pro launches or locked-feature views
@@ -144,18 +143,11 @@ Full policy: [sanesales.com/privacy](https://sanesales.com/privacy.html)
 git clone https://github.com/sane-apps/SaneSales.git
 cd SaneSales
 
-# Generate the Xcode project
-xcodegen generate
-
-# Build macOS
-xcodebuild -scheme SaneSales -destination 'platform=macOS,arch=arm64' build
-
-# Build iOS
-xcodebuild -scheme SaneSalesIOS -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
-
-# Run tests (20 tests across 4 suites)
-xcodebuild -scheme SaneSales test -destination 'platform=macOS,arch=arm64'
+# Canonical SaneApps verification
+./scripts/SaneMaster.rb verify
 ```
+
+Use the shared wrapper for normal build/test verification so local checks match the release pipeline. See [DEVELOPMENT.md](DEVELOPMENT.md) for focused macOS, iOS, watchOS, and App Store debugging commands.
 
 ### Requirements
 

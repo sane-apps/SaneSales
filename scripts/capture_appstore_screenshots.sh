@@ -13,8 +13,10 @@ WATCH_SCHEME="${WATCH_SCHEME:-SaneSalesWatch}"
 MAC_SCHEME="${MAC_SCHEME:-}"
 MAC_CONFIGURATION="${MAC_CONFIGURATION:-}"
 NAME_PREFIX="${NAME_PREFIX:-appstore-}"
-EXTRA_APP_ARGS="${EXTRA_APP_ARGS:-}"
+DEFAULT_MARKETING_APP_ARGS="--force-pro-mode --screenshot-custom-range-start=2026-04-04 --screenshot-custom-range-end=2026-04-18"
+EXTRA_APP_ARGS="${EXTRA_APP_ARGS:-${DEFAULT_MARKETING_APP_ARGS}}"
 DEMO_CONNECTED_PROVIDER="${DEMO_CONNECTED_PROVIDER:-lemonsqueezy}"
+SYNC_WEBSITE_IMAGES="${SYNC_WEBSITE_IMAGES:-1}"
 CAPTURE_IPHONE="${CAPTURE_IPHONE:-auto}"
 CAPTURE_IPAD="${CAPTURE_IPAD:-auto}"
 CAPTURE_WATCH="${CAPTURE_WATCH:-auto}"
@@ -39,10 +41,35 @@ WATCH_UDID=""
 ORIGINAL_KEYBOARD_UI_MODE="__UNSET__"
 APP_EXTRA_ARGS=()
 
-if [[ -n "${EXTRA_APP_ARGS}" ]]; then
-  # shellcheck disable=SC2206
-  APP_EXTRA_ARGS=( ${EXTRA_APP_ARGS} )
-fi
+parse_extra_app_args() {
+  APP_EXTRA_ARGS=()
+  [[ -n "${EXTRA_APP_ARGS}" ]] || return 0
+  while IFS= read -r -d '' arg; do
+    APP_EXTRA_ARGS[${#APP_EXTRA_ARGS[@]}]="${arg}"
+  done < <(
+    EXTRA_APP_ARGS_VALUE="${EXTRA_APP_ARGS}" python3 - <<'PY'
+import os
+import shlex
+import sys
+
+for value in shlex.split(os.environ.get("EXTRA_APP_ARGS_VALUE", "")):
+    sys.stdout.write(value + "\0")
+PY
+  )
+}
+
+parse_extra_app_args
+
+require_marketing_args() {
+  local joined=" ${APP_EXTRA_ARGS[*]} "
+  for required in "--force-pro-mode" "--screenshot-custom-range-start=2026-04-04" "--screenshot-custom-range-end=2026-04-18"; do
+    if [[ "${joined}" != *" ${required} "* ]]; then
+      echo "Missing required marketing screenshot arg: ${required}" >&2
+      echo "Use EXTRA_APP_ARGS=\"${DEFAULT_MARKETING_APP_ARGS}\" or include the missing arg in your override." >&2
+      exit 1
+    fi
+  done
+}
 
 if [[ -n "${DEMO_CONNECTED_PROVIDER}" ]]; then
   has_demo_provider_arg=0
@@ -53,12 +80,66 @@ if [[ -n "${DEMO_CONNECTED_PROVIDER}" ]]; then
     fi
   done
   if [[ "${has_demo_provider_arg}" == "0" ]]; then
-    APP_EXTRA_ARGS+=( "--demo-connected-provider=${DEMO_CONNECTED_PROVIDER}" )
+    APP_EXTRA_ARGS[${#APP_EXTRA_ARGS[@]}]="--demo-connected-provider=${DEMO_CONNECTED_PROVIDER}"
   fi
 fi
 
+require_marketing_args
+
 log() {
   printf '[screenshots] %s\n' "$1"
+}
+
+sync_website_image() {
+  local source_name="$1"
+  local target_name="$2"
+  local source_path="${OUT_DIR}/${NAME_PREFIX}${source_name}"
+  local target_path="${ROOT_DIR}/docs/images/${target_name}"
+
+  if [[ ! -s "${source_path}" ]]; then
+    return 0
+  fi
+
+  mkdir -p "$(dirname "${target_path}")"
+  cp "${source_path}" "${target_path}"
+  log "Synced website image: docs/images/${target_name}"
+}
+
+sync_website_images() {
+  if [[ "${SYNC_WEBSITE_IMAGES}" != "1" ]]; then
+    log "Skipping docs/images sync (SYNC_WEBSITE_IMAGES=${SYNC_WEBSITE_IMAGES})"
+    return 0
+  fi
+
+  local platforms
+  platforms="$(IFS=,; echo "${captured_platforms[*]}")"
+  platforms=",${platforms},"
+
+  if [[ "${platforms}" == *",iphone,"* ]]; then
+    sync_website_image "01-onboarding-dark-6.7.png" "screenshot-iphone-onboarding.png"
+    sync_website_image "02-dashboard-dark-6.7.png" "screenshot-iphone-dashboard.png"
+    sync_website_image "03-orders-dark-6.7.png" "screenshot-iphone-orders.png"
+    sync_website_image "04-products-dark-6.7.png" "screenshot-iphone-products.png"
+    sync_website_image "05-settings-dark-6.7.png" "screenshot-iphone-settings.png"
+  fi
+
+  if [[ "${platforms}" == *",ipad,"* ]]; then
+    sync_website_image "01-onboarding-dark-ipad.png" "screenshot-ipad-onboarding.png"
+    sync_website_image "02-dashboard-dark-ipad.png" "screenshot-ipad-dashboard.png"
+    sync_website_image "03-orders-dark-ipad.png" "screenshot-ipad-orders.png"
+    sync_website_image "04-products-dark-ipad.png" "screenshot-ipad-products.png"
+    sync_website_image "05-settings-dark-ipad.png" "screenshot-ipad-settings.png"
+  fi
+
+  # Keep curated macOS screenshots unless capture is explicitly reviewed.
+  # Mac captures can expose system permission prompts or Basic/upgrade banners,
+  # which poison website/video marketing assets.
+
+  if [[ "${platforms}" == *",watch,"* ]]; then
+    sync_website_image "01-dashboard-dark-watch.png" "screenshot-watch-dashboard.png"
+  fi
+  # Keep curated watch recent-sales screenshots unless capture is explicitly
+  # reviewed; old demo data can contain other SaneApps product names.
 }
 
 wait_for_mac_window() {
@@ -474,8 +555,8 @@ if [[ "${WANT_WATCH}" == "1" ]]; then
     log "Installing watchOS app on simulator..."
     xcrun simctl install "${WATCH_UDID}" "${WATCH_APP}"
     log "Capturing watchOS screenshots..."
-    capture_watch_shot "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}01-dashboard-dark-watch.png" --demo
-    capture_watch_shot "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-recent-dark-watch.png" --demo --focus-recent
+    capture_watch_shot "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}01-dashboard-dark-watch.png" --demo "${APP_EXTRA_ARGS[@]-}"
+    capture_watch_shot "${WATCH_UDID}" "${WATCH_BUNDLE_ID}" "${OUT_DIR}/${NAME_PREFIX}02-recent-dark-watch.png" --demo --focus-recent "${APP_EXTRA_ARGS[@]-}"
     captured_platforms+=("watch")
   fi
 else
@@ -552,6 +633,8 @@ fi
   echo "platforms=$(IFS=,; echo "${captured_platforms[*]}")"
   echo "generated_at=$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 } > "${CAPTURE_MANIFEST}"
+
+sync_website_images
 
 if [[ "${PRUNE_STALE_SCREENSHOTS}" == "1" ]]; then
   while IFS= read -r -d '' stale_file; do

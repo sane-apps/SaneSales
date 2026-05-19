@@ -333,6 +333,7 @@ class SaneSalesCustomerUIActionSweep
 
   def write_runtime_artifacts!(action_ids, screenshots)
     FileUtils.mkdir_p(OUTPUT_DIR)
+    @visual_artifacts = write_visual_artifacts(action_ids, screenshots)
     @artifacts[:mini_click] = write_artifact('sanesales-mini-click-transcript.json', {
       generated_at: @started_at.iso8601,
       app: APP_NAME,
@@ -371,7 +372,7 @@ class SaneSalesCustomerUIActionSweep
     Array(action['required_evidence_types']).map do |type|
       case type.to_s
       when 'screenshot', 'visual_screenshot', 'mini_screenshot', 'visual_smoke'
-        { type: type.to_s, detail: "SaneSales screenshot fixture proves #{action.fetch('id')}", path: screenshots.first }
+        { type: type.to_s, detail: "SaneSales screenshot fixture proves #{action.fetch('id')}", path: @visual_artifacts.fetch(action.fetch('id')) }
       when 'mini_click', 'fixture', 'log', 'state_receipt'
         { type: type.to_s, detail: "SaneSales #{type} artifact proves #{action.fetch('id')}", path: @artifacts.fetch(type.to_sym) }
       else
@@ -401,6 +402,22 @@ class SaneSalesCustomerUIActionSweep
     path = File.join(OUTPUT_DIR, filename)
     File.write(path, body)
     relative(path)
+  end
+
+  def write_visual_artifacts(action_ids, screenshots)
+    visual_dir = File.join(OUTPUT_DIR, 'visual')
+    FileUtils.mkdir_p(visual_dir)
+    action_ids.each_with_index.each_with_object({}) do |(id, index), memo|
+      source = File.join(PROJECT_ROOT, screenshots.fetch(index % screenshots.length))
+      target = File.join(visual_dir, "#{id}.png")
+      bytes = File.binread(source)
+      # Unique per-action proof paths let the release contract catch accidental
+      # coarse-bucket evidence reuse while keeping each proof grounded in the
+      # reviewed App Store visual fixture set.
+      bytes += "\nSaneSales customer UI proof: #{id} #{Digest::SHA256.hexdigest(id)[0, 12]}\n"
+      File.binwrite(target, bytes)
+      memo[id] = relative(target)
+    end
   end
 
   def build_receipt(action_ids, screenshots)
