@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.8] - 2026-05-20
+
+Rebuilds the App Store release after stale iOS artifact evidence showed the 1.3.7 live-provider Pro gate fix was not safely represented by the exported IPA.
+
+---
+
 ## [1.3.7] - 2026-05-20
 
 Critical security update.

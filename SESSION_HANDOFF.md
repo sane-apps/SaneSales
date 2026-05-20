@@ -5,6 +5,14 @@
 
 ## Current State
 
+## 2026-05-20 App Store 1.3.7 Stale iOS Artifact Incident
+
+- User installed public App Store `1.3.7` and confirmed the Pro/provider bypass symptoms still appeared on iPhone. Public App Store lookup showed iOS `1.3.7` live as of `2026-05-20T19:56:29Z`, so this was not just a pending-review delay.
+- Local exported iOS artifact evidence contradicted the prior handoff: `build/Export-AppStore-iOS/SaneSales.ipa` was timestamped May 19 and embedded `CFBundleShortVersionString=1.3.6`, `CFBundleVersion=1306`, even though the handoff claimed the IPA was verified as `1.3.7/1307`.
+- Root cause for the customer-facing failure is release artifact drift/stale IPA reuse. The fixed source has the live-provider gate, but the public App Store build cannot be trusted as the corrected binary.
+- Corrective action started: bumped all targets to `1.3.8` / `1308`, refreshed the Mini customer UI receipt, generated the widget visual proof, withdrew the stale macOS `1.3.7` review lane, and retargeted the editable App Store lane to `1.3.8`.
+- Current gate: `./scripts/SaneMaster.rb appstore_preflight` passes with warnings only for `1.3.8`; hard blockers are cleared. Next action is to commit the `1.3.8` release-prep changes and run the canonical release/upload path, then verify the exported IPA by embedded `Info.plist` before any App Store submission claim.
+
 ## 2026-05-20 App Store iOS Lane Submission
 
 - Corrected missed iOS App Store lane after macOS resubmission. ASC initially showed iOS live at `1.3.6 READY_FOR_SALE` with no `1.3.7` iOS build/version, so the iOS lane required an IPA upload rather than a metadata-only submit.
