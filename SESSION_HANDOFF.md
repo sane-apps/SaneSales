@@ -1,17 +1,25 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-20
-**Current version:** 1.3.7 deployed for direct download/Sparkle/Homebrew as a critical security update; macOS and iOS App Store 1.3.7 are both submitted and waiting for review; launch-week Pro offer is live at $9.99 through May 21, 2026
+**Current version:** 1.3.8 deployed for direct download/Sparkle/Homebrew; macOS and iOS App Store 1.3.8 are both submitted and waiting for review; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-20 SaneSales 1.3.8 App Store Rebuild
+
+- User confirmed public iOS App Store `1.3.7` still showed the Pro/provider problems. Investigation found the local exported iOS artifact was stale (`1.3.6` / `1306`) despite prior handoff notes claiming the IPA had been verified as `1.3.7` / `1307`.
+- Corrective release is `1.3.8` / `1308`. Direct download/Sparkle/Homebrew are live at `1.3.8`, with `https://dist.sanesales.com/updates/SaneSales-1.3.8.zip` returning HTTP 200 and the live appcast pointing at `sparkle:version="1308"`.
+- Rebuilt the iOS archive on the Mini through `mini-gui-run.sh` because plain SSH signing failed with `errSecInternalComponent` for widget extensions. Fresh IPA verification passed: `CFBundleShortVersionString=1.3.8`, `CFBundleVersion=1308`, `CFBundleIdentifier=com.sanesales.app`, `AppStoreProductID=com.sanesales.app.pro.unlock.v2`, and binary strings include `Pro required for live sales`.
+- Submitted macOS App Store `1.3.8` build `1308` and iOS App Store `1.3.8` build `1308`. ASC lane check after submission: macOS `1.3.8` is `WAITING_FOR_REVIEW` with submission `dd432476-1b0a-4b7f-9132-645cb02eb0b7`; iOS `1.3.8` is `WAITING_FOR_REVIEW` with submission `0654e97e-f573-4538-b1ee-3ad3dff2d583`.
+- Final Mini `./scripts/SaneMaster.rb appstore_preflight` is warning-only: strict customer UI visual contract, tests, signing/profiles, StoreKit product ID routing, ASC IAP record, monetization guardrails, and compiled App Store artifact audit all pass. Remaining warnings are manual watch icon contrast inspection and the known privacy manifest project.yml mention.
+- Customer-facing status: public iOS App Store `1.3.7` is still live until Apple approves `1.3.8`; treat `1.3.7` as untrusted for the Pro/provider fix and ask the user to retest only after `1.3.8` is approved and installed.
 
 ## 2026-05-20 App Store 1.3.7 Stale iOS Artifact Incident
 
 - User installed public App Store `1.3.7` and confirmed the Pro/provider bypass symptoms still appeared on iPhone. Public App Store lookup showed iOS `1.3.7` live as of `2026-05-20T19:56:29Z`, so this was not just a pending-review delay.
 - Local exported iOS artifact evidence contradicted the prior handoff: `build/Export-AppStore-iOS/SaneSales.ipa` was timestamped May 19 and embedded `CFBundleShortVersionString=1.3.6`, `CFBundleVersion=1306`, even though the handoff claimed the IPA was verified as `1.3.7/1307`.
 - Root cause for the customer-facing failure is release artifact drift/stale IPA reuse. The fixed source has the live-provider gate, but the public App Store build cannot be trusted as the corrected binary.
-- Corrective action started: bumped all targets to `1.3.8` / `1308`, refreshed the Mini customer UI receipt, generated the widget visual proof, withdrew the stale macOS `1.3.7` review lane, and retargeted the editable App Store lane to `1.3.8`.
-- Current gate: `./scripts/SaneMaster.rb appstore_preflight` passes with warnings only for `1.3.8`; hard blockers are cleared. Next action is to commit the `1.3.8` release-prep changes and run the canonical release/upload path, then verify the exported IPA by embedded `Info.plist` before any App Store submission claim.
+- Corrective action completed: bumped all targets to `1.3.8` / `1308`, refreshed the Mini customer UI receipt, generated the widget visual proof, withdrew the stale macOS `1.3.7` review lane, rebuilt fresh macOS/iOS App Store artifacts, verified the new IPA by embedded `Info.plist`, and submitted both App Store lanes as `1.3.8`.
 
 ## 2026-05-20 App Store iOS Lane Submission
 
