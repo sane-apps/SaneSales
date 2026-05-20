@@ -5,6 +5,15 @@
 
 ## Current State
 
+## 2026-05-20 Directory Schedule Recheck
+
+- Re-ran the canonical Mini gate before touching any support-surface form: [`./scripts/SaneMaster.rb launch_readiness --json`](/Users/sj/SaneApps/apps/SaneSales/scripts/SaneMaster.rb) returned `ok: false` on 2026-05-20 because the latest `release_preflight` is now failed with 2 issues and 2 warnings. Rule 4 applies: no fresh irreversible launch-surface submission under a red gate.
+- Launching Next remains the only completed low-friction submission. The existing free-path receipt at [`https://www.launchingnext.com/thanks/?i=134060`](https://www.launchingnext.com/thanks/?i=134060) still shows `Submitted`, `Fast-Track`, and `Status: In Queue (Estimated Wait: 4 Months)`. No paid fast-track upgrade was taken.
+- MacUpdate is still blocked before any submission form. [`https://member.macupdate.com/content/submit`](https://member.macupdate.com/content/submit) still resolves to [`https://member.macupdate.com/member/login/%20content%20submit`](https://member.macupdate.com/member/login/%20content%20submit) with `Sign in` and `Create account`, so no safe progress is possible without an existing member session or explicit approval to create one.
+- G2 still does not expose a usable claim/create path in this session. The public create-profile page at [`https://sell.g2.com/create-a-profile`](https://sell.g2.com/create-a-profile) still routes `Get Started` into [`https://my.g2.com/~/upgrade`](https://my.g2.com/~/upgrade), and the direct add-product path at [`https://www.g2.com/products/new`](https://www.g2.com/products/new) still lands in an access-restricted iframe.
+- Optional SaaSHub is still not low-friction enough to justify diversion from the core launch schedule. The second-step form at [`https://www.saashub.com/services/new?url=https%3A%2F%2Fsanesales.com&commit=Continue`](https://www.saashub.com/services/new?url=https%3A%2F%2Fsanesales.com&commit=Continue) still requires categories, competitors, contact email, and a `Free` vs `$75 / One Off` submission choice before confirmation.
+- No irreversible public action, no paid directory upgrade, and no account-creation step were taken in this run. Durable tracker updates were written back into [`.outreach.yml`](/Users/sj/SaneApps/apps/SaneSales/.outreach.yml).
+
 ## 2026-05-20 Demo-Mode Live Provider Bypass Incident
 
 - User found a revenue-critical bypass: in demo mode, deleting an existing demo provider and adding a real provider API key could make live tracking work without purchase.
