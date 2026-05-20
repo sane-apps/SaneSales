@@ -656,6 +656,7 @@ actions:
   - Cache snapshot privacy tests
   required_proof_level: fixture_completion
   required_evidence_types:
+  - screenshot
   - fixture
   - state_receipt
   historical_failure_classes:
