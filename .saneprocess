@@ -328,14 +328,6 @@ appstore:
         supports_audio_descriptions: false
       mac:
         supports_dark_interface: true
-        supports_sufficient_contrast: true
-        supports_larger_text: true
-        supports_voiceover: true
-        supports_voice_control: true
-        supports_differentiate_without_color_alone: true
-        supports_reduced_motion: true
-        supports_captions: false
-        supports_audio_descriptions: false
     mac:
       supports_dark_interface: true
     iphone:
