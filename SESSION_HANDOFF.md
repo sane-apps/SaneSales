@@ -1,9 +1,20 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-20
-**Current version:** 1.3.7 deployed for direct download/Sparkle/Homebrew as a critical security update; App Store 1.3.7 is intentionally withdrawn/blocked pending fresh strict visual proof; launch-week Pro offer is live at $9.99 through May 21, 2026
+**Current version:** 1.3.7 deployed for direct download/Sparkle/Homebrew as a critical security update; macOS and iOS App Store 1.3.7 are both submitted and waiting for review; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-20 App Store iOS Lane Submission
+
+- Corrected missed iOS App Store lane after macOS resubmission. ASC initially showed iOS live at `1.3.6 READY_FOR_SALE` with no `1.3.7` iOS build/version, so the iOS lane required an IPA upload rather than a metadata-only submit.
+- Cleaned the Mini visual workspace after `customer_ui_sweep` correctly blocked on a stale orphaned SaneBar GUI process. Only the orphaned SaneBar process was closed; unrelated active Mini work was left alone.
+- Refreshed the customer UI action receipt on the Mini from clean state. `./scripts/SaneMaster.rb customer_ui_sweep --json` and `./scripts/SaneMaster.rb customer_ui_contract --strict-visual --json` passed with 15 actions and source fingerprint `d9d38cee91ef5f55d1fad733bf83a0d065cf51dee9eb4a316d6f81e353099957`.
+- Committed the refreshed proof as `40082d2 Refresh SaneSales App Store UI proof`.
+- Clean Mini `./scripts/SaneMaster.rb appstore_preflight` passed with warnings only: privacy manifest project.yml mention and manual Watch marketing icon contrast inspection. Git clean, strict visual contract, signing, IAP, monetization guardrails, screenshot counts, metadata, and compiled artifact audit all passed.
+- Verified the iOS IPA before upload: `build/Export-AppStore-iOS/SaneSales.ipa` contains `CFBundleShortVersionString=1.3.7`, `CFBundleVersion=1307`, bundle ID `com.sanesales.app`, team `M78L6FXD48`.
+- Uploaded and submitted iOS `1.3.7` build `1307`. ASC verification now shows `platform=IOS version=1.3.7 state=WAITING_FOR_REVIEW` with review submission `c3f292a9-50b2-4a62-a14b-78e862615122`.
+- macOS `1.3.7` remains `WAITING_FOR_REVIEW` with review submission `52fb6892-0efa-4477-a6b2-80c100ad7ef3`.
 
 ## 2026-05-20 App Store Visual Proof Correction
 
