@@ -1,5 +1,5 @@
 product: SaneSales
-updated: "2026-05-19"
+updated: "2026-05-20"
 positioning:
   one_liner: "Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe"
   offer: "Direct Pro is $9.99 with code SANE60 through May 21, 2026; regular price is $24.99; checkout may show $24.99 before the discount applies"
@@ -108,6 +108,8 @@ launch_calendar:
       action: "Post Show HN only if Product Hunt is not approved and the user approves the exact final draft."
       gate: "No Product Hunt relaunch conflict; exact draft approval required before public posting."
       success_metric: "HN post URL recorded and first 2 hours monitored for comments."
+      last_reviewed: "2026-05-20"
+      result: "At 09:03 EDT on 2026-05-20 the slot was not due yet. Fresh Mini `launch_readiness` stayed green, Product Hunt still remained no-go for launch-week timing, and no exact-copy approval existed for a public Show HN post. Do not post at 11:00 EDT unless exact final approval arrives before the slot."
     - date: "2026-05-21"
       time: "09:30"
       channel: "Launch offer final-day push"
@@ -116,16 +118,16 @@ launch_calendar:
       gate: "Do not spam a dead channel; use only one final-day public post unless there is a strong reply opportunity."
       success_metric: "Offer-end traffic/sales report captured after the post or a documented no-go."
   last_launch_readiness:
-    date: "2026-05-19"
+    date: "2026-05-20"
     status: "green_with_release_preflight_warnings"
     launch_readiness_exit: 0
     blocker_summary:
-      - "Mini launch_readiness returned ok: true on the 2026-05-19 recheck."
-      - "release_preflight passed with warnings only on the app gate, but the global validation report at 2026-05-19 09:02:38 EDT still flagged stale SaneSales customer UI proof in the broader release pipeline."
-      - "Product Hunt relaunch remains no-go for launch-week timing after no approval/rejection arrived by Monday May 18 noon EDT; fallback stays Indie Hackers on May 19 and Show HN on May 20."
-      - "The May 19 Indie Hackers fallback was due and the exact prepared copy was surfaced, but no authenticated Indie Hackers posting session was available from the in-app browser or Chrome automation path."
-      - "Launch-week price copy remains valid on 2026-05-19 because active user-facing references include the May 21, 2026 cutoff; remove or replace all $9.99/SANE60 copy after that date."
-      - "Do not claim Indie Hackers launch execution until a signed-in posting session exists and a real post URL can be recorded."
+      - "Mini launch_readiness returned ok: true on the 2026-05-20 recheck."
+      - "release_preflight still passes with warnings only on the app gate, but the global validation report at 2026-05-20 09:02:28 EDT still flagged stale SaneSales customer UI proof and a Lemon Squeezy hosted file lag (`1.3.5` hosted vs `1.3.6` live)."
+      - "Product Hunt relaunch remains no-go for launch-week timing after no approval/rejection arrived by Monday May 18 noon EDT; fallback remains Show HN later on Wednesday, May 20, 2026."
+      - "The May 19 Indie Hackers fallback stayed unexecuted because no authenticated posting session was available."
+      - "At 09:03 EDT on 2026-05-20, the 11:00 EDT Show HN slot was not due yet, and no exact-copy approval existed, so no public post or scheduling action was executed."
+      - "Launch-week price copy remains valid on 2026-05-20 because active user-facing references include the May 21, 2026 cutoff; remove or replace all $9.99/SANE60 copy after that date."
     next_date: "2026-05-20"
 public_posting_policy:
   approval_required: true
@@ -343,7 +345,7 @@ directory_submissions:
       - "outputs/marketing/product-hunt-sanesales-20260514/gallery-02-private-no-subscription.png"
       - "outputs/marketing/product-hunt-sanesales-20260514/gallery-03-all-devices.png"
     topics: ["Finance", "Productivity", "Mac", "iOS"]
-    pricing: "Paid with free demo/trial"
+    pricing: "Paid with built-in demo"
     promo_code: "SANE60"
     description: "Track LemonSqueezy, Gumroad, and Stripe sales privately in one native app with charts, order history, CSV export, widgets, Watch, and menu bar revenue."
     next: "Do not create duplicate launch. One official follow-up was delivered to hello@producthunt.com on 2026-05-18 after the noon EDT deadline; continue with Indie Hackers/HN fallback unless Product Hunt explicitly approves later."
@@ -352,7 +354,7 @@ directory_submissions:
     startup_name: "SaneSales"
     url: "https://sanesales.com"
     headline: "Private native sales tracker for indie sellers"
-    description: "SaneSales is a private native sales tracker for indie sellers using LemonSqueezy, Gumroad, and Stripe. Instead of bouncing between dashboards and spreadsheets, you can see revenue charts, orders, products, CSV export, widgets, Apple Watch, and a Mac menu bar revenue view in one app across Mac, iPhone, iPad, and Apple Watch. It connects directly from your devices, so SaneApps never sees sales data, orders, customers, revenue, products, or API keys. It includes a free demo mode and a 7-day live-data Pro trial. Direct Pro is $9.99 with code SANE60 through May 21, 2026; regular price is $24.99."
+    description: "SaneSales is a private native sales tracker for indie sellers using LemonSqueezy, Gumroad, and Stripe. Instead of bouncing between dashboards and spreadsheets, you can see revenue charts, orders, products, CSV export, widgets, Apple Watch, and a Mac menu bar revenue view in one app across Mac, iPhone, iPad, and Apple Watch. It connects directly from your devices, so SaneApps never sees sales data, orders, customers, revenue, products, or API keys. It includes built-in demo data, and Pro unlocks live provider connections. Direct Pro is $9.99 with code SANE60 through May 21, 2026; regular price is $24.99."
     tags: "sales analytics, mac app, ios app, lemonsqueezy, gumroad, stripe, indie hackers, revenue tracking"
     company_type: "Bootstrapped startup"
     marketing_budget: "$0"

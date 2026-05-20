@@ -16,6 +16,7 @@ struct SaneSalesApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("demo_mode") private var demoModeEnabled = false
+    @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
 
     private let automaticRefreshInterval: TimeInterval = 12 * 60 * 60
 
@@ -71,11 +72,18 @@ struct SaneSalesApp: App {
                 syncProAccess()
                 debugLogStartupState(reason: "license")
             }
+            .onChange(of: licenseService.hasCompletedPurchaseStateRefresh) { _, _ in
+                syncProAccess()
+                debugLogStartupState(reason: "licenseRefresh")
+            }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     syncProAccess()
                     Task { await refreshLiveDataIfStale() }
                 }
+            }
+            .onOpenURL { url in
+                handleDeepLink(url)
             }
             .task {
                 licenseService.checkCachedLicense()
@@ -108,11 +116,23 @@ struct SaneSalesApp: App {
 
     private func syncProAccess() {
         let forceFree = forcedFreeModeEnabled
+        let isPaidOrForced = (licenseService.isPro || forcedProModeEnabled) && !forceFree
         manager.updateProAccess(
             isPaidPro: licenseService.isPro && !forceFree,
             forcePro: forcedProModeEnabled && !forceFree,
             demoModeEnabled: (demoModeEnabled || CommandLine.arguments.contains("--demo")) && !forceFree
         )
+        if licenseService.hasCompletedPurchaseStateRefresh {
+            manager.resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: isPaidOrForced)
+        }
+    }
+
+    private func handleDeepLink(_ url: URL) {
+        guard url.scheme == "sanesales" else { return }
+        hasSeenWelcome = true
+        if url.host == "license" || url.path == "/license" {
+            pendingSettingsRoute = "license"
+        }
     }
 
     private func refreshLiveDataIfStale(force: Bool = false) async {

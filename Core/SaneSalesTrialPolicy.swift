@@ -29,16 +29,8 @@ enum SaneSalesTrialPolicy {
         demoModeEnabled: Bool,
         build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
     ) -> SaneSalesTrialState {
-        if isPaidPro || demoModeEnabled || !hasConnectedProviders {
-            return state(defaults: defaults, now: now)
-        }
-
-        if defaults.object(forKey: trialStartedAtKey) == nil {
-            defaults.set(now.timeIntervalSince1970, forKey: trialStartedAtKey)
-            defaults.set(build, forKey: trialStartedBuildKey)
-        }
-
-        return state(defaults: defaults, now: now)
+        _ = (defaults, now, isPaidPro, hasConnectedProviders, demoModeEnabled, build)
+        return .notStarted
     }
 
     static func state(defaults: UserDefaults = SharedStore.userDefaults(), now: Date = Date()) -> SaneSalesTrialState {
@@ -60,7 +52,8 @@ enum SaneSalesTrialPolicy {
     }
 
     static func isTrialActive(defaults: UserDefaults = SharedStore.userDefaults(), now: Date = Date()) -> Bool {
-        state(defaults: defaults, now: now).isActive
+        _ = (defaults, now)
+        return false
     }
 
     static func reset(defaults: UserDefaults = SharedStore.userDefaults()) {

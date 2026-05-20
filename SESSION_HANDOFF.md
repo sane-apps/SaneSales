@@ -1,9 +1,26 @@
 # Session Handoff — SaneSales
 
-**Last updated:** 2026-05-19
-**Current version:** 1.3.5 deployed for direct download; launch-week Pro offer is live at $9.99 through May 21, 2026
+**Last updated:** 2026-05-20
+**Current version:** 1.3.6 deployed for direct download; v1.3.7 critical security update is verified locally and pending publish; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-20 Demo-Mode Live Provider Bypass Incident
+
+- User found a revenue-critical bypass: in demo mode, deleting an existing demo provider and adding a real provider API key could make live tracking work without purchase.
+- Root cause confirmed independently by Codex and GPT audit agent: `SalesManager.isPro` treated `demoModeAccess` as effective Pro, and provider connection/refresh gates trusted `isPro`. Demo mode also did not start or consume the trial, so live refresh could run under demo-derived Pro access.
+- Fix applied locally: `SalesManager` now separates `hasLiveProviderAccess` from demo UI access. Demo mode can still show sample data, but live provider connection, live refresh, cached live-data loading, key entry, export, widgets/watch live data, and Pro range/history surfaces require paid Pro or forced internal test mode. Successful real provider connection exits demo mode and clears sample data before saving the real key.
+- Static UI contract fix applied: onboarding provider accessibility IDs are now explicit per provider, so `onboarding.provider.gumroad` and `onboarding.provider.stripe` remain visible to SaneMaster's reference validator.
+- Regression coverage added in `Tests/APITests.swift`:
+  - demo mode does not bypass Pro for live provider connections;
+  - demo mode does not grant live refresh access;
+  - demo fixtures still show sample data without granting live access;
+  - demo provider deletion cannot reset the Pro gate;
+  - deleting one demo provider cannot reconnect it as live without Pro.
+- Worktree-safe source-reading fix added for the SaneUI welcome gate test so clean Mini worktrees resolve canonical `~/SaneApps/infra/SaneUI` when relative `infra/SaneUI` is not present.
+- Follow-up audit fixes applied before publish: iOS onboarding no longer exposes provider API-key entry until Pro access exists; connected provider "Change Key" routes through the same Pro gate; cached live data does not load until live Pro access exists; dashboard/orders/products Pro range/history surfaces now key off `hasLiveProviderAccess`, not demo-derived `isPro`; App Store/outreach/review copy no longer describes live provider sync as a demo feature.
+- Verification: clean Mini worktree `~/SaneApps/worktrees/SaneSales-gating-fix-20260520/SaneSales` ran `ruby ~/SaneApps/infra/SaneProcess/scripts/SaneMaster.rb verify --timeout 1200` and passed `87 tests` on 2026-05-20. `customer_ui_sweep --no-exit` passed. `appstore_preflight` passed with warnings only: manual Watch marketing icon contrast inspection and dirty worktree. Manual icon inspection found high-contrast cyan artwork on a dark blue background.
+- Release implication: this is not protected for existing users until a new SaneSales version is shipped. Sparkle requires a version bump, so the fix must go out as `1.3.7` or later, not another `1.3.6` build.
 
 ## 2026-05-19 Directory Schedule Recheck
 

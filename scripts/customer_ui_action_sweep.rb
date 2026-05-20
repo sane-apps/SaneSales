@@ -57,7 +57,10 @@ class SaneSalesCustomerUIActionSweep
     ],
     'onboarding-demo-provider-pro-entry' => [
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.view")'],
-      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.provider.\\(provider.rawValue)")'],
+      ['iOS/Views/ContentView.swift', 'onboardingProviderAccessibilityIdentifier(_ provider: SalesProviderType)'],
+      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.provider.lemonsqueezy")'],
+      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.provider.gumroad")'],
+      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.provider.stripe")'],
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.apiKeyField")'],
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.connectButton")'],
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.demoButton")'],
@@ -73,7 +76,7 @@ class SaneSalesCustomerUIActionSweep
       ['iOS/Views/DashboardView.swift', '.refreshable'],
       ['iOS/Views/DashboardView.swift', 'pendingSettingsRoute = "license"'],
       ['iOS/Views/AccessibilityIdentifierModifiers.swift', 'DashboardRangeAccessibilityModifier'],
-      ['Tests/APITests.swift', 'Free tier locks live dashboard ranges until trial or Pro access'],
+      ['Tests/APITests.swift', 'Basic tier locks live dashboard ranges until Pro access'],
       ['Tests/MetricsTests.swift', 'Custom range helpers normalize dates and fill missing days']
     ],
     'orders-search-filter-detail-actions' => [
@@ -122,7 +125,7 @@ class SaneSalesCustomerUIActionSweep
       ['macOS/SaneSalesSettingsMacView.swift', 'SaneLanguageSettingsRow('],
       ['macOS/SaneSalesSettingsMacView.swift', 'SaneSparkleRow('],
       ['macOS/SaneSalesSettingsMacView.swift', 'if !newValue, !showInDock'],
-      ['macOS/SaneSalesMacApp.swift', 'manager.isPro && showRevenueInMenuBar'],
+      ['macOS/SaneSalesMacApp.swift', 'manager.hasLiveProviderAccess && showRevenueInMenuBar'],
       ['Tests/SettingsSourceTests.swift', 'macOS settings use shared SaneUI settings surfaces'],
       ['Tests/SettingsSourceTests.swift', 'macOS menu bar revenue stays gated to Pro access']
     ],
@@ -134,7 +137,7 @@ class SaneSalesCustomerUIActionSweep
       ['iOS/Views/SettingsView.swift', 'Date,Order #,Customer,Email,Product,Variant,Provider,Status,Subtotal,Tax,Discount,Total,Currency,Refunded'],
       ['macOS/SaneSalesSettingsMacView.swift', 'demoModeBinding'],
       ['macOS/SaneSalesSettingsMacView.swift', 'exportOrdersCSV(manager.orders)'],
-      ['Tests/APITests.swift', 'Paid Pro and demo mode do not consume the trial'],
+      ['Tests/APITests.swift', 'Paid Pro and demo mode keep retired trial unused'],
       ['Tests/CacheTests.swift', 'Shared snapshot excludes customer and receipt data']
     ],
     'license-purchase-restore-direct-key-safe-surfaces' => [

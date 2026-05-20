@@ -23,7 +23,7 @@ struct OrdersEmptyStateCopy: Equatable {
                 details: [
                     "See the latest sales as they come in",
                     "Search by customer, product, or order ID",
-                    "Connect live data to start a 7-day Pro trial"
+                    "Unlock Pro to connect live data"
                 ],
                 secondaryActionTitle: "Open Provider Settings"
             )

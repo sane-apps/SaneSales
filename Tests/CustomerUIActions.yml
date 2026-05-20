@@ -57,17 +57,19 @@ actions:
   - iOS onboarding view
   - macOS welcome gate
   - Demo data action
-  - Provider picker
   - Unlock Pro and restore purchase controls
+  - Provider picker after Pro unlock
   steps:
   - Start from a first-launch state.
-  - Exercise provider selection, API key first surface, Try Demo Data, Unlock Pro,
-    and Restore Purchases.
+  - Exercise Try Demo Data, Unlock Pro, Restore Purchases, and the provider entry
+    surface that appears only after Pro access.
   - Stop at StoreKit, checkout, or provider credential validation unless an isolated
     fixture is present.
   assertions:
   - Demo mode completes without credentials or payment.
-  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present.
+  - Basic/demo does not expose API key entry as a dead end.
+  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present after
+    Pro access.
   - Purchase and restore controls reach the first safe purchase surface only.
   - Real purchase and provider-secret completion are not marked complete by this contract.
   evidence:
@@ -100,13 +102,15 @@ actions:
     - Tests/Fixtures/customer-ui/sales-dashboard/
   user_inputs:
   - Start from a first-launch state.
-  - Exercise provider selection, API key first surface, Try Demo Data, Unlock Pro,
-    and Restore Purchases.
+  - Exercise Try Demo Data, Unlock Pro, Restore Purchases, and the provider entry
+    surface that appears only after Pro access.
   - Stop at StoreKit, checkout, or provider credential validation unless an isolated
     fixture is present.
   expected_outputs:
   - Demo mode completes without credentials or payment.
-  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present.
+  - Basic/demo does not expose API key entry as a dead end.
+  - LemonSqueezy, Gumroad, and Stripe provider setup surfaces are present after
+    Pro access.
   - Purchase and restore controls reach the first safe purchase surface only.
 - id: dashboard-range-refresh-filter-actions
   title: Dashboard range, refresh, provider filter, and Pro gates behave
@@ -121,15 +125,15 @@ actions:
   - Change Today, 7D, 30D, All, and Custom ranges.
   - Open and apply the custom range sheet.
   - Change provider filters and clear them.
-  - Refresh data and verify Basic/Trial/Pro gates.
+  - Refresh data and verify Basic/Pro gates.
   assertions:
   - Date range state updates shared dashboard and order scopes.
   - Basic mode routes locked ranges to a visible Pro surface.
-  - Refresh does not run live provider calls after trial expiry.
+  - Refresh does not run live provider calls without Pro.
   - Provider filters update visible metrics without hiding setup recovery.
   evidence:
   - Source guard for dashboard range controls and filter state
-  - Metrics and trial policy tests
+  - Metrics and Pro gating tests
   required_proof_level: full_runtime_completion
   required_evidence_types:
   - mini_click
@@ -160,7 +164,7 @@ actions:
   expected_outputs:
   - Date range state updates shared dashboard and order scopes.
   - Basic mode routes locked ranges to a visible Pro surface.
-  - Refresh does not run live provider calls after trial expiry.
+  - Refresh does not run live provider calls without Pro.
 - id: orders-search-filter-detail-actions
   title: Orders search, filters, row navigation, empty states, and detail links work
   surfaces:
@@ -332,10 +336,11 @@ actions:
   - Disconnect confirmation dialog
   steps:
   - Open Manage for each connected provider fixture.
-  - Verify Change Key opens the same secret-entry surface.
+  - Verify Change Key routes through the same Pro gate before opening secret entry.
   - Open Disconnect and cancel unless using isolated temporary credentials.
   assertions:
   - Destructive disconnect is never one-click destructive.
+  - Change Key does not open secret entry in Basic/demo mode.
   - Change Key and Disconnect are available only from connected provider rows.
   - Cached sales data is not removed without confirmation.
   evidence:
@@ -368,10 +373,11 @@ actions:
     - Tests/Fixtures/customer-ui/sales-dashboard/
   user_inputs:
   - Open Manage for each connected provider fixture.
-  - Verify Change Key opens the same secret-entry surface.
+  - Verify Change Key routes through the same Pro gate before opening secret entry.
   - Open Disconnect and cancel unless using isolated temporary credentials.
   expected_outputs:
   - Destructive disconnect is never one-click destructive.
+  - Change Key does not open secret entry in Basic/demo mode.
   - Change Key and Disconnect are available only from connected provider rows.
   - Cached sales data is not removed without confirmation.
 - id: settings-general-macos-availability-updates
@@ -437,12 +443,12 @@ actions:
   - Export CSV for fixture orders and validate the generated file header.
   - Stop at share sheet or Finder reveal surface.
   assertions:
-  - Demo mode does not consume the live-data trial.
-  - Refresh respects expired-trial and Pro gating.
+  - Demo mode does not grant live provider access.
+  - Refresh respects Basic and Pro gating.
   - CSV export contains order fields and does not leak secrets.
   evidence:
   - Source guard for demo, refresh, and export code
-  - Demo, trial, cache, and export source guards
+  - Demo, Pro gate, cache, and export source guards
   required_proof_level: full_runtime_completion
   required_evidence_types:
   - mini_click
@@ -473,8 +479,8 @@ actions:
   - Trigger Refresh Data with fixture data.
   - Export CSV for fixture orders and validate the generated file header.
   expected_outputs:
-  - Demo mode does not consume the live-data trial.
-  - Refresh respects expired-trial and Pro gating.
+  - Demo mode does not grant live provider access.
+  - Refresh respects Basic and Pro gating.
   - CSV export contains order fields and does not leak secrets.
 - id: license-purchase-restore-direct-key-safe-surfaces
   title: License, purchase, restore, direct key, and deactivation surfaces are safe

@@ -19,10 +19,7 @@ enum SharedStore {
 
     static func isProEnabled(defaults: UserDefaults = userDefaults()) -> Bool {
         defaults.bool(forKey: paidProEnabledKey) ||
-            defaults.bool(forKey: macOSWidgetsPaidProEnabledKey) ||
-            defaults.bool(forKey: proEnabledKey) ||
-            defaults.bool(forKey: macOSWidgetsProEnabledKey) ||
-            SaneSalesTrialPolicy.isTrialActive(defaults: defaults)
+            defaults.bool(forKey: macOSWidgetsPaidProEnabledKey)
     }
 
     static func setPaidProEnabled(_ enabled: Bool, defaults: UserDefaults = userDefaults()) {

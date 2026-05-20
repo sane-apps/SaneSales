@@ -297,15 +297,18 @@ import SwiftUI
                     .background(MainWindowCaptureView())
                     .preferredColorScheme(.dark)
                     .frame(minWidth: 600, minHeight: 400)
+                    .onOpenURL { url in
+                        handleDeepLink(url)
+                    }
                     .onAppear {
                         appDelegate.salesManager = manager
                         licenseService.checkCachedLicense()
 
-                        // Sync license, trial, and demo state into manager for Pro gating
+                        // Sync license and demo state into manager for Pro gating
                         syncProAccess()
 
                         // Fire launch event based on tier
-                        let tier = manager.isPro ? "pro" : "free"
+                        let tier = manager.hasLiveProviderAccess ? "pro" : "free"
                         let isFirstLaunch = !hasSeenWelcome
                         Task.detached {
                             await EventTracker.log("app_launch_\(tier)", app: "sanesales")
@@ -347,12 +350,13 @@ import SwiftUI
                             appIcon: "dollarsign.circle.fill",
                             freeFeatures: [
                                 (icon: "play.circle", text: "Demo mode to explore"),
-                                (icon: "link", text: "Connect live data for a 7-day Pro trial"),
-                                (icon: "lock.open", text: "Trial access to live orders and revenue"),
-                                (icon: "shield", text: "iCloud Keychain provider sync")
+                                (icon: "chart.bar", text: "Sample orders, products, and revenue"),
+                                (icon: "lock", text: "Pro required for live provider connections"),
+                                (icon: "shield", text: "Private local demo data")
                             ],
                             proFeatures: [
-                                (icon: "checkmark", text: "Pro keeps live tracking active:"),
+                                (icon: "checkmark", text: "Pro unlocks live tracking:"),
+                                (icon: "shield", text: "iCloud Keychain provider sync"),
                                 (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
                                 (icon: "list.bullet.rectangle", text: "Full order history"),
                                 (icon: "tablecells", text: "CSV export"),
@@ -387,7 +391,7 @@ import SwiftUI
                 SaneActivationPolicy.applyPolicy(showDockIcon: newValue)
             }
             .onChange(of: showRevenueInMenuBar) { _, newValue in
-                menuBarManager?.setShowRevenue(manager.isPro && newValue)
+                menuBarManager?.setShowRevenue(manager.hasLiveProviderAccess && newValue)
             }
             .onChange(of: demoModeEnabled) { _, _ in
                 syncProAccess()
@@ -410,6 +414,9 @@ import SwiftUI
                     menuBarManager = MenuBarManager(salesManager: manager, showRevenue: effectiveShowRevenueInMenuBar)
                 }
             }
+            .onChange(of: licenseService.hasCompletedPurchaseStateRefresh) { _, _ in
+                syncProAccess()
+            }
             .commands {
                 CommandGroup(replacing: .appSettings) {
                     Button(SaneStandardMenu.settingsTitle) {
@@ -430,11 +437,15 @@ import SwiftUI
         }
 
         private func syncProAccess() {
+            let isPaidOrForced = licenseService.isPro || forcedProModeEnabled
             manager.updateProAccess(
                 isPaidPro: licenseService.isPro,
                 forcePro: forcedProModeEnabled,
                 demoModeEnabled: demoModeEnabled || CommandLine.arguments.contains("--demo")
             )
+            if licenseService.hasCompletedPurchaseStateRefresh {
+                manager.resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: isPaidOrForced)
+            }
             menuBarManager?.setShowRevenue(effectiveShowRevenueInMenuBar)
         }
 
@@ -464,6 +475,15 @@ import SwiftUI
             SettingsTabNavigationStorage.shared.requestShowSettingsTab()
         }
 
+        private func handleDeepLink(_ url: URL) {
+            guard url.scheme == "sanesales" else { return }
+            if url.host == "license" || url.path == "/license" {
+                SettingsTabNavigationStorage.shared.requestShowSettingsTab(.license)
+            } else {
+                SettingsTabNavigationStorage.shared.requestShowSettingsTab()
+            }
+        }
+
         private func handleMenuBarToggle(_ show: Bool) {
             if show {
                 menuBarManager = MenuBarManager(salesManager: manager, showRevenue: effectiveShowRevenueInMenuBar)
@@ -474,7 +494,7 @@ import SwiftUI
         }
 
         private var effectiveShowRevenueInMenuBar: Bool {
-            manager.isPro && showRevenueInMenuBar
+            manager.hasLiveProviderAccess && showRevenueInMenuBar
         }
     }
 

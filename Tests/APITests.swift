@@ -521,6 +521,30 @@ struct AppStoreReviewPathTests {
         #expect(settingsSource.contains("GlassSection(\"License\""))
         #expect(settingsSource.contains("settings.license.unlockProButton"))
         #expect(onboardingSource.contains("onboarding.unlockProButton"))
+        #expect(onboardingSource.contains("if manager.hasLiveProviderAccess"))
+        #expect(onboardingSource.contains("lockedProviderSection"))
+        #expect(onboardingSource.contains("onboarding.enterLicenseKeyButton"))
+    }
+
+    @Test("Basic and demo provider paths do not expose live key entry")
+    func basicAndDemoProviderPathsDoNotExposeLiveKeyEntry() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let managerSource = try String(contentsOf: projectRoot.appendingPathComponent("Core/SalesManager.swift"), encoding: .utf8)
+        let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
+        let onboardingSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"), encoding: .utf8)
+        let dashboardSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/DashboardView.swift"), encoding: .utf8)
+        let ordersSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/OrdersListView.swift"), encoding: .utf8)
+        let productsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ProductsView.swift"), encoding: .utf8)
+
+        #expect(managerSource.contains("guard hasLiveProviderAccess else { return }"))
+        #expect(managerSource.contains("loadCachedDataIfNeeded()"))
+        #expect(settingsSource.contains("startProviderConnection(provider)"))
+        #expect(onboardingSource.contains("if manager.hasLiveProviderAccess"))
+        #expect(dashboardSource.contains("isPro: manager.hasLiveProviderAccess"))
+        #expect(ordersSource.contains("isPro: manager.hasLiveProviderAccess"))
+        #expect(productsSource.contains("manager.hasLiveProviderAccess ? manager.metrics : manager.planScopedMetrics"))
     }
 
     @Test("App Store screenshot capture keeps Mini visual fixtures release-safe")
@@ -624,13 +648,13 @@ struct AppStoreReviewPathTests {
         let projectRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let workspaceRoot = projectRoot
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
         let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
         let macAppSource = try String(contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesMacApp.swift"), encoding: .utf8)
         let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
-        let welcomeGateSource = try String(contentsOf: workspaceRoot.appendingPathComponent("infra/SaneUI/Sources/SaneUI/License/WelcomeGateView.swift"), encoding: .utf8)
+        let welcomeGateSource = try String(
+            contentsOf: saneUIRoot(from: projectRoot).appendingPathComponent("Sources/SaneUI/License/WelcomeGateView.swift"),
+            encoding: .utf8
+        )
 
         #expect(manifest.localizedCaseInsensitiveContains("click “Unlock Pro” on the welcome screen") || manifest.localizedCaseInsensitiveContains("click \"Unlock Pro\" on the welcome screen"))
         #expect(manifest.localizedCaseInsensitiveContains("open Settings and select the License tab"))
@@ -641,8 +665,8 @@ struct AppStoreReviewPathTests {
 }
 
 struct FreeTierPolicyTests {
-    @Test("Free tier locks live dashboard ranges until trial or Pro access")
-    func freeTierLocksLiveDashboardRangesUntilTrialOrProAccess() {
+    @Test("Basic tier locks live dashboard ranges until Pro access")
+    func basicTierLocksLiveDashboardRangesUntilProAccess() {
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.today, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.sevenDays, isPro: false))
         #expect(SaneSalesFreeTierPolicy.locksDashboardRange(.thirtyDays, isPro: false))
@@ -717,55 +741,67 @@ struct FreeTierPolicyTests {
         ) == .today)
     }
 
-    @Test("Active trial allows live tracking and multiple providers")
+    @Test("Legacy trial state does not authorize live provider access")
     @MainActor
-    func activeTrialAllowsLiveTrackingAndMultipleProviders() {
+    func legacyTrialStateDoesNotAuthorizeLiveProviderAccess() {
         let manager = SalesManager()
         manager.resetForUITests()
         manager.isLemonSqueezyConnected = true
         let now = Date(timeIntervalSince1970: 1_775_520_000)
 
         manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: now)
-
-        #expect(manager.isPro)
-        #expect(manager.trialState.isActive)
-        #expect(!manager.needsProForAdditionalProvider)
-        #expect(!manager.requiresProForProviderConnection(.lemonSqueezy))
-        #expect(!manager.requiresProForProviderConnection(.gumroad))
-        #expect(!manager.requiresProForProviderConnection(.stripe))
-    }
-
-    @Test("Expired trial requires Pro for all live provider connections")
-    @MainActor
-    func expiredTrialRequiresProForAllLiveProviderConnections() {
-        let manager = SalesManager()
-        manager.resetForUITests()
-        manager.isLemonSqueezyConnected = true
-        let now = Date(timeIntervalSince1970: 1_775_520_000)
-        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: now)
-        let afterTrial = now.addingTimeInterval(8 * 24 * 60 * 60)
-
-        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: afterTrial)
 
         #expect(!manager.isPro)
-        #expect(manager.trialState.isExpired)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(!manager.trialState.isActive)
         #expect(manager.needsProForAdditionalProvider)
         #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
         #expect(manager.requiresProForProviderConnection(.gumroad))
         #expect(manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Expired trial blocks refresh before fetching live data")
+    @Test("Basic requires Pro for all live provider connections")
     @MainActor
-    func expiredTrialBlocksRefreshBeforeFetchingLiveData() async {
+    func basicRequiresProForAllLiveProviderConnections() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        manager.isLemonSqueezyConnected = true
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
+
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: false, now: now)
+
+        #expect(!manager.isPro)
+        #expect(!manager.trialState.isActive)
+        #expect(manager.needsProForAdditionalProvider)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Demo mode does not bypass Pro for live provider connections")
+    @MainActor
+    func demoModeDoesNotBypassProForLiveProviderConnections() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        let now = Date(timeIntervalSince1970: 1_775_520_000)
+
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true, now: now)
+
+        #expect(manager.isDemoModeActive)
+        #expect(manager.isPro)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(!manager.trialState.isActive)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Basic blocks refresh before fetching live data")
+    @MainActor
+    func basicBlocksRefreshBeforeFetchingLiveData() async {
         let manager = SalesManager()
         manager.resetForUITests()
         defer { SalesManager.resetUITestPersistentState() }
-        let sharedDefaults = SharedStore.userDefaults()
-        sharedDefaults.set(
-            Date().addingTimeInterval(-8 * 24 * 60 * 60).timeIntervalSince1970,
-            forKey: SaneSalesTrialPolicy.trialStartedAtKey
-        )
         manager.isLemonSqueezyConnected = true
         manager.metrics = SalesMetrics(
             todayRevenue: 900,
@@ -783,25 +819,106 @@ struct FreeTierPolicyTests {
         await manager.refresh()
 
         #expect(!manager.isPro)
-        #expect(manager.trialState.isExpired)
+        #expect(!manager.trialState.isActive)
         #expect(manager.metrics.allTimeRevenue == 0)
         if case let .proRequired(feature)? = manager.error {
             #expect(feature == "Live sales tracking")
         } else {
-            Issue.record("Expected refresh to require Pro after trial expiry")
+            Issue.record("Expected refresh to require Pro")
         }
     }
 
-    @Test("Free tier still allows the first provider connection before trial expiry")
+    @Test("Demo mode does not grant live refresh access")
     @MainActor
-    func freeTierAllowsInitialProviderConnectionBeforeTrialExpiry() {
+    func demoModeDoesNotGrantLiveRefreshAccess() async {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+        manager.isLemonSqueezyConnected = true
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+
+        await manager.refresh()
+
+        #expect(manager.isDemoModeActive)
+        #expect(!manager.hasLiveProviderAccess)
+        if case let .proRequired(feature)? = manager.error {
+            #expect(feature == "Live sales tracking")
+        } else {
+            Issue.record("Expected demo mode refresh with live provider to require Pro")
+        }
+    }
+
+    @Test("Demo fixtures still show sample data without granting live access")
+    @MainActor
+    func demoFixturesShowSampleDataWithoutGrantingLiveAccess() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+
+        manager.enableDemoMode()
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+
+        #expect(manager.isDemoModeActive)
+        #expect(manager.isPro)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(!manager.orders.isEmpty)
+        #expect(!manager.products.isEmpty)
+        #expect(!manager.stores.isEmpty)
+    }
+
+    @Test("Demo provider deletion cannot reset Pro gate")
+    @MainActor
+    func demoProviderDeletionCannotResetProGate() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+
+        manager.enableDemoMode()
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+        manager.removeLemonSqueezyAPIKey()
+        manager.removeGumroadAPIKey()
+        manager.removeStripeAPIKey()
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+
+        #expect(!manager.trialState.isActive)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Deleting one demo provider cannot reconnect it as live without Pro")
+    @MainActor
+    func deletingOneDemoProviderCannotReconnectItAsLiveWithoutPro() {
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+
+        manager.enableDemoMode()
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+        manager.removeLemonSqueezyAPIKey()
+        manager.updateProAccess(isPaidPro: false, forcePro: false, demoModeEnabled: true)
+
+        #expect(manager.connectedProviders.contains(.gumroad))
+        #expect(manager.connectedProviders.contains(.stripe))
+        #expect(!manager.connectedProviders.contains(.lemonSqueezy))
+        #expect(!manager.trialState.isActive)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
+    }
+
+    @Test("Basic tier requires Pro for every live provider connection")
+    @MainActor
+    func basicTierRequiresProForEveryLiveProviderConnection() {
         let manager = SalesManager()
         manager.resetForUITests()
 
-        #expect(!manager.needsProForAdditionalProvider)
-        #expect(!manager.requiresProForProviderConnection(.lemonSqueezy))
-        #expect(!manager.requiresProForProviderConnection(.gumroad))
-        #expect(!manager.requiresProForProviderConnection(.stripe))
+        #expect(manager.needsProForAdditionalProvider)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+        #expect(manager.requiresProForProviderConnection(.gumroad))
+        #expect(manager.requiresProForProviderConnection(.stripe))
     }
 
     @Test("Paid Pro allows multiple providers")
@@ -817,8 +934,52 @@ struct FreeTierPolicyTests {
         #expect(!manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Shared Pro flag recognizes modern and legacy widget keys")
-    func sharedProFlagRecognizesModernAndLegacyKeys() {
+    @Test("Unpaid live access reset clears provider credentials and returns to demo")
+    @MainActor
+    func unpaidLiveAccessResetClearsProviderCredentialsAndReturnsToDemo() {
+        setenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG", "1", 1)
+        defer { unsetenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG") }
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+
+        KeychainService.save(string: "test_ls_key", account: KeychainService.lemonSqueezyAPIKey)
+        manager.isLemonSqueezyConnected = true
+        manager.orders = DemoData.allOrders
+        manager.products = DemoData.allProducts
+        manager.stores = DemoData.allStores
+        manager.metrics = SalesMetrics.compute(from: manager.orders)
+
+        manager.resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: false)
+
+        #expect(!KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey))
+        #expect(manager.isDemoModeActive)
+        #expect(manager.isPro)
+        #expect(!manager.hasLiveProviderAccess)
+        #expect(!manager.orders.isEmpty)
+        #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
+    }
+
+    @Test("Paid live access reset preserves provider credentials")
+    @MainActor
+    func paidLiveAccessResetPreservesProviderCredentials() {
+        setenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG", "1", 1)
+        defer { unsetenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG") }
+        let manager = SalesManager()
+        manager.resetForUITests()
+        defer { SalesManager.resetUITestPersistentState() }
+
+        KeychainService.save(string: "test_ls_key", account: KeychainService.lemonSqueezyAPIKey)
+        manager.isLemonSqueezyConnected = true
+
+        manager.resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: true)
+
+        #expect(KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey))
+        #expect(manager.isLemonSqueezyConnected)
+    }
+
+    @Test("Shared Pro flag only recognizes paid widget keys")
+    func sharedProFlagOnlyRecognizesPaidWidgetKeys() {
         let suiteName = "tests.sanesales.sharedstore.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suiteName) else {
             Issue.record("Failed to create isolated defaults suite")
@@ -834,7 +995,7 @@ struct FreeTierPolicyTests {
 
         defaults.removeObject(forKey: SharedStore.paidProEnabledKey)
         defaults.set(true, forKey: SharedStore.proEnabledKey)
-        #expect(SharedStore.isProEnabled(defaults: defaults))
+        #expect(!SharedStore.isProEnabled(defaults: defaults))
 
         defaults.removeObject(forKey: SharedStore.proEnabledKey)
         defaults.set(true, forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
@@ -842,13 +1003,13 @@ struct FreeTierPolicyTests {
 
         defaults.removeObject(forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
         defaults.set(true, forKey: SharedStore.macOSWidgetsProEnabledKey)
-        #expect(SharedStore.isProEnabled(defaults: defaults))
+        #expect(!SharedStore.isProEnabled(defaults: defaults))
     }
 }
 
 struct SaneSalesTrialPolicyTests {
-    @Test("Trial does not start before live data is connected")
-    func trialDoesNotStartBeforeLiveDataConnection() throws {
+    @Test("Retired trial policy never starts before live data is connected")
+    func retiredTrialPolicyNeverStartsBeforeLiveDataConnection() throws {
         let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
@@ -865,35 +1026,27 @@ struct SaneSalesTrialPolicyTests {
         #expect(defaults.object(forKey: SaneSalesTrialPolicy.trialStartedAtKey) == nil)
     }
 
-    @Test("Trial starts for live data and expires after seven days")
-    func trialStartsForLiveDataAndExpiresAfterSevenDays() throws {
+    @Test("Retired trial policy does not start for live data")
+    func retiredTrialPolicyDoesNotStartForLiveData() throws {
         let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
         let now = Date(timeIntervalSince1970: 1_775_520_000)
 
-        let active = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
+        let state = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
             defaults: defaults,
             now: now,
             isPaidPro: false,
             hasConnectedProviders: true,
             demoModeEnabled: false
         )
-        let expired = SaneSalesTrialPolicy.state(defaults: defaults, now: now.addingTimeInterval(8 * 24 * 60 * 60))
 
-        #expect(active.isActive)
-        if case let .active(startedAt, expiresAt, daysRemaining) = active {
-            #expect(startedAt == now)
-            #expect(expiresAt == now.addingTimeInterval(7 * 24 * 60 * 60))
-            #expect(daysRemaining == 7)
-        } else {
-            Issue.record("Expected active trial")
-        }
-        #expect(expired.isExpired)
+        #expect(!state.isActive)
+        #expect(defaults.object(forKey: SaneSalesTrialPolicy.trialStartedAtKey) == nil)
     }
 
-    @Test("Paid Pro and demo mode do not consume the trial")
-    func paidProAndDemoModeDoNotConsumeTrial() throws {
+    @Test("Paid Pro and demo mode keep retired trial unused")
+    func paidProAndDemoModeKeepRetiredTrialUnused() throws {
         let suiteName = "tests.sanesales.trial.\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
@@ -1051,4 +1204,22 @@ private func loadSeededLemonSqueezyKey() -> String? {
     }
 
     return nil
+}
+
+private func saneUIRoot(from projectRoot: URL) throws -> URL {
+    let relativeRoot = projectRoot
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .appendingPathComponent("infra/SaneUI")
+    if FileManager.default.fileExists(atPath: relativeRoot.appendingPathComponent("Sources/SaneUI").path) {
+        return relativeRoot
+    }
+
+    let canonicalRoot = URL(fileURLWithPath: NSHomeDirectory())
+        .appendingPathComponent("SaneApps/infra/SaneUI")
+    if FileManager.default.fileExists(atPath: canonicalRoot.appendingPathComponent("Sources/SaneUI").path) {
+        return canonicalRoot
+    }
+
+    throw CocoaError(.fileNoSuchFile)
 }

@@ -462,7 +462,7 @@ struct DashboardView: View {
                         animateCards = true
                     }
                 }
-                .onChange(of: manager.isPro) { _, _ in
+                .onChange(of: manager.hasLiveProviderAccess) { _, _ in
                     enforceFreeTierRange()
                 }
                 .onChange(of: manager.orders.count) { _, _ in
@@ -528,7 +528,7 @@ extension DashboardView {
                 Text("SaneSales")
                     .font(.system(size: widthClass.brandTitleSize, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
-                Text(manager.isPro ? "Choose a provider and range" : "Pro required for live sales")
+                Text(manager.hasLiveProviderAccess ? "Choose a provider and range" : "Pro required for live sales")
                     .font(isCompact ? .system(size: 11, weight: .medium) : .saneCallout)
                     .foregroundStyle(.white)
             }
@@ -540,13 +540,13 @@ extension DashboardView {
 
     private func heroRevenue(_ widthClass: WidthClass, alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 8) {
-            Text(manager.isPro ? rangeLabel : "Revenue")
+            Text(manager.hasLiveProviderAccess ? rangeLabel : "Revenue")
                 .font(.system(size: widthClass == .compact ? 13 : 14, weight: .semibold))
                 .foregroundStyle(Color.textMuted)
                 .textCase(.uppercase)
                 .tracking(0.8)
 
-            Text(manager.isPro ? formatCents(revenueForRange) : "Unlock Pro")
+            Text(manager.hasLiveProviderAccess ? formatCents(revenueForRange) : "Unlock Pro")
                 .font(.saneCardValue(size: widthClass.heroValueSize))
                 .foregroundStyle(.white)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
@@ -767,7 +767,7 @@ extension DashboardView {
 
     @ViewBuilder
     private func revenueCards(_ widthClass: WidthClass) -> some View {
-        if !manager.isPro {
+        if !manager.hasLiveProviderAccess {
             freeTierRevenueCards(widthClass)
         } else {
             proRevenueCards(widthClass)
@@ -993,7 +993,7 @@ extension DashboardView {
     }
 
     var shouldShowCustomRangeSummary: Bool {
-        manager.isPro && selectedRange == .custom
+        manager.hasLiveProviderAccess && selectedRange == .custom
     }
 
     var revenueForRange: Int {
@@ -1097,7 +1097,7 @@ extension DashboardView {
     }
 
     func handleRangeSelection(_ range: TimeRange) {
-        if SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro) {
+        if SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.hasLiveProviderAccess) {
             showLockedFeature(event: "trend_range_locked_tap")
             return
         }
@@ -1131,21 +1131,21 @@ extension DashboardView {
         normalizeStoredCustomRange()
         selectedRange = SaneSalesFreeTierPolicy.preferredDashboardRange(
             currentRange: selectedRange,
-            isPro: manager.isPro,
+            isPro: manager.hasLiveProviderAccess,
             todayOrders: dashboardMetrics.todayOrders,
             thirtyDayOrders: dashboardMetrics.thirtyDayOrders
         )
     }
 
     func isLockedRange(_ range: TimeRange) -> Bool {
-        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
+        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.hasLiveProviderAccess)
     }
 
     var basicPlanNote: some View {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.salesGold)
-            Text("You have seven days left on your free trial after connecting live data. Unlock Pro to keep tracking sales after that.")
+                Text("Basic uses demo data only. Unlock Pro to connect live sales, keep full history, and use every revenue view.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
             Spacer()
@@ -1167,23 +1167,18 @@ extension DashboardView {
     }
 
     private var trialBannerText: String? {
-        if licenseService.isPro || manager.isDemoModeActive || !manager.isConnected {
+        if licenseService.isPro || !manager.isConnected {
             return nil
         }
 
-        switch manager.trialState {
-        case let .active(_, _, daysRemaining):
-            return "You have \(daysRemaining) \(daysRemaining == 1 ? "day" : "days") left on your free trial."
-        case .expired:
-            return "Your free trial has ended. Unlock Pro to continue tracking live sales."
-        case .notStarted:
-            return "Connect live data to start your 7-day free trial."
-        }
+        return manager.isDemoModeActive
+            ? "Demo mode is sample data. Unlock Pro to connect your live providers."
+            : "Pro is required for live sales tracking. Unlock Pro to continue."
     }
 
     private func trialStatusBanner(_ text: String) -> some View {
         HStack(spacing: 10) {
-            Image(systemName: manager.trialState.isExpired ? "lock.fill" : "timer")
+            Image(systemName: "lock.fill")
                 .foregroundStyle(.white)
             Text(text)
                 .font(.system(size: 14, weight: .semibold))

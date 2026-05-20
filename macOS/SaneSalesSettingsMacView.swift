@@ -152,7 +152,7 @@ struct SaneSalesMacSettingsView: View {
                     isOn: showInMenuBarBinding
                 )
 
-                if manager.isPro {
+                if manager.hasLiveProviderAccess {
                     if showInMenuBar {
                         CompactDivider()
                         CompactToggle(
@@ -282,7 +282,7 @@ struct SaneSalesMacSettingsView: View {
                 if !manager.orders.isEmpty {
                     CompactDivider()
                     CompactRow(SaneSalesSettingsCopy.exportOrdersCSVLabel, icon: "tablecells", iconColor: .white) {
-                        if manager.isPro {
+                        if manager.hasLiveProviderAccess {
                             Button {
                                 exportURL = exportOrdersCSV(manager.orders)
                                 showExportSheet = exportURL != nil

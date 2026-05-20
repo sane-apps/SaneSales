@@ -46,10 +46,10 @@ struct SettingsSourceTests {
         )
 
         #expect(appSource.contains("private var effectiveShowRevenueInMenuBar: Bool"))
-        #expect(appSource.contains("manager.isPro && showRevenueInMenuBar"))
+        #expect(appSource.contains("manager.hasLiveProviderAccess && showRevenueInMenuBar"))
         #expect(appSource.contains("showRevenue: effectiveShowRevenueInMenuBar"))
         #expect(appSource.contains("menuBarManager?.setShowRevenue(effectiveShowRevenueInMenuBar)"))
-        #expect(macSettingsSource.contains("if manager.isPro"))
+        #expect(macSettingsSource.contains("if manager.hasLiveProviderAccess"))
         #expect(macSettingsSource.contains("SaneSalesSettingsCopy.showRevenueInMenuBarLabel"))
     }
 

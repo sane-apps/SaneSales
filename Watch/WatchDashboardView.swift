@@ -149,6 +149,7 @@ final class WatchDashboardViewModel: ObservableObject {
 
 struct WatchDashboardView: View {
     @ObservedObject var viewModel: WatchDashboardViewModel
+    @Environment(\.openURL) private var openURL
     private let focusRecentOnAppear = CommandLine.arguments.contains("--focus-recent")
 
     var body: some View {
@@ -421,6 +422,13 @@ struct WatchDashboardView: View {
                 .font(.system(size: 12, weight: .medium))
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
+
+            Button("Open Unlock") {
+                if let url = URL(string: "sanesales://license") {
+                    openURL(url)
+                }
+            }
+            .buttonStyle(.borderedProminent)
         }
         .padding(12)
     }
