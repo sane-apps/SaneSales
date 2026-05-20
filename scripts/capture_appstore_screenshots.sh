@@ -40,6 +40,7 @@ IPAD_UDID=""
 WATCH_UDID=""
 ORIGINAL_KEYBOARD_UI_MODE="__UNSET__"
 APP_EXTRA_ARGS=()
+MAC_CAPTURE_TOOL="screencapture"
 
 parse_extra_app_args() {
   APP_EXTRA_ARGS=()
@@ -406,7 +407,11 @@ end tell
 EOF
   sleep 1.1
 
-  screencapture -x -R "${x},${y},${width},${height}" "${output_file}"
+  if [[ "${MAC_CAPTURE_TOOL}" == "peekaboo" ]]; then
+    /opt/homebrew/bin/peekaboo image --app "SaneSales" --retina --path "${output_file}" --json >/tmp/sanesales-peekaboo-capture.json
+  else
+    screencapture -x -R "${x},${y},${width},${height}" "${output_file}"
+  fi
   log "Saved ${output_file}"
 }
 
@@ -422,12 +427,21 @@ OSA
     return 1
   fi
 
-  if ! screencapture -x /tmp/sanesales-screencap-preflight.png >/dev/null 2>&1; then
-    echo "macOS screenshot capture blocked: screencapture cannot access display." >&2
-    echo "Run this script from an active GUI session on the Mini (not headless SSH-only)." >&2
-    return 1
+  if screencapture -x /tmp/sanesales-screencap-preflight.png >/dev/null 2>&1; then
+    MAC_CAPTURE_TOOL="screencapture"
+    rm -f /tmp/sanesales-screencap-preflight.png
+    return 0
   fi
-  rm -f /tmp/sanesales-screencap-preflight.png
+
+  if command -v /opt/homebrew/bin/peekaboo >/dev/null 2>&1; then
+    MAC_CAPTURE_TOOL="peekaboo"
+    log "screencapture cannot access display; using Peekaboo app-window capture for macOS screenshots."
+    return 0
+  fi
+
+  echo "macOS screenshot capture blocked: screencapture cannot access display and Peekaboo is unavailable." >&2
+  echo "Run this script from an active GUI session on the Mini or install Peekaboo." >&2
+  return 1
 }
 
 prepare_mac_focus_state() {
