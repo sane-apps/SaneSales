@@ -104,12 +104,12 @@ launch_calendar:
     - date: "2026-05-20"
       time: "11:00"
       channel: "Hacker News Show HN fallback"
-      status: "scheduled_conditional"
+      status: "missed_no_post_no_approval_gate_red"
       action: "Post Show HN only if Product Hunt is not approved and the user approves the exact final draft."
       gate: "No Product Hunt relaunch conflict; exact draft approval required before public posting."
       success_metric: "HN post URL recorded and first 2 hours monitored for comments."
       last_reviewed: "2026-05-20"
-      result: "At 09:03 EDT on 2026-05-20 the slot was not due yet. Fresh Mini `launch_readiness` stayed green, Product Hunt still remained no-go for launch-week timing, and no exact-copy approval existed for a public Show HN post. Do not post at 11:00 EDT unless exact final approval arrives before the slot."
+      result: "At 11:00 EDT on 2026-05-20, Product Hunt still remained no-go for launch-week timing and no duplicate relaunch was scheduled, so the fallback condition was met. The prepared draft was still approval-only and Mini `launch_readiness --json` returned `ok: false` because `release_preflight` was `failed` with 2 issues and 2 warnings. No Show HN post was submitted, so there is no HN URL and no 2-hour comment-monitoring window to run from this slot."
     - date: "2026-05-21"
       time: "09:30"
       channel: "Launch offer final-day push"
@@ -126,9 +126,9 @@ launch_calendar:
       - "The latest `release_preflight` is now failed with 2 issues and 2 warnings, so fresh launch-surface submissions are blocked again."
       - "Product Hunt relaunch remains no-go for launch-week timing after no approval/rejection arrived by Monday May 18 noon EDT; fallback remains Show HN later on Wednesday, May 20, 2026."
       - "The May 19 Indie Hackers fallback stayed unexecuted because no authenticated posting session was available."
-      - "At 10:05 EDT on 2026-05-20, the 11:00 EDT Show HN slot still lacked exact-copy approval and the app gate was red, so no public post or scheduling action was executed."
+      - "At 11:00 EDT on 2026-05-20, the Show HN fallback remained approval-blocked and the app gate was still red, so no public post or scheduling action was executed."
       - "Launch-week price copy remains valid on 2026-05-20 because active user-facing references include the May 21, 2026 cutoff; remove or replace all $9.99/SANE60 copy after that date."
-    next_date: "2026-05-20"
+    next_date: "2026-05-21"
 public_posting_policy:
   approval_required: true
   disclosure_required: "Always say 'I built SaneSales' when recommending it in public replies."
@@ -324,7 +324,7 @@ queued_drafts:
     title: "I built a private native sales tracker for LemonSqueezy, Gumroad, and Stripe"
     body: "I built SaneSales because I was tired of checking LemonSqueezy, Gumroad, and Stripe separately, then copying numbers into a spreadsheet just to answer 'how are we actually doing?' SaneSales is a private native sales tracker for indie sellers: direct provider connections, no SaneApps sales-data server, one-time purchase, CSV export, widgets, Watch support, and menu bar revenue on Mac. I’d especially love feedback on the positioning: does 'private native sales tracker' land better than 'analytics dashboard' for indie sellers?"
   hacker_news_show_hn:
-    status: "ready_for_approval"
+    status: "ready_for_approval_unposted_slot_missed"
     title: "Show HN: SaneSales – native sales tracker for LemonSqueezy, Gumroad, and Stripe"
     body: "I built SaneSales because I was tired of checking multiple seller dashboards and a spreadsheet every morning just to answer 'how are we doing?' It’s a native app for macOS, iPhone, iPad, and Apple Watch. It connects directly to LemonSqueezy, Gumroad, and Stripe from the device, so SaneApps doesn’t sit in the middle of your sales data. It has order history, CSV export, widgets, and a menu bar revenue view on Mac. I’d love feedback on the product and the positioning, especially from people selling on more than one platform."
 directory_submissions:

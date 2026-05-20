@@ -222,4 +222,23 @@ struct SettingsSourceTests {
         #expect(source.contains("providerFilter = nil"))
         #expect(source.contains("availableOrderCountForEmptyState"))
     }
+
+    @Test("Customer UI proof uses explicit action screenshot mapping")
+    func customerUIProofUsesExplicitActionScreenshotMapping() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let source = try String(
+            contentsOf: projectRoot.appendingPathComponent("scripts/customer_ui_action_sweep.rb"),
+            encoding: .utf8
+        )
+
+        #expect(source.contains("ACTION_SCREENSHOT_FIXTURES"))
+        #expect(source.contains("ACTION_SCREENSHOT_FIXTURES.fetch(id)"))
+        #expect(source.contains("render_widget_visual_proof!"))
+        #expect(source.contains("'widgets-ios-macos-lockscreen-actions' => 'outputs/customer-ui/widget/widget-proof-contact-sheet.png'"))
+        #expect(source.contains("'orders-search-filter-detail-actions' => 'Screenshots/appstore-03-orders-dark-mac.png'"))
+        #expect(source.contains("'products-chart-catalog-actions' => 'Screenshots/appstore-04-products-dark-mac.png'"))
+        #expect(!source.contains("screenshots.fetch(index % screenshots.length)"))
+    }
 }

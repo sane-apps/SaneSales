@@ -5,6 +5,27 @@
 
 ## Current State
 
+## 2026-05-20 App Store Visual Proof Correction
+
+- Human inspection caught that the earlier automated strict visual pass was invalid: generated customer UI proof images were mapped by list position and several SaneSales screenshots were contaminated by a SaneClip permission prompt. App Store was not resubmitted from that evidence.
+- Fixed `scripts/customer_ui_action_sweep.rb` so each customer-facing action has an explicit screenshot fixture mapping instead of round-robin screenshot assignment. Added a regression test in `Tests/SettingsSourceTests.swift`.
+- Added `scripts/render_widget_visual_proof.rb` to generate a Mini-rendered macOS WidgetKit contact sheet from the actual `SalesWidgetView` paid and locked states; widget proof no longer points at a Settings screenshot.
+- Regenerated macOS App Store screenshots from the Mini GUI session on May 20, 2026. Fresh customer UI visual proof was inspected at `/tmp/sanesales-visual-proof/contact.png`; no SaneClip prompt, helper window, clipping, or obvious text overlap remained in the proof set.
+- Mini gates after the correction:
+  - `./scripts/SaneMaster.rb customer_ui_sweep --json` passed with 15 actions.
+  - `./scripts/SaneMaster.rb customer_ui_contract --strict-visual --json` passed.
+  - `./scripts/SaneMaster.rb appstore_preflight` passed with warnings only: privacy manifest project.yml mention, manual Watch icon contrast inspection, and dirty worktree before commit.
+- App Store state remains intentionally withdrawn until the clean proof changes are committed/pushed and a fresh submission command is run. macOS `1.3.7` is still `DEVELOPER_REJECTED` before resubmission.
+
+## 2026-05-20 Show HN Fallback Check
+
+- Rechecked the live fallback condition at 11:00 EDT on Wednesday, May 20, 2026 instead of relying only on earlier notes. Product Hunt still shows the original May 6 launch post as live but unfeatured: post `1139905`, `featuredAt: null`, `scheduledAt: 2026-05-06T07:01:00Z`, `votesCount: 1`, and `commentsCount: 1`.
+- The Product Hunt relaunch path still has no active replacement schedule recorded in [`.outreach.yml`](/Users/sj/SaneApps/apps/SaneSales/.outreach.yml), so there is no duplicate-launch conflict blocking the fallback lane.
+- The exact prepared Show HN draft remains:
+  `Show HN: SaneSales – native sales tracker for LemonSqueezy, Gumroad, and Stripe`
+- No Show HN post was submitted from this slot. The remaining blockers were unchanged at send time: exact-copy approval was still missing, there was no signal that the user could stay present for several hours of comment replies, and the current launch gate had turned red again (`launch_readiness --json` was already tracked as `ok: false` because `release_preflight` failed with 2 issues and 2 warnings).
+- Result: no HN URL exists and no 2-hour comment-monitoring window ran. Treat the Show HN draft as still approval-ready but unposted.
+
 ## 2026-05-20 Critical Direct Release + App Store Visual Gate Correction
 
 - Direct release v1.3.7 is live:
