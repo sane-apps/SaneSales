@@ -5,6 +5,7 @@ require 'digest'
 require 'English'
 require 'fileutils'
 require 'json'
+require 'open3'
 require 'socket'
 require 'time'
 require 'yaml'
@@ -16,6 +17,7 @@ class SaneSalesCustomerUIActionSweep
   RECEIPT_PATH = File.join(PROJECT_ROOT, '.sane', 'customer_ui_action_receipt.json')
   OUTPUT_DIR = File.join(PROJECT_ROOT, 'outputs', 'customer-ui')
   SCREENSHOT_FIXTURES = [
+    'Screenshots/appstore-01-onboarding-dark-mac.png',
     'Screenshots/appstore-02-dashboard-dark-mac.png',
     'Screenshots/appstore-03-orders-dark-mac.png',
     'Screenshots/appstore-04-products-dark-mac.png',
@@ -24,10 +26,28 @@ class SaneSalesCustomerUIActionSweep
     'Screenshots/appstore-05-settings-data-dark-mac.png',
     'Screenshots/appstore-05-settings-license-dark-mac.png',
     'Screenshots/appstore-05-settings-about-dark-mac.png',
+    'outputs/customer-ui/widget/widget-proof-contact-sheet.png',
     'Screenshots/appstore-01-onboarding-dark-6.7.png',
     'Screenshots/appstore-01-dashboard-dark-watch.png',
     'Screenshots/appstore-02-recent-dark-watch.png'
   ].freeze
+  ACTION_SCREENSHOT_FIXTURES = {
+    'main-navigation-tabs' => 'Screenshots/appstore-02-dashboard-dark-mac.png',
+    'onboarding-demo-provider-pro-entry' => 'Screenshots/appstore-01-onboarding-dark-mac.png',
+    'dashboard-range-refresh-filter-actions' => 'Screenshots/appstore-02-dashboard-dark-mac.png',
+    'orders-search-filter-detail-actions' => 'Screenshots/appstore-03-orders-dark-mac.png',
+    'products-chart-catalog-actions' => 'Screenshots/appstore-04-products-dark-mac.png',
+    'provider-key-entry-safe-surfaces' => 'Screenshots/appstore-05-settings-providers-dark-mac.png',
+    'provider-management-destructive-safe-surfaces' => 'Screenshots/appstore-05-settings-providers-dark-mac.png',
+    'settings-general-macos-availability-updates' => 'Screenshots/appstore-05-settings-general-dark-mac.png',
+    'settings-data-demo-refresh-export-actions' => 'Screenshots/appstore-05-settings-data-dark-mac.png',
+    'license-purchase-restore-direct-key-safe-surfaces' => 'Screenshots/appstore-05-settings-license-dark-mac.png',
+    'about-support-diagnostics-links' => 'Screenshots/appstore-05-settings-about-dark-mac.png',
+    'macos-menubar-dock-command-actions' => 'Screenshots/appstore-02-dashboard-dark-mac.png',
+    'widgets-ios-macos-lockscreen-actions' => 'outputs/customer-ui/widget/widget-proof-contact-sheet.png',
+    'watch-dashboard-complication-actions' => 'Screenshots/appstore-01-dashboard-dark-watch.png',
+    'cache-offline-privacy-recovery-actions' => 'Screenshots/appstore-05-settings-data-dark-mac.png'
+  }.freeze
 
   CUSTOMER_UI_MANIFEST_PATHS = [
     'Tests/CustomerUIActions.yml',
@@ -232,6 +252,7 @@ class SaneSalesCustomerUIActionSweep
       end
       action_ids = @manifest_actions.keys
       verify_unique_action_ids!(action_ids)
+      render_widget_visual_proof!
       screenshots = verify_screenshot_fixtures!
       write_runtime_artifacts!(action_ids, screenshots)
       verify_source_guards!(action_ids, screenshots)
@@ -334,6 +355,14 @@ class SaneSalesCustomerUIActionSweep
     existing
   end
 
+  def render_widget_visual_proof!
+    script = File.join(PROJECT_ROOT, 'scripts', 'render_widget_visual_proof.rb')
+    output, status = Open3.capture2e('ruby', script, File.join(PROJECT_ROOT, 'outputs', 'customer-ui', 'widget'))
+    return if status.success?
+
+    raise "Widget visual proof render failed: #{output.strip}"
+  end
+
   def write_runtime_artifacts!(action_ids, screenshots)
     FileUtils.mkdir_p(OUTPUT_DIR)
     @visual_artifacts = write_visual_artifacts(action_ids, screenshots)
@@ -410,8 +439,9 @@ class SaneSalesCustomerUIActionSweep
   def write_visual_artifacts(action_ids, screenshots)
     visual_dir = File.join(OUTPUT_DIR, 'visual')
     FileUtils.mkdir_p(visual_dir)
-    action_ids.each_with_index.each_with_object({}) do |(id, index), memo|
-      source = File.join(PROJECT_ROOT, screenshots.fetch(index % screenshots.length))
+    verify_action_screenshot_map!(action_ids, screenshots)
+    action_ids.each_with_object({}) do |id, memo|
+      source = File.join(PROJECT_ROOT, ACTION_SCREENSHOT_FIXTURES.fetch(id))
       target = File.join(visual_dir, "#{id}.png")
       bytes = File.binread(source)
       # Unique per-action proof paths let the release contract catch accidental
@@ -421,6 +451,17 @@ class SaneSalesCustomerUIActionSweep
       File.binwrite(target, bytes)
       memo[id] = relative(target)
     end
+  end
+
+  def verify_action_screenshot_map!(action_ids, screenshots)
+    missing_ids = action_ids - ACTION_SCREENSHOT_FIXTURES.keys
+    raise "Missing action screenshot fixture mapping(s): #{missing_ids.join(', ')}" unless missing_ids.empty?
+
+    stale_ids = ACTION_SCREENSHOT_FIXTURES.keys - action_ids
+    raise "Stale action screenshot fixture mapping(s): #{stale_ids.join(', ')}" unless stale_ids.empty?
+
+    missing_fixtures = ACTION_SCREENSHOT_FIXTURES.values.uniq - screenshots
+    raise "Mapped screenshot fixture(s) missing from fixture inventory: #{missing_fixtures.join(', ')}" unless missing_fixtures.empty?
   end
 
   def build_receipt(action_ids, screenshots)

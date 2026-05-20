@@ -168,6 +168,11 @@ appstore:
   ios_scheme: SaneSalesIOS
   category: public.app-category.finance
   age_rating: "4+"
+  copyright: "2026 SaneApps"
+  content_rights_declaration: DOES_NOT_USE_THIRD_PARTY_CONTENT
+  export_compliance:
+    uses_non_exempt_encryption: false
+    exemption_reason: "SaneSales does not use non-exempt encryption. It relies on Apple platform security and direct local network requests to the user's configured sales providers."
   privacy_policy_url: "https://sanesales.com/privacy"
   support_url: "https://sanesales.com/support"
   marketing_url: "https://sanesales.com"
@@ -300,6 +305,37 @@ appstore:
     review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks custom date ranges, full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
   accessibility_declarations:
     publish: true
+    families:
+      iphone:
+        supports_dark_interface: true
+        supports_sufficient_contrast: true
+        supports_larger_text: true
+        supports_voiceover: true
+        supports_voice_control: true
+        supports_differentiate_without_color_alone: true
+        supports_reduced_motion: true
+        supports_captions: false
+        supports_audio_descriptions: false
+      ipad:
+        supports_dark_interface: true
+        supports_sufficient_contrast: true
+        supports_larger_text: true
+        supports_voiceover: true
+        supports_voice_control: true
+        supports_differentiate_without_color_alone: true
+        supports_reduced_motion: true
+        supports_captions: false
+        supports_audio_descriptions: false
+      mac:
+        supports_dark_interface: true
+        supports_sufficient_contrast: true
+        supports_larger_text: true
+        supports_voiceover: true
+        supports_voice_control: true
+        supports_differentiate_without_color_alone: true
+        supports_reduced_motion: true
+        supports_captions: false
+        supports_audio_descriptions: false
     mac:
       supports_dark_interface: true
     iphone:
