@@ -15,7 +15,7 @@
   - `./scripts/SaneMaster.rb customer_ui_sweep --json` passed with 15 actions.
   - `./scripts/SaneMaster.rb customer_ui_contract --strict-visual --json` passed.
   - `./scripts/SaneMaster.rb appstore_preflight` passed with warnings only: privacy manifest project.yml mention, manual Watch icon contrast inspection, and dirty worktree before commit.
-- App Store state remains intentionally withdrawn until the clean proof changes are committed/pushed and a fresh submission command is run. macOS `1.3.7` is still `DEVELOPER_REJECTED` before resubmission.
+- App Store resubmission completed after clean proof and metadata fixes. ASC now shows macOS `1.3.7` as `WAITING_FOR_REVIEW` with review submission `52fb6892-0efa-4477-a6b2-80c100ad7ef3`.
 
 ## 2026-05-20 Show HN Fallback Check
 
