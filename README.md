@@ -31,7 +31,7 @@ You sell on more than one storefront. Every morning you check three dashboards, 
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; connecting live data starts a 7-day Pro trial. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
+SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; Pro unlocks live provider connections. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
 
 | | |
 |---|---|
@@ -99,7 +99,7 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — free demo + 7-day live-data Pro trial. Direct SaneSales Pro is **$9.99** with code **SANE60** through **May 21, 2026**; regular price is **$24.99**.
+**[Download from sanesales.com](https://sanesales.com)** — free demo, with live data unlocked by Pro. Direct SaneSales Pro is **$9.99** with code **SANE60** through **May 21, 2026**; regular price is **$24.99**.
 
 Also available on the iOS and Mac App Store.
 
@@ -126,7 +126,7 @@ API keys are stored in iCloud Keychain so your own Apple devices can reconnect a
 **No private data collected. SaneSales never sends your sales data, orders, customers, products, or API keys to SaneApps servers.**
 
 - No accounts, no sign-up, no email required
-- A few simple anonymous app counts may be sent, such as trial vs Pro launches or locked-feature views
+- A few simple anonymous app counts may be sent, such as Basic vs Pro launches or locked-feature views
 - API keys stored in iCloud Keychain for your own Apple devices
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only

@@ -37,7 +37,7 @@ struct ProductsView: View {
     }
 
     private var scopedMetrics: SalesMetrics {
-        manager.isPro ? manager.metrics : manager.planScopedMetrics
+        manager.hasLiveProviderAccess ? manager.metrics : manager.planScopedMetrics
     }
 
     private var productSalesByName: [String: ProductSales] {
@@ -77,7 +77,7 @@ struct ProductsView: View {
                                 VStack(spacing: 12) {
                                     productsOverview(widthClass)
 
-                                    if !manager.isPro && !hasRevenueBreakdown {
+                                    if !manager.hasLiveProviderAccess && !hasRevenueBreakdown {
                                         noSalesCallout
                                     }
 
@@ -123,7 +123,7 @@ struct ProductsView: View {
         let summary = [
             SummaryItem(title: "Products", value: "\(manager.products.count)", icon: "shippingbox.fill", color: .salesGreen),
             SummaryItem(title: "Providers", value: "\(manager.connectedProviders.count)", icon: "link.circle.fill", color: .salesGold),
-            SummaryItem(title: manager.isPro ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime),
+            SummaryItem(title: manager.hasLiveProviderAccess ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime),
         ]
 
         if widthClass == .compact {
@@ -187,7 +187,7 @@ struct ProductsView: View {
     // MARK: - Revenue Chart
 
     private func revenueChart(_ widthClass: WidthClass) -> some View {
-        GlassSection(manager.isPro ? "Revenue by Product" : "Today's Sales by Product", icon: "chart.pie", iconColor: .salesGold) {
+        GlassSection(manager.hasLiveProviderAccess ? "Revenue by Product" : "Today's Sales by Product", icon: "chart.pie", iconColor: .salesGold) {
             Group {
                 if compactChartLayout, widthClass != .compact {
                     HStack(alignment: .center, spacing: 20) {
@@ -199,7 +199,7 @@ struct ProductsView: View {
                                 Text("Revenue mix")
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white)
-                                Text(manager.isPro ? "Use the chart for the split and the catalog for product details." : "Trial and Pro show live product winners. Demo mode remains available anytime.")
+                                Text(manager.hasLiveProviderAccess ? "Use the chart for the split and the catalog for product details." : "Unlock Pro to connect live products. Demo mode remains available anytime.")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(.white)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -440,7 +440,7 @@ struct ProductsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     emptyStateDetailRow("See which products drive the most revenue")
                     emptyStateDetailRow("Track status, pricing, and sales count in one place")
-                    emptyStateDetailRow("Connect live data to start a 7-day Pro trial")
+                    emptyStateDetailRow("Unlock Pro to connect live product data")
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
@@ -487,7 +487,7 @@ struct ProductsView: View {
     private var noSalesCallout: some View {
         GlassSection("No Product Sales Today", icon: "sparkles", iconColor: .salesGold) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Demo mode lets you explore product reporting. Connect live data to start your 7-day trial, then unlock Pro to keep live product revenue tracking.")
+                Text("Demo mode lets you explore product reporting. Unlock Pro to connect live data and keep product revenue tracking active.")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
@@ -627,20 +627,20 @@ struct ProductsView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .opacity(manager.isPro || scopedSales != nil ? 1.0 : 0.78)
+        .opacity(manager.hasLiveProviderAccess || scopedSales != nil ? 1.0 : 0.78)
     }
 
     private func productRowDetailText(for product: Product, scopedSales: ProductSales?) -> String {
         if let scopedSales {
-            return manager.isPro
+            return manager.hasLiveProviderAccess
                 ? "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale" : "sales")"
                 : "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale today" : "sales today")"
         }
 
-        if manager.isPro, let totalSales = product.totalSales {
+        if manager.hasLiveProviderAccess, let totalSales = product.totalSales {
             return "\(totalSales) lifetime"
         }
 
-        return manager.isPro ? "No sales yet" : "No sales today"
+        return manager.hasLiveProviderAccess ? "No sales yet" : "No sales today"
     }
 }

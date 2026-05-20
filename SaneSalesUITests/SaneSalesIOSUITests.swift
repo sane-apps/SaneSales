@@ -344,34 +344,6 @@ final class SaneSalesIOSUITests: XCTestCase {
         return app
     }
 
-    @discardableResult
-    private func launchActiveTrialDemo() -> XCUIApplication {
-        launchTrialDemo(daysAgo: 0)
-    }
-
-    @discardableResult
-    private func launchExpiredTrialDemo() -> XCUIApplication {
-        launchTrialDemo(daysAgo: 8)
-    }
-
-    @discardableResult
-    private func launchTrialDemo(daysAgo: Int) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments += [
-            "--uitest-reset",
-            "--skip-onboarding",
-            "--demo",
-            "--demo-connected-provider=lemonsqueezy",
-            "--force-free-mode",
-            "--trial-started-days-ago=\(daysAgo)"
-        ]
-        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
-        app.launchEnvironment["SANEAPPS_FORCE_FREE_MODE"] = "1"
-        app.launch()
-        XCTAssertTrue(waitForMainShell(app))
-        return app
-    }
-
     private func waitForMainShell(_ app: XCUIApplication, timeout: TimeInterval = 8) -> Bool {
         if app.buttons["dashboard.range.allTime"].waitForExistence(timeout: timeout) {
             return true

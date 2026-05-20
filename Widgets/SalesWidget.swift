@@ -108,22 +108,25 @@ struct SalesWidgetView: View {
     @Environment(\.widgetFamily) var family
 
     var body: some View {
-        switch family {
-        case .systemSmall:
-            smallWidget
-        case .systemMedium:
-            mediumWidget
-        #if os(iOS) || os(watchOS)
-            case .accessoryInline:
-                inlineAccessoryWidget
-            case .accessoryCircular:
-                circularAccessoryWidget
-            case .accessoryRectangular:
-                rectangularWidget
-        #endif
-        default:
-            smallWidget
+        Group {
+            switch family {
+            case .systemSmall:
+                smallWidget
+            case .systemMedium:
+                mediumWidget
+            #if os(iOS) || os(watchOS)
+                case .accessoryInline:
+                    inlineAccessoryWidget
+                case .accessoryCircular:
+                    circularAccessoryWidget
+                case .accessoryRectangular:
+                    rectangularWidget
+            #endif
+            default:
+                smallWidget
+            }
         }
+        .widgetURL(URL(string: entry.isLocked ? "sanesales://license" : "sanesales://dashboard"))
     }
 
     private var smallWidget: some View {
@@ -216,6 +219,9 @@ struct SalesWidgetView: View {
             Text("Unlock widgets")
                 .font(.caption2)
                 .foregroundStyle(.white.opacity(0.92))
+            Text("Tap to upgrade")
+                .font(.caption2)
+                .foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

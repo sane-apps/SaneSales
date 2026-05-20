@@ -51,7 +51,7 @@ struct OrdersListView: View {
     }
 
     private var rangeSummaryLabel: String {
-        manager.isPro
+        manager.hasLiveProviderAccess
             ? SaneSalesDateRangeStore.summaryLabel(
                 for: selectedRange,
                 customStart: customRangeStartDate,
@@ -69,7 +69,7 @@ struct OrdersListView: View {
     }
 
     private var allOrdersForScope: [Order] {
-        if manager.isPro {
+        if manager.hasLiveProviderAccess {
             return manager.allOrders(filteredBy: providerFilter, in: selectedDateInterval)
         }
         return manager.allOrders(filteredBy: providerFilter)
@@ -80,7 +80,7 @@ struct OrdersListView: View {
     }
 
     private var hasLockedHistory: Bool {
-        !manager.isPro && allOrdersForScope.count > scopedOrders.count
+        !manager.hasLiveProviderAccess && allOrdersForScope.count > scopedOrders.count
     }
 
     private var lockedHistoryCount: Int {
@@ -116,7 +116,7 @@ struct OrdersListView: View {
 
         return OrdersEmptyStateCopy.make(
             isConnected: manager.isConnected,
-            isPro: manager.isPro,
+            isPro: manager.hasLiveProviderAccess,
             cachedOrderCount: availableOrderCountForEmptyState,
             rangeLabel: rangeSummaryLabel
         )
@@ -131,13 +131,13 @@ struct OrdersListView: View {
     }
 
     private var isProviderFilterBlockingResults: Bool {
-        manager.isPro && providerFilter != nil && availableOrdersForCurrentProvider.isEmpty && !manager.orders.isEmpty
+        manager.hasLiveProviderAccess && providerFilter != nil && availableOrdersForCurrentProvider.isEmpty && !manager.orders.isEmpty
     }
 
     private var orderSummaryTitle: String {
         let count = searchText.isEmpty ? scopedOrders.count : displayedOrders.count
 
-        if manager.isPro {
+        if manager.hasLiveProviderAccess {
             return "\(count) \(count == 1 ? "order" : "orders")"
         }
 
@@ -148,7 +148,7 @@ struct OrdersListView: View {
         let scope = providerFilter?.displayName
             ?? (manager.connectedProviders.count > 1 ? "All providers" : (manager.connectedProviders.first?.displayName ?? "Today"))
 
-        guard manager.isPro else {
+        guard manager.hasLiveProviderAccess else {
             if scope == "All providers" || scope == "Today" {
                 return "Today"
             }
@@ -191,7 +191,7 @@ struct OrdersListView: View {
 
             Group {
                 if shouldShowSearch {
-                    content.searchable(text: $searchText, prompt: manager.isPro ? "Search customers, products, or order IDs" : "Search today's customers or products")
+                    content.searchable(text: $searchText, prompt: manager.hasLiveProviderAccess ? "Search customers, products, or order IDs" : "Search today's customers or products")
                 } else {
                     content
                 }
@@ -208,7 +208,7 @@ struct OrdersListView: View {
             .onAppear {
                 enforceOrdersRange()
             }
-            .onChange(of: manager.isPro) { _, _ in
+            .onChange(of: manager.hasLiveProviderAccess) { _, _ in
                 enforceOrdersRange()
             }
             .onChange(of: manager.orders.count) { _, _ in
@@ -246,7 +246,7 @@ struct OrdersListView: View {
 
     @ViewBuilder
     private func ordersContent(_ widthClass: WidthClass) -> some View {
-        if !manager.isPro {
+        if !manager.hasLiveProviderAccess {
             freeTierOrdersContent(widthClass)
         } else {
             fullOrdersContent(widthClass)
@@ -341,7 +341,7 @@ struct OrdersListView: View {
                     orderSummary(widthClass: .regular, subtitle: orderSummarySubtitle)
 
                     if hasLockedHistory {
-                        Text("Your trial and Pro unlock live orders, custom date ranges, older orders, deeper search, and CSV export.")
+                        Text("Pro unlocks live orders, custom date ranges, older orders, deeper search, and CSV export.")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
@@ -378,7 +378,7 @@ struct OrdersListView: View {
     private func lockedHistoryCallout(_ widthClass: WidthClass) -> some View {
         if widthClass == .compact {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Trial and Pro unlock live orders, custom date ranges, older orders, deeper search, and CSV export.")
+                Text("Pro unlocks live orders, custom date ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
@@ -393,7 +393,7 @@ struct OrdersListView: View {
             }
         } else {
             HStack(alignment: .center, spacing: 12) {
-                Text("Trial and Pro keep live orders front and center, with custom ranges, older orders, deeper search, and CSV export.")
+                Text("Pro keeps live orders front and center, with custom ranges, older orders, deeper search, and CSV export.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
@@ -528,7 +528,7 @@ struct OrdersListView: View {
         normalizeStoredCustomRange()
         let preferredRange = SaneSalesFreeTierPolicy.preferredOrdersRange(
             currentRange: selectedRange,
-            isPro: manager.isPro,
+            isPro: manager.hasLiveProviderAccess,
             isSearching: !searchText.isEmpty,
             visibleOrderCount: scopedOrders.count,
             availableOrderCount: manager.allOrders(filteredBy: providerFilter).count
@@ -541,7 +541,7 @@ struct OrdersListView: View {
     }
 
     private func isLockedRange(_ range: TimeRange) -> Bool {
-        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.isPro)
+        SaneSalesFreeTierPolicy.locksDashboardRange(range, isPro: manager.hasLiveProviderAccess)
     }
 
     private func freeTierOrdersContent(_ widthClass: WidthClass) -> some View {

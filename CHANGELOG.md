@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.7] - 2026-05-20
+
+Critical security update.
+
+---
+
 ## [1.3.6] - 2026-05-19
 
 Fixes license-key paste reliability in activation and settings.

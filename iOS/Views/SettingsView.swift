@@ -106,13 +106,13 @@ struct SettingsView: View {
         GlassSection("License", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
-                    Image(systemName: licenseService.isPro || manager.isPro ? "checkmark.seal.fill" : "lock.fill")
-                        .foregroundStyle(licenseService.isPro || manager.isPro ? Color.salesSuccess : .white)
+                    Image(systemName: licenseService.isPro ? "checkmark.seal.fill" : "lock.fill")
+                        .foregroundStyle(licenseService.isPro ? Color.salesSuccess : .white)
                         .font(.system(size: 15, weight: .semibold))
 
                     licenseTierBadge(
                         title: licenseTitle,
-                        color: licenseService.isPro || manager.isPro ? Color.salesSuccess : .white
+                        color: licenseService.isPro ? Color.salesSuccess : .white
                     )
 
                     Spacer()
@@ -229,8 +229,8 @@ struct SettingsView: View {
                     }
                     GlassDivider()
                 }
-                GlassRow(manager.isPro ? "Cached Orders" : "Orders Today", icon: "list.bullet", iconColor: .blue) {
-                    Text("\(manager.isPro ? manager.orders.count : manager.planScopedOrders(filteredBy: nil).count)")
+                GlassRow(manager.hasLiveProviderAccess ? "Cached Orders" : "Orders Today", icon: "list.bullet", iconColor: .blue) {
+                    Text("\(manager.hasLiveProviderAccess ? manager.orders.count : manager.planScopedOrders(filteredBy: nil).count)")
                         .font(.saneSubheadlineBold)
                 }
                 GlassDivider()
@@ -265,7 +265,7 @@ struct SettingsView: View {
                 }
                 if !manager.orders.isEmpty {
                     GlassDivider()
-                    if !manager.isPro {
+                    if !manager.hasLiveProviderAccess {
                         Button {
                             #if os(macOS)
                                 proUpsellFeature = .csvExport
@@ -364,7 +364,6 @@ struct SettingsView: View {
     private var licenseTitle: String {
         if licenseService.isPro { return "Pro" }
         if manager.isDemoModeActive { return "Demo Mode" }
-        if manager.trialState.isActive { return "Trial" }
         return "Pro Required"
     }
 
@@ -373,17 +372,10 @@ struct SettingsView: View {
             return "Pro unlocks custom date ranges, longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
         }
         if manager.isDemoModeActive {
-            return "Demo data is active. Connect live data to start your 7-day free trial, or unlock Pro now."
+            return "Demo data is active. Unlock Pro to connect real sales providers and keep live tracking on."
         }
 
-        switch manager.trialState {
-        case let .active(_, _, daysRemaining):
-            return "You have \(daysRemaining) \(daysRemaining == 1 ? "day" : "days") left on your free trial. Unlock Pro to keep live sales tracking after that."
-        case .expired:
-            return "Your free trial has ended. Unlock Pro to continue tracking live sales. Demo mode remains available."
-        case .notStarted:
-            return "Connect live data to start your 7-day free trial. Unlock Pro to keep live sales tracking after the trial."
-        }
+        return "Basic includes demo data only. Unlock Pro to connect live sales providers, search full history, export CSV, and use widgets."
     }
 
     private func licenseTierBadge(title: String, color: Color) -> some View {
@@ -486,8 +478,7 @@ struct SettingsView: View {
     private func providerManagementMenu(_ provider: SalesProviderType) -> some View {
         Menu {
             Button {
-                editingProvider = provider
-                showingKeyEntry = true
+                startProviderConnection(provider)
             } label: {
                 Label("Change Key", systemImage: "key")
             }

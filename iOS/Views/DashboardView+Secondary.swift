@@ -71,7 +71,7 @@ extension DashboardView {
 
     @ViewBuilder
     func chartSection(_ widthClass: WidthClass) -> some View {
-        if !manager.isPro {
+        if !manager.hasLiveProviderAccess {
             GlassSection("Charts • Pro", icon: "chart.xyaxis.line", iconColor: .metricToday) {
                 HStack(alignment: .center, spacing: 14) {
                     VStack(alignment: .leading, spacing: 5) {

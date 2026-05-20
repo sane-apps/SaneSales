@@ -95,12 +95,17 @@ final class SalesManager {
     private var paidProAccess = false
     private var forcedProAccess = false
     private var demoModeAccess = false
+    private var hasLoadedCachedData = false
 
-    /// Effective Pro access. This is true for paid Pro, active trial, forced test mode, and demo mode.
+    /// Effective Pro-style UI access. Demo mode can show complete sample data, but it is not live provider access.
     var isPro: Bool = false {
         didSet {
             reloadWidgets()
         }
+    }
+
+    var hasLiveProviderAccess: Bool {
+        paidProAccess || forcedProAccess
     }
 
     func updateProAccess(
@@ -119,16 +124,15 @@ final class SalesManager {
     private func reevaluateProAccess(now: Date = Date()) {
         let hadAccess = isPro
         let paidOrForced = paidProAccess || forcedProAccess
-        let resolvedTrialState = SaneSalesTrialPolicy.ensureTrialStartedIfNeeded(
-            now: now,
-            isPaidPro: paidOrForced,
-            hasConnectedProviders: isAnyConnected,
-            demoModeEnabled: demoModeAccess
-        )
-        trialState = resolvedTrialState
+        trialState = .notStarted
+        if !paidOrForced {
+            SaneSalesTrialPolicy.reset()
+        }
         SharedStore.setPaidProEnabled(paidOrForced)
-        isPro = paidOrForced || demoModeAccess || resolvedTrialState.isActive
-        if !isPro, hadAccess || !orders.isEmpty || !products.isEmpty || !stores.isEmpty {
+        isPro = hasLiveProviderAccess || demoModeAccess
+        if hasLiveProviderAccess {
+            loadCachedDataIfNeeded()
+        } else if !demoModeAccess, hadAccess || !orders.isEmpty || !products.isEmpty || !stores.isEmpty {
             clearLoadedSalesData()
             Task { await cache.clearCache() }
         }
@@ -155,16 +159,20 @@ final class SalesManager {
         return result
     }
 
+    var hasStoredProviderCredentials: Bool {
+        KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey) ||
+            KeychainService.exists(account: KeychainService.gumroadAPIKey) ||
+            KeychainService.exists(account: KeychainService.stripeAPIKey)
+    }
+
     /// True when a free-tier user tries to add a second provider.
     /// Used by the UI to show the Pro upsell instead of connecting.
     var needsProForAdditionalProvider: Bool {
-        !isPro && (trialState.isExpired || !connectedProviders.isEmpty)
+        !hasLiveProviderAccess
     }
 
     func requiresProForProviderConnection(_ provider: SalesProviderType) -> Bool {
-        guard !isPro else { return false }
-        if trialState.isExpired { return true }
-        return !connectedProviders.isEmpty && !connectedProviders.contains(provider)
+        !hasLiveProviderAccess
     }
 
     var planScopedOrders: [Order] {
@@ -243,16 +251,14 @@ final class SalesManager {
             return
         }
 
-        if CommandLine.arguments.contains("--demo")
-            || UserDefaults.standard.bool(forKey: "demo_mode")
-        {
+        if CommandLine.arguments.contains("--demo") ||
+            UserDefaults.standard.bool(forKey: "demo_mode") {
             DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
             return
         }
         isLemonSqueezyConnected = KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey)
         isGumroadConnected = KeychainService.exists(account: KeychainService.gumroadAPIKey)
         isStripeConnected = KeychainService.exists(account: KeychainService.stripeAPIKey)
-        loadCachedData()
         configureProviders()
     }
 
@@ -323,6 +329,7 @@ final class SalesManager {
         do {
             let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
+                exitDemoModeForLiveProviderConnection()
                 KeychainService.save(string: normalizedKey, account: KeychainService.lemonSqueezyAPIKey)
                 lemonSqueezyProvider = provider
                 isLemonSqueezyConnected = true
@@ -364,6 +371,7 @@ final class SalesManager {
         do {
             let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
+                exitDemoModeForLiveProviderConnection()
                 KeychainService.save(string: normalizedKey, account: KeychainService.gumroadAPIKey)
                 gumroadProvider = provider
                 isGumroadConnected = true
@@ -405,6 +413,7 @@ final class SalesManager {
         do {
             let valid = try await provider.validateAPIKey(normalizedKey)
             if valid {
+                exitDemoModeForLiveProviderConnection()
                 KeychainService.save(string: normalizedKey, account: KeychainService.stripeAPIKey)
                 stripeProvider = provider
                 isStripeConnected = true
@@ -439,9 +448,11 @@ final class SalesManager {
             return
         }
 
-        guard isPro else {
+        guard hasLiveProviderAccess else {
             error = .proRequired(feature: "Live sales tracking")
-            clearLoadedSalesData()
+            if !demoModeAccess {
+                clearLoadedSalesData()
+            }
             await cache.clearCache()
             lastUpdated = Date()
             reloadWidgets()
@@ -508,8 +519,19 @@ final class SalesManager {
             return true
         }
 
-        error = .proRequired(feature: "Connect multiple providers at once")
+        error = .proRequired(feature: "\(provider.displayName) live connection")
         return false
+    }
+
+    private func exitDemoModeForLiveProviderConnection() {
+        guard demoModeAccess || isDemoModeActive || UserDefaults.standard.bool(forKey: "demo_mode") else {
+            return
+        }
+
+        UserDefaults.standard.set(false, forKey: "demo_mode")
+        demoModeAccess = false
+        isDemoModeActive = false
+        clearLoadedSalesData()
     }
 
     /// Fetch all data from a single provider. Runs off MainActor.
@@ -575,20 +597,30 @@ final class SalesManager {
     // MARK: - Cache
 
     private func loadCachedData() {
+        guard hasLiveProviderAccess else { return }
         Task {
             if let cached = await cache.loadCachedOrders() {
+                guard self.hasLiveProviderAccess else { return }
                 orders = cached
                 metrics = SalesMetrics.compute(from: cached)
                 SharedStore.writeSalesSnapshot(from: cached)
             }
             if let cached = await cache.loadCachedProducts() {
+                guard self.hasLiveProviderAccess else { return }
                 products = cached
             }
             if let cached = await cache.loadCachedStore() {
+                guard self.hasLiveProviderAccess else { return }
                 stores = [cached]
             }
             lastUpdated = await cache.lastUpdated
         }
+    }
+
+    private func loadCachedDataIfNeeded() {
+        guard !hasLoadedCachedData else { return }
+        hasLoadedCachedData = true
+        loadCachedData()
     }
 
     // MARK: - Search & Filter
@@ -640,6 +672,39 @@ final class SalesManager {
                 reloadWidgets()
             }
         }
+    }
+
+    func resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: Bool) {
+        guard !isPaidOrForced else { return }
+
+        let hasLiveState = hasStoredProviderCredentials || isAnyConnected || (!isDemoModeActive && (!orders.isEmpty || !products.isEmpty || !stores.isEmpty))
+        guard hasLiveState else { return }
+
+        KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
+        KeychainService.delete(account: KeychainService.gumroadAPIKey)
+        KeychainService.delete(account: KeychainService.stripeAPIKey)
+
+        lemonSqueezyProvider = nil
+        gumroadProvider = nil
+        stripeProvider = nil
+        isLemonSqueezyConnected = false
+        isGumroadConnected = false
+        isStripeConnected = false
+        paidProAccess = false
+        demoModeAccess = true
+        isDemoModeActive = true
+        trialState = .notStarted
+        UserDefaults.standard.set(true, forKey: "demo_mode")
+        SaneSalesTrialPolicy.reset()
+        SaneSalesTrialPolicy.reset(defaults: UserDefaults.standard)
+        SharedStore.setPaidProEnabled(false)
+
+        clearLoadedSalesData()
+        Task { await cache.clearCache() }
+        DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
+        isPro = true
+        error = nil
+        reloadWidgets()
     }
 
     static func resetUITestPersistentState(userDefaults: UserDefaults = .standard) {

@@ -356,12 +356,14 @@ struct OnboardingView: View {
     private let providerOptions: [SalesProviderType] = [.lemonSqueezy, .gumroad, .stripe]
     @Environment(SalesManager.self) private var manager
     @Environment(LicenseService.self) private var licenseService
+    @Environment(\.openURL) private var openURL
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var selectedProvider: SalesProviderType = .lemonSqueezy
     @State private var apiKey = ""
     @State private var isValidating = false
     @State private var showError = false
+    @State private var showingLicenseEntrySheet = false
     @State private var errorTitle = "Connection Failed"
     @State private var errorMessage = "Could not connect with that key. Check it and try again."
 
@@ -378,9 +380,13 @@ struct OnboardingView: View {
                         VStack(spacing: sectionSpacing) {
                             heroSection
                             quickStartSection
-                            providerPicker
-                            keyEntrySection
-                            connectButton
+                            if manager.hasLiveProviderAccess {
+                                providerPicker
+                                keyEntrySection
+                                connectButton
+                            } else {
+                                lockedProviderSection
+                            }
                         }
                         .padding(.horizontal, horizontalPadding)
                         .padding(.top, max(8, proxy.safeAreaInsets.top * 0.38))
@@ -398,6 +404,9 @@ struct OnboardingView: View {
                 Button("OK") {}
             } message: {
                 Text(errorMessage)
+            }
+            .sheet(isPresented: $showingLicenseEntrySheet) {
+                LicenseEntryView(licenseService: licenseService)
             }
             .task {
                 if licenseService.usesAppStorePurchase {
@@ -433,7 +442,7 @@ struct OnboardingView: View {
 
     private var quickStartSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("START FREE OR UPGRADE")
+            Text("DEMO OR PRO")
                 .font(.saneSectionHeader)
                 .foregroundStyle(Color.textMuted)
                 .tracking(0.5)
@@ -444,37 +453,16 @@ struct OnboardingView: View {
                     .font(.saneSubheadlineBold)
                     .foregroundStyle(.white)
 
-                Text("Try demo data right away, unlock Pro now, or connect live data to start your 7-day free trial.")
+                Text("Try demo data right away, or unlock Pro to connect live sales.")
                     .font(.saneFootnote)
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
                 demoButton
 
-                if licenseService.usesAppStorePurchase {
-                    Button {
-                        Task { await licenseService.purchasePro() }
-                    } label: {
-                        Text(
-                            licenseService.isPurchasing
-                                ? "Processing..."
-                                : "Unlock Pro — \(licenseService.displayPriceLabel)"
-                        )
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.82)
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(SaneActionButtonStyle(prominent: true))
-                    .disabled(licenseService.isPurchasing)
-                    .accessibilityIdentifier("onboarding.unlockProButton")
-
-                    Button("Restore Purchases") {
-                        Task { await licenseService.restorePurchases() }
-                    }
-                    .buttonStyle(SaneActionButtonStyle())
-                    .disabled(licenseService.isPurchasing)
-                    .frame(maxWidth: .infinity)
-                    .accessibilityIdentifier("onboarding.restorePurchasesButton")
+                if !manager.hasLiveProviderAccess {
+                    unlockProButton
+                    secondaryUnlockAction
                 }
             }
             .padding(16)
@@ -486,6 +474,82 @@ struct OnboardingView: View {
                             .stroke(Color.teal.opacity(colorScheme == .dark ? 0.38 : 0.22), lineWidth: 1)
                     )
             )
+        }
+    }
+
+    private var lockedProviderSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("LIVE PROVIDERS")
+                .font(.saneSectionHeader)
+                .foregroundStyle(Color.textMuted)
+                .tracking(0.5)
+                .padding(.leading, 4)
+
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 10) {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(.white)
+                    Text("Unlock Pro before entering API keys.")
+                        .font(.saneSubheadlineBold)
+                        .foregroundStyle(.white)
+                }
+
+                Text("Basic uses built-in demo data only. Pro unlocks live Lemon Squeezy, Gumroad, and Stripe connections.")
+                    .font(.saneFootnote)
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                unlockProButton
+                secondaryUnlockAction
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .stroke(Color.white.opacity(colorScheme == .dark ? 0.24 : 0.16), lineWidth: 1)
+                    )
+            )
+        }
+    }
+
+    private var unlockProButton: some View {
+        Button {
+            unlockPro()
+        } label: {
+            Text(
+                licenseService.isPurchasing
+                    ? "Processing..."
+                    : "Unlock Pro — \(licenseService.displayPriceLabel)"
+            )
+            .lineLimit(1)
+            .minimumScaleFactor(0.82)
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(SaneActionButtonStyle(prominent: true))
+        .disabled(licenseService.isPurchasing)
+        .accessibilityIdentifier("onboarding.unlockProButton")
+    }
+
+    @ViewBuilder
+    private var secondaryUnlockAction: some View {
+        if licenseService.usesAppStorePurchase {
+            Button("Restore Purchases") {
+                Task { await licenseService.restorePurchases() }
+            }
+            .buttonStyle(SaneActionButtonStyle())
+            .disabled(licenseService.isPurchasing)
+            .frame(maxWidth: .infinity)
+            .accessibilityIdentifier("onboarding.restorePurchasesButton")
+        } else {
+            Button(licenseService.alternateEntryLabel) {
+                showingLicenseEntrySheet = true
+            }
+            .buttonStyle(SaneActionButtonStyle())
+            .disabled(licenseService.isPurchasing)
+            .frame(maxWidth: .infinity)
+            .accessibilityIdentifier("onboarding.enterLicenseKeyButton")
         }
     }
 
@@ -536,7 +600,7 @@ struct OnboardingView: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(isValidating)
-                    .accessibilityIdentifier("onboarding.provider.\(provider.rawValue)")
+                    .onboardingProviderAccessibilityIdentifier(provider)
                 }
             }
             .background(
@@ -637,6 +701,14 @@ struct OnboardingView: View {
         .accessibilityIdentifier("onboarding.demoButton")
     }
 
+    private func unlockPro() {
+        if licenseService.usesAppStorePurchase {
+            Task { await licenseService.purchasePro() }
+        } else if let url = licenseService.checkoutURL {
+            openURL(url)
+        }
+    }
+
     private func validateAndSave() {
         guard !normalizedAPIKey.isEmpty else {
             showError = true
@@ -701,5 +773,19 @@ struct OnboardingView: View {
 
     private var normalizedAPIKey: String {
         apiKey.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func onboardingProviderAccessibilityIdentifier(_ provider: SalesProviderType) -> some View {
+        switch provider {
+        case .lemonSqueezy:
+            accessibilityIdentifier("onboarding.provider.lemonsqueezy")
+        case .gumroad:
+            accessibilityIdentifier("onboarding.provider.gumroad")
+        case .stripe:
+            accessibilityIdentifier("onboarding.provider.stripe")
+        }
     }
 }
