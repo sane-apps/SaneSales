@@ -1,9 +1,30 @@
 # Session Handoff — SaneSales
 
 **Last updated:** 2026-05-20
-**Current version:** 1.3.6 deployed for direct download; v1.3.7 critical security update is verified locally and pending publish; launch-week Pro offer is live at $9.99 through May 21, 2026
+**Current version:** 1.3.7 deployed for direct download/Sparkle/Homebrew as a critical security update; App Store 1.3.7 is intentionally withdrawn/blocked pending fresh strict visual proof; launch-week Pro offer is live at $9.99 through May 21, 2026
 
 ## Current State
+
+## 2026-05-20 Critical Direct Release + App Store Visual Gate Correction
+
+- Direct release v1.3.7 is live:
+  - R2 ZIP: `https://dist.sanesales.com/updates/SaneSales-1.3.7.zip` returns HTTP 200 with SHA256 `a53fb18dcb77790cb984789ab7cf3c522824b2a448a90209477300691e4e5db6`.
+  - Live Sparkle appcast at `https://sanesales.com/appcast.xml` contains `1.3.7`, `sparkle:version="1307"`, `<sparkle:minimumAutoupdateVersion>1307</sparkle:minimumAutoupdateVersion>`, and `<sparkle:criticalUpdate sparkle:version="1307"/>`.
+  - Website download links and JSON-LD now point to `SaneSales-1.3.7.zip`.
+  - Homebrew cask `sane-apps/tap/sanesales` is updated to `1.3.7`; `brew audit --cask sane-apps/tap/sanesales` passed.
+- App Store state:
+  - macOS 1.3.7 was submitted during the interrupted release, then immediately withdrawn after the missing strict visual gate was identified. ASC now shows macOS `1.3.7` as `DEVELOPER_REJECTED`, not `WAITING_FOR_REVIEW`.
+  - iOS 1.3.7 was stopped before version creation/submission; visible iOS builds still stop at `1306`.
+- SaneProcess guard correction shipped:
+  - `appstore_preflight` now runs `customer_ui_contract --strict-visual` as a hard blocker.
+  - `appstore_submit.rb` now refuses upload/submission until strict visual proof passes.
+  - Mini proof: `./scripts/SaneMaster.rb appstore_preflight` exits blocked with 7 strict visual customer UI issues for the current stale receipt.
+  - Mini proof: direct `appstore_submit.rb --skip-upload ...` exits before upload/submission with the real strict visual contract failure.
+- Repo state:
+  - SaneSales pushed: `d5ab200 chore: sync 1.3.7 release metadata` on top of `4b182ae Bump version to 1.3.7`.
+  - SaneProcess pushed: `a4c9369 Block App Store submit without strict visual proof` and `88604b6 Fix App Store submit guard wrapper invocation`.
+  - Homebrew tap pushed: `2ea03b2 Update SaneSales cask to 1.3.7`.
+- Next App Store step: rerun a full Mini customer UI sweep with fresh per-action screenshots, including onboarding provider Pro entry, dashboard refresh/Basic-Pro gates, provider Change Key Pro gate, and widget lock states. Do not resubmit App Store until strict `appstore_preflight` is green.
 
 ## 2026-05-20 Directory Schedule Recheck
 
