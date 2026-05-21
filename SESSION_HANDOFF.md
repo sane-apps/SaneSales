@@ -8,6 +8,12 @@ receipts, Serena memory, and the knowledge graph.
 ## Current State
 
 - Current direct/Sparkle/Homebrew release: `1.3.8` build `1308`.
+- 2026-05-21 Mini proof refresh:
+  - `./scripts/SaneMaster.rb test_mode --release --no-logs` built, staged, and
+    launched the Release app on the Mini.
+  - `./scripts/SaneMaster.rb customer_ui_sweep --json` passed and refreshed `15`
+    customer action families; receipt generated `2026-05-21T10:29:41Z`.
+  - `customer_ui_contract --json --no-exit` is green with no issues/warnings.
 - macOS and iOS App Store `1.3.8` build `1308` were submitted and were
   `WAITING_FOR_REVIEW` after the May 20 corrective rebuild.
 - Public iOS App Store `1.3.7` should be treated as untrusted for the
@@ -17,15 +23,8 @@ receipts, Serena memory, and the knowledge graph.
 
 ## Active Blockers
 
-- Live hosted-file drift:
-  - Lemon Squeezy still serves `SaneSales-1.3.7.zip`.
-  - Canonical appcast/release is `SaneSales-1.3.8.zip`.
-  - Validation product refs: `product_id=822714`,
-    `product_slug=sanesales`, `variant_id=1296644`.
-  - Replace the hosted file through the supported hosted-file action workflow,
-    then rerun `hosted_file_actions --json` and global validation.
-- Global validation may still show stale QA/customer proof until a fresh Mini
-  customer UI sweep is run for the current source state.
+- No current SaneSales validation blockers after the May 21 customer UI refresh
+  and hosted-file cleanup.
 - Do not post to Product Hunt, Indie Hackers, HN, directories, or social
   surfaces unless `launch_readiness` is green and the exact copy is approved.
 
@@ -54,7 +53,7 @@ receipts, Serena memory, and the knowledge graph.
 
 ## Next
 
-1. Replace the stale Lemon Squeezy hosted file for `1.3.8`.
+1. Monitor App Store review state for `1.3.8`.
 2. Run fresh Mini customer UI proof if any release/App Store action continues.
 3. Rerun `ruby ~/SaneApps/infra/SaneProcess/scripts/validation_report.rb`.
 4. Update this handoff only with active state and new proof receipts.
