@@ -40,6 +40,20 @@ struct ProductsView: View {
         manager.hasLiveProviderAccess ? manager.metrics : manager.planScopedMetrics
     }
 
+    private var productRevenueTitle: String {
+        if manager.hasLiveProviderAccess {
+            return "Revenue"
+        }
+        return manager.isDemoModeActive ? "Demo Sales" : "Sales Today"
+    }
+
+    private var productChartTitle: String {
+        if manager.hasLiveProviderAccess {
+            return "Revenue by Product"
+        }
+        return manager.isDemoModeActive ? "Demo Sales by Product" : "Today's Sales by Product"
+    }
+
     private var productSalesByName: [String: ProductSales] {
         Dictionary(uniqueKeysWithValues: scopedMetrics.productBreakdown.map { ($0.productName, $0) })
     }
@@ -123,7 +137,7 @@ struct ProductsView: View {
         let summary = [
             SummaryItem(title: "Products", value: "\(manager.products.count)", icon: "shippingbox.fill", color: .salesGreen),
             SummaryItem(title: "Providers", value: "\(manager.connectedProviders.count)", icon: "link.circle.fill", color: .salesGold),
-            SummaryItem(title: manager.hasLiveProviderAccess ? "Revenue" : "Sales Today", value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime),
+            SummaryItem(title: productRevenueTitle, value: formatCents(totalRevenue), icon: "dollarsign.circle.fill", color: .metricAllTime)
         ]
 
         if widthClass == .compact {
@@ -187,7 +201,7 @@ struct ProductsView: View {
     // MARK: - Revenue Chart
 
     private func revenueChart(_ widthClass: WidthClass) -> some View {
-        GlassSection(manager.hasLiveProviderAccess ? "Revenue by Product" : "Today's Sales by Product", icon: "chart.pie", iconColor: .salesGold) {
+        GlassSection(productChartTitle, icon: "chart.pie", iconColor: .salesGold) {
             Group {
                 if compactChartLayout, widthClass != .compact {
                     HStack(alignment: .center, spacing: 20) {
@@ -337,7 +351,7 @@ struct ProductsView: View {
     }
 
     private let chartColorPalette: [Color] = [
-        .salesGreen, .blue, .salesGold, .teal, .mint, .cyan, .indigo,
+        .salesGreen, .blue, .salesGold, .teal, .mint, .cyan, .indigo
     ]
 
     private func chartColor(for product: ProductSales) -> Color {
@@ -417,7 +431,12 @@ struct ProductsView: View {
     }
 
     private func emptyProductsState(widthClass: WidthClass) -> some View {
-        VStack {
+        let isConnected = !manager.connectedProviders.isEmpty
+        let title = emptyProductsTitle(isConnected: isConnected)
+        let message = emptyProductsMessage(isConnected: isConnected)
+        let details = emptyProductsDetails(isConnected: isConnected)
+
+        return VStack {
             Spacer(minLength: widthClass == .compact ? 28 : 40)
 
             VStack(spacing: 18) {
@@ -426,11 +445,11 @@ struct ProductsView: View {
                     .foregroundStyle(Color.salesGold)
 
                 VStack(spacing: 8) {
-                    Text("No Products Yet")
+                    Text(title)
                         .font(.system(size: widthClass == .compact ? 28 : 32, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
 
-                    Text("Connect a provider to turn this into your catalog, today's product revenue view, and product-level sales feed.")
+                    Text(message)
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
@@ -438,13 +457,13 @@ struct ProductsView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    emptyStateDetailRow("See which products drive the most revenue")
-                    emptyStateDetailRow("Track status, pricing, and sales count in one place")
-                    emptyStateDetailRow("Unlock Pro to connect live product data")
+                    ForEach(details, id: \.self) { detail in
+                        emptyStateDetailRow(detail)
+                    }
                 }
                 .frame(maxWidth: 520, alignment: .leading)
 
-                if manager.connectedProviders.isEmpty {
+                if !isConnected {
                     Text("Choose the store you already use. SaneSales will pull in your catalog first, then the revenue breakdown fills in.")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white)
@@ -454,12 +473,12 @@ struct ProductsView: View {
                     emptyStateProviderActions(widthClass: widthClass)
                 } else {
                     HStack(spacing: 10) {
-                        Button("Refresh Now") {
+                        Button(manager.hasLiveProviderAccess ? "Refresh Data" : "Reload Demo") {
                             Task { await manager.refresh() }
                         }
                         .buttonStyle(SaneActionButtonStyle(prominent: true))
 
-                        Button("Open Provider Settings") {
+                        Button(manager.hasLiveProviderAccess ? "Check Provider" : "Open Settings") {
                             queueSettingsRoute(for: manager.connectedProviders.first)
                         }
                         .buttonStyle(SaneActionButtonStyle())
@@ -482,6 +501,55 @@ struct ProductsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, 28)
+    }
+
+    private func emptyProductsTitle(isConnected: Bool) -> String {
+        guard isConnected else { return "No Products Yet" }
+        if manager.hasLiveProviderAccess { return "Product Data Missing" }
+        if manager.isDemoModeActive { return "Demo Products Not Loaded" }
+        return "Products Need Pro"
+    }
+
+    private func emptyProductsMessage(isConnected: Bool) -> String {
+        guard isConnected else {
+            return "Connect a provider to turn this into your catalog, product revenue view, and product-level sales feed."
+        }
+        if manager.hasLiveProviderAccess {
+            return "Your providers are connected, but no product snapshot is saved on this device. Refresh now; if it stays empty, check the provider key."
+        }
+        if manager.isDemoModeActive {
+            return "Demo mode is active, but the sample product catalog did not load. Reload demo data or open Settings."
+        }
+        return "Provider keys are saved, but live product tracking requires Pro access."
+    }
+
+    private func emptyProductsDetails(isConnected: Bool) -> [String] {
+        guard isConnected else {
+            return [
+                "See which products drive the most revenue",
+                "Track status, pricing, and sales count in one place",
+                "Unlock Pro to connect live product data"
+            ]
+        }
+        if manager.hasLiveProviderAccess {
+            return [
+                "Providers connected: \(manager.connectedProviders.map(\.displayName).joined(separator: ", "))",
+                "Cached products: 0",
+                "Refresh data before reconnecting accounts"
+            ]
+        }
+        if manager.isDemoModeActive {
+            return [
+                "This is sample data, not a live account",
+                "Reload demo data if the catalog is empty",
+                "Unlock Pro when you want real provider products"
+            ]
+        }
+        return [
+            "Saved provider keys stay on this device",
+            "Live products unlock after Pro access is active",
+            "Use Settings if the purchase needs syncing"
+        ]
     }
 
     private var noSalesCallout: some View {
@@ -632,15 +700,19 @@ struct ProductsView: View {
 
     private func productRowDetailText(for product: Product, scopedSales: ProductSales?) -> String {
         if let scopedSales {
-            return manager.hasLiveProviderAccess
-                ? "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale" : "sales")"
-                : "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale today" : "sales today")"
+            if manager.hasLiveProviderAccess || manager.isDemoModeActive {
+                return "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale" : "sales")"
+            }
+            return "\(scopedSales.orderCount) \(scopedSales.orderCount == 1 ? "sale today" : "sales today")"
         }
 
         if manager.hasLiveProviderAccess, let totalSales = product.totalSales {
             return "\(totalSales) lifetime"
         }
 
-        return manager.hasLiveProviderAccess ? "No sales yet" : "No sales today"
+        if manager.hasLiveProviderAccess || manager.isDemoModeActive {
+            return "No sales yet"
+        }
+        return "No sales today"
     }
 }

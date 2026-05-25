@@ -796,7 +796,7 @@ struct FreeTierPolicyTests {
         #expect(manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Basic blocks refresh before fetching live data")
+    @Test("Basic blocks refresh without clearing cached live data")
     @MainActor
     func basicBlocksRefreshBeforeFetchingLiveData() async {
         let manager = SalesManager()
@@ -820,7 +820,7 @@ struct FreeTierPolicyTests {
 
         #expect(!manager.isPro)
         #expect(!manager.trialState.isActive)
-        #expect(manager.metrics.allTimeRevenue == 0)
+        #expect(manager.metrics.allTimeRevenue == 900)
         if case let .proRequired(feature)? = manager.error {
             #expect(feature == "Live sales tracking")
         } else {
@@ -934,9 +934,9 @@ struct FreeTierPolicyTests {
         #expect(!manager.requiresProForProviderConnection(.stripe))
     }
 
-    @Test("Unpaid live access reset clears provider credentials and returns to demo")
+    @Test("Unpaid live access reset preserves provider credentials and cached data")
     @MainActor
-    func unpaidLiveAccessResetClearsProviderCredentialsAndReturnsToDemo() {
+    func unpaidLiveAccessResetPreservesProviderCredentialsAndCachedData() {
         setenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG", "1", 1)
         defer { unsetenv("SANEAPPS_BYPASS_KEYCHAIN_IN_DEBUG") }
         let manager = SalesManager()
@@ -952,11 +952,13 @@ struct FreeTierPolicyTests {
 
         manager.resetUnpaidLiveAccessToDemoIfNeeded(isPaidOrForced: false)
 
-        #expect(!KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey))
-        #expect(manager.isDemoModeActive)
-        #expect(manager.isPro)
+        #expect(KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey))
+        #expect(manager.isLemonSqueezyConnected)
+        #expect(!manager.isDemoModeActive)
+        #expect(!manager.isPro)
         #expect(!manager.hasLiveProviderAccess)
         #expect(!manager.orders.isEmpty)
+        #expect(!manager.products.isEmpty)
         #expect(manager.requiresProForProviderConnection(.lemonSqueezy))
     }
 

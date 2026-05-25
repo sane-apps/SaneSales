@@ -233,11 +233,13 @@ actions:
   steps:
   - Open Products with demo or cached data.
   - Select chart sectors and catalog rows.
-  - Open refresh, connect provider, and unlock surfaces from empty states.
+  - Open Refresh Data or Reload Demo, connect provider, and unlock surfaces from
+    empty states.
   assertions:
   - Chart selection highlights the matching product and can be cleared.
   - Catalog sorting follows revenue, provider, and product-name order.
-  - Empty states route to provider setup or refresh without dead buttons.
+  - Empty states route to provider setup, Refresh Data, or Reload Demo without
+    dead buttons.
   evidence:
   - Source guard for ProductsView chart selection and catalog actions
   - Metrics product-breakdown tests
@@ -269,11 +271,13 @@ actions:
   user_inputs:
   - Open Products with demo or cached data.
   - Select chart sectors and catalog rows.
-  - Open refresh, connect provider, and unlock surfaces from empty states.
+  - Open Refresh Data or Reload Demo, connect provider, and unlock surfaces from
+    empty states.
   expected_outputs:
   - Chart selection highlights the matching product and can be cleared.
   - Catalog sorting follows revenue, provider, and product-name order.
-  - Empty states route to provider setup or refresh without dead buttons.
+  - Empty states route to provider setup, Refresh Data, or Reload Demo without
+    dead buttons.
 - id: provider-key-entry-safe-surfaces
   title: Provider connection surfaces are present without completing real secret flows
   surfaces:
