@@ -394,6 +394,10 @@ struct DashboardView: View {
                                 trialStatusBanner(trialBannerText)
                             }
 
+                            if shouldShowMissingDataWarning {
+                                missingDataBanner
+                            }
+
                             overviewSection(widthClass)
 
                             secondarySection(widthClass)
@@ -444,7 +448,7 @@ struct DashboardView: View {
                     await manager.refresh()
                 }
                 .task {
-                    if manager.orders.isEmpty, manager.isConnected {
+                    if manager.orders.isEmpty, manager.isConnected, manager.hasLiveProviderAccess {
                         await manager.refresh()
                     }
                 }
@@ -540,13 +544,13 @@ extension DashboardView {
 
     private func heroRevenue(_ widthClass: WidthClass, alignment: HorizontalAlignment) -> some View {
         VStack(alignment: alignment, spacing: 8) {
-            Text(manager.hasLiveProviderAccess ? rangeLabel : "Revenue")
+            Text(heroRevenueLabel)
                 .font(.system(size: widthClass == .compact ? 13 : 14, weight: .semibold))
                 .foregroundStyle(Color.textMuted)
                 .textCase(.uppercase)
                 .tracking(0.8)
 
-            Text(manager.hasLiveProviderAccess ? formatCents(revenueForRange) : "Unlock Pro")
+            Text(heroRevenueValue)
                 .font(.saneCardValue(size: widthClass.heroValueSize))
                 .foregroundStyle(.white)
                 .contentTransition(.numericText(value: Double(revenueForRange)))
@@ -555,7 +559,7 @@ extension DashboardView {
                 .minimumScaleFactor(0.72)
 
             HStack(spacing: 10) {
-                Text(pluralize(ordersForRange, "order"))
+                Text(heroOrderLabel)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
 
@@ -713,7 +717,7 @@ extension DashboardView {
 
     var comparisonItems: [DashboardComparisonItem] {
         var items: [DashboardComparisonItem] = [
-            DashboardComparisonItem(label: "vs prev", value: comparisonText, isPositive: comparisonDelta >= 0),
+            DashboardComparisonItem(label: "vs prev", value: comparisonText, isPositive: comparisonDelta >= 0)
         ]
 
         if selectedRange != .today, let avgDaily = averageDailyRevenue {
@@ -932,6 +936,43 @@ extension DashboardView {
                 .stroke(Color.salesWarning.opacity(0.2), lineWidth: 0.5)
         )
     }
+
+    var missingDataBanner: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                Image(systemName: "externaldrive.badge.exclamationmark")
+                    .foregroundStyle(Color.salesWarning)
+                Text("Provider access is active, but no sales snapshot is saved on this device.")
+                    .font(.saneCallout)
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+            }
+
+            HStack(spacing: 10) {
+                Button("Refresh Data") {
+                    Task { await manager.refresh() }
+                }
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
+
+                if let provider = primaryConnectedProvider {
+                    Button("Check \(provider.displayName)") {
+                        queueSettingsRoute(for: provider)
+                    }
+                    .buttonStyle(SaneActionButtonStyle())
+                }
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.salesWarning.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.salesWarning.opacity(0.2), lineWidth: 0.5)
+        )
+    }
 }
 
 extension DashboardView {
@@ -994,6 +1035,29 @@ extension DashboardView {
 
     var shouldShowCustomRangeSummary: Bool {
         manager.hasLiveProviderAccess && selectedRange == .custom
+    }
+
+    var shouldShowMissingDataWarning: Bool {
+        manager.hasLiveProviderAccess &&
+            manager.isConnected &&
+            !manager.isLoading &&
+            manager.orders.isEmpty &&
+            manager.products.isEmpty
+    }
+
+    var heroRevenueLabel: String {
+        if shouldShowMissingDataWarning { return "Sales Data" }
+        return manager.hasLiveProviderAccess ? rangeLabel : "Revenue"
+    }
+
+    var heroRevenueValue: String {
+        if shouldShowMissingDataWarning { return "Needs Refresh" }
+        return manager.hasLiveProviderAccess ? formatCents(revenueForRange) : "Unlock Pro"
+    }
+
+    var heroOrderLabel: String {
+        if shouldShowMissingDataWarning { return "No saved snapshot" }
+        return pluralize(ordersForRange, "order")
     }
 
     var revenueForRange: Int {
@@ -1145,7 +1209,7 @@ extension DashboardView {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.salesGold)
-                Text("Basic uses demo data only. Unlock Pro to connect live sales, keep full history, and use every revenue view.")
+            Text("Basic uses demo data only. Unlock Pro to connect live sales, keep full history, and use every revenue view.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
             Spacer()
@@ -1167,7 +1231,7 @@ extension DashboardView {
     }
 
     private var trialBannerText: String? {
-        if licenseService.isPro || !manager.isConnected {
+        if manager.hasLiveProviderAccess || !manager.isConnected {
             return nil
         }
 

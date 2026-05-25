@@ -121,8 +121,7 @@ final class SalesManager {
         reevaluateProAccess(now: now)
     }
 
-    private func reevaluateProAccess(now: Date = Date()) {
-        let hadAccess = isPro
+    private func reevaluateProAccess(now _: Date = Date()) {
         let paidOrForced = paidProAccess || forcedProAccess
         trialState = .notStarted
         if !paidOrForced {
@@ -132,9 +131,6 @@ final class SalesManager {
         isPro = hasLiveProviderAccess || demoModeAccess
         if hasLiveProviderAccess {
             loadCachedDataIfNeeded()
-        } else if !demoModeAccess, hadAccess || !orders.isEmpty || !products.isEmpty || !stores.isEmpty {
-            clearLoadedSalesData()
-            Task { await cache.clearCache() }
         }
     }
 
@@ -171,7 +167,7 @@ final class SalesManager {
         !hasLiveProviderAccess
     }
 
-    func requiresProForProviderConnection(_ provider: SalesProviderType) -> Bool {
+    func requiresProForProviderConnection(_: SalesProviderType) -> Bool {
         !hasLiveProviderAccess
     }
 
@@ -450,11 +446,6 @@ final class SalesManager {
 
         guard hasLiveProviderAccess else {
             error = .proRequired(feature: "Live sales tracking")
-            if !demoModeAccess {
-                clearLoadedSalesData()
-            }
-            await cache.clearCache()
-            lastUpdated = Date()
             reloadWidgets()
             return
         }
@@ -680,30 +671,14 @@ final class SalesManager {
         let hasLiveState = hasStoredProviderCredentials || isAnyConnected || (!isDemoModeActive && (!orders.isEmpty || !products.isEmpty || !stores.isEmpty))
         guard hasLiveState else { return }
 
-        KeychainService.delete(account: KeychainService.lemonSqueezyAPIKey)
-        KeychainService.delete(account: KeychainService.gumroadAPIKey)
-        KeychainService.delete(account: KeychainService.stripeAPIKey)
-
-        lemonSqueezyProvider = nil
-        gumroadProvider = nil
-        stripeProvider = nil
-        isLemonSqueezyConnected = false
-        isGumroadConnected = false
-        isStripeConnected = false
         paidProAccess = false
-        demoModeAccess = true
-        isDemoModeActive = true
+        forcedProAccess = false
         trialState = .notStarted
-        UserDefaults.standard.set(true, forKey: "demo_mode")
         SaneSalesTrialPolicy.reset()
         SaneSalesTrialPolicy.reset(defaults: UserDefaults.standard)
         SharedStore.setPaidProEnabled(false)
-
-        clearLoadedSalesData()
-        Task { await cache.clearCache() }
-        DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
-        isPro = true
-        error = nil
+        isPro = demoModeAccess
+        error = .proRequired(feature: "Live sales tracking")
         reloadWidgets()
     }
 

@@ -126,8 +126,13 @@ import SwiftUI
                 }
             }
 
-            var isUpdateChannelEnabled: Bool { updateEligibility.canUseInAppUpdates }
-            var updateUnavailableStatus: String { updateEligibility.userFacingStatus }
+            var isUpdateChannelEnabled: Bool {
+                updateEligibility.canUseInAppUpdates
+            }
+
+            var updateUnavailableStatus: String {
+                updateEligibility.userFacingStatus
+            }
 
             nonisolated static func sparkleUpdateEligibility(
                 bundleIdentifier: String?,
@@ -179,7 +184,7 @@ import SwiftUI
                     about: #selector(dockOpenAbout),
                     quit: #selector(dockQuit)
                 ),
-                configureCheckForUpdates: directUpdateConfigurator,
+                configureCheckForUpdates: directUpdateConfigurator
             )
         }
 
@@ -215,8 +220,13 @@ import SwiftUI
                 UpdateService.shared.checkForUpdates()
             }
         #else
-            private var directUpdateAction: Selector? { nil }
-            private var directUpdateConfigurator: ((NSMenuItem) -> Void)? { nil }
+            private var directUpdateAction: Selector? {
+                nil
+            }
+
+            private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
+                nil
+            }
         #endif
 
         @objc private func dockOpenSettings() {
@@ -321,8 +331,7 @@ import SwiftUI
                     }
                     .task {
                         if CommandLine.arguments.contains("--demo") || demoModeEnabled ||
-                            UserDefaults.standard.bool(forKey: "loadDemoData")
-                        {
+                            UserDefaults.standard.bool(forKey: "loadDemoData") {
                             DemoData.loadInto(
                                 manager: manager,
                                 connectedProviders: manager.demoConnectedProviders()
@@ -449,9 +458,14 @@ import SwiftUI
             menuBarManager?.setShowRevenue(effectiveShowRevenueInMenuBar)
         }
 
+        private var isWaitingForAppStorePurchaseState: Bool {
+            licenseService.usesAppStorePurchase && !licenseService.hasCompletedPurchaseStateRefresh
+        }
+
         private func refreshLiveDataIfStale(force: Bool = false) async {
             syncProAccess()
             guard manager.isAnyConnected, !manager.isLoading else { return }
+            guard !isWaitingForAppStorePurchaseState || manager.hasLiveProviderAccess else { return }
             if force || manager.lastUpdated == nil || Date().timeIntervalSince(manager.lastUpdated!) >= automaticRefreshInterval {
                 await manager.refresh()
             }

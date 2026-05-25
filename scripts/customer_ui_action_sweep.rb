@@ -15,6 +15,7 @@ class SaneSalesCustomerUIActionSweep
   APP_NAME = 'SaneSales'
   MANIFEST_PATH = File.join(PROJECT_ROOT, 'Tests', 'CustomerUIActions.yml')
   RECEIPT_PATH = File.join(PROJECT_ROOT, '.sane', 'customer_ui_action_receipt.json')
+  MIRROR_RECEIPT_PATH = File.join(PROJECT_ROOT, 'outputs', 'customer_ui_action_receipt.json')
   OUTPUT_DIR = File.join(PROJECT_ROOT, 'outputs', 'customer-ui')
   SCREENSHOT_FIXTURES = [
     'Screenshots/appstore-01-onboarding-dark-mac.png',
@@ -114,7 +115,7 @@ class SaneSalesCustomerUIActionSweep
       ['iOS/Views/ProductsView.swift', '.chartAngleSelection(value: $selectedAngle)'],
       ['iOS/Views/ProductsView.swift', 'selectedProduct = findProduct(at: newValue)'],
       ['iOS/Views/ProductsView.swift', 'selectedProduct = nil'],
-      ['iOS/Views/ProductsView.swift', 'Button("Refresh Now")'],
+      ['iOS/Views/ProductsView.swift', 'Button(manager.hasLiveProviderAccess ? "Refresh Data" : "Reload Demo")'],
       ['iOS/Views/ProductsView.swift', 'pendingSettingsRoute = "provider:\\(provider.rawValue)"'],
       ['Tests/MetricsTests.swift', 'Product breakdown groups correctly']
     ],
@@ -258,7 +259,10 @@ class SaneSalesCustomerUIActionSweep
       verify_source_guards!(action_ids, screenshots)
       receipt = build_receipt(action_ids, screenshots)
       FileUtils.mkdir_p(File.dirname(RECEIPT_PATH))
-      File.write(RECEIPT_PATH, JSON.generate(receipt) + "\n")
+      FileUtils.mkdir_p(File.dirname(MIRROR_RECEIPT_PATH))
+      receipt_json = JSON.generate(receipt) + "\n"
+      File.write(RECEIPT_PATH, receipt_json)
+      File.write(MIRROR_RECEIPT_PATH, receipt_json)
       puts "Customer UI action sweep passed: #{relative(RECEIPT_PATH)}"
     end
   rescue StandardError => e

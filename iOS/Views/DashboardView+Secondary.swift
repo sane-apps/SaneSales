@@ -23,7 +23,7 @@ extension DashboardView {
     @ViewBuilder
     var latestSaleSection: some View {
         if let order = latestPaidOrder {
-            GlassSection("Latest Sale", icon: "bolt.fill", iconColor: .salesGreen) {
+            GlassSection(manager.hasLiveProviderAccess ? "Latest Sale" : "Demo Sale", icon: "bolt.fill", iconColor: .salesGreen) {
                 HStack(alignment: .center, spacing: 12) {
                     Image(systemName: order.provider.icon)
                         .font(.system(size: 16, weight: .bold))

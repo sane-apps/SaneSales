@@ -127,6 +127,10 @@ struct SaneSalesApp: App {
         }
     }
 
+    private var isWaitingForAppStorePurchaseState: Bool {
+        licenseService.usesAppStorePurchase && !licenseService.hasCompletedPurchaseStateRefresh
+    }
+
     private func handleDeepLink(_ url: URL) {
         guard url.scheme == "sanesales" else { return }
         hasSeenWelcome = true
@@ -138,6 +142,7 @@ struct SaneSalesApp: App {
     private func refreshLiveDataIfStale(force: Bool = false) async {
         syncProAccess()
         guard manager.isAnyConnected, !manager.isLoading else { return }
+        guard !isWaitingForAppStorePurchaseState || manager.hasLiveProviderAccess else { return }
         if force || manager.lastUpdated == nil || Date().timeIntervalSince(manager.lastUpdated!) >= automaticRefreshInterval {
             await manager.refresh()
         }
@@ -219,7 +224,7 @@ struct SaneSalesApp: App {
             let itemAppearances = [
                 appearance.stackedLayoutAppearance,
                 appearance.inlineLayoutAppearance,
-                appearance.compactInlineLayoutAppearance,
+                appearance.compactInlineLayoutAppearance
             ]
 
             for itemAppearance in itemAppearances {

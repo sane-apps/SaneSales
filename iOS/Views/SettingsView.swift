@@ -106,7 +106,7 @@ struct SettingsView: View {
         GlassSection("License", icon: "key.fill", iconColor: SaneSettingsIconSemantic.license.color) {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
-                    Image(systemName: licenseService.isPro ? "checkmark.seal.fill" : "lock.fill")
+                    Image(systemName: licenseIconName)
                         .foregroundStyle(licenseService.isPro ? Color.salesSuccess : .white)
                         .font(.system(size: 15, weight: .semibold))
 
@@ -229,7 +229,7 @@ struct SettingsView: View {
                     }
                     GlassDivider()
                 }
-                GlassRow(manager.hasLiveProviderAccess ? "Cached Orders" : "Orders Today", icon: "list.bullet", iconColor: .blue) {
+                GlassRow(orderCountLabel, icon: "list.bullet", iconColor: .blue) {
                     Text("\(manager.hasLiveProviderAccess ? manager.orders.count : manager.planScopedOrders(filteredBy: nil).count)")
                         .font(.saneSubheadlineBold)
                 }
@@ -362,14 +362,31 @@ struct SettingsView: View {
     }
 
     private var licenseTitle: String {
-        if licenseService.isPro { return "Pro" }
+        if licenseService.isPro, manager.hasLiveProviderAccess { return "Pro Active" }
+        if licenseService.isPro { return "Pro Syncing" }
         if manager.isDemoModeActive { return "Demo Mode" }
         return "Pro Required"
     }
 
+    private var licenseIconName: String {
+        if licenseService.isPro, manager.hasLiveProviderAccess { return "checkmark.seal.fill" }
+        if licenseService.isPro { return "arrow.triangle.2.circlepath.circle.fill" }
+        return "lock.fill"
+    }
+
+    private var orderCountLabel: String {
+        if manager.hasLiveProviderAccess {
+            return "Cached Orders"
+        }
+        return manager.isDemoModeActive ? "Demo Orders" : "Orders Today"
+    }
+
     private var licenseDescription: String {
+        if licenseService.isPro, manager.hasLiveProviderAccess {
+            return "Pro is active. Live provider tracking, custom date ranges, full history, CSV export, widgets, and deeper comparisons are unlocked."
+        }
         if licenseService.isPro {
-            return "Pro unlocks custom date ranges, longer history, CSV export, menu bar quick glance, widgets, and deeper comparisons."
+            return "Your Pro purchase is active. SaneSales is syncing purchase access before refreshing live providers, and saved keys stay on this device."
         }
         if manager.isDemoModeActive {
             return "Demo data is active. Unlock Pro to connect real sales providers and keep live tracking on."
@@ -394,11 +411,7 @@ struct SettingsView: View {
     private var primaryLicenseAction: some View {
         if licenseService.isPro {
             if licenseService.usesAppStorePurchase {
-                Button("Restore Purchases") {
-                    Task { await licenseService.restorePurchases() }
-                }
-                .buttonStyle(SaneActionButtonStyle())
-                .disabled(licenseService.isPurchasing)
+                proActiveStatusPill
             } else {
                 Button(licenseService.accessManagementLabel) {
                     licenseService.deactivate()
@@ -423,7 +436,14 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var secondaryLicenseAction: some View {
-        if licenseService.isPro {
+        if licenseService.isPro, licenseService.usesAppStorePurchase {
+            Button("Sync Purchase") {
+                Task { await licenseService.restorePurchases() }
+            }
+            .buttonStyle(SaneActionButtonStyle())
+            .disabled(licenseService.isPurchasing)
+            .accessibilityIdentifier("settings.license.restorePurchasesButton")
+        } else if licenseService.isPro {
             EmptyView()
         } else if licenseService.usesAppStorePurchase {
             Button("Restore Purchases") {
@@ -438,6 +458,23 @@ struct SettingsView: View {
             }
             .buttonStyle(SaneActionButtonStyle())
         }
+    }
+
+    private var proActiveStatusPill: some View {
+        HStack(spacing: 6) {
+            Image(systemName: manager.hasLiveProviderAccess ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
+                .font(.system(size: 13, weight: .bold))
+            Text(manager.hasLiveProviderAccess ? "Pro Active" : "Syncing Pro")
+                .font(.system(size: 13, weight: .bold))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 11)
+        .padding(.vertical, 8)
+        .background(
+            Capsule()
+                .fill(Color.salesSuccess.opacity(0.28))
+        )
+        .accessibilityIdentifier("settings.license.proActiveStatus")
     }
 
     private func triggerUnlock() {
@@ -462,9 +499,9 @@ struct SettingsView: View {
 
     private var compactConnectedBadge: some View {
         HStack(spacing: 4) {
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: manager.hasLiveProviderAccess ? "checkmark.circle.fill" : "sparkles")
                 .font(.system(size: 12, weight: .semibold))
-            Text("Connected")
+            Text(manager.hasLiveProviderAccess ? "Connected" : "Demo")
                 .font(.system(size: 12, weight: .semibold))
                 .lineLimit(1)
         }
@@ -477,19 +514,32 @@ struct SettingsView: View {
 
     private func providerManagementMenu(_ provider: SalesProviderType) -> some View {
         Menu {
-            Button {
-                startProviderConnection(provider)
-            } label: {
-                Label("Change Key", systemImage: "key")
-            }
-            Button(role: .destructive) {
-                removingProvider = provider
-                showRemoveConfirmation = true
-            } label: {
-                Label("Disconnect", systemImage: "xmark.circle")
+            if manager.hasLiveProviderAccess {
+                Button {
+                    startProviderConnection(provider)
+                } label: {
+                    Label("Change Key", systemImage: "key")
+                }
+                Button(role: .destructive) {
+                    removingProvider = provider
+                    showRemoveConfirmation = true
+                } label: {
+                    Label("Disconnect", systemImage: "xmark.circle")
+                }
+            } else {
+                Button {
+                    startProviderConnection(provider)
+                } label: {
+                    Label("Connect Real Account", systemImage: "lock.open")
+                }
+                Button(role: .destructive) {
+                    toggleDemoMode()
+                } label: {
+                    Label("Turn Off Demo", systemImage: "sparkles")
+                }
             }
         } label: {
-            Text("Manage")
+            Text(manager.hasLiveProviderAccess ? "Manage" : "Options")
                 .lineLimit(1)
                 .minimumScaleFactor(0.85)
         }
@@ -777,7 +827,7 @@ private extension SettingsView {
                 centsString(order.discountTotal),
                 String(format: "%.2f", Double(order.total) / 100.0),
                 escapeCSV(order.currency),
-                order.refundedAt.map { dateFormatter.string(from: $0) } ?? "",
+                order.refundedAt.map { dateFormatter.string(from: $0) } ?? ""
             ]
             rows.append(row.joined(separator: ","))
         }
@@ -844,7 +894,7 @@ private func collectSaneSalesSettings() -> String {
     let connectedProviders = [
         KeychainService.exists(account: KeychainService.lemonSqueezyAPIKey) ? "LemonSqueezy" : nil,
         KeychainService.exists(account: KeychainService.gumroadAPIKey) ? "Gumroad" : nil,
-        KeychainService.exists(account: KeychainService.stripeAPIKey) ? "Stripe" : nil,
+        KeychainService.exists(account: KeychainService.stripeAPIKey) ? "Stripe" : nil
     ].compactMap { $0 }
     let providersSummary = connectedProviders.isEmpty ? "None" : connectedProviders.joined(separator: ", ")
     let demoMode = defaults.bool(forKey: "demo_mode")
