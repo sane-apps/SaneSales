@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.9] - 2026-05-25
+
+Preserves connected provider data while Pro access is syncing and makes missing-data recovery clearer in Dashboard, Products, and Settings.
+
+---
+
 ## [1.3.8] - 2026-05-20
 
 Rebuild App Store binaries with the Pro live-provider gate.
