@@ -7,7 +7,7 @@ final class SaneSalesIOSUITests: XCTestCase {
     }
 
     func testOnboardingProviderSwitchUpdatesLabelAndHelp() {
-        let app = launchOnboarding()
+        let app = launchProOnboarding()
 
         let gumroadButton = app.buttons["onboarding.provider.gumroad"]
         XCTAssertTrue(gumroadButton.waitForExistence(timeout: 5))
@@ -30,7 +30,7 @@ final class SaneSalesIOSUITests: XCTestCase {
     }
 
     func testConnectButtonStateForWhitespaceAndTrimmedInput() {
-        let app = launchOnboarding()
+        let app = launchProOnboarding()
 
         let field = app.secureTextFields["onboarding.apiKeyField"]
         XCTAssertTrue(field.waitForExistence(timeout: 5))
@@ -89,8 +89,9 @@ final class SaneSalesIOSUITests: XCTestCase {
 
     func testDashboardProviderOpensSetupFlowWhenConnectionIsAllowed() {
         let app = XCUIApplication()
-        app.launchArguments += ["--uitest-reset", "--skip-onboarding"]
+        app.launchArguments += ["--uitest-reset", "--skip-onboarding", "--force-pro-mode"]
         app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_FORCE_PRO_MODE"] = "1"
         app.launch()
 
         let providerMenu = app.buttons["dashboard.providerMenu"]
@@ -136,24 +137,26 @@ final class SaneSalesIOSUITests: XCTestCase {
         XCTAssertTrue(app.buttons["settings.provider.stripe.connect"].exists)
     }
 
-    func testExpiredTrialClearsOlderOrderHistory() {
+    func testExpiredTrialShowsOlderHistoryUpgradePath() {
         let app = launchExpiredTrialDemo()
 
         openMainSection("Orders", in: app)
 
         let unlockHistoryButton = app.buttons["orders.unlockHistoryButton"]
-        XCTAssertFalse(unlockHistoryButton.waitForExistence(timeout: 2))
-        XCTAssertTrue(app.staticTexts["No Synced Orders Yet"].waitForExistence(timeout: 5))
+        XCTAssertTrue(unlockHistoryButton.waitForExistence(timeout: 5))
+        unlockHistoryButton.tap()
+        XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
-    func testExpiredTrialHidesCSVExportWithoutRetainedOrders() {
+    func testExpiredTrialShowsCSVExportUpgradePath() {
         let app = launchExpiredTrialDemo()
 
         openMainSection("Settings", in: app)
 
         let lockedExportButton = app.buttons["settings.data.export.lockedButton"]
-        XCTAssertFalse(lockedExportButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(lockedExportButton.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["settings.data.export.button"].exists)
+        lockedExportButton.tap()
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
     }
 
@@ -281,6 +284,15 @@ final class SaneSalesIOSUITests: XCTestCase {
     }
 
     @discardableResult
+    private func launchProOnboarding(extraLaunchArguments: [String] = []) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["--uitest-reset", "--force-pro-mode"] + extraLaunchArguments
+        app.launchEnvironment["SANEAPPS_FORCE_PRO_MODE"] = "1"
+        app.launch()
+        return app
+    }
+
+    @discardableResult
     private func launchProDemo() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
@@ -291,6 +303,40 @@ final class SaneSalesIOSUITests: XCTestCase {
         ]
         app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
         app.launchEnvironment["SANEAPPS_FORCE_PRO_MODE"] = "1"
+        app.launch()
+        XCTAssertTrue(waitForMainShell(app))
+        return app
+    }
+
+    @discardableResult
+    private func launchActiveTrialDemo() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "--uitest-reset",
+            "--skip-onboarding",
+            "--demo",
+            "--demo-connected-provider=lemonsqueezy",
+            "--force-pro-mode"
+        ]
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_FORCE_PRO_MODE"] = "1"
+        app.launch()
+        XCTAssertTrue(waitForMainShell(app))
+        return app
+    }
+
+    @discardableResult
+    private func launchExpiredTrialDemo() -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "--uitest-reset",
+            "--skip-onboarding",
+            "--demo",
+            "--demo-connected-provider=lemonsqueezy",
+            "--force-free-mode"
+        ]
+        app.launchEnvironment["SANEAPPS_SKIP_ONBOARDING"] = "1"
+        app.launchEnvironment["SANEAPPS_FORCE_FREE_MODE"] = "1"
         app.launch()
         XCTAssertTrue(waitForMainShell(app))
         return app

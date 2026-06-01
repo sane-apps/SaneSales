@@ -5,6 +5,8 @@ import SwiftUI
 #endif
 
 enum SalesSetupFlowPolicy {
+    static let startupLoadingTimeout: TimeInterval = 4
+
     static func welcomeOverride(
         arguments: [String] = CommandLine.arguments,
         environment: [String: String] = ProcessInfo.processInfo.environment
@@ -32,6 +34,19 @@ enum SalesSetupFlowPolicy {
         error != nil && !hasUsableContent(ordersCount: ordersCount, productsCount: productsCount)
     }
 
+    static func shouldShowStartupLoading(
+        isWaitingForPurchaseState: Bool,
+        hasTimedOut: Bool = false,
+        arguments: [String] = CommandLine.arguments,
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Bool {
+        guard welcomeOverride(arguments: arguments, environment: environment) == nil else {
+            return false
+        }
+
+        return isWaitingForPurchaseState && !hasTimedOut
+    }
+
     static func shouldShowInitialSetup(
         hasSeenWelcome: Bool,
         demoModeEnabled: Bool,
@@ -53,16 +68,12 @@ enum SalesSetupFlowPolicy {
             return false
         }
 
-        guard hasConnectedProviders else {
+        guard hasSeenWelcome || hasConnectedProviders else {
             return true
         }
 
         if hasError && !hasAnyData {
             return true
-        }
-
-        if !hasSeenWelcome {
-            return false
         }
 
         return false

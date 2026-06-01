@@ -17,6 +17,7 @@ struct SaneSalesApp: App {
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("demo_mode") private var demoModeEnabled = false
     @AppStorage("pendingSettingsRoute") private var pendingSettingsRoute = ""
+    @State private var startupLoadingTimedOut = false
 
     private let automaticRefreshInterval: TimeInterval = 12 * 60 * 60
 
@@ -34,7 +35,9 @@ struct SaneSalesApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                if shouldShowInitialSetup {
+                if shouldShowStartupLoading {
+                    StartupLoadingView()
+                } else if shouldShowInitialSetup {
                     OnboardingView()
                 } else {
                     ContentView()
@@ -73,6 +76,9 @@ struct SaneSalesApp: App {
                 debugLogStartupState(reason: "license")
             }
             .onChange(of: licenseService.hasCompletedPurchaseStateRefresh) { _, _ in
+                if licenseService.hasCompletedPurchaseStateRefresh {
+                    startupLoadingTimedOut = false
+                }
                 syncProAccess()
                 debugLogStartupState(reason: "licenseRefresh")
             }
@@ -100,6 +106,9 @@ struct SaneSalesApp: App {
                 }
                 syncProAccess()
                 await runAutomaticRefreshLoop()
+            }
+            .task(id: isWaitingForAppStorePurchaseState) {
+                await scheduleStartupLoadingFallback()
             }
         }
     }
@@ -129,6 +138,26 @@ struct SaneSalesApp: App {
 
     private var isWaitingForAppStorePurchaseState: Bool {
         licenseService.usesAppStorePurchase && !licenseService.hasCompletedPurchaseStateRefresh
+    }
+
+    private var shouldShowStartupLoading: Bool {
+        SalesSetupFlowPolicy.shouldShowStartupLoading(
+            isWaitingForPurchaseState: isWaitingForAppStorePurchaseState,
+            hasTimedOut: startupLoadingTimedOut
+        )
+    }
+
+    private func scheduleStartupLoadingFallback() async {
+        guard isWaitingForAppStorePurchaseState else {
+            startupLoadingTimedOut = false
+            return
+        }
+
+        startupLoadingTimedOut = false
+        try? await Task.sleep(nanoseconds: UInt64(SalesSetupFlowPolicy.startupLoadingTimeout * 1_000_000_000))
+        guard !Task.isCancelled, isWaitingForAppStorePurchaseState else { return }
+        startupLoadingTimedOut = true
+        debugLogStartupState(reason: "startupLoadingTimeout")
     }
 
     private func handleDeepLink(_ url: URL) {
@@ -175,7 +204,7 @@ struct SaneSalesApp: App {
                     "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
                     "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
                     "hasAnyData=\(hasUsableDashboardContent) error=\(manager.error?.localizedDescription ?? "none") " +
-                    "showSetup=\(shouldShowInitialSetup)"
+                    "loading=\(shouldShowStartupLoading) loadingTimedOut=\(startupLoadingTimedOut) showSetup=\(shouldShowInitialSetup)"
             )
         #endif
     }
@@ -195,7 +224,7 @@ struct SaneSalesApp: App {
                 "welcome=\(hasSeenWelcome) demo=\(demoModeEnabled) connected=\(manager.isAnyConnected) " +
                     "orders=\(manager.orders.count) products=\(manager.products.count) stores=\(manager.stores.count) " +
                     "data=\(hasUsableDashboardContent) error=\(manager.error == nil ? "none" : "yes") " +
-                    "setup=\(shouldShowInitialSetup)"
+                    "loading=\(shouldShowStartupLoading) loadingTimedOut=\(startupLoadingTimedOut) setup=\(shouldShowInitialSetup)"
             )
             .font(.system(size: 10, weight: .medium, design: .monospaced))
             .foregroundStyle(.white)
@@ -240,4 +269,37 @@ struct SaneSalesApp: App {
             proxy.scrollEdgeAppearance = appearance
         }
     #endif
+}
+
+private struct StartupLoadingView: View {
+    var body: some View {
+        ZStack {
+            SaneBackground()
+                .ignoresSafeArea()
+
+            VStack(spacing: 18) {
+                Image("CoinColor")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 72, height: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+                ProgressView()
+                    .tint(.white)
+
+                VStack(spacing: 6) {
+                    Text("Checking SaneSales")
+                        .font(.system(.title2, design: .rounded).weight(.bold))
+                        .foregroundStyle(.white)
+
+                    Text("Checking your access and saved providers.")
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.92))
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding(.horizontal, 28)
+        }
+        .accessibilityIdentifier("startup.loading.view")
+    }
 }
