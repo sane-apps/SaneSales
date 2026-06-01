@@ -325,9 +325,23 @@ struct AppStartupPolicyTests {
         #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: ["--skip-onboarding"], environment: [:]) == true)
         #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: [], environment: ["SANEAPPS_SKIP_ONBOARDING": "1"]) == true)
         #expect(SalesSetupFlowPolicy.welcomeOverride(arguments: [], environment: [:]) == nil)
+        #expect(SalesSetupFlowPolicy.shouldShowStartupLoading(isWaitingForPurchaseState: true, arguments: []))
+        #expect(!SalesSetupFlowPolicy.shouldShowStartupLoading(isWaitingForPurchaseState: true, hasTimedOut: true, arguments: []))
+        #expect(!SalesSetupFlowPolicy.shouldShowStartupLoading(isWaitingForPurchaseState: false, hasTimedOut: false, arguments: []))
+        #expect(!SalesSetupFlowPolicy.shouldShowStartupLoading(isWaitingForPurchaseState: true, arguments: ["--skip-onboarding"]))
+        #expect(SalesSetupFlowPolicy.startupLoadingTimeout <= 4)
 
         #expect(SalesSetupFlowPolicy.shouldShowInitialSetup(
             hasSeenWelcome: false,
+            demoModeEnabled: false,
+            hasConnectedProviders: false,
+            hasAnyData: false,
+            hasError: false,
+            arguments: []
+        ))
+
+        #expect(!SalesSetupFlowPolicy.shouldShowInitialSetup(
+            hasSeenWelcome: true,
             demoModeEnabled: false,
             hasConnectedProviders: false,
             hasAnyData: false,
@@ -377,6 +391,29 @@ struct AppStartupPolicyTests {
         #expect(!SalesSetupFlowPolicy.hasUsableContent(ordersCount: 0, productsCount: 0))
         #expect(SalesSetupFlowPolicy.hasUsableContent(ordersCount: 1, productsCount: 0))
         #expect(SalesSetupFlowPolicy.hasUsableContent(ordersCount: 0, productsCount: 1))
+    }
+
+    @Test("iOS and iPad use bounded startup loading while macOS keeps content visible")
+    func startupRoutingStaysPlatformAppropriate() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let iosAppSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("iOS/SaneSalesApp.swift"),
+            encoding: .utf8
+        )
+        let macAppSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("macOS/SaneSalesMacApp.swift"),
+            encoding: .utf8
+        )
+
+        #expect(iosAppSource.contains("StartupLoadingView()"))
+        #expect(iosAppSource.contains("scheduleStartupLoadingFallback()"))
+        #expect(iosAppSource.contains("SalesSetupFlowPolicy.startupLoadingTimeout"))
+        #expect(macAppSource.contains("ContentView()"))
+        #expect(macAppSource.contains("WelcomeGateView("))
+        #expect(macAppSource.contains(".sheet(isPresented: Binding("))
+        #expect(!macAppSource.contains("StartupLoadingView()"))
     }
 
     @Test("Initial refresh failure only blocks setup completion when no usable content was loaded")

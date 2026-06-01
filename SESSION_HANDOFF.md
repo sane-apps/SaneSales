@@ -8,6 +8,18 @@ receipts, Serena memory, and the knowledge graph.
 ## Current State
 
 - Current direct/Sparkle/Homebrew release: `1.3.8` build `1308`.
+- 2026-06-01 iOS startup setup-screen regression fixed:
+  - User reported cold-starting SaneSales on iPhone showed the setup/onboarding
+    screen even though reopening showed the logged-in Dashboard.
+  - Root cause was startup routing using onboarding while App Store purchase
+    state and saved provider state were still unresolved.
+  - Added an explicit startup loading state for purchase-state restore and
+    changed setup policy so returning users are not sent to setup solely because
+    providers have not restored yet.
+  - Updated startup policy coverage and refreshed stale UI tests for current
+    Pro-gated provider connection and expired-trial upgrade paths.
+  - Verification: `./scripts/SaneMaster.rb verify --ui --timeout 1200` passed
+    `102` tests in `248s`.
 - 2026-05-25 22:10 EDT expired offer and weak upgrade-flow copy fixed:
   - Removed stale launch-window `SANE60`, `$9.99`, and trial/launch-offer copy
     from the website/docs surfaces touched in this pass, including structured
@@ -91,9 +103,9 @@ receipts, Serena memory, and the knowledge graph.
 
 ## Active Blockers
 
-- Validation caveat: unit tests pass, but canonical `verify` currently exits
-  non-zero due `com.apple.linkd.autoShortcut` App Intents diagnostics being
-  classified as explicit failure markers by SaneMaster.
+- No local verification blocker remains for the 2026-06-01 startup fix:
+  canonical `verify --ui` passed after SaneMaster ignored only known benign
+  `com.apple.linkd.autoShortcut` App Intents diagnostics.
 - Directory progress is now blocked by third-party access only:
   MacUpdate member portal access, G2 seller/profile access, and explicit user
   approval before any paid or irreversible SaaSHub branch.
