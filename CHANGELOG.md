@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.9] - 2026-06-01
+
+Startup now shows a brief access check while restoring App Store access and saved providers on iPhone and iPad. Returning users go back to their dashboard after the check instead of seeing setup during cold launch.
+
+---
+
 ## [1.3.9] - 2026-05-25
 
 Preserves connected provider data while Pro access is syncing and makes missing-data recovery clearer in Dashboard, Products, and Settings.
