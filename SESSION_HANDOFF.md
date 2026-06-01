@@ -8,6 +8,27 @@ receipts, Serena memory, and the knowledge graph.
 ## Current State
 
 - Current direct/Sparkle/Homebrew release: `1.3.8` build `1308`.
+- 2026-05-25 22:10 EDT expired offer and weak upgrade-flow copy fixed:
+  - Removed stale launch-window `SANE60`, `$9.99`, and trial/launch-offer copy
+    from the website/docs surfaces touched in this pass, including structured
+    pricing metadata.
+  - Homepage pricing now leads with Demo vs Pro at `$24.99` once and ties Pro
+    to live sales/provider value instead of a temporary discount.
+  - Added regression coverage so the homepage keeps provider-specific buyer
+    intent and does not reintroduce stale offer labels or the expired coupon.
+  - Verification: Mini `./scripts/SaneMaster.rb verify --timeout 1200` passed
+    `87` tests after the shared SaneProcess verifier fix for benign
+    App Intents `autoShortcut` diagnostics.
+- 2026-05-25 09:33 EDT cross-product launch ops reran canonical Mini
+  `launch_readiness`; it exited `1`, so no launch-week follow-up, directory,
+  or public reply action was executed. The gate is still red because the
+  `2026-05-21` offer window ended and launch/package copy still needs human
+  review before any new launch work. Mini `release_preflight` still
+  passed with `3` warnings, so release safety is not the blocker. The shared
+  validation report still flags stale SaneSales customer UI proof. Existing
+  Launching Next receipt remains
+  `https://www.launchingnext.com/thanks/?i=134060`. Next checkpoint:
+  `2026-05-30`.
 - 2026-05-21 10:00 EDT directory recheck:
   - Mini `launch_readiness --json` returned `ok: true` with passed
     `release_preflight` and 1 warning, so the old red gate is no longer the
@@ -64,8 +85,9 @@ receipts, Serena memory, and the knowledge graph.
     tests passed, but SaneMaster still returned non-zero because its failure
     marker scan treats macOS App Intents `com.apple.linkd.autoShortcut` runtime
     diagnostics as test failures.
-- Launch-week Pro offer copy was live through May 21, 2026; recheck and remove
-  expired offer language before any new launch/posting action.
+- Launch-week Pro offer copy was live through May 21, 2026; website/docs copy
+  has been revised to the regular one-time price, while launch packages still
+  require human review before reuse.
 
 ## Active Blockers
 
