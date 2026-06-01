@@ -505,6 +505,14 @@ struct AppStoreReviewPathTests {
         #expect(homePage.contains("lemon squeezy dashboard, gumroad sales tracker, stripe revenue widget"))
         #expect(homePage.contains("website_buy_hero_clicked"))
         #expect(homePage.contains("website_buy_pricing_clicked"))
+        #expect(homePage.contains("Buy Pro for $24.99 once"))
+        #expect(homePage.contains("Demo mode is free"))
+        #expect(homePage.contains("\"price\": \"24.99\""))
+        #expect(!homePage.contains("SANE60"))
+        #expect(!homePage.contains("\"price\": \"9.99\""))
+        #expect(!homePage.contains("priceValidUntil"))
+        #expect(!homePage.contains("Demo + Trial"))
+        #expect(!homePage.contains("Trial + Pro"))
     }
 
     @Test("iOS review notes match real Pro entry points")
