@@ -49,10 +49,10 @@ SaneSales pulls your sales data from all three platforms into one private native
 
 ## Current Release
 
-**Current direct-download release: 1.3.8**
+**Current direct-download release: 1.3.10**
 
 - Fixes the live-provider Pro gate so demo mode cannot unlock real provider sync
-- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1308
+- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1310
 - Preserves the provider setup, chart, no-orders, and Apple Watch refinements from earlier 1.3.x releases
 
 ---
