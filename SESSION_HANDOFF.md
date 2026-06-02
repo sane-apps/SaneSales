@@ -7,7 +7,20 @@ receipts, Serena memory, and the knowledge graph.
 
 ## Current State
 
-- Current direct/Sparkle/Homebrew release: `1.3.8` build `1308`.
+- Current direct/Sparkle/Homebrew release: `1.3.10` build `1310`.
+- 2026-06-01 20:18 EDT `1.3.10` release issued:
+  - Direct download, Sparkle appcast, website `/download`, GitHub release, and
+    Homebrew cask are live for `SaneSales-1.3.10.zip`.
+  - Live checks verified `https://sanesales.com/download` redirects to
+    `https://dist.sanesales.com/updates/SaneSales-1.3.10.zip` and appcast has
+    exactly the `1.3.10` / build `1310` entry.
+  - macOS App Store `1.3.10` build `1310` is `WAITING_FOR_REVIEW`
+    (`bf7d04de-4dae-4bc2-9026-a246f91dfe4f`).
+  - iOS App Store `1.3.10` build `1310` is `WAITING_FOR_REVIEW`
+    (`5deaaeae-5a26-4bfd-b57d-427bef3d9fd4`).
+  - App Store IAP price schedule was corrected back to USA `$24.99`; app
+    `.saneprocess` now declares `appstore.iap_price_usd: "24.99"` so the
+    submission helper does not fall back to `$6.99`.
 - 2026-06-01 iOS startup setup-screen regression fixed:
   - User reported cold-starting SaneSales on iPhone showed the setup/onboarding
     screen even though reopening showed the logged-in Dashboard.
@@ -19,7 +32,8 @@ receipts, Serena memory, and the knowledge graph.
   - Updated startup policy coverage and refreshed stale UI tests for current
     Pro-gated provider connection and expired-trial upgrade paths.
   - Verification: `./scripts/SaneMaster.rb verify --ui --timeout 1200` passed
-    `102` tests in `248s`.
+    `103` tests in `275s`; release unit lane passed `88` tests; customer UI
+    sweep passed `15` action families; visual smoke passed on the Mini.
 - 2026-05-25 22:10 EDT expired offer and weak upgrade-flow copy fixed:
   - Removed stale launch-window `SANE60`, `$9.99`, and trial/launch-offer copy
     from the website/docs surfaces touched in this pass, including structured
