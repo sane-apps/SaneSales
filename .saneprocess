@@ -162,6 +162,7 @@ appstore:
   enabled: true
   app_id: "6759010976"
   product_id: "com.sanesales.app.pro.unlock.v2"
+  iap_price_usd: "24.99"
   scheme: SaneSales-AppStore
   configuration: Release-AppStore
   platforms: [macos, ios]
