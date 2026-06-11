@@ -31,7 +31,7 @@ launches:
     url: "https://www.producthunt.com/products/sanesales"
     status: "live_unfeatured_relaunch_week_no_go"
     starts: "2026-05-06"
-    notes: "Technically launched May 6, 2026 but unfeatured/low-distribution: featuredAt null, 1 vote, dailyRank 565. Product Hunt moderation request submitted May 14, 2026 for a proper relaunch review. No approval/rejection arrived by the Monday May 18 noon EDT checkpoint; one follow-up was delivered to Product Hunt support, so PH is no-go for launch-week timing and fallback moves to Indie Hackers/HN."
+    notes: "Technically launched May 6, 2026 but unfeatured/low-distribution: featuredAt null, 1 vote, dailyRank 565. Product Hunt moderation request submitted May 14, 2026 for a proper relaunch review. No approval/rejection arrived by the Monday May 18 noon EDT checkpoint; one follow-up was delivered to Product Hunt support, so PH is no-go for launch-week timing and fallback moves to Indie Hackers/HN. 2026-06-03 API check still shows the same weak post: unfeatured, 1 vote, 1 comment, dailyRank 565, weeklyRank 2459, monthlyRank 12437, and 4 images/no video."
 launch_calendar:
   timezone: "America/New_York"
   classification: "active_launch_window"
@@ -246,14 +246,14 @@ video_distribution:
     observed_votes: 1
     observed_comments: 1
     observed_daily_rank: 565
-    observed_weekly_rank: 2464
-    observed_monthly_rank: 5657
+    observed_weekly_rank: 2459
+    observed_monthly_rank: 12437
     observed_media: "Public launch post still exposes original 4 launch images/no video through the API; product page settings now hold refreshed thumbnail and gallery assets."
     observed_tagline: "Product page: Private native sales tracker for indie sellers. API post remains: Track Lemon Squeezy, Gumroad & Stripe sales."
     observed_featured_at: null
     relaunch_review_requested_at: "2026-05-14"
     relaunch_review_receipt: "Product Hunt showed: Thank you! We're reviewing your request and will be in contact with you shortly."
-    last_checked: "2026-05-18"
+    last_checked: "2026-06-03"
     moderation_status: "no_go_launch_week_pending_after_deadline_followup_delivered"
     youtube_url: "https://youtu.be/FmyGTWpBF4M"
     package: "outputs/marketing/product-hunt-sanesales-20260514/PRODUCT_HUNT_PACKAGE.md"
@@ -262,7 +262,8 @@ video_distribution:
       - "outputs/marketing/product-hunt-sanesales-20260514/gallery-01-problem.png"
       - "outputs/marketing/product-hunt-sanesales-20260514/gallery-02-private-no-subscription.png"
       - "outputs/marketing/product-hunt-sanesales-20260514/gallery-03-all-devices.png"
-    next: "Do not create a duplicate Product Hunt launch. Treat PH as no-go for launch-week timing unless Product Hunt explicitly approves later; use the Indie Hackers and Show HN fallback schedule with exact-copy approval gates."
+    current_conversion_snapshot: "2026-06-03 SaneMaster check: SaneSales has 2 paid orders all time; last 30 days show 3531 downloads, 277 new free users, 3287 checkout clicks, and 3 license activations."
+    next: "Do not create a duplicate Product Hunt launch. Treat PH as no-go unless Product Hunt explicitly approves later; fix conversion/story first, then only relaunch after a significant product change with exact-copy approval gates."
   g2:
     status: "ready_to_submit_if_profile_access_exists"
     youtube_url: "https://youtu.be/FmyGTWpBF4M"
