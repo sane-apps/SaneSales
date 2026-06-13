@@ -1,5 +1,5 @@
 product: SaneSales
-updated: "2026-06-01"
+updated: "2026-06-13"
 positioning:
   one_liner: "Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe"
   offer: "Direct SaneSales Pro is $24.99 once; the launch-week SANE60 offer ended on May 21, 2026."
@@ -56,8 +56,8 @@ launch_calendar:
       due: "2026-05-21"
       status: "website_docs_cleaned_launch_packages_need_review"
       action: "Keep website/docs on the regular $24.99 one-time price unless a new approved offer replaces it; review launch/package copy before any new public push."
-      last_reviewed: "2026-06-01"
-      result: "On 2026-06-01, website/docs pricing copy was revised to the regular $24.99 one-time price, including structured-data metadata. Canonical `launch_readiness` still requires fresh Mini release proof plus human review of launch packages before any new public action."
+      last_reviewed: "2026-06-13"
+      result: "On 2026-06-13, website/docs still reflected the regular $24.99 one-time price and no launch-week offer copy was reintroduced. Canonical Mini `launch_readiness --json` reran from the repo root and returned `ok: false` because the launch offer window ended on 2026-05-21 and the latest `release_preflight` proof is stale at 19.42 days old with 3 warnings. Shared validation evidence is now `/Users/sj/SaneApps/infra/SaneProcess/outputs/validation/2026-06-13.json`, which remains red because SaneSales customer UI proof is stale after code changes and older than 12 hours. Launch/package copy still needs human review before any new public action."
       surfaces:
         - "README.md"
         - "docs/index.html"
@@ -122,18 +122,19 @@ launch_calendar:
       last_reviewed: "2026-05-21"
       result: "At 09:33 EDT on 2026-05-21, the due-slot recheck stayed no-go. Fresh Mini `launch_readiness --json` returned `ok: true` with release_preflight passed and 1 warning, so release safety was not the blocker. Channel evidence stayed weak: Product Hunt still showed 1 vote, 1 comment, `featuredAt: null`, and daily rank 565 on the May 6 post; Indie Hackers never had an authenticated posting session and no public SaneSales post was discoverable; Show HN was never submitted and HN search still returned no SaneSales hits; Launching Next remained pending editorial review; and MacUpdate, G2, BetaList, and optional SaaSHub were still blocked or unsubmitted. Commercially, Lemon Squeezy sales on 2026-05-21 were 2 orders and $29.98 portfolio-wide, but the orders were SaneBar, while SaneSales itself still sat at 1 paid order all time, 1186 downloads over the last 7 days, 244 of them on live build 1.3.8, with 90 new free users and 1 activation over the last 7 days, plus 2 new free users, 0 activations, and 105 checkout clicks today. Existing launch-week X posts also stayed low-signal at 217 impressions with 1 like/1 reply and 32 impressions with 0 engagement. No final-day public post was drafted, approved, or posted."
   last_launch_readiness:
-    date: "2026-06-01"
+    date: "2026-06-13"
     status: "no_go_offer_window_ended"
     launch_readiness_exit: 1
     blocker_summary:
-      - "Canonical launch_readiness rerun on 2026-06-01 reported `Mac mini is unreachable. Falling back to local execution.` and exited nonzero."
+      - "Canonical Mini `launch_readiness --json` reran on 2026-06-13 and exited nonzero."
       - "Website/docs pricing copy has been revised to the regular one-time price; Product Hunt, directory, and public-post packages still need human review before any new launch work."
-      - "The latest local release_preflight still passed, but the proof is 7.08 days old, marked stale, and still carries 3 warnings, so release safety is no longer fresh enough to override the offer-copy blocker."
+      - "The local gate is red because `launch_calendar.offer_window` ended on 2026-05-21 and must be removed or replaced before any launch work."
+      - "The latest Mini gate still reports `release_preflight` passed, but the proof is 19.42 days old, marked stale, and still carries 3 warnings, so release safety is no longer fresh enough to override the offer-copy blocker."
+      - "Shared validation remains red at `/Users/sj/SaneApps/infra/SaneProcess/outputs/validation/2026-06-13.json` because SaneSales customer UI proof is stale after the latest code change and older than 12 hours."
       - "The expired May 15 to May 21 one-shot lanes were skipped again because they already have their own paused/completed automation records: submit-sanesales-directories, sanesales-indie-hackers-launch, sanesales-show-hn-fallback, sanesales-x-opportunity-scan, and sanesales-offer-final-day-check."
-      - "The 2026-05-21 09:30 EDT final-day slot remains complete with a documented no-go, so there is no new public posting slot to execute today."
-      - "The shared validation report generated at 2026-06-01 01:29:50 EDT still says BROKEN RELEASE PIPELINE and flags SaneSales customer UI proof as stale after the latest code change and older than 12 hours."
-      - "No public, directory, scheduling, account-creation, paid, or reply action was executed on 2026-06-01 because launch/package copy still needs human review and release proof is stale."
-    next_date: "2026-06-03"
+      - "The 2026-05-21 09:30 EDT final-day slot remains complete with a documented no-go, so there is no new public posting slot to execute on 2026-06-13."
+      - "No public, directory, scheduling, account-creation, paid, or reply action was executed on 2026-06-13 because launch/package copy still needs human review and release proof is stale."
+    next_date: "2026-06-20"
 public_posting_policy:
   approval_required: true
   disclosure_required: "Always say 'I built SaneSales' when recommending it in public replies."
