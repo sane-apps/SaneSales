@@ -70,7 +70,7 @@ let blacklist = [
 ]
 let marketingBlockers = [
   "would like to access", "access data from other apps", "don't allow", "unlock pro", "basic stays",
-  "basic ", "demo data", "$24.99", "saneclip"
+  "basic ", "demo data", "$9.99", "saneclip"
 ]
 
 func tabHints(_ file: String) -> [String] {

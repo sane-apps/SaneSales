@@ -396,7 +396,7 @@ enum SaneSalesSettingsCopy {
             localized: "sanesales.settings.license.unlock_prefix",
             defaultValue: "Unlock Pro —"
         ),
-        fallbackPriceLabel: "$24.99",
+        fallbackPriceLabel: "$9.99",
         directEntryLabel: String(
             localized: "sanesales.settings.license.enter_license_key",
             defaultValue: "Enter License Key"

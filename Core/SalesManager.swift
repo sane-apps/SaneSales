@@ -125,11 +125,15 @@ final class SalesManager {
         demoModeEnabled: Bool = false,
         now: Date = Date()
     ) {
+        let shouldClearLoadedLiveData = isPro && !isPaidPro && !forcePro && !demoModeEnabled
         paidProAccess = isPaidPro
         forcedProAccess = forcePro
         demoModeAccess = demoModeEnabled
         isDemoModeActive = demoModeEnabled
         reevaluateProAccess(now: now)
+        if shouldClearLoadedLiveData {
+            clearLoadedSalesData()
+        }
     }
 
     private func reevaluateProAccess(now _: Date = Date()) {

@@ -8,6 +8,24 @@ receipts, Serena memory, and the knowledge graph.
 ## Current State
 
 - Current direct/Sparkle/Homebrew release: `1.3.10` build `1310`.
+- 2026-06-16 pricing change complete:
+  - User set SaneSales Pro target price to `$9.99` once.
+  - Direct website/docs/README copy, structured pricing metadata, macOS fallback
+    price label, and `.saneprocess` App Store IAP target now use `$9.99`.
+  - `sanesales.com` was deployed from the Mini via website-only release; social
+    card and SEO audits passed for 18 pages, and live `/download` plus appcast
+    checks still point to `SaneSales-1.3.10.zip`.
+  - Live page check confirmed `https://sanesales.com/` contains `$9.99` copy.
+  - Lemon Squeezy API confirmed the default SaneSales variant price is `999`
+    cents; `https://go.saneapps.com/buy/sanesales` redirects through Lemon
+    checkout to HTTP 200.
+  - App Store Connect IAP helper observed USA `$24.99`, created the USA `$9.99`
+    price schedule, and left the IAP in `APPROVED` state.
+  - During verification, Mini `SaneMaster verify --timeout 1200` caught a real
+    regression where losing Pro access left private orders/metrics and the
+    shared widget snapshot loaded. `SalesManager.updateProAccess` now clears
+    loaded live data when paid/forced access is removed outside demo mode while
+    preserving provider credentials. Mini verify then passed `89` tests.
 - 2026-06-01 20:18 EDT `1.3.10` release issued:
   - Direct download, Sparkle appcast, website `/download`, GitHub release, and
     Homebrew cask are live for `SaneSales-1.3.10.zip`.
@@ -18,9 +36,8 @@ receipts, Serena memory, and the knowledge graph.
     (`bf7d04de-4dae-4bc2-9026-a246f91dfe4f`).
   - iOS App Store `1.3.10` build `1310` is `WAITING_FOR_REVIEW`
     (`5deaaeae-5a26-4bfd-b57d-427bef3d9fd4`).
-  - App Store IAP price schedule was corrected back to USA `$24.99`; app
-    `.saneprocess` now declares `appstore.iap_price_usd: "24.99"` so the
-    submission helper does not fall back to `$6.99`.
+  - App Store IAP price schedule was corrected back to USA `$24.99` at the time;
+    as of 2026-06-16, the current IAP price schedule is USA `$9.99`.
 - 2026-06-01 iOS startup setup-screen regression fixed:
   - User reported cold-starting SaneSales on iPhone showed the setup/onboarding
     screen even though reopening showed the logged-in Dashboard.
@@ -38,7 +55,7 @@ receipts, Serena memory, and the knowledge graph.
   - Removed stale launch-window `SANE60`, `$9.99`, and trial/launch-offer copy
     from the website/docs surfaces touched in this pass, including structured
     pricing metadata.
-  - Homepage pricing now leads with Demo vs Pro at `$24.99` once and ties Pro
+  - Homepage pricing now leads with Demo vs Pro at the current one-time price and ties Pro
     to live sales/provider value instead of a temporary discount.
   - Added regression coverage so the homepage keeps provider-specific buyer
     intent and does not reintroduce stale offer labels or the expired coupon.

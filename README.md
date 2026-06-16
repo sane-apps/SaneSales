@@ -10,11 +10,11 @@
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg?style=flat-square)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
-[![Price](https://img.shields.io/badge/Price-%2424.99_once-green?style=flat-square)](https://sanesales.com)
+[![Price](https://img.shields.io/badge/Price-%249.99_once-green?style=flat-square)](https://sanesales.com)
 [![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Price:** SaneSales Pro is **$24.99 once**. Demo mode is free. No subscription.
+> **Price:** SaneSales Pro is **$9.99 once**. Demo mode is free. No subscription.
 
 </div>
 
@@ -88,7 +88,7 @@ SaneSales is the opposite:
 | **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
-| **No subscription** | **$24.99 once. No subscription.** | $75+/mo | Free tier, then $59+/mo | Free |
+| **No subscription** | **$9.99 once. No subscription.** | $75+/mo | Free tier, then $59+/mo | Free |
 | **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
 
 > **Private, native, and one-time priced.** SaneSales keeps your sales data on your devices and gives you dashboard views, order history, exports, widgets, and menu bar revenue without a monthly SaaS bill. **[Get SaneSales ->](https://sanesales.com)**
@@ -99,7 +99,7 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — free demo, with live data unlocked by Pro. Direct SaneSales Pro is **$24.99 once**.
+**[Download from sanesales.com](https://sanesales.com)** — free demo, with live data unlocked by Pro. Direct SaneSales Pro is **$9.99 once**.
 
 Also available on the iOS and Mac App Store.
 
