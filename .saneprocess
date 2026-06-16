@@ -62,7 +62,7 @@ release:
     - stash_sha: "9d93f29e3f315260dbbc2314edb0515bed924320"
       subject: "On main: auto-reconcile-20260416-215512-stephans-mac-mini"
       decision: superseded
-      reason: "Reviewed 2026-05-09. This hardcodes $24.99 into macOS/direct strings, but current HEAD uses the newer displayPriceLabel/fallback-price path; nothing here is missing from shipped runtime behavior."
+      reason: "Reviewed 2026-05-09; refreshed 2026-06-16. This hardcoded an older macOS/direct price into strings, but current HEAD uses the newer displayPriceLabel/fallback-price path at the active public price, so nothing here is missing from shipped runtime behavior."
     - stash_sha: "fe143c282dac344de909cc5c6accaa6c69dd52b5"
       subject: "On main: auto-reconcile-20260416-055517-stephans-mac-mini"
       decision: recovered
@@ -70,7 +70,7 @@ release:
     - stash_sha: "32267657fd4c9f99f6ed59cdbcb984b623745f79"
       subject: "On main: auto-reconcile-20260415-055522-stephans-mac-mini"
       decision: recovered
-      reason: "Reviewed 2026-05-09. The $24.99 pricing rollout already landed in HEAD/live docs and iOS unlock CTAs; remaining delta is an older intermediate docs/project state."
+      reason: "Reviewed 2026-05-09; refreshed 2026-06-16. The current pricing rollout already landed in HEAD/live docs and iOS unlock CTAs; remaining delta is an older intermediate docs/project state."
     - stash_sha: "1ae75fcd61190e0f4f60c42b1b9a8885de48c077"
       subject: "On main: auto-reconcile-20260508-215529-stephans-macbook-air"
       decision: recovered
@@ -162,7 +162,7 @@ appstore:
   enabled: true
   app_id: "6759010976"
   product_id: "com.sanesales.app.pro.unlock.v2"
-  iap_price_usd: "24.99"
+  iap_price_usd: "9.99"
   scheme: SaneSales-AppStore
   configuration: Release-AppStore
   platforms: [macos, ios]
@@ -301,7 +301,7 @@ appstore:
       - Connecting LemonSqueezy, Gumroad, or Stripe is optional and requires the StoreKit Pro unlock for live tracking.
   iap:
     display_name: "SaneSales Pro Unlock"
-    price_usd: 24.99
+    price_usd: 9.99
     description: "Unlock Pro analytics with one purchase."
     review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks custom date ranges, full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
   accessibility_declarations:
