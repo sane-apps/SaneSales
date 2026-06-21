@@ -270,6 +270,12 @@ video_distribution:
     youtube_url: "https://youtu.be/FmyGTWpBF4M"
     next: "Use the hosted video URL if seller/profile access exists."
 x_tweet_history:
+  - date: "2026-06-20"
+    status: "posted"
+    id: "2068414177425707070"
+    url: "https://x.com/MrSaneApps/status/2068414177425707070"
+    source_url: "https://x.com/i/web/status/2068370399751176461"
+    text: "The problem with sales dashboards is a flat line can mean five different things and most tools make you go hunting for all of them. I built SaneSales because I wanted sales, refunds, and product-level signal on the Mac without opening a spreadsheet first. https://sanesales.com"
   - date: "2026-06-19"
     status: "posted"
     id: "2068051812192526355"
@@ -299,6 +305,15 @@ x_tweet_history:
     id: "2055078406362943614"
     reason: "Shell expanded $9.99 inside a double-quoted command; deleted immediately and hardened x-post.py with --text-file plus .99 price guard."
 x_search_runs:
+  - date: "2026-06-20"
+    status: "completed_posted_product_link"
+    launch_readiness: "not_checked_daily_ambient_posting_only"
+    searched_queries: 10
+    considered_urls:
+      - url: "https://x.com/i/web/status/2068370399751176461"
+        decision: "reference_for_standalone_product_post"
+        reason: "Strong SaneSales-adjacent pain point, but not a summoned mention and therefore not a valid API reply target under the 2026 rule."
+    summary: "Ran the low-cost ambient scan: 7 mention queries at per-query 3 and 3 rotating queries at per-query 5. Mention results were all self-matches, so no valid direct reply existed. Rotating results surfaced one strong Gumroad dashboard pain-point premise; the no-link bucket was already full for 2026-06-20, so one standalone SaneSales product-link post was published instead."
   - date: "2026-06-19"
     status: "completed_posted_human_no_link"
     launch_readiness: "not_checked_daily_ambient_posting_only"
