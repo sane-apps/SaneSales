@@ -13,7 +13,7 @@ packages:
     from: 2.6.0
   SaneUI:
     url: https://github.com/sane-apps/SaneUI.git
-    revision: d0782adff25a9edcf8b577c717025a14483020ff
+    revision: 6adafae62cfb37b54f2167e70de9fc5e9b4effb9
 
 configs:
   Debug: debug
@@ -171,8 +171,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -184,9 +184,10 @@ targets:
         CODE_SIGN_INJECT_BASE_ENTITLEMENTS: YES
       configs:
         Debug:
-          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev
-          CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Developer ID Application"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Developer ID"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
           CODE_SIGN_STYLE: Manual
@@ -272,8 +273,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -367,8 +368,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         SWIFT_VERSION: 6.0
         DEVELOPMENT_TEAM: M78L6FXD48
         ARCHS: arm64
@@ -377,9 +378,10 @@ targets:
         LD_RUNPATH_SEARCH_PATHS: "@executable_path/../Frameworks @executable_path/../../../../Frameworks"
       configs:
         Debug:
-          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.dev.widgets
-          CODE_SIGN_STYLE: Automatic
-          CODE_SIGN_IDENTITY: "Apple Development"
+          PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: "Developer ID Application"
+          PROVISIONING_PROFILE_SPECIFIER: "SaneSales Widgets Developer ID"
         Release:
           PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.widgets
           CODE_SIGN_STYLE: Manual
@@ -449,8 +451,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSales
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ENABLE_PREVIEWS: YES
         SWIFT_VERSION: 6.0
@@ -555,8 +557,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesIOSWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.ioswidgets
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         SWIFT_VERSION: 6.0
         IPHONEOS_DEPLOYMENT_TARGET: 17.0
         TARGETED_DEVICE_FAMILY: "1,2"
@@ -614,8 +616,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWatch
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         ASSETCATALOG_COMPILER_APPICON_NAME: WatchAppIcon
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
@@ -673,8 +675,8 @@ targets:
       base:
         PRODUCT_NAME: SaneSalesWatchWidgets
         PRODUCT_BUNDLE_IDENTIFIER: com.sanesales.app.watch.widgets
-        MARKETING_VERSION: "1.3.10"
-        CURRENT_PROJECT_VERSION: "1310"
+        MARKETING_VERSION: "1.3.11"
+        CURRENT_PROJECT_VERSION: "1311"
         SWIFT_VERSION: 6.0
         WATCHOS_DEPLOYMENT_TARGET: 10.0
         TARGETED_DEVICE_FAMILY: "4"

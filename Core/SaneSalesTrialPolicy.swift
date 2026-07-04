@@ -17,7 +17,7 @@ enum SaneSalesTrialState: Equatable {
 }
 
 enum SaneSalesTrialPolicy {
-    static let durationDays = 7
+    static let durationDays = 14
     static let trialStartedAtKey = "sanesales.pro_trial.started_at"
     static let trialStartedBuildKey = "sanesales.pro_trial.started_build"
 

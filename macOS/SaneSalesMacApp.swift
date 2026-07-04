@@ -262,7 +262,8 @@ import SwiftUI
             @State private var licenseService = LicenseService(
                 appName: "SaneSales",
                 checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanesales"),
-                directCopy: LicenseService.DirectCopy.saneSales
+                directCopy: LicenseService.DirectCopy.saneSales,
+                proTrial: .init(storageKeyPrefix: "sanesales.pro_trial")
             )
         #endif
 
@@ -300,97 +301,98 @@ import SwiftUI
 
         var body: some Scene {
             WindowGroup(id: "main") {
-                ContentView()
-                    .environment(manager)
-                    .environment(licenseService)
-                    .modifier(WindowActionCapture())
-                    .background(MainWindowCaptureView())
-                    .preferredColorScheme(.dark)
-                    .frame(minWidth: 600, minHeight: 400)
-                    .onOpenURL { url in
-                        handleDeepLink(url)
-                    }
-                    .onAppear {
-                        appDelegate.salesManager = manager
-                        licenseService.checkCachedLicense()
-
-                        // Sync license and demo state into manager for Pro gating
-                        syncProAccess()
-
-                        // Fire launch event based on tier
-                        let tier = manager.hasLiveProviderAccess ? "pro" : "free"
-                        let isFirstLaunch = !hasSeenWelcome
-                        Task.detached {
-                            await EventTracker.log("app_launch_\(tier)", app: "sanesales")
-                            if isFirstLaunch, tier == "free" {
-                                await EventTracker.log("new_free_user", app: "sanesales")
+                Group {
+                    if licenseService.hasExpiredProTrial {
+                        LicenseGateView(licenseService: licenseService, appIcon: "dollarsign.circle.fill")
+                            .preferredColorScheme(.dark)
+                            .onAppear {
+                                licenseService.checkCachedLicense()
                             }
-                        }
-
-                        setupMenuBar()
-                    }
-                    .task {
-                        if CommandLine.arguments.contains("--demo") || demoModeEnabled ||
-                            UserDefaults.standard.bool(forKey: "loadDemoData") {
-                            DemoData.loadInto(
-                                manager: manager,
-                                connectedProviders: manager.demoConnectedProviders()
-                            )
-                            syncProAccess()
-                        }
-                        await runAutomaticRefreshLoop()
-                    }
-                    .sheet(isPresented: Binding(
-                        get: { !hasSeenWelcome },
-                        set: { isShowing in
-                            if !isShowing {
-                                hasSeenWelcome = true
-                                if showInMenuBar, menuBarManager == nil {
-                                    menuBarManager = MenuBarManager(
-                                        salesManager: manager,
-                                        showRevenue: effectiveShowRevenueInMenuBar
-                                    )
-                                }
+                    } else {
+                        ContentView()
+                            .environment(manager)
+                            .environment(licenseService)
+                            .modifier(WindowActionCapture())
+                            .background(MainWindowCaptureView())
+                            .preferredColorScheme(.dark)
+                            .frame(minWidth: 600, minHeight: 400)
+                            .onOpenURL { url in
+                                handleDeepLink(url)
                             }
-                        }
-                    )) {
-                        WelcomeGateView(
-                            appName: "SaneSales",
-                            appIcon: "dollarsign.circle.fill",
-                            freeFeatures: [
-                                (icon: "play.circle", text: "Demo mode to explore"),
-                                (icon: "chart.bar", text: "Sample orders, products, and revenue"),
-                                (icon: "lock", text: "Pro required for live provider connections"),
-                                (icon: "shield", text: "Private local demo data")
-                            ],
-                            proFeatures: [
-                                (icon: "checkmark", text: "Pro unlocks live tracking:"),
-                                (icon: "shield", text: "iCloud Keychain provider sync"),
-                                (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
-                                (icon: "list.bullet.rectangle", text: "Full order history"),
-                                (icon: "tablecells", text: "CSV export"),
-                                (icon: "chart.pie", text: "Deeper product comparisons"),
-                                (icon: "menubar.rectangle", text: "Menu bar quick glance"),
-                                (icon: "widget.small", text: "Desktop widgets")
-                            ],
-                            licenseService: licenseService,
-                            secondaryCompletionActionLabel: "Try Demo Data",
-                            secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
-                            onSecondaryCompletion: {
-                                manager.enableDemoMode()
+                            .onAppear {
+                                appDelegate.salesManager = manager
+                                licenseService.checkCachedLicense()
+
+                                // Sync license and demo state into manager for Pro gating
+                                syncProAccess()
+
+                                // Fire launch event based on tier
+                                let tier = manager.hasLiveProviderAccess ? "pro" : "free"
+                                let isFirstLaunch = !hasSeenWelcome
                                 Task.detached {
-                                    await EventTracker.log("demo_started", app: "sanesales")
-                                }
-                                let key = "SaneApps.EventTracker.logged.sanesales.first_value_action"
-                                if !UserDefaults.standard.bool(forKey: key) {
-                                    UserDefaults.standard.set(true, forKey: key)
-                                    Task.detached {
-                                        await EventTracker.log("first_value_action", app: "sanesales")
+                                    await EventTracker.log("app_launch_\(tier)", app: "sanesales")
+                                    if isFirstLaunch, tier == "free" {
+                                        await EventTracker.log("new_free_user", app: "sanesales")
                                     }
                                 }
+
+                                setupMenuBar()
                             }
-                        )
+                            .task {
+                                if CommandLine.arguments.contains("--demo") || demoModeEnabled ||
+                                    UserDefaults.standard.bool(forKey: "loadDemoData") {
+                                    DemoData.loadInto(
+                                        manager: manager,
+                                        connectedProviders: manager.demoConnectedProviders()
+                                    )
+                                    syncProAccess()
+                                }
+                                await runAutomaticRefreshLoop()
+                            }
+                            .sheet(isPresented: Binding(
+                                get: { !hasSeenWelcome },
+                                set: { isShowing in
+                                    if !isShowing {
+                                        hasSeenWelcome = true
+                                        if showInMenuBar, menuBarManager == nil {
+                                            menuBarManager = MenuBarManager(
+                                                salesManager: manager,
+                                                showRevenue: effectiveShowRevenueInMenuBar
+                                            )
+                                        }
+                                    }
+                                }
+                            )) {
+                                WelcomeGateView(
+                                    appName: "SaneSales",
+                                    appIcon: "dollarsign.circle.fill",
+                                    freeFeatures: [
+                                        (icon: "play.circle", text: "Demo mode to explore"),
+                                        (icon: "chart.bar", text: "Sample orders, products, and revenue"),
+                                        (icon: "lock", text: "Pro required for live provider connections"),
+                                        (icon: "shield", text: "Private local demo data")
+                                    ],
+                                    proFeatures: Self.onboardingProFeatures,
+                                    licenseService: licenseService,
+                                    secondaryCompletionActionLabel: "Try Demo Data",
+                                    secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
+                                    onSecondaryCompletion: {
+                                        manager.enableDemoMode()
+                                        Task.detached {
+                                            await EventTracker.log("demo_started", app: "sanesales")
+                                        }
+                                        let key = "SaneApps.EventTracker.logged.sanesales.first_value_action"
+                                        if !UserDefaults.standard.bool(forKey: key) {
+                                            UserDefaults.standard.set(true, forKey: key)
+                                            Task.detached {
+                                                await EventTracker.log("first_value_action", app: "sanesales")
+                                            }
+                                        }
+                                    }
+                                )
+                            }
                     }
+                }
             }
             .defaultSize(width: 800, height: 600)
             .onChange(of: showInMenuBar) { _, newValue in
@@ -443,6 +445,32 @@ import SwiftUI
                     }
                 #endif
             }
+        }
+
+        private static var onboardingProFeatures: [(icon: String, text: String)] {
+            #if APP_STORE
+                return [
+                    (icon: "checkmark", text: "Pro unlocks live tracking:"),
+                    (icon: "shield", text: "iCloud Keychain provider sync"),
+                    (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
+                    (icon: "list.bullet.rectangle", text: "Full order history"),
+                    (icon: "tablecells", text: "CSV export"),
+                    (icon: "chart.pie", text: "Deeper product comparisons"),
+                    (icon: "menubar.rectangle", text: "Menu bar quick glance"),
+                    (icon: "widget.small", text: "Desktop widgets")
+                ]
+            #else
+                return [
+                    (icon: "checkmark", text: "Enjoy 14 days of Pro"),
+                    (icon: "shield", text: "iCloud Keychain provider sync"),
+                    (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
+                    (icon: "list.bullet.rectangle", text: "Full order history"),
+                    (icon: "tablecells", text: "CSV export"),
+                    (icon: "chart.pie", text: "Deeper product comparisons"),
+                    (icon: "menubar.rectangle", text: "Menu bar quick glance"),
+                    (icon: "widget.small", text: "Desktop widgets")
+                ]
+            #endif
         }
 
         private func syncProAccess() {

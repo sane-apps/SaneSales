@@ -8,6 +8,17 @@ receipts, Serena memory, and the knowledge graph.
 ## Current State
 
 - Current direct/Sparkle/Homebrew release: `1.3.10` build `1310`.
+- 2026-06-28 SaneSales website funnel instrumentation follow-up:
+  - Confirmed the older broad conversion instrumentation already existed, then
+    fixed the current trial-first homepage gap: `download_trial_hero_primary`,
+    `download_trial_pricing`, and `buy_bundle` now emit distinct anonymous
+    aggregate events while preserving aggregate website buy/download counts.
+  - The CTA event path uses `fetch` with `credentials: 'omit'` and
+    `referrerPolicy: 'no-referrer'`; stale buy-pro website CTA telemetry strings
+    are covered by regression tests.
+  - Verification: `./scripts/SaneMaster.rb verify --timeout 1200` passed 89
+    tests, `python3 -m py_compile scripts/automation/dl-report.py` passed, and
+    the two-lane read-only second audit passed for website and report paths.
 - 2026-06-16 pricing change complete:
   - User set SaneSales Pro target price to `$9.99` once.
   - Direct website/docs/README copy, structured pricing metadata, macOS fallback
@@ -181,3 +192,9 @@ receipts, Serena memory, and the knowledge graph.
 5. Resume G2 only if seller/profile access exists; otherwise keep it blocked.
 6. Ignore optional SaaSHub unless there is explicit approval to spend time on
    the higher-friction form.
+
+## Launch Ops - 2026-06-23
+
+- Cross-product launch ops reran canonical Mini `./scripts/SaneMaster.rb launch_readiness --json` from the SaneSales repo. It stayed red.
+- The gating reason is still structural, not channel availability: `launch_calendar.offer_window` ended on 2026-05-21, so launch work stays blocked until that stale offer lane is removed or replaced. The one-shot launch-week automations already have their own completed/paused records and were skipped again.
+- Fresh proof state: `release_preflight` still passes but is stale at 29.42 days with 3 warnings, and the shared validation receipt [`/Users/stephansmac/SaneApps/infra/SaneProcess/outputs/validation/2026-06-23.json`](/Users/stephansmac/SaneApps/infra/SaneProcess/outputs/validation/2026-06-23.json) is still `NOT READY FOR RELEASE` with stale SaneSales customer-UI receipt/fingerprint proof. No public/directory/scheduling/account-creation/paid/reply action ran today.
