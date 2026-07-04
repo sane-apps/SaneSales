@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.11] - 2026-07-04
+
+Important update to onboarding, licensing, and reliability. Recommended for all users.
+
+---
+
 ## [1.3.10] - 2026-06-01
 
 Startup now shows a brief access check while restoring App Store access and saved providers on iPhone and iPad. Returning users go back to their dashboard after the check instead of seeing setup during cold launch.
