@@ -794,6 +794,7 @@
 				TargetAttributes = {
 					11F92A0BDD7FD9F39613C6C0 = {
 						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
 					};
 					1FA69DEC385E8444D3CE8ED3 = {
 						DevelopmentTeam = M78L6FXD48;
@@ -803,6 +804,7 @@
 					};
 					372D646238F964199D574608 = {
 						DevelopmentTeam = M78L6FXD48;
+						ProvisioningStyle = Manual;
 					};
 					4DF8CAE39C290BCE75EDC12F = {
 						DevelopmentTeam = M78L6FXD48;
@@ -829,6 +831,7 @@
 				};
 			};
 			buildConfigurationList = BAB1924309BF91A796706300 /* Build configuration list for PBXProject "SaneSales" */;
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -844,7 +847,6 @@
 				9527B5F8D842884BF5AED6EA /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = E5F894E2E4E1D3B172C70F81 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -1475,9 +1477,9 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "SaneSales/SaneSales-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1311;
 				DEVELOPMENT_TEAM = M78L6FXD48;
@@ -1838,8 +1840,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = Watch/SaneSalesWatchWidgets.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1311;
 				DEVELOPMENT_TEAM = M78L6FXD48;
 				INFOPLIST_FILE = Watch/WidgetInfo.plist;
