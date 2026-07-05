@@ -89,7 +89,7 @@
     {
       "@context": "https://schema.org",
       "@type": "VideoObject",
-      "name": "SaneSales Pro Demo",
+      "name": "SaneSales Pro Walkthrough",
       "description": "See SaneSales Pro across Mac, iPhone, iPad, and Apple Watch: private sales tracking, no subscription, charts, order history, CSV export, widgets, and menu bar revenue.",
       "thumbnailUrl": "https://sanesales.com/images/sanesales-launch-video-poster.png?v=164297c4cc17",
       "uploadDate": "2026-05-14",
@@ -117,9 +117,9 @@
         {"@type": "Question", "name": "Does SaneSales work offline?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. SaneSales caches all your sales data locally after the first sync. You can view your revenue, orders, charts, and products anytime — even without internet."}},
         {"@type": "Question", "name": "Is my data sent to SaneApps servers?", "acceptedAnswer": {"@type": "Answer", "text": "No. SaneSales communicates directly with LemonSqueezy, Gumroad, and Stripe APIs from your device. There is no SaneApps server in the middle for your sales data."}},
         {"@type": "Question", "name": "What if I only use one provider?", "acceptedAnswer": {"@type": "Answer", "text": "SaneSales works great with just one provider. Connect only the platforms you use — there's no requirement to use all three."}},
-        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. Direct SaneSales Pro is $9.99 once. Demo mode is included so you can try the app first, and there are no recurring charges or subscriptions."}},
+        {"@type": "Question", "name": "Is there a subscription?", "acceptedAnswer": {"@type": "Answer", "text": "No. Direct SaneSales Pro is $9.99 once after the full 14-day Pro trial, and there are no recurring charges or subscriptions."}},
         {"@type": "Question", "name": "Can I pay with crypto?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Crypto is optional. Send the current Pro price, then email hi@saneapps.com with your transaction ID or screenshot so your Pro access can be verified."}},
-        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Start with demo data, then unlock Pro when you want to connect live providers. Demo mode is included so you can explore before connecting your own API keys."}}
+        {"@type": "Question", "name": "Can I try it before buying?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The trial is full Pro for 14 days, including live provider connections, charts, history, export, widgets, and menu bar revenue. After the trial, Pro is required."}}
       ]
     }
     </script>
@@ -1657,7 +1657,7 @@
         }
 
         .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.75rem; vertical-align: super; margin-left: 3px; cursor: default; }
-        .price-note::after { content: "One-time purchase. Demo mode lets you try it first."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
+        .price-note::after { content: "One-time purchase after the full Pro trial."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
         .price-note:hover::after { opacity: 1; }
         @media (max-width: 768px) { .price-note { display: none; } }
 
@@ -2045,7 +2045,7 @@
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://sanehosts.com">SaneHosts &mdash; System-Level Ad Blocker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="mobile-nav-cta" data-cta="download_free">Start Free Trial</a>
+        <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="mobile-nav-cta" data-cta="download_trial">Start Full Pro Trial</a>
     </div>
 
     <section class="hero" id="screenshots">
@@ -2061,10 +2061,10 @@
                 <span>&#128269; 100% Transparent Code</span>
             </div>
             <div class="cta-buttons animate-in delay-4">
-                <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="btn btn-secondary" data-cta="download_free">Start Free Trial</a>
-                <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="btn btn-primary" data-cta="download_trial_hero_primary">Start Free 14-Day Trial</a>
+                <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="btn btn-secondary" data-cta="download_trial">Start Full Pro Trial</a>
+                <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="btn btn-primary" data-cta="download_trial_hero_primary">Start Full Pro Trial</a>
             </div>
-            <p class="hero-offer-note animate-in delay-4">Enjoy 14 days of Pro with no credit card required. Demo data remains available; live sales require Pro after the trial.</p>
+            <p class="hero-offer-note animate-in delay-4">Enjoy every Pro feature for 14 days with no credit card required. After the trial, Pro is required.</p>
             <h2 class="hero-proof-heading animate-in delay-4">See it in action</h2>
             <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Built for makers who want one private read on what sold today.</p>
             <div class="launch-video animate-in delay-5">
@@ -2125,34 +2125,15 @@
         </div>
     </section>
 
-    <section class="pricing-section" id="pricing">
+    <section class="pricing-section" id="pricing" style="scroll-margin-top: 120px;">
         <div class="container">
-            <h2 class="section-title">Start a free 14-day trial. Unlock live sales with Pro.</h2>
-            <p class="section-subtitle">Demo data is included. Enjoy 14 days of live Pro tracking, then keep every Pro view with one purchase.</p>
-            <div class="hero-pricing-grid">
-                <div class="pricing-card">
-                    <p class="pricing-label">Free Trial</p>
-                    <p class="pricing-price">14 days</p>
-                    <p class="pricing-price-note">Demo data included. Pro unlocks live sales tracking.</p>
-                    <ul class="pricing-features">
-                        <li>Built-in demo data</li>
-                        <li>Enjoy 14 days of Pro</li>
-                        <li>Your data stays on your devices</li>
-                        <li>iPhone, iPad, and Mac apps</li>
-                        <li>No separate analytics cloud to trust</li>
-                    </ul>
-                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="pricing-cta pricing-cta-free" data-cta="download_free">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Start Free Trial
-                    </a>
-                    <a href="https://apps.apple.com/us/app/sanesales/id6759010976" class="pricing-cta pricing-cta-free" data-appstore-ios-link data-appstore-ios-url="https://apps.apple.com/us/app/sanesales/id6759010976">Download for iPhone &amp; iPad on the App Store</a>
-                </div>
+            <h2 class="section-title">Start with full Pro for 14 days.</h2>
+            <p class="section-subtitle">Every Pro feature is included for 14 days, then Pro is required.</p>
+            <div class="hero-pricing-grid" style="max-width: 520px; grid-template-columns: 1fr;">
                 <div class="pricing-card featured">
-                    <p class="pricing-label">Pro</p>
+                    <p class="pricing-label">Full Pro Trial</p>
                     <p class="pricing-price">$9.99<span class="price-note">*</span></p>
-                    <p class="pricing-price-note">14 days free. No credit card required.</p>
+                    <p class="pricing-price-note">Every Pro feature free for 14 days. Then Pro is required.</p>
                     <ul class="pricing-features">
                         <li class="extra">Compare today vs yesterday instantly</li>
                         <li class="extra">7-day, 30-day, and custom date ranges</li>
@@ -2162,7 +2143,8 @@
                         <li class="extra">macOS menu bar revenue</li>
                         <li class="extra">Home Screen &amp; Watch widgets</li>
                     </ul>
-                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="pricing-cta pricing-cta-pro" data-cta="download_trial_pricing">Start Free Trial</a>
+                    <a href="https://dist.sanesales.com/updates/SaneSales-1.3.11.zip" class="pricing-cta pricing-cta-pro" data-cta="download_trial_pricing">Start Full Pro Trial</a>
+                    <a href="https://apps.apple.com/us/app/sanesales/id6759010976" class="pricing-cta pricing-cta-free" data-appstore-ios-link data-appstore-ios-url="https://apps.apple.com/us/app/sanesales/id6759010976">Download for iPhone &amp; iPad on the App Store</a>
                 </div>
             </div>
             <div style="max-width: 780px; margin: 24px auto 0; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: rgba(92, 232, 255, 0.08); text-align: center;">
@@ -2178,7 +2160,7 @@
     <section class="how-it-works">
         <div class="container">
             <h2 class="section-title">Simple Setup</h2>
-            <p class="section-subtitle">Try the demo first. When you connect live data, SaneSales talks directly to each provider from your device.</p>
+            <p class="section-subtitle">Start the full Pro trial, connect live data, and SaneSales talks directly to each provider from your device.</p>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
@@ -2193,7 +2175,7 @@
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <h3>Track</h3>
-                    <p>Start with demo data, then enjoy 14 days of Pro when you want live data. Pro keeps custom ranges, history, and export available on your iPhone, iPad, or Mac.</p>
+                    <p>Start the full Pro trial, connect providers, and use every dashboard, range, history, and export view for 14 days. After that, Pro is required.</p>
                 </div>
             </div>
         </div>
@@ -2202,7 +2184,7 @@
     <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Everything you need. Nothing you don't.</h2>
-            <p class="section-subtitle">One app. Every platform. Demo gets you started. Pro does the real work.</p>
+            <p class="section-subtitle">One app. Every platform. Full Pro for 14 days, then one purchase keeps it working.</p>
             <div class="feature-grid">
                 <!-- 1. Multi-Provider - THE unique selling point -->
                 <div class="feature-card featured">
@@ -2226,8 +2208,8 @@
                         </svg>
                     </div>
                     <h3>Revenue Dashboard</h3>
-                    <div class="feature-badge demo">Demo + Pro</div>
-                    <p>Explore with demo data, then unlock Pro to connect live sales. Pro keeps revenue, orders, and trends updating.</p>
+                    <div class="feature-badge demo">Full Pro</div>
+                    <p>Use full Pro during the 14-day trial, including live sales connections. After the trial, Pro keeps revenue, orders, and trends updating.</p>
                 </div>
                 <!-- 3. Interactive Charts -->
                 <div class="feature-card">
@@ -2360,7 +2342,7 @@
         <div class="container">
             <h2 class="section-title">Why Not Baremetrics or ChartMogul?</h2>
             <p class="section-subtitle">Baremetrics and ChartMogul are browser-based billing analytics tools. SaneSales is for indie sellers who want to see sales at a glance on their own devices, connect directly to LemonSqueezy, Gumroad, and Stripe, and skip the monthly analytics bill.</p>
-            <p class="section-subtitle" style="margin-top: -10px; font-size: 0.95rem;">This table compares SaneSales Pro. For Demo vs Pro details, see the pricing section above.</p>
+            <p class="section-subtitle" style="margin-top: -10px; font-size: 0.95rem;">This table compares SaneSales Pro. The direct download includes full Pro for 14 days, then Pro is required.</p>
             <div class="comparison-table-wrapper">
                 <table class="comparison-table">
                     <thead>
@@ -2540,7 +2522,7 @@
                         Is there a subscription?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">No. Direct SaneSales Pro is $9.99 once. Demo mode is included so you can try the app first, and there are no recurring charges or subscriptions.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">No. Direct SaneSales Pro is $9.99 once after the full 14-day Pro trial, and there are no recurring charges or subscriptions.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
@@ -2561,7 +2543,7 @@
                         Can I try it before buying?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">Yes. Start with demo data, then unlock Pro when you want to connect live providers. Demo mode is included so you can explore before connecting your own API keys.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Yes. The trial is full Pro for 14 days, including live provider connections, charts, history, export, widgets, and menu bar revenue. After the trial, Pro is required.</div></div>
                 </div>
             </div>
         </div>
@@ -2727,9 +2709,6 @@
             if (name.indexOf('download_trial') !== -1) {
                 return { event: 'website_download_clicked', tier: 'trial' };
             }
-            if (name.indexOf('download_free') !== -1) {
-                return { event: 'website_download_clicked', tier: 'free' };
-            }
             return null;
         }
 
@@ -2766,8 +2745,6 @@
                     } else if (eventName === 'download_trial_pricing') {
                         sendAggregateEvent('website_trial_download_pricing_clicked', aggregateEvent.tier);
                     }
-                } else if (eventName === 'download_free') {
-                    sendAggregateEvent('website_download_hero_clicked', aggregateEvent.tier);
                 }
             }
         }
