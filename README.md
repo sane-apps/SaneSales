@@ -14,7 +14,7 @@
 [![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Trial:** Start with 14 days of Pro. SaneSales Pro is **$9.99 once** after that. Demo data is included. No subscription.
+> **Trial:** Full SaneSales Pro for 14 days. SaneSales Pro is **$9.99 once** after that. No subscription.
 
 </div>
 
@@ -31,7 +31,7 @@ You sell on more than one storefront. Every morning you check three dashboards, 
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; the 14-day Pro trial unlocks live provider connections. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
+SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. The 14-day trial is full Pro: live provider connections, revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
 
 | | |
 |---|---|
@@ -51,8 +51,8 @@ SaneSales pulls your sales data from all three platforms into one private native
 
 **Current direct-download release: 1.3.11**
 
-- Ships the free 14-day Pro trial flow for direct Mac downloads
-- Keeps the live-provider Pro gate so demo data never unlocks real provider sync by accident
+- Ships the full 14-day Pro trial flow for direct Mac downloads
+- Requires Pro after the 14-day trial for continued direct Mac use
 - Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1311
 - Preserves the provider setup, chart, no-orders, and Apple Watch refinements from earlier 1.3.x releases
 
@@ -100,7 +100,7 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — start a free 14-day Pro trial with demo data included. Direct SaneSales Pro is **$9.99 once** after the trial.
+**[Download from sanesales.com](https://sanesales.com)** — start with full SaneSales Pro for 14 days. Direct SaneSales Pro is **$9.99 once** after the trial.
 
 Also available on the iOS and Mac App Store.
 
@@ -185,7 +185,7 @@ Tests/             Swift Testing (API parsing, metrics, cache, providers)
 - Keychain for API keys (service: `com.sanesales.app`)
 - Swift 6 strict concurrency
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup, demo mode, and conventions.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup and development conventions.
 
 ---
 
