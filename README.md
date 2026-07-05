@@ -14,7 +14,7 @@
 [![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Price:** SaneSales Pro is **$9.99 once**. Demo mode is free. No subscription.
+> **Trial:** Start with 14 days of Pro. SaneSales Pro is **$9.99 once** after that. Demo data is included. No subscription.
 
 </div>
 
@@ -31,7 +31,7 @@ You sell on more than one storefront. Every morning you check three dashboards, 
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; Pro unlocks live provider connections. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
+SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Demo data is available immediately; the 14-day Pro trial unlocks live provider connections. Revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
 
 | | |
 |---|---|
@@ -49,10 +49,11 @@ SaneSales pulls your sales data from all three platforms into one private native
 
 ## Current Release
 
-**Current direct-download release: 1.3.10**
+**Current direct-download release: 1.3.11**
 
-- Fixes the live-provider Pro gate so demo mode cannot unlock real provider sync
-- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1310
+- Ships the free 14-day Pro trial flow for direct Mac downloads
+- Keeps the live-provider Pro gate so demo data never unlocks real provider sync by accident
+- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1311
 - Preserves the provider setup, chart, no-orders, and Apple Watch refinements from earlier 1.3.x releases
 
 ---
@@ -88,7 +89,7 @@ SaneSales is the opposite:
 | **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
-| **No subscription** | **$9.99 once. No subscription.** | $75+/mo | Free tier, then $59+/mo | Free |
+| **No subscription** | **14-day trial, then $9.99 once. No subscription.** | $75+/mo | Starter tier, then $59+/mo | Free |
 | **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
 
 > **Private, native, and one-time priced.** SaneSales keeps your sales data on your devices and gives you dashboard views, order history, exports, widgets, and menu bar revenue without a monthly SaaS bill. **[Get SaneSales ->](https://sanesales.com)**
@@ -99,7 +100,7 @@ SaneSales is the opposite:
 
 **One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — free demo, with live data unlocked by Pro. Direct SaneSales Pro is **$9.99 once**.
+**[Download from sanesales.com](https://sanesales.com)** — start a free 14-day Pro trial with demo data included. Direct SaneSales Pro is **$9.99 once** after the trial.
 
 Also available on the iOS and Mac App Store.
 
@@ -126,7 +127,7 @@ API keys are stored in iCloud Keychain so your own Apple devices can reconnect a
 **No private data collected. SaneSales never sends your sales data, orders, customers, products, or API keys to SaneApps servers.**
 
 - No accounts, no sign-up, no email required
-- A few simple anonymous app counts may be sent, such as Basic vs Pro launches or locked-feature views
+- A few simple anonymous app counts may be sent, such as trial/license state or locked-feature views
 - API keys stored in iCloud Keychain for your own Apple devices
 - Direct communication with provider APIs — no intermediary server
 - Sales data cached on-device only
