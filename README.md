@@ -222,7 +222,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup and development conventi
 
 **Not fear, but power, love, sound mind** — 2 Timothy 1:7
 
-**[SaneBar](https://sanebar.com)** &middot; **[SaneClip](https://saneclip.com)** &middot; **[SaneHosts](https://sanehosts.com)** &middot; **[SaneSales](https://sanesales.com)** &middot; **[All Apps](https://saneapps.com)**
+**[SaneClip](https://saneclip.com)** &middot; **[SaneHosts](https://sanehosts.com)** &middot; **[SaneSales](https://sanesales.com)** &middot; **[All Apps](https://saneapps.com)**
 
 </div>
 
