@@ -553,10 +553,11 @@ struct AppStoreReviewPathTests {
         #expect(!homePage.contains("buy_pro_hero_primary"))
         #expect(!homePage.contains("website_buy_hero_clicked"))
         #expect(!homePage.contains("website_buy_pricing_clicked"))
-        #expect(homePage.contains("Start 14-Day Pro Trial"))
-        #expect(homePage.contains("Enjoy 14 days of Pro with no credit card required"))
-        #expect(homePage.contains("Basic demo mode stays free if you do not upgrade"))
-        #expect(homePage.contains("14 days free. No credit card required."))
+        // Current trial copy (2d58f1c pivot: full-Pro trial, no free-Basic fallback)
+        #expect(homePage.contains("Start Full Pro Trial"))
+        #expect(homePage.contains("Enjoy every Pro feature for 14 days with no credit card required"))
+        #expect(homePage.contains("After the trial, Pro is required."))
+        #expect(homePage.contains("One-time purchase after the full Pro trial."))
         #expect(homePage.contains("\"price\": \"9.99\""))
         #expect(!homePage.contains("SANE60"))
         #expect(!homePage.contains("\"price\": \"24.99\""))
@@ -1235,8 +1236,7 @@ private func loadSeededLemonSqueezyKey() -> String? {
 
     if let inline = environment["SANEAPPS_TEST_LEMONSQUEEZY_API_KEY"]?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-        !inline.isEmpty
-    {
+        !inline.isEmpty {
         return inline
     }
 
@@ -1246,8 +1246,7 @@ private func loadSeededLemonSqueezyKey() -> String? {
         let data = Data(base64Encoded: encoded),
         let decoded = String(data: data, encoding: .utf8)?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-        !decoded.isEmpty
-    {
+        !decoded.isEmpty {
         return decoded
     }
 
@@ -1258,8 +1257,7 @@ private func loadSeededLemonSqueezyKey() -> String? {
         let data = Data(base64Encoded: encoded),
         let decoded = String(data: data, encoding: .utf8)?
         .trimmingCharacters(in: .whitespacesAndNewlines),
-        !decoded.isEmpty
-    {
+        !decoded.isEmpty {
         return decoded
     }
 
