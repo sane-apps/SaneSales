@@ -213,7 +213,7 @@ struct ProductsView: View {
                                 Text("Revenue mix")
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white)
-                                Text(manager.hasLiveProviderAccess ? "Use the chart for the split and the catalog for product details." : "Unlock Pro to connect live products. Demo mode remains available anytime.")
+                                Text(manager.hasLiveProviderAccess ? "Use the chart for the split and the catalog for product details." : "Connect a live store for real product data. Demo mode remains available anytime.")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(.white)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -528,7 +528,7 @@ struct ProductsView: View {
             return [
                 "See which products drive the most revenue",
                 "Track status, pricing, and sales count in one place",
-                "Unlock Pro to connect live product data"
+                "Connect a live store for product data"
             ]
         }
         if manager.hasLiveProviderAccess {
@@ -542,7 +542,7 @@ struct ProductsView: View {
             return [
                 "This is sample data, not a live account",
                 "Reload demo data if the catalog is empty",
-                "Unlock Pro when you want real provider products"
+                "Connect a live store for real provider products"
             ]
         }
         return [
@@ -555,12 +555,12 @@ struct ProductsView: View {
     private var noSalesCallout: some View {
         GlassSection("No Product Sales Today", icon: "sparkles", iconColor: .salesGold) {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Demo mode lets you explore product reporting. Unlock Pro to connect live data and keep product revenue tracking active.")
+                Text("Demo mode lets you explore product reporting. Connect a live store to keep product revenue tracking active.")
                     .font(.system(size: 14, weight: .medium))
                     .foregroundStyle(.white)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text("Upgrade to Pro when you want longer history, product trends, and deeper comparisons.")
+                Text("Connect a live store when you want longer history, product trends, and deeper comparisons.")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(Color.textMuted)
                     .fixedSize(horizontal: false, vertical: true)

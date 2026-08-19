@@ -20,7 +20,7 @@ struct OrdersEmptyStateCopy: Equatable {
                 details: [
                     "See the latest sales as they come in",
                     "Search by customer, product, or order ID",
-                    "Unlock Pro to connect live data"
+                    "Connect a live store to use live data"
                 ],
                 secondaryActionTitle: "Open Provider Settings"
             )
@@ -58,7 +58,7 @@ struct OrdersEmptyStateCopy: Equatable {
             details: [
                 "Basic shows today's orders only",
                 "Cached orders: \(cachedOrderCount)",
-                "Upgrade to Pro for custom ranges and full history"
+                "Connect a live store for custom ranges and full history"
             ],
             secondaryActionTitle: "Open Provider Settings"
         )

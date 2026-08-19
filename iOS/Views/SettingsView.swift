@@ -362,16 +362,14 @@ struct SettingsView: View {
     }
 
     private var licenseTitle: String {
-        if licenseService.isPro, manager.hasLiveProviderAccess { return "Pro Active" }
-        if licenseService.isPro { return "Pro Syncing" }
+        if manager.hasLiveProviderAccess { return "Live Tracking" }
         if manager.isDemoModeActive { return "Demo Mode" }
-        return "Pro Required"
+        return "Open Source"
     }
 
     private var licenseIconName: String {
-        if licenseService.isPro, manager.hasLiveProviderAccess { return "checkmark.seal.fill" }
-        if licenseService.isPro { return "arrow.triangle.2.circlepath.circle.fill" }
-        return "lock.fill"
+        if manager.hasLiveProviderAccess { return "checkmark.seal.fill" }
+        return "heart.fill"
     }
 
     private var orderCountLabel: String {
@@ -382,17 +380,14 @@ struct SettingsView: View {
     }
 
     private var licenseDescription: String {
-        if licenseService.isPro, manager.hasLiveProviderAccess {
-            return "Pro is active. Live provider tracking, custom date ranges, full history, CSV export, widgets, and deeper comparisons are unlocked."
-        }
-        if licenseService.isPro {
-            return "Your Pro purchase is active. SaneSales is syncing purchase access before refreshing live providers, and saved keys stay on this device."
+        if manager.hasLiveProviderAccess {
+            return "SaneSales is free and open source. Live provider tracking, custom date ranges, full history, CSV export, widgets, and deeper comparisons are included."
         }
         if manager.isDemoModeActive {
-            return "Demo data is active. Unlock Pro to connect real sales providers and keep live tracking on."
+            return "Demo data is active. Connect a live provider anytime. Donate only if you want to support the app."
         }
 
-        return "Basic includes demo data only. Unlock Pro to connect live sales providers, search full history, export CSV, and use widgets."
+        return "SaneSales is free and open source. Connect live sales providers, search full history, export CSV, and use widgets. Donate only if you want to support it."
     }
 
     private func licenseTierBadge(title: String, color: Color) -> some View {
@@ -409,75 +404,19 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var primaryLicenseAction: some View {
-        if licenseService.isPro {
-            if licenseService.usesAppStorePurchase {
-                proActiveStatusPill
-            } else {
-                Button(licenseService.accessManagementLabel) {
-                    licenseService.deactivate()
-                }
-                .buttonStyle(SaneActionButtonStyle(destructive: true))
-            }
-        } else if licenseService.usesAppStorePurchase {
-            Button(licenseService.isPurchasing ? "Processing..." : "Unlock Pro — \(licenseService.displayPriceLabel)") {
-                triggerUnlock()
-            }
-            .buttonStyle(SaneActionButtonStyle(prominent: true))
-            .disabled(licenseService.isPurchasing)
-            .accessibilityIdentifier("settings.license.unlockProButton")
-        } else {
-            Button("Unlock Pro — \(licenseService.displayPriceLabel)") {
-                triggerUnlock()
-            }
-            .buttonStyle(SaneActionButtonStyle(prominent: true))
-            .accessibilityIdentifier("settings.license.unlockProButton")
+        Button("Donate") {
+            triggerDonate()
         }
+        .buttonStyle(SaneActionButtonStyle(prominent: true))
+        .accessibilityIdentifier("settings.license.donateButton")
     }
 
     @ViewBuilder
     private var secondaryLicenseAction: some View {
-        if licenseService.isPro, licenseService.usesAppStorePurchase {
-            Button("Sync Purchase") {
-                Task { await licenseService.restorePurchases() }
-            }
-            .buttonStyle(SaneActionButtonStyle())
-            .disabled(licenseService.isPurchasing)
-            .accessibilityIdentifier("settings.license.restorePurchasesButton")
-        } else if licenseService.isPro {
-            EmptyView()
-        } else if licenseService.usesAppStorePurchase {
-            Button("Restore Purchases") {
-                Task { await licenseService.restorePurchases() }
-            }
-            .buttonStyle(SaneActionButtonStyle())
-            .disabled(licenseService.isPurchasing)
-            .accessibilityIdentifier("settings.license.restorePurchasesButton")
-        } else {
-            Button(licenseService.alternateEntryLabel) {
-                showingLicenseEntrySheet = true
-            }
-            .buttonStyle(SaneActionButtonStyle())
-        }
+        EmptyView()
     }
 
-    private var proActiveStatusPill: some View {
-        HStack(spacing: 6) {
-            Image(systemName: manager.hasLiveProviderAccess ? "checkmark.circle.fill" : "arrow.triangle.2.circlepath")
-                .font(.system(size: 13, weight: .bold))
-            Text(manager.hasLiveProviderAccess ? "Pro Active" : "Syncing Pro")
-                .font(.system(size: 13, weight: .bold))
-        }
-        .foregroundStyle(.white)
-        .padding(.horizontal, 11)
-        .padding(.vertical, 8)
-        .background(
-            Capsule()
-                .fill(Color.salesSuccess.opacity(0.28))
-        )
-        .accessibilityIdentifier("settings.license.proActiveStatus")
-    }
-
-    private func triggerUnlock() {
+    private func triggerDonate() {
         Task.detached {
             await EventTracker.log("donate_clicked", app: "sanesales")
         }
@@ -621,11 +560,7 @@ struct SettingsView: View {
 
         if pendingSettingsRoute == "license" {
             DispatchQueue.main.async {
-                if licenseService.usesAppStorePurchase {
-                    triggerUnlock()
-                } else {
-                    showingLicenseEntrySheet = true
-                }
+                triggerDonate()
             }
             return
         }
@@ -640,14 +575,6 @@ struct SettingsView: View {
     }
 
     private func startProviderConnection(_ provider: SalesProviderType) {
-        if manager.requiresProForProviderConnection(provider) {
-            Task.detached {
-                await EventTracker.log("second_provider_attempt", app: "sanesales")
-            }
-            triggerUnlock()
-            return
-        }
-
         editingProvider = provider
         showingKeyEntry = true
     }

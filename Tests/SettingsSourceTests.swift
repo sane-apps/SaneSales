@@ -84,7 +84,7 @@ struct SettingsSourceTests {
             encoding: .utf8
         )
 
-        #expect(source.contains("alternateUnlockLabel: \"Unlock Pro\""))
+        #expect(source.contains("alternateUnlockLabel: \"Donate\""))
         #expect(source.contains("alternateEntryLabel: \"Enter License Key\""))
         #expect(source.contains("accessManagementLabel: \"Deactivate Pro\""))
     }

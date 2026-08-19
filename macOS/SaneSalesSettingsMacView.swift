@@ -187,7 +187,7 @@ struct SaneSalesMacSettingsView: View {
                         iconColor: SaneSettingsIconSemantic.license.color
                     ) {
                         Button {
-                            proUpsellFeature = .menuBar
+                            NSWorkspace.shared.open(OpenSourceRelease.donationURL)
                         } label: {
                             actionLabel(SaneSalesSettingsCopy.unlockProButtonTitle)
                         }
@@ -295,7 +295,7 @@ struct SaneSalesMacSettingsView: View {
                                 HStack(spacing: 8) {
                                     StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
-                                        proUpsellFeature = .csvExport
+                                        NSWorkspace.shared.open(OpenSourceRelease.donationURL)
                                     } label: {
                                         actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }
@@ -305,7 +305,7 @@ struct SaneSalesMacSettingsView: View {
                                 VStack(alignment: .trailing, spacing: 8) {
                                     StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
-                                        proUpsellFeature = .csvExport
+                                        NSWorkspace.shared.open(OpenSourceRelease.donationURL)
                                     } label: {
                                         actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }

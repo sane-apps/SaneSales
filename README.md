@@ -51,9 +51,9 @@ SaneSales pulls your sales data from all three platforms into one private native
 
 **Current direct-download release: 1.3.11**
 
-- Ships the full 14-day Pro trial flow for direct Mac downloads
-- Requires Pro after the 14-day trial for continued direct Mac use
-- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1311
+- Free MIT download: every feature stays unlocked
+- Setup stays. Buy is gone. Donate is optional
+- Ships refreshed direct download, Sparkle, Homebrew, and App Store metadata for build 1.3.12
 - Preserves the provider setup, chart, no-orders, and Apple Watch refinements from earlier 1.3.x releases
 
 ---
@@ -89,24 +89,24 @@ SaneSales is the opposite:
 | **Home screen widgets** | ✅ | ❌ | ❌ | ❌ |
 | **Menu bar revenue** | ✅ | ❌ | ❌ | ❌ |
 | **Your data stays on YOUR device** | ✅ | ❌ Their cloud | ❌ Their cloud | Local |
-| **No subscription** | **14-day trial, then $9.99 once. No subscription.** | $75+/mo | Starter tier, then $59+/mo | Free |
-| **100% Transparent Code** | PolyForm Shield | ❌ | ❌ | N/A |
+| **No subscription** | **Free MIT app. Donate if you want.** | $75+/mo | Starter tier, then $59+/mo | Free |
+| **100% Transparent Code** | MIT | ❌ | ❌ | N/A |
 
-> **Private, native, and one-time priced.** SaneSales keeps your sales data on your devices and gives you dashboard views, order history, exports, widgets, and menu bar revenue without a monthly SaaS bill. **[Get SaneSales ->](https://sanesales.com)**
+> **Private, native, and free.** SaneSales keeps your sales data on your devices and gives you dashboard views, order history, exports, widgets, and menu bar revenue without a monthly SaaS bill. **[Get SaneSales ->](https://sanesales.com)**
 
 ---
 
 ## Download
 
-**One-time purchase. No subscription. Works on iPhone, iPad, and Mac.**
+**Free and open source. Works on iPhone, iPad, and Mac.**
 
-**[Download from sanesales.com](https://sanesales.com)** — start with full SaneSales Pro for 14 days. Direct SaneSales Pro is **$9.99 once** after the trial.
+**[Download from sanesales.com](https://sanesales.com)** — every feature stays unlocked. [Donate](https://github.com/sponsors/MrSaneApps) only if you want to support it.
 
 Also available on the iOS and Mac App Store.
 
-> Pay once. Keep the full Pro dashboard. No subscription.
+> No trial. No paywall. Setup stays.
 
-Or [build from source](#development) — it's PolyForm Shield licensed, always will be.
+Or [build from source](#development) — it's MIT licensed.
 
 **Requirements:** iOS 17+ / macOS 14+ &middot; Apple Silicon (arm64) only
 

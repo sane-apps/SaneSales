@@ -524,6 +524,8 @@ struct AppStoreReviewPathTests {
 
         #expect(settingsSource.contains("donate_clicked"))
         #expect(settingsSource.contains("OpenSourceRelease.donationURL"))
+        #expect(settingsSource.contains("settings.license.donateButton"))
+        #expect(!settingsSource.contains("Unlock Pro"))
         #expect(!settingsSource.contains("EventTracker.log(\"checkout_clicked\", app: \"sanesales\")"))
     }
 
@@ -578,32 +580,30 @@ struct AppStoreReviewPathTests {
         #expect(manifest.localizedCaseInsensitiveContains("The app is free"))
         #expect(manifest.localizedCaseInsensitiveContains("Donate is optional"))
         #expect(settingsSource.contains("GlassSection(\"License\""))
-        #expect(settingsSource.contains("settings.license.unlockProButton"))
-        #expect(onboardingSource.contains("onboarding.unlockProButton"))
-        #expect(onboardingSource.contains("if manager.hasLiveProviderAccess"))
-        #expect(onboardingSource.contains("lockedProviderSection"))
-        #expect(onboardingSource.contains("onboarding.enterLicenseKeyButton"))
+        #expect(settingsSource.contains("settings.license.donateButton"))
+        #expect(onboardingSource.contains("onboarding.demoButton"))
+        #expect(onboardingSource.contains("onboarding.connectButton"))
+        #expect(onboardingSource.contains("GET STARTED"))
+        #expect(!onboardingSource.contains("Unlock Pro"))
+        #expect(!onboardingSource.contains("lockedProviderSection"))
+        #expect(!onboardingSource.contains("DEMO OR PRO"))
     }
 
-    @Test("Basic and demo provider paths do not expose live key entry")
-    func basicAndDemoProviderPathsDoNotExposeLiveKeyEntry() throws {
+    @Test("Open-source setup exposes live key entry without a paywall")
+    func openSourceSetupExposesLiveKeyEntryWithoutPaywall() throws {
         let projectRoot = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let managerSource = try String(contentsOf: projectRoot.appendingPathComponent("Core/SalesManager.swift"), encoding: .utf8)
         let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
         let onboardingSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"), encoding: .utf8)
-        let dashboardSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/DashboardView.swift"), encoding: .utf8)
-        let ordersSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/OrdersListView.swift"), encoding: .utf8)
-        let productsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ProductsView.swift"), encoding: .utf8)
+        let releaseSource = try String(contentsOf: projectRoot.appendingPathComponent("Core/OpenSourceRelease.swift"), encoding: .utf8)
 
-        #expect(managerSource.contains("guard hasLiveProviderAccess else { return }"))
-        #expect(managerSource.contains("loadCachedDataIfNeeded()"))
         #expect(settingsSource.contains("startProviderConnection(provider)"))
-        #expect(onboardingSource.contains("if manager.hasLiveProviderAccess"))
-        #expect(dashboardSource.contains("isPro: manager.hasLiveProviderAccess"))
-        #expect(ordersSource.contains("isPro: manager.hasLiveProviderAccess"))
-        #expect(productsSource.contains("manager.hasLiveProviderAccess ? manager.metrics : manager.planScopedMetrics"))
+        #expect(onboardingSource.contains("onboarding.connectButton"))
+        #expect(onboardingSource.contains("keyEntrySection"))
+        #expect(!onboardingSource.contains("Unlock Pro"))
+        #expect(releaseSource.contains("SaneDonation.githubSponsorsURL"))
+        #expect(OpenSourceRelease.donationURL.absoluteString == "https://github.com/sponsors/MrSaneApps")
     }
 
     @Test("App Store screenshot capture keeps Mini visual fixtures release-safe")
@@ -720,6 +720,7 @@ struct AppStoreReviewPathTests {
         #expect(macAppSource.contains("WelcomeGateView("))
         #expect(macAppSource.contains("donationURL: OpenSourceRelease.donationURL"))
         #expect(welcomeGateSource.contains("donationURL"))
+        #expect(OpenSourceRelease.donationURL.absoluteString == "https://github.com/sponsors/MrSaneApps")
     }
 }
 

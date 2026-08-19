@@ -42,11 +42,11 @@ enum SaneSalesSettingsCopy {
     )
     static let appearanceUnlockHint = String(
         localized: "sanesales.settings.appearance.unlock_hint",
-        defaultValue: "Unlock Pro to keep revenue in your menu bar and add desktop widgets."
+        defaultValue: "Connect a live store to keep revenue in your menu bar and add desktop widgets."
     )
     static let unlockProButtonTitle = String(
         localized: "sanesales.settings.appearance.unlock_button",
-        defaultValue: "Unlock Pro"
+        defaultValue: "Donate"
     )
     static let availabilityHint = String(
         localized: "sanesales.settings.appearance.availability_hint",
@@ -107,7 +107,7 @@ enum SaneSalesSettingsCopy {
     )
     static let unlockButtonTitle = String(
         localized: "sanesales.settings.actions.unlock_button",
-        defaultValue: "Unlock"
+        defaultValue: "Donate"
     )
     static let connectedStatusTitle = String(
         localized: "sanesales.settings.providers.connected_status",
@@ -394,7 +394,7 @@ enum SaneSalesSettingsCopy {
         ),
         unlockProPrefix: String(
             localized: "sanesales.settings.license.unlock_prefix",
-            defaultValue: "Unlock Pro —"
+            defaultValue: "Donate —"
         ),
         fallbackPriceLabel: "$9.99",
         directEntryLabel: String(
