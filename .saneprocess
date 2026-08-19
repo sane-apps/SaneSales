@@ -185,21 +185,19 @@ appstore:
   metadata:
     macos:
       subtitle: "Private Revenue Tracker"
-      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Try demo data first, then unlock Pro for live sales."
+      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Free and open source."
       description: >-
         Track Lemon Squeezy, Gumroad, and Stripe revenue in one private native app for indie sellers.
 
         SaneSales is built for makers who sell from more than one storefront and just want to know what sold today without opening three dashboards or copying numbers into a spreadsheet.
-        Start with built-in demo data, then unlock Pro to connect your own provider accounts. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+        Try built-in demo data or connect your own provider accounts. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+
+        SaneSales is free and open source. Setup stays. Every feature stays unlocked. Donate only if you want to support it.
 
         On Mac, SaneSales gives you a fast desktop dashboard, menu bar revenue, widgets, order search, product breakdowns, refund-aware totals, custom date ranges, and CSV export.
 
-        Demo includes:
+        Included:
         • Built-in sample dashboard
-        • Sample orders and product catalog
-        • Built-in demo mode
-
-        Pro unlocks:
         • Live sales tracking
         • iCloud Keychain provider sync across your Apple devices
         • Custom date ranges
@@ -208,50 +206,47 @@ appstore:
         • Desktop widgets and menu bar totals
         • Multiple providers at once
       keywords: "lemon squeezy,gumroad,stripe,revenue,orders,sales,refunds,merchant,menu bar"
-      whats_new: "Critical security update."
+      whats_new: "SaneSales is free. Setup no longer asks you to buy. Donate only if you want to support it."
       marketing_url: "https://sanesales.com"
     ios:
       subtitle: "Private Revenue Tracker"
-      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Try demo data first, then unlock Pro for live sales."
+      promotional_text: "Track Lemon Squeezy, Gumroad, and Stripe in one private native app. Free and open source."
       description: >-
         Track Lemon Squeezy, Gumroad, and Stripe revenue on iPhone, iPad, and Apple Watch in one private native app for indie sellers.
 
         SaneSales is built for makers who sell from more than one storefront and just want to know what sold today without opening three dashboards or copying numbers into a spreadsheet.
-        Start with built-in demo data, then unlock Pro to connect your own provider accounts. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+        Try built-in demo data or connect your own provider accounts. SaneSales talks directly to each provider from your device, so SaneApps never receives your sales data, customer list, products, orders, revenue, or API keys.
+
+        SaneSales is free and open source. Setup stays. Every feature stays unlocked. Donate only if you want to support it.
 
         On iPhone, iPad, and Apple Watch, SaneSales gives you a quick revenue dashboard, widgets, order search, product breakdowns, refund-aware totals, custom date ranges, and CSV export.
 
-        Demo includes:
+        Included:
         • Built-in sample dashboard
-        • Sample orders and product catalog
-        • Built-in demo mode
-
-        Pro unlocks:
         • Live sales tracking
         • iCloud Keychain provider sync across your Apple devices
         • Custom date ranges
         • Full order history
         • CSV export
         • Multiple providers at once
-        • Shared Pro access across your Apple devices
+        • Shared access across your Apple devices
       keywords: "lemon squeezy,gumroad,stripe,revenue,orders,sales,refunds,widgets,watch"
-      whats_new: "Critical security update."
+      whats_new: "SaneSales is free. Setup no longer asks you to buy. Donate only if you want to support it."
       marketing_url: "https://sanesales.com"
-  review_notes: "SaneSales is a freemium, read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. Basic is free in the App Store build and includes built-in demo mode, so App Review does not need an account, API key, or payment. Live provider connections require Pro. SaneSales Pro is the only paid app unlock and is sold as a one-time StoreKit In-App Purchase through the Unlock Pro button in onboarding or Settings > License. There is no website license flow, no license key flow, no account signup, and no external checkout flow in the App Store build."
+  review_notes: "The app is free. Donate is optional. SaneSales is a read-only App Store app for merchants with existing LemonSqueezy, Gumroad, or Stripe accounts. App Review does not need an account, API key, or payment. Try Demo Data on first launch, or connect a live provider. Every feature stays unlocked. There is no paywall and no in-app purchase required."
   review_notes_by_platform:
     macos: >-
-      Basic is free in the App Store build and includes built-in demo mode. No account required. No API key required. No payment is required for the reviewer path. Live provider connections require Pro. The Pro unlock path is StoreKit only: use Unlock Pro from onboarding or Settings > License. There is no website license flow, no license key flow, and no external checkout flow in the App Store build.
+      The app is free. Donate is optional. No account required. No API key required. No payment is required for the reviewer path.
       Fastest review path:
       1. Launch SaneSales.
-      2. On the final onboarding screen, click “Try Demo Data”.
+      2. On the first-run screen, click “Try Demo Data” or connect a live provider.
       3. Review the dashboard, orders, products, and recent snapshot using the fictional local demo data.
-      4. The app is free. Setup still walks through connecting a provider. Donate is optional.
-      5. If onboarding has already been dismissed, open Settings and select the License tab.
+      4. Setup still walks through connecting a provider. Donate is optional.
       Demo includes:
       - Fictional dashboard snapshot.
       - Fictional orders and product catalog.
       - Built-in demo mode.
-      Pro adds:
+      Included:
       - Live sales tracking.
       - Custom date ranges.
       - Full order history.
@@ -262,24 +257,20 @@ appstore:
       - Users are merchants and creators with existing merchant accounts on LemonSqueezy, Gumroad, or Stripe.
       - Those external merchant accounts are purchased outside the app with LemonSqueezy, Gumroad, or Stripe.
       - SaneSales only reads the user's own sales data: orders, products, refunds, and revenue analytics from those optional existing accounts.
-      - Built-in demo dashboard access is included with the free app download. Live tracking requires Pro.
-      - The only paid app unlock in the App Store build is SaneSales Pro, a one-time non-consumable StoreKit In-App Purchase.
-      - Non-IAP app unlocks: none.
-      - No paid digital content exists in the app beyond the optional Pro unlock.
-      - No non-IAP app unlocks exist. Connecting a provider does not unlock paid app features.
-      - No account signup is required. No fee to create an account inside SaneSales exists because SaneSales has no account system.
+      - Built-in demo dashboard access is included with the free app download. Live tracking is included.
+      - The app is free. Donate is optional.
+      - No account signup is required. SaneSales has no account system.
       - This is not an enterprise service.
-      - There are no license keys and no external checkout links intended for the App Store build.
-      - Connecting LemonSqueezy, Gumroad, or Stripe is optional and requires the StoreKit Pro unlock for live tracking.
+      - Connecting LemonSqueezy, Gumroad, or Stripe is optional.
     ios: >-
-      Basic is free in the App Store build and includes built-in demo mode. No account required. No API key required. No payment is required for the reviewer path. Live provider connections require Pro. The Pro unlock path is StoreKit only: use Unlock Pro from onboarding or Settings > License. There is no website license flow, no license key flow, and no external checkout flow in the App Store build.
+      The app is free. Donate is optional. No account required. No API key required. No payment is required for the reviewer path.
       Fastest review path:
       1. Launch SaneSales on iPhone or iPad.
       2. On the onboarding screen, tap “Try Demo Data”. If onboarding has already been dismissed, go to Settings > Data > Enable Demo Mode.
       3. Review the dashboard, orders, products, and provider filters using the fictional local demo data.
-      4. The app is free. Setup still walks through connecting a provider. Donate is optional.
+      4. Setup still walks through connecting a provider. Donate is optional.
       Apple Watch companion:
-      - Basic shows an unlock prompt on Apple Watch. Unlock Pro on iPhone to sync live Watch data.
+      - Live Watch data is included. No purchase is required.
       Demo includes:
       - Fictional dashboard snapshot.
       - Fictional orders and product catalog.
@@ -295,7 +286,7 @@ appstore:
       - Users are merchants and creators with existing merchant accounts on LemonSqueezy, Gumroad, or Stripe.
       - Those external merchant accounts are purchased outside the app with LemonSqueezy, Gumroad, or Stripe.
       - SaneSales only reads the user's own sales data: orders, products, refunds, and revenue analytics from those optional existing accounts.
-      - Built-in demo dashboard access is included with the free app download. Live tracking requires Pro.
+      - Built-in demo dashboard access is included with the free app download. Live tracking is included.
       - The only paid app unlock in the App Store build is SaneSales Pro, a one-time non-consumable StoreKit In-App Purchase.
       - Non-IAP app unlocks: none.
       - No paid digital content exists in the app beyond the optional Pro unlock.
