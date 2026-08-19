@@ -79,7 +79,7 @@ struct MetricsTests {
     func todayOrders() {
         let orders = [
             makeOrder(total: 500),
-            makeOrder(total: 1000),
+            makeOrder(total: 1000)
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.todayRevenue == 1500)
@@ -90,7 +90,7 @@ struct MetricsTests {
     func refundedExcluded() {
         let orders = [
             makeOrder(total: 500, status: .paid),
-            makeOrder(total: 1000, status: .refunded),
+            makeOrder(total: 1000, status: .refunded)
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.allTimeRevenue == 500)
@@ -101,7 +101,7 @@ struct MetricsTests {
     func partialRefundsReduceRevenue() {
         let orders = [
             makeOrder(total: 1000, refundedAmount: 250),
-            makeOrder(total: 500),
+            makeOrder(total: 500)
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.allTimeRevenue == 1250)
@@ -113,7 +113,7 @@ struct MetricsTests {
         let orders = [
             makeOrder(total: 500, productName: "SaneBar"),
             makeOrder(total: 500, productName: "SaneBar"),
-            makeOrder(total: 1000, productName: "SaneClip"),
+            makeOrder(total: 1000, productName: "SaneClip")
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.productBreakdown.count == 2)
@@ -132,7 +132,7 @@ struct MetricsTests {
         let yesterday = try #require(Calendar.current.date(byAdding: .day, value: -1, to: Date()))
         let orders = [
             makeOrder(total: 500, date: yesterday),
-            makeOrder(total: 1000),
+            makeOrder(total: 1000)
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.dailyBreakdown.count == 2)
@@ -177,7 +177,7 @@ struct MetricsTests {
         let lastMonth = try #require(Calendar.current.date(byAdding: .month, value: -1, to: Date()))
         let orders = [
             makeOrder(total: 500),
-            makeOrder(total: 1000, date: lastMonth),
+            makeOrder(total: 1000, date: lastMonth)
         ]
         let metrics = SalesMetrics.compute(from: orders)
         #expect(metrics.monthRevenue == 500)
@@ -253,8 +253,8 @@ struct MetricsTests {
     func demoDataMarketingScreenshotRangeIsNotVisuallyFlat() throws {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = try #require(TimeZone(secondsFromGMT: 0))
-        let start = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 4)))
-        let end = try #require(calendar.date(from: DateComponents(year: 2026, month: 4, day: 18)))
+        let end = Date()
+        let start = try #require(calendar.date(byAdding: .day, value: -14, to: end))
         let interval = SaneSalesDateRangeStore.normalizedInterval(
             start: start,
             end: end,
@@ -283,7 +283,7 @@ struct MetricsTests {
 
         let orders = try [
             makeOrder(id: "one", total: 500, date: #require(calendar.date(byAdding: .hour, value: 9, to: end))),
-            makeOrder(id: "two", total: 1200, date: #require(calendar.date(byAdding: .hour, value: 12, to: start))),
+            makeOrder(id: "two", total: 1200, date: #require(calendar.date(byAdding: .hour, value: 12, to: start)))
         ]
         let series = SaneSalesDateRangeStore.dailySeries(from: orders, in: interval)
 
@@ -310,7 +310,7 @@ struct MetricsTests {
                 "SaneSales",
                 "--force-pro-mode",
                 "--screenshot-custom-range-start", "2026-04-04",
-                "--screenshot-custom-range-end", "2026-04-18",
+                "--screenshot-custom-range-end", "2026-04-18"
             ],
             userDefaults: defaults,
             now: now,
@@ -340,7 +340,7 @@ struct MetricsTests {
 
         manager.orders = [
             makeOrder(id: "recent", total: 900, date: inRangeDate),
-            makeOrder(id: "older", total: 700, date: outOfRangeDate),
+            makeOrder(id: "older", total: 700, date: outOfRangeDate)
         ]
 
         let interval = try SaneSalesDateRangeStore.normalizedInterval(
