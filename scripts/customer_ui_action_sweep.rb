@@ -163,11 +163,9 @@ class SaneSalesCustomerUIActionSweep
     ],
     'license-purchase-restore-direct-key-safe-surfaces' => [
       ['iOS/Views/SettingsView.swift', 'settings.license.unlockProButton'],
-      ['iOS/Views/SettingsView.swift', 'settings.license.restorePurchasesButton'],
-      ['iOS/Views/SettingsView.swift', 'showingLicenseEntrySheet = true'],
-      ['iOS/Views/SettingsView.swift', 'Task { await licenseService.purchasePro() }'],
-      ['macOS/DirectDistributionSupport.swift', 'alternateEntryLabel: "Enter License Key"'],
+      ['iOS/Views/SettingsView.swift', 'OpenSourceRelease.donationURL'],
       ['macOS/SaneSalesSettingsMacView.swift', 'LicenseSettingsView('],
+      ['macOS/SaneSalesSettingsMacView.swift', 'donationURL: OpenSourceRelease.donationURL'],
       ['Tests/APITests.swift', 'SaneSales App Store IAP metadata is explicit'],
       ['Tests/APITests.swift', 'iOS review notes match real Pro entry points'],
       ['Tests/APITests.swift', 'macOS review notes match the real welcome-screen Pro entry point']
