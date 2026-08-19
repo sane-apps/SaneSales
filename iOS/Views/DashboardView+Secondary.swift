@@ -72,14 +72,14 @@ extension DashboardView {
     @ViewBuilder
     func chartSection(_ widthClass: WidthClass) -> some View {
         if !manager.hasLiveProviderAccess {
-            GlassSection("Charts • Pro", icon: "chart.xyaxis.line", iconColor: .metricToday) {
+            GlassSection("Charts", icon: "chart.xyaxis.line", iconColor: .metricToday) {
                 HStack(alignment: .center, spacing: 14) {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Unlock 7D, 30D, custom date ranges, all-time trends, and deeper comparisons.")
+                        Text("Connect a live store for 7D, 30D, custom date ranges, all-time trends, and deeper comparisons.")
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.white)
                             .fixedSize(horizontal: false, vertical: true)
-                        Text("Demo mode stays available. Pro keeps live tracking active.")
+                        Text("Demo mode stays available. Live tracking starts when you connect a provider.")
                             .font(.system(size: 12, weight: .medium))
                             .foregroundStyle(Color.textMuted)
                     }
@@ -89,7 +89,7 @@ extension DashboardView {
                     Button {
                         showLockedFeature(event: "chart_locked_tap")
                     } label: {
-                        Label("Unlock Pro — \(licenseService.displayPriceLabel)", systemImage: "lock.fill")
+                        Label("Donate", systemImage: "heart.fill")
                     }
                     .buttonStyle(SaneActionButtonStyle(prominent: true))
                 }

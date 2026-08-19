@@ -582,7 +582,7 @@ struct OrdersListView: View {
                                         Text("Showing today’s \(displayedOrders.count) orders")
                                             .font(.saneSubheadlineBold)
                                             .foregroundStyle(.primary)
-                                        Text("Unlock Pro for custom date ranges, \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
+                                        Text("Connect a live store for custom date ranges, \(lockedHistoryCount) older \(lockedHistoryCount == 1 ? "order" : "orders"), deeper search, and export.")
                                             .font(.saneCallout)
                                             .foregroundStyle(Color.textMuted)
                                     }

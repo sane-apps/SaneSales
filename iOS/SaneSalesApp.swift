@@ -126,10 +126,10 @@ struct SaneSalesApp: App {
 
     private func syncProAccess() {
         let forceFree = forcedFreeModeEnabled
-        let isPaidOrForced = (licenseService.isPro || forcedProModeEnabled) && !forceFree
+        let isPaidOrForced = !forceFree
         manager.updateProAccess(
-            isPaidPro: licenseService.isPro && !forceFree,
-            forcePro: forcedProModeEnabled && !forceFree,
+            isPaidPro: !forceFree,
+            forcePro: !forceFree,
             demoModeEnabled: (demoModeEnabled || CommandLine.arguments.contains("--demo")) && !forceFree
         )
         if licenseService.hasCompletedPurchaseStateRefresh {

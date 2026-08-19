@@ -52,17 +52,15 @@ actions:
     surface.
   - No section is a decorative or dead tab.
 - id: onboarding-demo-provider-pro-entry
-  title: Onboarding lets customers try demo data, choose providers, and reach Pro
+  title: Onboarding lets customers try demo data and connect providers
   surfaces:
   - iOS onboarding view
   - macOS welcome gate
   - Demo data action
-  - Unlock Pro and restore purchase controls
-  - Provider picker after Pro unlock
+  - Provider picker
   steps:
   - Start from a first-launch state.
-  - Exercise Try Demo Data, Unlock Pro, Restore Purchases, and the provider entry
-    surface that appears only after Pro access.
+  - Exercise Try Demo Data and the provider entry surface.
   - Stop at StoreKit, checkout, or provider credential validation unless an isolated
     fixture is present.
   assertions:

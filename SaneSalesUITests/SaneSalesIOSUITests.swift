@@ -62,14 +62,11 @@ final class SaneSalesIOSUITests: XCTestCase {
         }
     }
 
-    func testOnboardingShowsAppStoreUpgradePath() {
+    func testOnboardingShowsSetupWithoutBuy() {
         let app = launchOnboarding()
 
-        let unlockButton = app.buttons["onboarding.unlockProButton"]
-        let restoreButton = app.buttons["onboarding.restorePurchasesButton"]
-
-        XCTAssertTrue(unlockButton.waitForExistence(timeout: 5))
-        XCTAssertTrue(restoreButton.exists)
+        XCTAssertTrue(app.buttons["onboarding.demoButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["onboarding.connectButton"].exists)
     }
 
     func testSettingsShowsLicenseSectionAndButtons() {
@@ -83,8 +80,8 @@ final class SaneSalesIOSUITests: XCTestCase {
         openMainSection("Settings", in: app)
 
         XCTAssertTrue(app.staticTexts["License"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["settings.license.unlockProButton"].exists)
-        XCTAssertTrue(app.buttons["settings.license.restorePurchasesButton"].exists)
+        XCTAssertTrue(app.buttons["settings.license.donateButton"].exists)
+        XCTAssertTrue(app.buttons["sticky-donate"].exists)
     }
 
     func testDashboardProviderOpensSetupFlowWhenConnectionIsAllowed() {

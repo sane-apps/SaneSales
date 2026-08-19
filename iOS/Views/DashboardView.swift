@@ -258,6 +258,7 @@ struct DashboardComparisonItem: Identifiable {
 struct DashboardView: View {
     @Environment(SalesManager.self) var manager
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.openURL) var openURL
     @Environment(LicenseService.self) var licenseService
     @AppStorage(SaneSalesDateRangeStore.selectedRangeKey) var selectedRange: TimeRange = .today
     @AppStorage(SaneSalesDateRangeStore.customStartKey) private var customRangeStartTimestamp = SaneSalesDateRangeStore.defaultCustomStartTimestamp
@@ -1052,7 +1053,7 @@ extension DashboardView {
 
     var heroRevenueValue: String {
         if shouldShowMissingDataWarning { return "Needs Refresh" }
-        return manager.hasLiveProviderAccess ? formatCents(revenueForRange) : "Unlock Pro"
+        return manager.hasLiveProviderAccess ? formatCents(revenueForRange) : "Connect a store"
     }
 
     var heroOrderLabel: String {
@@ -1209,7 +1210,7 @@ extension DashboardView {
         HStack(spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Color.salesGold)
-            Text("Basic uses demo data only. Unlock Pro to connect live sales, keep full history, and use every revenue view.")
+            Text("Connect a live store to track real sales, keep full history, and use every revenue view. Demo data stays available.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
             Spacer()
@@ -1236,8 +1237,8 @@ extension DashboardView {
         }
 
         return manager.isDemoModeActive
-            ? "Demo mode is sample data. Unlock Pro to connect your live providers."
-            : "Pro is required for live sales tracking. Unlock Pro to continue."
+            ? "Demo mode is sample data. Connect your live providers anytime."
+            : "Connect a live store to track real sales."
     }
 
     private func trialStatusBanner(_ text: String) -> some View {
@@ -1270,12 +1271,9 @@ extension DashboardView {
     func showLockedFeature(event: String) {
         Task.detached {
             await EventTracker.log(event, app: "sanesales")
+            await EventTracker.log("donate_clicked", app: "sanesales")
         }
-        #if os(macOS)
-            proUpsellFeature = .charts
-        #else
-            queueLicenseSettingsRoute()
-        #endif
+        openURL(OpenSourceRelease.donationURL)
     }
 
     func lockedRevenueCard(

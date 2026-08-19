@@ -303,17 +303,6 @@ import SwiftUI
         var body: some Scene {
             WindowGroup(id: "main") {
                 Group {
-                    if licenseService.hasExpiredProTrial {
-                        LicenseGateView(
-                            licenseService: licenseService,
-                            appIcon: "dollarsign.circle.fill",
-                            donationURL: OpenSourceRelease.donationURL
-                        )
-                            .preferredColorScheme(.dark)
-                            .onAppear {
-                                licenseService.checkCachedLicense()
-                            }
-                    } else {
                         ContentView()
                             .environment(manager)
                             .environment(licenseService)
@@ -397,7 +386,6 @@ import SwiftUI
                                     }
                                 )
                             }
-                    }
                 }
             }
             .defaultSize(width: 800, height: 600)
@@ -480,10 +468,10 @@ import SwiftUI
         }
 
         private func syncProAccess() {
-            let isPaidOrForced = licenseService.isPro || forcedProModeEnabled
+            let isPaidOrForced = true
             manager.updateProAccess(
-                isPaidPro: licenseService.isPro,
-                forcePro: forcedProModeEnabled,
+                isPaidPro: true,
+                forcePro: true,
                 demoModeEnabled: demoModeEnabled || CommandLine.arguments.contains("--demo")
             )
             if licenseService.hasCompletedPurchaseStateRefresh {
