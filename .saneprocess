@@ -22,6 +22,11 @@ release:
   r2_bucket: sanebar-downloads
   use_sparkle: true
   min_system_version: "14.0"
+  upgrade_path_test:
+    scheme: SaneSales
+    test_selector: SaneSalesTests/APITests/sharedProFlagOnlyRecognizesPaidWidgetKeys()
+    from_version: "1.3.11"
+    timeout_seconds: 300
   reviewed_auto_reconcile_stashes:
     - stash_sha: "a7ab976932f554047102fb6fff853886fdeb5a99"
       subject: "On main: auto-reconcile-20260508-215519-stephans-mac-mini"
