@@ -85,7 +85,7 @@ class SaneSalesCustomerUIActionSweep
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.apiKeyField")'],
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.connectButton")'],
       ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.demoButton")'],
-      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("onboarding.unlockProButton")'],
+      ['iOS/Views/ContentView.swift', 'accessibilityIdentifier("sticky-donate")'],
       ['macOS/SaneSalesMacApp.swift', 'WelcomeGateView('],
       ['macOS/SaneSalesMacApp.swift', 'secondaryCompletionActionLabel: "Try Demo Data"'],
       ['Tests/APITests.swift', 'iOS setup flow shows onboarding for first launch or broken startup']
@@ -162,7 +162,7 @@ class SaneSalesCustomerUIActionSweep
       ['Tests/CacheTests.swift', 'Shared snapshot excludes customer and receipt data']
     ],
     'license-purchase-restore-direct-key-safe-surfaces' => [
-      ['iOS/Views/SettingsView.swift', 'settings.license.unlockProButton'],
+      ['iOS/Views/SettingsView.swift', 'settings.license.donateButton'],
       ['iOS/Views/SettingsView.swift', 'OpenSourceRelease.donationURL'],
       ['macOS/SaneSalesSettingsMacView.swift', 'LicenseSettingsView('],
       ['macOS/SaneSalesSettingsMacView.swift', 'donationURL: OpenSourceRelease.donationURL'],
