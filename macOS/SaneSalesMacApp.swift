@@ -277,6 +277,7 @@ import SwiftUI
         private let automaticRefreshInterval: TimeInterval = 12 * 60 * 60
 
         init() {
+            OpenSourceRelease.activate()
             if CommandLine.arguments.contains("--uitest-reset") {
                 SalesManager.resetUITestPersistentState()
             }
@@ -303,7 +304,11 @@ import SwiftUI
             WindowGroup(id: "main") {
                 Group {
                     if licenseService.hasExpiredProTrial {
-                        LicenseGateView(licenseService: licenseService, appIcon: "dollarsign.circle.fill")
+                        LicenseGateView(
+                            licenseService: licenseService,
+                            appIcon: "dollarsign.circle.fill",
+                            donationURL: OpenSourceRelease.donationURL
+                        )
                             .preferredColorScheme(.dark)
                             .onAppear {
                                 licenseService.checkCachedLicense()
@@ -369,11 +374,12 @@ import SwiftUI
                                     freeFeatures: [
                                         (icon: "play.circle", text: "Demo mode to explore"),
                                         (icon: "chart.bar", text: "Sample orders, products, and revenue"),
-                                        (icon: "lock", text: "Pro required for live provider connections"),
+                                        (icon: "link", text: "Connect Lemon Squeezy, Gumroad, and Stripe"),
                                         (icon: "shield", text: "Private local demo data")
                                     ],
                                     proFeatures: Self.onboardingProFeatures,
                                     licenseService: licenseService,
+                                    donationURL: OpenSourceRelease.donationURL,
                                     secondaryCompletionActionLabel: "Try Demo Data",
                                     secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
                                     onSecondaryCompletion: {
@@ -450,7 +456,7 @@ import SwiftUI
         private static var onboardingProFeatures: [(icon: String, text: String)] {
             #if APP_STORE
                 return [
-                    (icon: "checkmark", text: "Pro unlocks live tracking:"),
+                    (icon: "checkmark", text: "Every live tracking tool is included:"),
                     (icon: "shield", text: "iCloud Keychain provider sync"),
                     (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
                     (icon: "list.bullet.rectangle", text: "Full order history"),
@@ -461,7 +467,7 @@ import SwiftUI
                 ]
             #else
                 return [
-                    (icon: "checkmark", text: "Enjoy 14 days of Pro"),
+                    (icon: "checkmark", text: "Every feature is included"),
                     (icon: "shield", text: "iCloud Keychain provider sync"),
                     (icon: "chart.line.uptrend.xyaxis", text: "7-day, 30-day, custom date ranges, and all-time trends"),
                     (icon: "list.bullet.rectangle", text: "Full order history"),

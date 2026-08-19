@@ -22,6 +22,7 @@ struct SaneSalesApp: App {
     private let automaticRefreshInterval: TimeInterval = 12 * 60 * 60
 
     init() {
+        OpenSourceRelease.activate()
         #if os(iOS)
             configureTabBarAppearance()
         #endif

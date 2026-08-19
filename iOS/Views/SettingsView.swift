@@ -478,15 +478,10 @@ struct SettingsView: View {
     }
 
     private func triggerUnlock() {
-        let eventName = licenseService.usesAppStorePurchase ? "appstore_purchase_started" : "direct_checkout_opened"
         Task.detached {
-            await EventTracker.log(eventName, app: "sanesales")
+            await EventTracker.log("donate_clicked", app: "sanesales")
         }
-        if licenseService.usesAppStorePurchase {
-            Task { await licenseService.purchasePro() }
-        } else if let url = licenseService.checkoutURL {
-            openURL(url)
-        }
+        openURL(OpenSourceRelease.donationURL)
     }
 
     private func connectedProviderControls(_ provider: SalesProviderType) -> some View {

@@ -240,7 +240,7 @@ appstore:
       1. Launch SaneSales.
       2. On the final onboarding screen, click “Try Demo Data”.
       3. Review the dashboard, orders, products, and recent snapshot using the fictional local demo data.
-      4. To review the optional Pro unlock, click “Unlock Pro” on the welcome screen before choosing demo mode or connecting a provider.
+      4. The app is free. Setup still walks through connecting a provider. Donate is optional.
       5. If onboarding has already been dismissed, open Settings and select the License tab.
       Demo includes:
       - Fictional dashboard snapshot.
@@ -272,7 +272,7 @@ appstore:
       1. Launch SaneSales on iPhone or iPad.
       2. On the onboarding screen, tap “Try Demo Data”. If onboarding has already been dismissed, go to Settings > Data > Enable Demo Mode.
       3. Review the dashboard, orders, products, and provider filters using the fictional local demo data.
-      4. To review the optional Pro unlock, tap “Unlock Pro” on the setup screen, or open the Settings tab and use the License section.
+      4. The app is free. Setup still walks through connecting a provider. Donate is optional.
       Apple Watch companion:
       - Basic shows an unlock prompt on Apple Watch. Unlock Pro on iPhone to sync live Watch data.
       Demo includes:
@@ -302,7 +302,7 @@ appstore:
   iap:
     display_name: "SaneSales Pro Unlock"
     price_usd: 9.99
-    description: "Unlock Pro analytics with one purchase."
+    description: "Historical product. SaneSales is now free; do not attach this IAP to new submissions."
     review_note: "SaneSales Pro Unlock is a one-time non-consumable StoreKit purchase. It unlocks custom date ranges, full order history, CSV export, multiple providers, menu bar quick glance on macOS, and widgets where supported. No external checkout links or license keys are used in the App Store build."
   accessibility_declarations:
     publish: true

@@ -6,7 +6,7 @@ Philosophy: `~/SaneApps/meta/Brand/NORTH_STAR.md`
 
 ## What Is This
 
-Universal indie sales tracker. iOS + macOS. Tracks revenue from LemonSqueezy, Gumroad, and Stripe (v1.0).
+Universal indie sales tracker. iOS + macOS. Tracks revenue from LemonSqueezy, Gumroad, and Stripe. Free MIT app: setup stays, every feature stays unlocked, Buy is Donate.
 
 ## Source Of Truth
 
