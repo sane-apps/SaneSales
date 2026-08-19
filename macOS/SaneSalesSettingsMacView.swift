@@ -324,7 +324,8 @@ struct SaneSalesMacSettingsView: View {
             LicenseSettingsView(
                 licenseService: licenseService,
                 style: .panel,
-                labels: SaneSalesSettingsCopy.licenseLabels
+                labels: SaneSalesSettingsCopy.licenseLabels,
+                donationURL: OpenSourceRelease.donationURL
             )
         }
     }

@@ -702,11 +702,7 @@ struct OnboardingView: View {
     }
 
     private func unlockPro() {
-        if licenseService.usesAppStorePurchase {
-            Task { await licenseService.purchasePro() }
-        } else if let url = licenseService.checkoutURL {
-            openURL(url)
-        }
+        openURL(OpenSourceRelease.donationURL)
     }
 
     private func validateAndSave() {

@@ -7,14 +7,14 @@
 **Private revenue tracking for indie sellers using Lemon Squeezy, Gumroad, and Stripe**
 
 [![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneSales?style=flat-square)](https://github.com/sane-apps/SaneSales/stargazers)
-[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg?style=flat-square)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14.0+-blue?style=flat-square)](https://sanesales.com)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue?style=flat-square)](https://sanesales.com)
-[![Price](https://img.shields.io/badge/Price-%249.99_once-green?style=flat-square)](https://sanesales.com)
+[![Price](https://img.shields.io/badge/Price-Free%20%2B%20Donate-green?style=flat-square)](https://github.com/sponsors/MrSaneApps)
 [![Privacy: No SaneApps Cloud](https://img.shields.io/badge/Privacy-No%20SaneApps%20Cloud-success?style=flat-square)](PRIVACY.md)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black?style=flat-square)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **Trial:** Full SaneSales Pro for 14 days. SaneSales Pro is **$9.99 once** after that. No subscription.
+> **Free and open source.** Setup is unchanged. Every feature stays unlocked. [Donate](https://github.com/sponsors/MrSaneApps) if it helps you.
 
 </div>
 
@@ -31,7 +31,7 @@ You sell on more than one storefront. Every morning you check three dashboards, 
 
 ## The Solution
 
-SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. The 14-day trial is full Pro: live provider connections, revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
+SaneSales pulls your sales data from all three platforms into one private native app for Mac, iPhone, iPad, and Apple Watch. Live provider connections, revenue, orders, products, charts, widgets, menu bar totals, and export stay on your device.
 
 | | |
 |---|---|

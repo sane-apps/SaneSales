@@ -496,8 +496,7 @@ struct AppStoreReviewPathTests {
         let manifest = try String(contentsOf: projectRoot.appendingPathComponent(".saneprocess"), encoding: .utf8)
 
         #expect(manifest.contains("display_name: \"SaneSales Pro Unlock\""))
-        #expect(manifest.contains("description: \"Unlock Pro analytics with one purchase.\""))
-        #expect(manifest.localizedCaseInsensitiveContains("one-time non-consumable StoreKit purchase"))
+        #expect(manifest.contains("SaneSales is now free"))
     }
 
     @Test("App Store metadata leads with the buyer wedge")
@@ -523,8 +522,8 @@ struct AppStoreReviewPathTests {
             encoding: .utf8
         )
 
-        #expect(settingsSource.contains("appstore_purchase_started"))
-        #expect(settingsSource.contains("direct_checkout_opened"))
+        #expect(settingsSource.contains("donate_clicked"))
+        #expect(settingsSource.contains("OpenSourceRelease.donationURL"))
         #expect(!settingsSource.contains("EventTracker.log(\"checkout_clicked\", app: \"sanesales\")"))
     }
 
@@ -575,8 +574,8 @@ struct AppStoreReviewPathTests {
         let settingsSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/SettingsView.swift"), encoding: .utf8)
         let onboardingSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"), encoding: .utf8)
 
-        #expect(manifest.localizedCaseInsensitiveContains("Settings tab and use the License section"))
-        #expect(manifest.localizedCaseInsensitiveContains("tap “Unlock Pro” on the setup screen") || manifest.localizedCaseInsensitiveContains("tap \"Unlock Pro\" on the setup screen"))
+        #expect(manifest.localizedCaseInsensitiveContains("The app is free"))
+        #expect(manifest.localizedCaseInsensitiveContains("Donate is optional"))
         #expect(settingsSource.contains("GlassSection(\"License\""))
         #expect(settingsSource.contains("settings.license.unlockProButton"))
         #expect(onboardingSource.contains("onboarding.unlockProButton"))
@@ -715,11 +714,11 @@ struct AppStoreReviewPathTests {
             encoding: .utf8
         )
 
-        #expect(manifest.localizedCaseInsensitiveContains("click “Unlock Pro” on the welcome screen") || manifest.localizedCaseInsensitiveContains("click \"Unlock Pro\" on the welcome screen"))
-        #expect(manifest.localizedCaseInsensitiveContains("open Settings and select the License tab"))
+        #expect(manifest.localizedCaseInsensitiveContains("The app is free"))
+        #expect(manifest.localizedCaseInsensitiveContains("Donate is optional"))
         #expect(macAppSource.contains("WelcomeGateView("))
-        #expect(settingsSource.contains("GlassSection(\"License\""))
-        #expect(welcomeGateSource.contains("Text(licenseService.isPurchasing ? \"Processing...\" : \"Unlock Pro — \\(licenseService.displayPriceLabel)\")"))
+        #expect(macAppSource.contains("donationURL: OpenSourceRelease.donationURL"))
+        #expect(welcomeGateSource.contains("donationURL"))
     }
 }
 
@@ -1039,7 +1038,7 @@ struct FreeTierPolicyTests {
         #expect(manager.isLemonSqueezyConnected)
     }
 
-    @Test("Shared Pro flag only recognizes paid widget keys")
+    @Test("Shared Pro flag stays on for the open-source build")
     func sharedProFlagOnlyRecognizesPaidWidgetKeys() {
         let suiteName = "tests.sanesales.sharedstore.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suiteName) else {
@@ -1049,22 +1048,7 @@ struct FreeTierPolicyTests {
 
         defaults.removePersistentDomain(forName: suiteName)
         defer { defaults.removePersistentDomain(forName: suiteName) }
-        #expect(!SharedStore.isProEnabled(defaults: defaults))
-
-        defaults.set(true, forKey: SharedStore.paidProEnabledKey)
         #expect(SharedStore.isProEnabled(defaults: defaults))
-
-        defaults.removeObject(forKey: SharedStore.paidProEnabledKey)
-        defaults.set(true, forKey: SharedStore.proEnabledKey)
-        #expect(!SharedStore.isProEnabled(defaults: defaults))
-
-        defaults.removeObject(forKey: SharedStore.proEnabledKey)
-        defaults.set(true, forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
-        #expect(SharedStore.isProEnabled(defaults: defaults))
-
-        defaults.removeObject(forKey: SharedStore.macOSWidgetsPaidProEnabledKey)
-        defaults.set(true, forKey: SharedStore.macOSWidgetsProEnabledKey)
-        #expect(!SharedStore.isProEnabled(defaults: defaults))
     }
 }
 

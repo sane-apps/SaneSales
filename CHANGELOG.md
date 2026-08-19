@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.12] - 2026-08-18
+
+SaneSales is now free and open source under the MIT License. Setup stays. Every feature stays unlocked. Buy is now Donate.
+
+---
+
 ## [1.3.11] - 2026-07-04
 
 Important update to onboarding, licensing, and reliability. Recommended for all users.
