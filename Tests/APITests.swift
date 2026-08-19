@@ -553,7 +553,7 @@ struct AppStoreReviewPathTests {
         #expect(!homePage.contains("website_buy_hero_clicked"))
         #expect(!homePage.contains("website_buy_pricing_clicked"))
         // Current trial copy (2d58f1c pivot: full-Pro trial, no free-Basic fallback)
-        #expect(homePage.contains("Start Full Pro Trial"))
+        #expect(homePage.contains("Download SaneSales"))
         #expect(homePage.contains("Enjoy every Pro feature for 14 days with no credit card required"))
         #expect(homePage.contains("After the trial, Pro is required."))
         #expect(homePage.contains("One-time purchase after the full Pro trial."))
