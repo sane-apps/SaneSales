@@ -508,7 +508,7 @@ struct SaneSalesMacSettingsView: View {
         maxWidth: CGFloat? = nil,
         @ViewBuilder content: () -> Content
     ) -> some View {
-        ScrollView(.vertical, showsIndicators: false) {
+        ScrollView(.vertical, showsIndicators: true) {
             VStack(alignment: .leading, spacing: 16) {
                 content()
             }

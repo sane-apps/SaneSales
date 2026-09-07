@@ -282,6 +282,10 @@ enum SaneSalesSettingsCopy {
         doneButtonTitle: String(
             localized: "sanesales.settings.about.done_button",
             defaultValue: "Done"
+        ),
+        moreAppsButtonTitle: String(
+            localized: "sanesales.settings.about.more_apps_button",
+            defaultValue: "More Apps"
         )
     )
 

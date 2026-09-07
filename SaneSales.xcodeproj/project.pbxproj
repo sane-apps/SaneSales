@@ -861,14 +861,14 @@
 			targets = (
 				11F92A0BDD7FD9F39613C6C0 /* SaneSales */,
 				1FA69DEC385E8444D3CE8ED3 /* SaneSalesAppStore */,
+				4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */,
+				372D646238F964199D574608 /* SaneSalesWidgets */,
 				7B1B7BA7CE15C47720B6A092 /* SaneSalesIOS */,
 				FE01AF185479325D5FFB3F5D /* SaneSalesIOSTests */,
 				626A8BE7ADCAD83802631E5F /* SaneSalesIOSUITests */,
 				9417656CD7DEB667AABF0B91 /* SaneSalesIOSWidgets */,
-				4DF8CAE39C290BCE75EDC12F /* SaneSalesTests */,
 				B43EC054FF0424D1792495B8 /* SaneSalesWatch */,
 				265F0DA8DB254C48C0EA1CB9 /* SaneSalesWatchWidgets */,
-				372D646238F964199D574608 /* SaneSalesWidgets */,
 			);
 		};
 /* End PBXProject section */
@@ -2317,7 +2317,7 @@
 			repositoryURL = "https://github.com/sane-apps/SaneUI.git";
 			requirement = {
 				kind = revision;
-				revision = 569922a6533a0ae04ebb3ccd7e7b16b3a76f0b57;
+				revision = 7286410171399b8cb0ba2ef7b253f267bd3d26d0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
