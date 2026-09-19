@@ -89,7 +89,12 @@ extension DashboardView {
                     Button {
                         showLockedFeature(event: "chart_locked_tap")
                     } label: {
-                        Label("Donate", systemImage: "heart.fill")
+                        Label {
+                            Text("Donate")
+                        } icon: {
+                            Image(systemName: "heart.fill")
+                                .foregroundStyle(.pink)
+                        }
                     }
                     .buttonStyle(SaneActionButtonStyle(prominent: true))
                 }
@@ -188,7 +193,7 @@ extension DashboardView {
 
         if let thumbURL = matchedProduct?.thumbURL {
             AsyncImage(url: thumbURL) { image in
-                image.resizable().aspectRatio(contentMode: .fill)
+                image.resizable().scaledToFill()
             } placeholder: {
                 rankCircle(rank)
             }
