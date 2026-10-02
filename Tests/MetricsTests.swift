@@ -393,10 +393,16 @@ struct MetricsTests {
         #expect(SharedStore.loadSalesSnapshot() == nil)
     }
 
+    /// Revenue over whole calendar days: `daysBack: 7` is today plus the 6 days
+    /// before it. Clock-time windows made the demo-data test fail before ~6:30 pm,
+    /// because today's demo orders later in the day counted as "in the future".
     private func revenue(from orders: [Order], daysBack: Int, untilDaysBack: Int = 0, now: Date) -> Int {
         let cal = Calendar.current
-        let start = cal.date(byAdding: .day, value: -daysBack, to: now) ?? now
-        let end = untilDaysBack == 0 ? now : (cal.date(byAdding: .day, value: -untilDaysBack, to: now) ?? now)
+        let today = cal.startOfDay(for: now)
+        let start = cal.date(byAdding: .day, value: -(daysBack - 1), to: today) ?? today
+        let end = untilDaysBack == 0
+            ? (cal.date(byAdding: .day, value: 1, to: today) ?? now)
+            : (cal.date(byAdding: .day, value: -(untilDaysBack - 1), to: today) ?? today)
 
         return orders
             .filter { $0.status == .paid && $0.createdAt >= start && $0.createdAt < end }
