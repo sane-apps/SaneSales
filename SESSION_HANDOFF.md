@@ -209,6 +209,44 @@ receipts, Serena memory, and the knowledge graph.
 6. Ignore optional SaaSHub unless there is explicit approval to spend time on
    the higher-friction form.
 
+## 2026-09-07 12:00 ET — Small settings fix pushed; paid apps take priority
+
+- Owner clarified that paid apps are the focus. Open-source apps receive only cheap, easy maintenance. Broader SaneSales UI/iPad/release audit is parked.
+- Main ead9a90cab3983c303f27acfc24d24b6448ff1ac is published and Air/Mini match. Seven scoped files update shared SaneUI7286410, readable disabled update frequency, settings scroll indicators, More Apps copy and current shared Git hooks. Existing iOS Donate and website work stays uncommitted.
+- Final pre-push89 tests pass, workflow c39258180220e18b7a16866839b5194c; earlier dependency verify89 passed38ffeed12dddb178118c8b1d05b46ac7. Native signed app rebuilt using test_mode, logs in outputs/runtime-logs/20260907T155606Z-20260907-*/ (exact path in contrast-final-launch.log).
+- Clean General screenshots inspected:11-54-43 demonstrates unreadable disabled frequency;11-57-13 proves readable Off state;11-58-30 proves enabled On picker. Real Off->On->Off assertions passed, owner preference restored, no provider changes. Normal Quit ended30265 at15:59:09Z. Screenshots/action JSON in outputs/portfolio-finish-20260907.
+- Verification is General settings only. Providers/Data/License/About and13-inch iPad full flow were not claimed verified. No public release/LS change. Air retained stash portfolio-sales-air-before-settings-sync-20260907; only three obsolete dependency pin conflicts resolved to current main.
+ 
+# Session Handoff — SaneSales
+
+Active handoff only. The long launch/release chronology was compacted on
+2026-05-21 because it exceeded the 300-line active-context cap. Durable history
+lives in git, `CHANGELOG.md`, `ARCHITECTURE.md`, `.outreach.yml`, release
+receipts, Serena memory, and the knowledge graph.
+
+## 2026-09-06 pink Donate dependency publication
+
+- Shared SaneUI main published and verified at `7f425682151792572f0cd7b638ffaad2ec5691ab`: only AGENTS pink-heart policy, SaneStickyDonateButton pink icon, and donation-only LicenseSettingsView pink icon.
+- Mini first fast-forwarded569922a to existing upstream3850741. Ten pre-existing dirty files exactly matched upstream; their bytes are retained in private custody and named stash9aceeab8dc402ca27a70e36948decc6b7a5857d7. No duplicate hunks reapplied.
+- Isolated3850741 plus the three approved files passed SaneUI library build (29.53s); no catalog launch or app build. Package test suite and customer visual proof were not run by this dependency lane.
+- Video and Sales now pin the exact published commit in project.yml, generated project and Package.resolved. Native Mini resolve-only commands passed; only saneui dependency state changed.
+- Sales adds the localized moreAppsButtonTitle argument required by upstream3850741. XcodeGen preserved entitlement bytes; its existing target-list ordering changed without adding/removing targets.
+- Air shared SaneUI fast-forward and seven consumer-file scoped patch are hash-verified; existing handoff and unrelated source were preserved. Consumer edits remain uncommitted; parent owns app build, runtime/visual proof and release.
+- Receipts: `~/SaneApps/infra/SaneProcess/outputs/portfolio-review-20260906/donate-heart-patches/`, including shared/consumer custody manifests, upstream build, resolution logs and exact patches.
+
+
+### Clip focused assertions and runtime evidence defect — 2026-09-06 20:10 UTC
+
+Clip Mini three-file SaneUI repin to 0f04e7536ca69ef684ef6835034d4916ccdbfd84 resolved successfully; only SaneUI changed in the dependency lock. Canonical verify with SANEMASTER_TEST_TARGET, --no-grant-permissions, --timeout 300 and all four no-prompt/cache flags compiled and passed LicenseGateWindowTests 1/1 (expiredGateCanCloseWithoutUnlocking), then NonBlockingKeychainServiceTests 4/4 (passthrough, stalledReadDegradesToNil, stalledWriteThrows, innerErrorsPropagate). Exact xcresult test trees independently confirmed those five names Passed. Gate fixtures use private UUID defaults and fake keychain; no real paid key, permission reset, activation or release.
+
+Receipts relative to SaneClip: outputs/verify/20260906T200713.253068Z-63725-4c5ac507/01-test.xcresult (workflow 362193a3ae02239d245a7e0c4cad5631) and outputs/verify/20260906T200847.196143Z-64641-bd26814e/01-test.xcresult (workflow 90631375a022255ecce53af91b42948f). Logs adjacent.
+
+Required native runtime evidence is INVALID: both captures were ready before launch but verify preflight killed them before the test phases. Runtime receipts outputs/runtime-logs/20260906T200709Z-20260906-63722-pi88cb/receipt.json and 20260906T200845Z-20260906-64630-na4ocp/receipt.json say state=failed, log stream exited. Second verify explicitly reaped log PID64639. Root cause: SaneProcess scripts/sanemaster/verify.rb:445 uses pgrep -f xctest, then accepts arbitrary command text containing SaneClip; the log stream predicate contains both. terminate_project_test_processes uses the same unsafe selector. Fix real executable/ownership selection; do not rename predicates to evade it. Saved run-fixture.rb also needs final capture-state checking before reuse. No unchanged retry. Operational memory e2d2da03-b601-4d71-9fca-21c84e4c9d62 revision1253.
+
+All test/resolver/capture processes exited. Mini screenshot 16:10:44 shows clean Finder desktop without app windows or prompts (Air outputs/portfolio-review-20260906/license-entry-feedback/clip-post-fixtures-desktop.png). Parent owns next runtime slot. Assertions/compile are green; complete logged verification and real paid/expired visual proof remain pending.
+
+Sales Mini resolve completed20:09:44Z; only SaneUI lock changed. Its three files now match Air by exact SHA256 after before-hash preconditions. Video previously completed the same three-pin parity. Clip Air synchronization stopped before edits because its baseline differs: yml old7f87b04/version2.3.23, generated local SaneUI package, no remote lock, missing Mini gate/keychain source registrations. Requires reviewed source reconciliation, not wholesale overwrite. Exact custody/patches under outputs/portfolio-review-20260906/license-entry-feedback/{SaneClip,SaneSales}-repin/. Clip patch SHA256 deace48be2b5bef79d0c259665faff1d18812d9fb51bc6d40d36a70efd6995f0; Sales 06e6c579d98188f037460627ec8f79f065593ebd3d53809ecbc3a037c000382d. No app release or Air build.
+
 ## Launch Ops - 2026-06-23
 
 - Cross-product launch ops reran canonical Mini `./scripts/SaneMaster.rb launch_readiness --json` from the SaneSales repo. It stayed red.
