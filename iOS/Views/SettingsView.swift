@@ -270,7 +270,8 @@ struct SettingsView: View {
                             #if os(macOS)
                                 proUpsellFeature = .csvExport
                             #else
-                                triggerUnlock()
+                                exportURL = exportOrdersCSV(exportOrders, scopeLabel: exportScopeLabel)
+                                if exportURL != nil { showExportSheet = true }
                             #endif
                         } label: {
                             GlassRow("Export Orders (CSV)", icon: "square.and.arrow.up", iconColor: .blue) {
@@ -364,12 +365,20 @@ struct SettingsView: View {
     private var licenseTitle: String {
         if manager.hasLiveProviderAccess { return "Live Tracking" }
         if manager.isDemoModeActive { return "Demo Mode" }
-        return "Open Source"
+        #if APP_STORE
+            return "Free"
+        #else
+            return "Open Source"
+        #endif
     }
 
     private var licenseIconName: String {
         if manager.hasLiveProviderAccess { return "checkmark.seal.fill" }
-        return "heart.fill"
+        #if APP_STORE
+            return "checkmark.seal.fill"
+        #else
+            return "heart.fill"
+        #endif
     }
 
     private var orderCountLabel: String {
@@ -381,13 +390,21 @@ struct SettingsView: View {
 
     private var licenseDescription: String {
         if manager.hasLiveProviderAccess {
-            return "SaneSales is free and open source. Live provider tracking, custom date ranges, full history, CSV export, widgets, and deeper comparisons are included."
+            return "SaneSales is free, with 100% Transparent Code. Live provider tracking, custom date ranges, full history, CSV export, widgets, and deeper comparisons are included."
         }
         if manager.isDemoModeActive {
-            return "Demo data is active. Connect a live provider anytime. Donate only if you want to support the app."
+            #if APP_STORE
+                return "Demo data is active. Connect a live provider anytime."
+            #else
+                return "Demo data is active. Connect a live provider anytime. Donate only if you want to support the app."
+            #endif
         }
 
-        return "SaneSales is free and open source. Connect live sales providers, search full history, export CSV, and use widgets. Donate only if you want to support it."
+        #if APP_STORE
+            return "SaneSales is free, with 100% Transparent Code. Connect live sales providers, search full history, export CSV, and use widgets."
+        #else
+            return "SaneSales is free, with 100% Transparent Code. Connect live sales providers, search full history, export CSV, and use widgets. Donate only if you want to support it."
+        #endif
     }
 
     private func licenseTierBadge(title: String, color: Color) -> some View {
@@ -404,11 +421,15 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var primaryLicenseAction: some View {
-        Button("Donate") {
-            triggerDonate()
-        }
-        .buttonStyle(SaneActionButtonStyle(prominent: true))
-        .accessibilityIdentifier("settings.license.donateButton")
+        #if !APP_STORE
+            Button("Donate") {
+                triggerDonate()
+            }
+            .buttonStyle(SaneActionButtonStyle(prominent: true))
+            .accessibilityIdentifier("settings.license.donateButton")
+        #else
+            EmptyView()
+        #endif
     }
 
     @ViewBuilder
@@ -416,12 +437,14 @@ struct SettingsView: View {
         EmptyView()
     }
 
-    private func triggerDonate() {
-        Task.detached {
-            await EventTracker.log("donate_clicked", app: "sanesales")
+    #if !APP_STORE
+        private func triggerDonate() {
+            Task.detached {
+                await EventTracker.log("donate_clicked", app: "sanesales")
+            }
+            openURL(OpenSourceRelease.donationURL)
         }
-        openURL(OpenSourceRelease.donationURL)
-    }
+    #endif
 
     private func connectedProviderControls(_ provider: SalesProviderType) -> some View {
         HStack(spacing: 6) {
@@ -559,9 +582,11 @@ struct SettingsView: View {
         defer { pendingSettingsRoute = "" }
 
         if pendingSettingsRoute == "license" {
-            DispatchQueue.main.async {
-                triggerDonate()
-            }
+            #if !APP_STORE
+                DispatchQueue.main.async {
+                    triggerDonate()
+                }
+            #endif
             return
         }
 

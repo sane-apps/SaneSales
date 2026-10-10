@@ -368,7 +368,7 @@ import SwiftUI
                                     ],
                                     proFeatures: Self.onboardingProFeatures,
                                     licenseService: licenseService,
-                                    donationURL: OpenSourceRelease.donationURL,
+                                    donationURL: Self.onboardingDonationURL,
                                     secondaryCompletionActionLabel: "Try Demo Data",
                                     secondaryCompletionAccessibilityIdentifier: "onboarding.demoButton",
                                     onSecondaryCompletion: {
@@ -439,6 +439,14 @@ import SwiftUI
                     }
                 #endif
             }
+        }
+
+        private static var onboardingDonationURL: URL? {
+            #if APP_STORE
+                return nil
+            #else
+                return OpenSourceRelease.donationURL
+            #endif
         }
 
         private static var onboardingProFeatures: [(icon: String, text: String)] {

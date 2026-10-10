@@ -44,10 +44,14 @@ enum SaneSalesSettingsCopy {
         localized: "sanesales.settings.appearance.unlock_hint",
         defaultValue: "Connect a live store to keep revenue in your menu bar and add desktop widgets."
     )
-    static let unlockProButtonTitle = String(
-        localized: "sanesales.settings.appearance.unlock_button",
-        defaultValue: "Donate"
-    )
+    #if APP_STORE
+        static let unlockProButtonTitle = "Included"
+    #else
+        static let unlockProButtonTitle = String(
+            localized: "sanesales.settings.appearance.unlock_button",
+            defaultValue: "Donate"
+        )
+    #endif
     static let availabilityHint = String(
         localized: "sanesales.settings.appearance.availability_hint",
         defaultValue: "SaneSales always keeps either the Dock or menu bar available so you can reopen it."
@@ -105,10 +109,14 @@ enum SaneSalesSettingsCopy {
         localized: "sanesales.settings.actions.export_button",
         defaultValue: "Export"
     )
-    static let unlockButtonTitle = String(
-        localized: "sanesales.settings.actions.unlock_button",
-        defaultValue: "Donate"
-    )
+    #if APP_STORE
+        static let unlockButtonTitle = "Included"
+    #else
+        static let unlockButtonTitle = String(
+            localized: "sanesales.settings.actions.unlock_button",
+            defaultValue: "Donate"
+        )
+    #endif
     static let connectedStatusTitle = String(
         localized: "sanesales.settings.providers.connected_status",
         defaultValue: "Connected"
@@ -312,6 +320,7 @@ enum SaneSalesSettingsCopy {
         )
     )
 
+    #if !APP_STORE && !SETAPP
     static let sparkleLabels = SaneSparkleRow.Labels(
         automaticCheckLabel: String(
             localized: "sanesales.settings.updates.automatic_check_label",
@@ -354,6 +363,7 @@ enum SaneSalesSettingsCopy {
             defaultValue: "Weekly"
         )
     )
+    #endif
 
     static let licenseLabels: LicenseSettingsView<LicenseService>.Labels = .init(
         sectionTitle: String(
@@ -396,10 +406,16 @@ enum SaneSalesSettingsCopy {
             localized: "sanesales.settings.license.processing",
             defaultValue: "Processing..."
         ),
-        unlockProPrefix: String(
-            localized: "sanesales.settings.license.unlock_prefix",
-            defaultValue: "Donate —"
-        ),
+        unlockProPrefix: {
+            #if APP_STORE
+                "Included"
+            #else
+                String(
+                    localized: "sanesales.settings.license.unlock_prefix",
+                    defaultValue: "Donate —"
+                )
+            #endif
+        }(),
         fallbackPriceLabel: "$9.99",
         directEntryLabel: String(
             localized: "sanesales.settings.license.enter_license_key",

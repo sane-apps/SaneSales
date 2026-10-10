@@ -165,7 +165,8 @@ class SaneSalesCustomerUIActionSweep
       ['iOS/Views/SettingsView.swift', 'settings.license.donateButton'],
       ['iOS/Views/SettingsView.swift', 'OpenSourceRelease.donationURL'],
       ['macOS/SaneSalesSettingsMacView.swift', 'LicenseSettingsView('],
-      ['macOS/SaneSalesSettingsMacView.swift', 'donationURL: OpenSourceRelease.donationURL'],
+      ['macOS/SaneSalesSettingsMacView.swift', 'donationURL: licenseDonationURL'],
+      ['macOS/SaneSalesSettingsMacView.swift', 'return OpenSourceRelease.donationURL'],
       ['Tests/APITests.swift', 'SaneSales App Store IAP metadata is explicit'],
       ['Tests/APITests.swift', 'iOS review notes match real Pro entry points'],
       ['Tests/APITests.swift', 'macOS review notes match the real welcome-screen Pro entry point']

@@ -1271,9 +1271,13 @@ extension DashboardView {
     func showLockedFeature(event: String) {
         Task.detached {
             await EventTracker.log(event, app: "sanesales")
-            await EventTracker.log("donate_clicked", app: "sanesales")
+            #if !APP_STORE
+                await EventTracker.log("donate_clicked", app: "sanesales")
+            #endif
         }
-        openURL(OpenSourceRelease.donationURL)
+        #if !APP_STORE
+            openURL(OpenSourceRelease.donationURL)
+        #endif
     }
 
     func lockedRevenueCard(

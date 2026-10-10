@@ -578,7 +578,7 @@ struct AppStoreReviewPathTests {
         let onboardingSource = try String(contentsOf: projectRoot.appendingPathComponent("iOS/Views/ContentView.swift"), encoding: .utf8)
 
         #expect(manifest.localizedCaseInsensitiveContains("The app is free"))
-        #expect(manifest.localizedCaseInsensitiveContains("Donate is optional"))
+        #expect(manifest.localizedCaseInsensitiveContains("no donation link"))
         #expect(settingsSource.contains("GlassSection(\"License\""))
         #expect(settingsSource.contains("settings.license.donateButton"))
         #expect(onboardingSource.contains("onboarding.demoButton"))
@@ -602,7 +602,7 @@ struct AppStoreReviewPathTests {
         #expect(onboardingSource.contains("onboarding.connectButton"))
         #expect(onboardingSource.contains("keyEntrySection"))
         #expect(!onboardingSource.contains("Unlock Pro"))
-        #expect(releaseSource.contains("SaneDonation.githubSponsorsURL"))
+        #expect(releaseSource.contains("https://github.com/sponsors/MrSaneApps"))
         #expect(OpenSourceRelease.donationURL.absoluteString == "https://github.com/sponsors/MrSaneApps")
     }
 
@@ -716,9 +716,10 @@ struct AppStoreReviewPathTests {
         )
 
         #expect(manifest.localizedCaseInsensitiveContains("The app is free"))
-        #expect(manifest.localizedCaseInsensitiveContains("Donate is optional"))
+        #expect(manifest.localizedCaseInsensitiveContains("no donation link"))
         #expect(macAppSource.contains("WelcomeGateView("))
-        #expect(macAppSource.contains("donationURL: OpenSourceRelease.donationURL"))
+        #expect(macAppSource.contains("donationURL: Self.onboardingDonationURL"))
+        #expect(macAppSource.contains("return OpenSourceRelease.donationURL"))
         #expect(welcomeGateSource.contains("donationURL"))
         #expect(OpenSourceRelease.donationURL.absoluteString == "https://github.com/sponsors/MrSaneApps")
     }

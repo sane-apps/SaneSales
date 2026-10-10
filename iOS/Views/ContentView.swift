@@ -63,6 +63,7 @@ struct MainTabView: View {
         }
         .tint(.salesGreen)
         .accessibilityIdentifier("main.tabView")
+        #if !APP_STORE
         .overlay(alignment: .bottomTrailing) {
             SaneStickyDonateButton(url: OpenSourceRelease.donationURL)
                 .accessibilityIdentifier("sticky-donate")
@@ -75,6 +76,7 @@ struct MainTabView: View {
                     #endif
                 }())
         }
+        #endif
         .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { _ in
             selectedSection = .settings
             #if os(macOS)

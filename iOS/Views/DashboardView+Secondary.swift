@@ -90,7 +90,11 @@ extension DashboardView {
                         showLockedFeature(event: "chart_locked_tap")
                     } label: {
                         Label {
-                            Text("Donate")
+                            #if APP_STORE
+                                Text("Connect")
+                            #else
+                                Text("Donate")
+                            #endif
                         } icon: {
                             Image(systemName: "heart.fill")
                                 .foregroundStyle(.pink)

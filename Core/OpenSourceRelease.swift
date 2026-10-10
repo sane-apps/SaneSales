@@ -1,8 +1,9 @@
 import Foundation
-import SaneUI
 
 enum OpenSourceRelease {
-    static let donationURL = SaneDonation.githubSponsorsURL
+    #if !APP_STORE
+        static let donationURL = URL(string: "https://github.com/sponsors/MrSaneApps")!
+    #endif
 
     static func activate() {
         UserDefaults.standard.set(true, forKey: "SANEAPPS_OPEN_SOURCE")

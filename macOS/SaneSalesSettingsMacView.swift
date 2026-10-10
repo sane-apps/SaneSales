@@ -187,7 +187,9 @@ struct SaneSalesMacSettingsView: View {
                         iconColor: SaneSettingsIconSemantic.license.color
                     ) {
                         Button {
-                            NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                            #if !APP_STORE
+                                NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                            #endif
                         } label: {
                             actionLabel(SaneSalesSettingsCopy.unlockProButtonTitle)
                         }
@@ -295,7 +297,9 @@ struct SaneSalesMacSettingsView: View {
                                 HStack(spacing: 8) {
                                     StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
-                                        NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                                        #if !APP_STORE
+                                            NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                                        #endif
                                     } label: {
                                         actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }
@@ -305,7 +309,9 @@ struct SaneSalesMacSettingsView: View {
                                 VStack(alignment: .trailing, spacing: 8) {
                                     StatusBadge(SaneSalesSettingsCopy.licenseLabels.proBadgeTitle, color: SaneSettingsIconSemantic.license.color, icon: "lock.fill")
                                     Button {
-                                        NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                                        #if !APP_STORE
+                                            NSWorkspace.shared.open(OpenSourceRelease.donationURL)
+                                        #endif
                                     } label: {
                                         actionLabel(SaneSalesSettingsCopy.unlockButtonTitle)
                                     }
@@ -319,13 +325,21 @@ struct SaneSalesMacSettingsView: View {
         }
     }
 
+    private var licenseDonationURL: URL? {
+        #if APP_STORE
+            return nil
+        #else
+            return OpenSourceRelease.donationURL
+        #endif
+    }
+
     private var licenseTab: some View {
         settingsScrollView(maxWidth: 460) {
             LicenseSettingsView(
                 licenseService: licenseService,
                 style: .panel,
                 labels: SaneSalesSettingsCopy.licenseLabels,
-                donationURL: OpenSourceRelease.donationURL
+                donationURL: licenseDonationURL
             )
         }
     }

@@ -93,6 +93,14 @@ struct SalesWidgetEntry: TimelineEntry {
         currency: "USD"
     )
 
+    static let empty = SalesWidgetEntry(
+        date: Date(),
+        todayRevenue: 0,
+        todayOrders: 0,
+        monthRevenue: 0,
+        currency: "USD"
+    )
+
     static let locked = SalesWidgetEntry(
         date: Date(),
         todayRevenue: 0,
