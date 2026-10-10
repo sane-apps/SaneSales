@@ -335,7 +335,11 @@ appstore:
   screenshots:
     macos: Screenshots/appstore-*-dark-mac.png
     ios: Screenshots/appstore-*-dark-6.7.png
+    ios_receipt: outputs/storefront/iphone-receipt.json
     ipad: Screenshots/appstore-*-dark-ipad.png
+    ipad_receipt: outputs/storefront/ipad-receipt.json
+    ipad_gate_receipt: outputs/storefront/ipad-release-receipt.json
+    ipad_visual_verdict: outputs/storefront/ipad-visual-verdict.json
     watch: Screenshots/appstore-*-dark-watch.png
   strip_frameworks:
     - Sparkle.framework
