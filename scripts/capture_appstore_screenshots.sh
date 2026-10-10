@@ -474,12 +474,14 @@ if has_scheme "${IOS_SCHEME}"; then
   xcodebuild \
     -project "${ROOT_DIR}/SaneSales.xcodeproj" \
     -scheme "${IOS_SCHEME}" \
-    -configuration Debug \
+    -configuration Release-AppStore \
     -destination "generic/platform=iOS Simulator" \
     -derivedDataPath "${DERIVED_DATA}" \
+    CODE_SIGNING_ALLOWED=NO \
+    CODE_SIGNING_REQUIRED=NO \
     build >/dev/null
 
-  IOS_APP="${DERIVED_DATA}/Build/Products/Debug-iphonesimulator/SaneSales.app"
+  IOS_APP="${DERIVED_DATA}/Build/Products/Release-AppStore-iphonesimulator/SaneSales.app"
   if [[ ! -d "${IOS_APP}" ]]; then
     echo "Missing built iOS app at ${IOS_APP}" >&2
     exit 1

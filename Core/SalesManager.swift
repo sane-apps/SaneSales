@@ -454,6 +454,19 @@ final class SalesManager {
     func refresh() async {
         reevaluateProAccess()
 
+        let demoLaunch = isDemoModeActive || CommandLine.arguments.contains("--demo")
+        if demoLaunch && !hasLiveProviderAccess {
+            error = .proRequired(feature: "Live sales tracking")
+            reloadWidgets()
+            return
+        }
+        if demoLaunch {
+            // Paid or forced access must not replace the sample catalog with a live fetch.
+            DemoData.loadInto(manager: self, connectedProviders: demoConnectedProviders())
+            error = nil
+            return
+        }
+
         guard isAnyConnected else {
             error = .noAPIKey
             return

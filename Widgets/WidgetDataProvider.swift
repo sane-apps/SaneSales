@@ -5,13 +5,14 @@ struct SalesWidgetProvider: TimelineProvider {
         .placeholder
     }
 
-    func getSnapshot(in _: Context, completion: @escaping (SalesWidgetEntry) -> Void) {
-        let entry = loadCachedEntry() ?? .placeholder
+    func getSnapshot(in context: Context, completion: @escaping (SalesWidgetEntry) -> Void) {
+        let cached = loadCachedEntry()
+        let entry = context.isPreview ? (cached ?? .placeholder) : (cached ?? .empty)
         completion(entry)
     }
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<SalesWidgetEntry>) -> Void) {
-        let entry = loadCachedEntry() ?? .placeholder
+        let entry = loadCachedEntry() ?? .empty
         // Refresh every 30 minutes
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 30, to: Date())!
         let timeline = Timeline(entries: [entry], policy: .after(nextUpdate))
