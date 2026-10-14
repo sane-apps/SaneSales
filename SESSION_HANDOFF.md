@@ -23,6 +23,7 @@ receipts, Serena memory, and the knowledge graph.
 
 ## Current State
 
+- 2026-10-10: iPhone 1.3.12 build 1312 is WAITING_FOR_REVIEW. Version id `a2d19061-5e6f-4ba9-b8e4-0213003aec38`. Submission `fbd6d6fc-eeac-4ebb-a9d1-0d8432bfe5b8`. Build id `47b17c9c-f0c6-4321-8efb-874eea56b305`. The removed Pro unlock products were not attached. The Mac 1.3.11 row was not submitted.
 - Current direct/Sparkle/Homebrew release: `1.3.10` build `1310`.
 - 2026-06-28 SaneSales website funnel instrumentation follow-up:
   - Confirmed the older broad conversion instrumentation already existed, then
