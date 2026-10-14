@@ -49,7 +49,7 @@ SaneSales pulls your sales data from all three platforms into one private native
 
 ## Current Release
 
-**Current direct-download release: 1.3.11**
+**Current direct-download release: 1.3.12**
 
 - Free MIT download: every feature stays unlocked
 - Setup stays. Buy is gone. Donate is optional
@@ -212,7 +212,7 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for detailed setup and development conventi
 
 ## License
 
-[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) — free for any use except building a competing product. See [LICENSE](LICENSE) for details.
+[MIT](LICENSE) — free for any use. See [LICENSE](LICENSE) for details.
 
 ---
 
