@@ -1,0 +1,17 @@
+# SaneSales
+
+> Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe. Mac, iPhone, iPad, Apple Watch, widgets, menu bar, and CSV export.
+
+## Key pages
+- https://sanesales.com/
+- https://sanesales.com/guides.html
+- https://sanesales.com/how-to-export-sales-data-csv.html
+- https://sanesales.com/how-to-search-filter-orders-across-platforms.html
+- https://sanesales.com/how-to-see-all-indie-sales-one-dashboard.html
+- https://sanesales.com/how-to-see-revenue-mac-menu-bar.html
+- https://sanesales.com/how-to-track-gumroad-sales-mac-iphone.html
+- https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone.html
+- https://sanesales.com/how-to-track-refunds-across-platforms.html
+- https://sanesales.com/how-to-track-sales-apple-watch.html
+- https://sanesales.com/how-to-track-stripe-revenue-mac-iphone.html
+
