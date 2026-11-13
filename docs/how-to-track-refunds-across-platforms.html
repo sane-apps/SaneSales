@@ -198,7 +198,7 @@
     </style>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"How to Track Refunds Across Sales Platforms (2026)","author":{"@type":"Person","name":"Mr. Sane"},"publisher":{"@type":"Organization","name":"SaneSales","url":"https://sanesales.com","logo":{"@type":"ImageObject","url":"https://sanesales.com/images/branding.png"}},"datePublished":"2026-02-10","dateModified":"2026-11-12","image":"https://sanesales.com/images/og-image.png","mainEntityOfPage":{"@type":"WebPage","@id":"https://sanesales.com/how-to-track-refunds-across-platforms"},"description":"See revenue after refunds across Lemon Squeezy, Gumroad and Stripe. SaneSales subtracts refunds for you, so totals show what you actually earned."}</script>
 
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does SaneSales handle partial refunds?","acceptedAnswer":{"@type":"Answer","text":"On Lemon Squeezy and Stripe, yes: it subtracts the refunded part from that order. On every provider, a fully refunded order drops out of revenue."}},{"@type":"Question","name":"Are refunded orders still listed?","acceptedAnswer":{"@type":"Answer","text":"Yes. They stay in the order list, marked as refunded."}},{"@type":"Question","name":"How do refunds show up in a CSV export?","acceptedAnswer":{"@type":"Answer","text":"A refunded order says refunded in the Status column, and the Refunded column holds the refund date when the provider supplies one."}}]}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does SaneSales handle partial refunds?","acceptedAnswer":{"@type":"Answer","text":"On Stripe, yes. On Lemon Squeezy, yes while the order's status stays paid; an order marked partial_refund drops out in full. Gumroad partial refunds aren't subtracted. A full refund drops out of revenue on every provider."}},{"@type":"Question","name":"Are refunded orders still listed?","acceptedAnswer":{"@type":"Answer","text":"Yes. They stay in the order list, marked as refunded."}},{"@type":"Question","name":"How do refunds show up in a CSV export?","acceptedAnswer":{"@type":"Answer","text":"A refunded order says refunded in the Status column, and the Refunded column holds the refund date when the provider supplies one."}}]}</script>
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"SaneSales","item":"https://sanesales.com/"},{"@type":"ListItem","position":2,"name":"Guides","item":"https://sanesales.com/guides"},{"@type":"ListItem","position":3,"name":"How to Track Refunds Across Sales Platforms","item":"https://sanesales.com/how-to-track-refunds-across-platforms"}]}</script>
 </head>
 <body>
@@ -221,7 +221,7 @@
         <div class="option-card winner-card">
             <h2>Refund-Aware Revenue</h2>
             <ul class="step-list">
-                <li><span class="icon icon-check">&#10003;</span> <div>SaneSales drops <strong>fully refunded orders</strong> from revenue on every platform, and subtracts partial refunds on Lemon Squeezy and Stripe</div></li>
+                <li><span class="icon icon-check">&#10003;</span> <div>SaneSales drops <strong>fully refunded orders</strong> from revenue on every platform, and subtracts partial refunds on Stripe and, with <a href="how-to-track-lemonsqueezy-partial-refunds.html" style="color: var(--accent);">one exception</a>, Lemon Squeezy</div></li>
                 <li><span class="icon icon-check">&#10003;</span> <div>Revenue cards show <strong>net totals</strong> &mdash; gross minus refunds, automatically</div></li>
                 <li><span class="icon icon-check">&#10003;</span> <div>Refunded orders are <strong>visually marked</strong> in the order list</div></li>
                 <li><span class="icon icon-check">&#10003;</span> <div>Product breakdown donut chart uses <strong>net revenue per product</strong></div></li>
@@ -239,7 +239,7 @@
         <section class="faq">
         <h2>Questions</h2>
         <h3>Does SaneSales handle partial refunds?</h3>
-        <p>On Lemon Squeezy and Stripe, yes: it subtracts the refunded part from that order. On every provider, a fully refunded order drops out of revenue.</p>
+        <p>On Stripe, yes. On Lemon Squeezy, yes while the order's status stays paid; an order marked partial_refund drops out in full. Gumroad partial refunds aren't subtracted. A full refund drops out of revenue on every provider.</p>
         <h3>Are refunded orders still listed?</h3>
         <p>Yes. They stay in the order list, marked as refunded.</p>
         <h3>How do refunds show up in a CSV export?</h3>
@@ -250,7 +250,7 @@
         <div class="related">
             <a href="how-to-export-sales-data-csv.html">Export sales to CSV</a>
             <a href="how-to-see-all-indie-sales-one-dashboard.html">All sales in one dashboard</a>
-            <a href="how-to-track-stripe-revenue-mac-iphone.html">Track Stripe revenue</a>
+            <a href="how-to-track-lemonsqueezy-partial-refunds.html">Lemon Squeezy partial refunds</a>
         </div>
     </article>
     <footer style="padding: 40px 0 30px; border-top: 1px solid var(--border); text-align: center; margin-top: 60px;">

@@ -18,6 +18,8 @@ SaneSales is free under the MIT License. Every feature stays unlocked; donations
 - [How to Track Gumroad Sales on Mac & iPhone (2026)](https://sanesales.com/how-to-track-gumroad-sales-mac-iphone)
 - [How to Track LemonSqueezy Sales on Mac & iPhone (2026)](https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone)
 - [How to Track Refunds Across Sales Platforms (2026)](https://sanesales.com/how-to-track-refunds-across-platforms)
+- [How to See Stripe Subscription Renewals (2026)](https://sanesales.com/how-to-see-stripe-subscription-renewals)
+- [How to Track Lemon Squeezy Partial Refunds (2026)](https://sanesales.com/how-to-track-lemonsqueezy-partial-refunds)
 - [How to Track Sales on Apple Watch (2026)](https://sanesales.com/how-to-track-sales-apple-watch)
 - [How to Track Stripe Revenue on Mac & iPhone (2026)](https://sanesales.com/how-to-track-stripe-revenue-mac-iphone)
 - [How to Add Revenue Widgets to iPhone Home Screen (2026)](https://sanesales.com/how-to-use-sales-widgets-iphone)

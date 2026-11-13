@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to See Stripe Subscription Renewals (2026)</title>
+    <meta name="description" content="SaneSales lists every paid Stripe renewal as an order and counts it in revenue. Here is how to find them, and what it can&#x27;t show.">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="canonical" href="https://sanesales.com/how-to-see-stripe-subscription-renewals">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to See Stripe Subscription Renewals (2026)">
+  <meta property="og:description" content="SaneSales lists every paid Stripe renewal as an order and counts it in revenue. Here is how to find them, and what it can&#x27;t show.">
+  <meta property="og:url" content="https://sanesales.com/how-to-see-stripe-subscription-renewals">
+  <meta property="og:image" content="https://sanesales.com/images/og-image.png?v=20260616-card">
+  <meta property="og:image:secure_url" content="https://sanesales.com/images/og-image.png?v=20260616-card">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SaneSales preview card for indie revenue tracking">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://sanesales.com/how-to-see-stripe-subscription-renewals">
+  <meta name="twitter:title" content="How to See Stripe Subscription Renewals (2026)">
+  <meta name="twitter:description" content="SaneSales lists every paid Stripe renewal as an order and counts it in revenue. Here is how to find them, and what it can&#x27;t show.">
+  <meta name="twitter:image" content="https://sanesales.com/images/og-image.png?v=20260616-card">
+  <meta name="twitter:image:alt" content="SaneSales preview card for indie revenue tracking">
+    <meta name="theme-color" content="#08080c">
+    <meta property="og:site_name" content="SaneSales">
+    <meta name="twitter:site" content="@saneapps">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #08080c; --bg-card: #16161f; --accent: #4f8ffa; --accent-glow: rgba(79, 143, 250, 0.25); --text-primary: #f5f5f8; --text-secondary: #c0c0d0; --text-muted: #a0a0b0; --border: #252530; --success: #34d399; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.7; font-size: 18px; }
+        nav { padding: 20px 0; position: fixed; top: 0; left: 0; right: 0; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px); z-index: 100; border-bottom: 1px solid var(--border); }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        nav .container { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 1.25rem; text-decoration: none; color: var(--text-primary); }
+        .logo img { width: 32px; height: 32px; border-radius: 8px; }
+        article.container { padding: 220px 24px 100px !important; }
+        h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 3.5rem); line-height: 1.1; margin-bottom: 32px; }
+        h2 { font-family: 'Playfair Display', serif; font-size: 2rem; margin: 48px 0 20px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        p { margin-bottom: 24px; color: var(--text-secondary); }
+        .option-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 24px; }
+        .winner-card { border-color: var(--accent); background: linear-gradient(180deg, rgba(79, 143, 250, 0.05) 0%, var(--bg-card) 100%); }
+        .step-list { list-style: none; margin: 0; }
+        .step-list li { margin-bottom: 16px; display: flex; gap: 16px; font-size: 16px; }
+        .icon { flex-shrink: 0; width: 24px; text-align: center; font-weight: bold; color: var(--accent); }
+        .icon-check { color: var(--success); }
+        .cta-box { margin-top: 40px; text-align: center; }
+        .btn-large { display: inline-block; background: var(--accent); color: white; padding: 18px 48px; border-radius: 14px; text-decoration: none; font-weight: 700; transition: transform 0.3s; box-shadow: 0 8px 30px var(--accent-glow); }
+        .btn-large:hover { transform: translateY(-3px); }
+        footer { padding: 60px 0; border-top: 1px solid var(--border); text-align: center; color: var(--text-muted); font-size: 14px; }
+        footer a { color: var(--accent); text-decoration: none; }
+        @media (max-width: 768px) { article.container { padding-top: 140px !important; } h1 { font-size: 2rem; } }
+    
+/* Mobile Guide Guardrails */
+@media (max-width: 768px) {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: hidden;
+        font-size: 16px;
+        line-height: 1.65;
+    }
+
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    nav {
+        padding-top: 14px;
+        padding-bottom: 14px;
+    }
+
+    nav .container,
+    .nav-content,
+    .header-content {
+        gap: 10px;
+    }
+
+    .nav-links {
+        gap: 12px !important;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .nav-links a {
+        font-size: 0.88rem;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        padding: 8px 14px;
+    }
+
+    .header,
+    .hero {
+        padding-top: 140px !important;
+    }
+
+    h1 {
+        font-size: clamp(1.9rem, 8.2vw, 2.45rem) !important;
+        line-height: 1.18;
+        letter-spacing: -0.015em;
+        text-wrap: balance;
+    }
+
+    h2 {
+        font-size: clamp(1.35rem, 5.9vw, 1.78rem) !important;
+        line-height: 1.24;
+        text-wrap: balance;
+    }
+
+    h3 {
+        font-size: clamp(1.08rem, 4.9vw, 1.34rem) !important;
+        line-height: 1.3;
+        text-wrap: balance;
+    }
+
+    p,
+    li {
+        font-size: 0.98rem;
+        line-height: 1.65;
+        overflow-wrap: break-word;
+    }
+
+    article,
+    article.container {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+    }
+
+    .subtitle,
+    .tagline,
+    .header p,
+    .guide-card p,
+    .option-card p,
+    .support-text {
+        font-size: 0.98rem !important;
+        line-height: 1.65;
+        max-width: 68ch;
+    }
+
+    .guides-grid,
+    .apps-grid,
+    .faq-grid,
+    .pros-cons,
+    .comparison,
+    .highlight-content,
+    .sustainability-options {
+        grid-template-columns: 1fr !important;
+    }
+
+    .option-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    pre,
+    table,
+    .table-wrapper,
+    .comparison-table-wrapper,
+    .code-block {
+        max-width: 100%;
+    }
+
+    pre,
+    .table-wrapper,
+    .comparison-table-wrapper,
+    .code-block {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 520px;
+    }
+
+    .code-block,
+    pre {
+        font-size: 0.82rem;
+    }
+}
+
+
+            .faq h3 { margin-top: 28px; }
+        .related { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .related a { color: var(--accent); text-decoration: none; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; }
+    </style>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "How to See Stripe Subscription Renewals (2026)", "author": {"@type": "Person", "name": "Mr. Sane"}, "publisher": {"@type": "Organization", "name": "SaneSales", "url": "https://sanesales.com", "logo": {"@type": "ImageObject", "url": "https://sanesales.com/images/branding.png"}}, "datePublished": "2026-11-12", "dateModified": "2026-11-12", "image": "https://sanesales.com/images/og-image.png", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://sanesales.com/how-to-see-stripe-subscription-renewals"}, "description": "SaneSales lists every paid Stripe renewal as an order and counts it in revenue. Here is how to find them, and what it can't show."}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does SaneSales count Stripe renewals in revenue?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each paid renewal is a Stripe charge, and SaneSales counts every paid charge, minus any refund."}}, {"@type": "Question", "name": "Can SaneSales show which payments are renewals?", "acceptedAnswer": {"@type": "Answer", "text": "No. It treats every Stripe charge the same way. Search for a customer in Orders to see their payments in date order."}}, {"@type": "Question", "name": "Does SaneSales show MRR?", "acceptedAnswer": {"@type": "Answer", "text": "No. It shows revenue for days, months and custom ranges. It doesn't calculate MRR, ARR or churn."}}]}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "SaneSales", "item": "https://sanesales.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://sanesales.com/guides"}, {"@type": "ListItem", "position": 3, "name": "How to See Stripe Subscription Renewals", "item": "https://sanesales.com/how-to-see-stripe-subscription-renewals"}]}</script>
+</head>
+<body>
+    <nav><div class="container"><a href="index.html" class="logo"><img src="images/branding.png" alt="SaneSales"> SaneSales</a><a href="guides.html" style="color: var(--text-secondary); text-decoration: none;">&larr; All Guides</a></div></nav>
+    <article class="container">
+        <h1>How to See Stripe Subscription Renewals</h1>
+        <p>SaneSales reads your Stripe charges. Every paid charge becomes an order, so each subscription renewal shows up and counts toward revenue. What SaneSales doesn't do is mark a charge as a renewal or a first payment. Here is how to find renewals anyway, and what the app can't show you.</p>
+
+        <div class="option-card winner-card">
+            <h2>Find Renewal Payments</h2>
+            <ul class="step-list">
+                <li><span class="icon">1</span> <div>Connect Stripe in <strong>Settings</strong> with your secret key, from Developers, then API keys, in the Stripe Dashboard. The <a href="how-to-track-stripe-revenue-mac-iphone.html" style="color: var(--accent);">Stripe guide</a> has the details.</div></li>
+                <li><span class="icon">2</span> <div>Open <strong>Orders</strong>. If you have more than one store connected, pick <strong>Stripe</strong> in the provider filter. Then pick a range: <strong>Today</strong>, <strong>7D</strong>, <strong>30D</strong>, <strong>All</strong> or <strong>Custom</strong>.</div></li>
+                <li><span class="icon">3</span> <div>Search for the customer's name or email. Their charges list by date. A monthly plan should show one charge a month.</div></li>
+                <li><span class="icon">4</span> <div>Open an order to see the amount, the card brand and a <strong>Receipt</strong> link.</div></li>
+            </ul>
+            <div class="cta-box">
+                <a href="/download" class="btn-large">Download SaneSales</a>
+                <p style="margin-top: 14px; color: var(--text-secondary); font-size: 0.95rem;">Free and open source under the MIT License. Every feature stays unlocked. Donate if you want to support it.</p>
+            </div>
+        </div>
+
+        <h2>What SaneSales Shows</h2>
+        <ul class="step-list">
+            <li><span class="icon icon-check">&#10003;</span> <div>Each paid Stripe charge as one order, with its amount, date, and the customer's name and email from the charge's billing details.</div></li>
+            <li><span class="icon icon-check">&#10003;</span> <div>An order name taken from the description Stripe stored on the charge. If a charge has no description, it shows <strong>Stripe Payment</strong>. The product breakdown groups orders by that name.</div></li>
+            <li><span class="icon icon-check">&#10003;</span> <div>Renewal charges in your revenue totals, charts and widgets, minus any refunds.</div></li>
+        </ul>
+
+        <h2>Telling a Renewal From a New Sale</h2>
+        <p>Use the customer's history. If the same email paid you for the same plan before, a new charge from them is most likely a renewal. A first charge from an email you haven't seen is most likely a new subscriber. When you need to be sure, look the customer up in your Stripe Dashboard, which shows their subscription and invoices.</p>
+
+        <h2>What It Can't Show</h2>
+        <ul class="step-list">
+            <li><span class="icon">&times;</span> <div>No label that says a charge is a renewal or a first payment. SaneSales doesn't read Stripe invoices or subscriptions.</div></li>
+            <li><span class="icon">&times;</span> <div>No MRR, ARR, churn, count of active subscribers, or next renewal date.</div></li>
+            <li><span class="icon">&times;</span> <div>No failed renewals. SaneSales lists only charges that were paid.</div></li>
+        </ul>
+        <p>For those numbers, use the Subscriptions page in your Stripe Dashboard. SaneSales is for the money that came in: today, this month and over any range, next to your Lemon Squeezy and Gumroad sales.</p>
+
+        <section class="faq">
+        <h2>Questions</h2>
+        <h3>Does SaneSales count Stripe renewals in revenue?</h3>
+        <p>Yes. Each paid renewal is a Stripe charge, and SaneSales counts every paid charge, minus any refund.</p>
+        <h3>Can SaneSales show which payments are renewals?</h3>
+        <p>No. It treats every Stripe charge the same way. Search for a customer in Orders to see their payments in date order.</p>
+        <h3>Does SaneSales show MRR?</h3>
+        <p>No. It shows revenue for days, months and custom ranges. It doesn&#x27;t calculate MRR, ARR or churn.</p>
+        </section>
+
+        <h2>Related guides</h2>
+        <div class="related">
+            <a href="how-to-track-stripe-revenue-mac-iphone.html">Track Stripe revenue</a>
+            <a href="how-to-search-filter-orders-across-platforms.html">Search and filter orders</a>
+            <a href="how-to-view-revenue-charts-daily-breakdown.html">Revenue charts</a>
+        </div>
+    </article>
+    <footer style="padding: 40px 0 30px; border-top: 1px solid var(--border); text-align: center; margin-top: 60px;">
+        <div style="max-width: 800px; margin: 0 auto; padding: 0 24px;">
+            <div style="display: flex; gap: 24px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap;">
+                <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Home</a>
+                <a href="guides.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">All Guides</a>
+                <a href="https://github.com/sane-apps/SaneSales" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">GitHub</a>
+                <a href="privacy.html" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Privacy</a>
+                <a href="mailto:hi@saneapps.com" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem;">Contact</a>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Made with ❤️ in America by Mr. Sane &middot; &copy; 2026 SaneApps</p>
+        </div>
+    </footer>
+</body>
+</html>
