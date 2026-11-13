@@ -86,6 +86,14 @@ enum OrderStatus: String, Codable, Sendable {
         self = OrderStatus(rawValue: raw) ?? .unknown
     }
 
+    /// Maps a Lemon Squeezy order status. Lemon Squeezy marks a partly refunded order
+    /// "partial_refund"; it is still a paid order, and `refundedAmount` holds the refunded
+    /// part, so `netTotal` counts only what the seller kept.
+    static func lemonSqueezy(_ raw: String) -> OrderStatus {
+        if raw == "partial_refund" { return .paid }
+        return OrderStatus(rawValue: raw) ?? .unknown
+    }
+
     var displayName: String {
         rawValue.capitalized
     }

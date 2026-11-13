@@ -42,7 +42,7 @@ actor LemonSqueezyProvider: SalesProvider {
             return Order(
                 id: item.id,
                 orderNumber: attrs.orderNumber,
-                status: OrderStatus(rawValue: attrs.status) ?? .unknown,
+                status: OrderStatus.lemonSqueezy(attrs.status),
                 total: attrs.total,
                 subtotal: attrs.subtotal,
                 tax: attrs.tax,

@@ -92,6 +92,106 @@ struct ProviderTests {
         #expect(orders[0].netTotal == 750)
     }
 
+    @Test("Lemon Squeezy: partial_refund orders count as revenue minus the refund")
+    func lemonSqueezyPartialRefundCountsNetRevenue() async throws {
+        let mockSessionID = UUID().uuidString
+        let session = makeMockSession(sessionID: mockSessionID)
+        defer { MockURLProtocol.removeHandler(sessionID: mockSessionID) }
+
+        MockURLProtocol.withHandler(sessionID: mockSessionID) { request in
+            guard let url = request.url else {
+                throw URLError(.badURL)
+            }
+            guard url.path == "/v1/orders" else {
+                return (HTTPURLResponse(url: url, statusCode: 404, httpVersion: nil, headerFields: nil)!, Data())
+            }
+            return try makeJSONResponse(
+                url: url,
+                json: """
+                {
+                  "data": [
+                    {
+                      "id": "1",
+                      "type": "orders",
+                      "attributes": {
+                        "status": "partial_refund",
+                        "total": 5000,
+                        "currency": "USD",
+                        "user_email": "buyer@example.com",
+                        "user_name": "Buyer",
+                        "refunded": false,
+                        "refunded_at": null,
+                        "refunded_amount": 2000,
+                        "first_order_item": { "product_name": "Widget", "variant_name": null },
+                        "created_at": "2026-01-15T10:30:00Z"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "type": "orders",
+                      "attributes": {
+                        "status": "paid",
+                        "total": 1000,
+                        "currency": "USD",
+                        "user_email": "other@example.com",
+                        "user_name": "Other",
+                        "refunded": false,
+                        "refunded_at": null,
+                        "refunded_amount": 0,
+                        "first_order_item": { "product_name": "Widget", "variant_name": null },
+                        "created_at": "2026-01-16T10:30:00Z"
+                      }
+                    },
+                    {
+                      "id": "3",
+                      "type": "orders",
+                      "attributes": {
+                        "status": "refunded",
+                        "total": 700,
+                        "currency": "USD",
+                        "user_email": "third@example.com",
+                        "user_name": "Third",
+                        "refunded": true,
+                        "refunded_at": "2026-01-18T10:30:00Z",
+                        "refunded_amount": 700,
+                        "first_order_item": { "product_name": "Widget", "variant_name": null },
+                        "created_at": "2026-01-17T10:30:00Z"
+                      }
+                    }
+                  ],
+                  "meta": { "page": { "lastPage": 1 } }
+                }
+                """
+            )
+        }
+
+        let provider = LemonSqueezyProvider(apiKey: "ls_test_123", session: session)
+        let orders = try await provider.fetchAllOrders()
+
+        #expect(orders.count == 3)
+        let partial = try #require(orders.first { $0.id == "1" })
+        #expect(partial.status == .paid)
+        #expect(partial.isRefunded)
+        #expect(partial.refundedAmount == 2000)
+        #expect(partial.netTotal == 3000)
+        #expect(orders.first { $0.id == "3" }?.status == .refunded)
+
+        let metrics = SalesMetrics.compute(from: orders)
+        #expect(metrics.allTimeRevenue == 4000) // 5000 - 2000 refunded, plus 1000; the full refund counts 0
+        #expect(metrics.allTimeOrders == 2)
+        #expect(metrics.productBreakdown.first?.revenue == 4000)
+    }
+
+    @Test("Lemon Squeezy status mapping keeps other statuses")
+    func lemonSqueezyStatusMapping() {
+        #expect(OrderStatus.lemonSqueezy("partial_refund") == .paid)
+        #expect(OrderStatus.lemonSqueezy("paid") == .paid)
+        #expect(OrderStatus.lemonSqueezy("refunded") == .refunded)
+        #expect(OrderStatus.lemonSqueezy("pending") == .pending)
+        #expect(OrderStatus.lemonSqueezy("failed") == .failed)
+        #expect(OrderStatus.lemonSqueezy("fraudulent") == .unknown)
+    }
+
     @Test("Gumroad: follows next_page_url pagination")
     func gumroadPagination() async throws {
         let mockSessionID = UUID().uuidString
