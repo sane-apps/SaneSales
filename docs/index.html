@@ -32,11 +32,6 @@
   <meta name="twitter:image" content="https://sanesales.com/images/og-image-20260827.png?v=20260827-card">
   <meta name="twitter:image:alt" content="SaneSales preview card for indie revenue tracking">
 
-    <meta property="og:video" content="https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17">
-    <meta property="og:video:secure_url" content="https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17">
-    <meta property="og:video:type" content="video/mp4">
-    <meta property="og:video:width" content="1920">
-    <meta property="og:video:height" content="1080">
     <meta property="og:site_name" content="SaneSales">
     <meta property="og:locale" content="en_US">
 
@@ -88,29 +83,6 @@
     }
     </script>
 
-    <!-- Structured Data - Launch Video -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "VideoObject",
-      "name": "SaneSales Walkthrough",
-      "description": "See SaneSales across Mac, iPhone, iPad and Apple Watch: private sales tracking, charts, order history, CSV export, widgets and menu bar revenue.",
-      "thumbnailUrl": "https://sanesales.com/images/sanesales-launch-video-poster.png?v=164297c4cc17",
-      "uploadDate": "2026-05-14",
-      "duration": "PT56S",
-      "contentUrl": "https://sanesales.com/videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17",
-      "embedUrl": "https://www.youtube.com/embed/FmyGTWpBF4M",
-      "sameAs": "https://youtu.be/FmyGTWpBF4M",
-      "publisher": {
-        "@type": "Organization",
-        "name": "SaneSales",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://sanesales.com/images/branding.png"
-        }
-      }
-    }
-    </script>
 
     <!-- Structured Data - FAQ -->
     <script type="application/ld+json">
@@ -759,9 +731,10 @@
         margin: 0 auto 44px;
     }
 
-    .launch-video video {
+    .launch-video img {
         display: block;
         width: 100%;
+        height: auto;
         aspect-ratio: 16 / 9;
         border-radius: 8px;
         background: #05070c;
@@ -2129,15 +2102,7 @@
             <h2 class="hero-proof-heading animate-in delay-4">See it in action</h2>
             <p class="section-subtitle hero-carousel-subtitle animate-in delay-4">Built for makers who want one private read on what sold today.</p>
             <div class="launch-video animate-in delay-5">
-                <video
-                    controls
-                    preload="metadata"
-                    playsinline
-                    poster="images/sanesales-launch-video-poster.png?v=164297c4cc17"
-                    aria-label="SaneSales launch video showing Mac, iPhone, iPad, and Apple Watch"
-                >
-                    <source src="videos/sanesales-launch-week-pro-all-devices.mp4?v=164297c4cc17" type="video/mp4">
-                </video>
+                <img src="images/sanesales-launch-video-poster.png?v=164297c4cc17" alt="SaneSales on Mac, iPhone and Apple Watch" width="1920" height="1080" loading="lazy">
             </div>
             <div class="screenshot-tabs animate-in delay-5">
                 <button class="screenshot-tab active" data-screen="dashboard" onclick="showScreen('dashboard', this)">Dashboard</button>
