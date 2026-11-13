@@ -2,103 +2,97 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sanesales.com/</loc>
-    <lastmod>2026-06-16</lastmod>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/download</loc>
-    <lastmod>2026-08-18</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://sanesales.com/guides.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/guides</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-export-sales-data-csv.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-export-sales-data-csv</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-search-filter-orders-across-platforms.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-search-filter-orders-across-platforms</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-see-all-indie-sales-one-dashboard.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-see-all-indie-sales-one-dashboard</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-see-revenue-mac-menu-bar.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-see-revenue-mac-menu-bar</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-track-gumroad-sales-mac-iphone.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-track-gumroad-sales-mac-iphone</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-track-refunds-across-platforms.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-track-refunds-across-platforms</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-track-sales-apple-watch.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-track-sales-apple-watch</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-track-stripe-revenue-mac-iphone.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-track-stripe-revenue-mac-iphone</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-use-sales-widgets-iphone.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-use-sales-widgets-iphone</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-use-sanesales-demo-mode.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-use-sanesales-demo-mode</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/how-to-view-revenue-charts-daily-breakdown.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/how-to-view-revenue-charts-daily-breakdown</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/privacy.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/privacy</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://sanesales.com/sanesales-vs-spreadsheets.html</loc>
-    <lastmod>2026-06-16</lastmod>
+    <loc>https://sanesales.com/sanesales-vs-spreadsheets</loc>
+    <lastmod>2026-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

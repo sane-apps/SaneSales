@@ -1,17 +1,26 @@
 # SaneSales
 
-> Private native revenue tracker for indie sellers using Lemon Squeezy, Gumroad, and Stripe. Mac, iPhone, iPad, Apple Watch, widgets, menu bar, and CSV export.
+> Free, private sales tracker for indie sellers on Lemon Squeezy, Gumroad and Stripe. Mac, iPhone, iPad, Apple Watch, widgets, menu bar and CSV export.
+
+SaneSales is free under the MIT License. Every feature stays unlocked; donations are optional.
 
 ## Key pages
-- https://sanesales.com/
-- https://sanesales.com/guides.html
-- https://sanesales.com/how-to-export-sales-data-csv.html
-- https://sanesales.com/how-to-search-filter-orders-across-platforms.html
-- https://sanesales.com/how-to-see-all-indie-sales-one-dashboard.html
-- https://sanesales.com/how-to-see-revenue-mac-menu-bar.html
-- https://sanesales.com/how-to-track-gumroad-sales-mac-iphone.html
-- https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone.html
-- https://sanesales.com/how-to-track-refunds-across-platforms.html
-- https://sanesales.com/how-to-track-sales-apple-watch.html
-- https://sanesales.com/how-to-track-stripe-revenue-mac-iphone.html
+- [Home](https://sanesales.com/)
+- [Guides](https://sanesales.com/guides)
+- [Support](https://sanesales.com/support)
+- [Privacy](https://sanesales.com/privacy)
 
+## Guides
+- [How to Export Lemon Squeezy, Gumroad & Stripe Sales to CSV](https://sanesales.com/how-to-export-sales-data-csv)
+- [How to Search & Filter Orders Across Platforms (2026)](https://sanesales.com/how-to-search-filter-orders-across-platforms)
+- [How to See All Indie Sales in One Dashboard (2026)](https://sanesales.com/how-to-see-all-indie-sales-one-dashboard)
+- [How to See Revenue in Your Mac Menu Bar (2026)](https://sanesales.com/how-to-see-revenue-mac-menu-bar)
+- [How to Track Gumroad Sales on Mac & iPhone (2026)](https://sanesales.com/how-to-track-gumroad-sales-mac-iphone)
+- [How to Track LemonSqueezy Sales on Mac & iPhone (2026)](https://sanesales.com/how-to-track-lemonsqueezy-sales-mac-iphone)
+- [How to Track Refunds Across Sales Platforms (2026)](https://sanesales.com/how-to-track-refunds-across-platforms)
+- [How to Track Sales on Apple Watch (2026)](https://sanesales.com/how-to-track-sales-apple-watch)
+- [How to Track Stripe Revenue on Mac & iPhone (2026)](https://sanesales.com/how-to-track-stripe-revenue-mac-iphone)
+- [How to Add Revenue Widgets to iPhone Home Screen (2026)](https://sanesales.com/how-to-use-sales-widgets-iphone)
+- [How to View Revenue Charts with Daily Breakdown (2026)](https://sanesales.com/how-to-view-revenue-charts-daily-breakdown)
+- [How to Try SaneSales with Demo Data (2026)](https://sanesales.com/how-to-use-sanesales-demo-mode)
+- [SaneSales vs Spreadsheets for Indie Sales Tracking (2026)](https://sanesales.com/sanesales-vs-spreadsheets)
