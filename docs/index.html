@@ -143,7 +143,7 @@
           "name": "Does it track subscriptions and recurring revenue?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "SaneSales tracks all orders including subscription payments. Each renewal shows as an order with revenue. It doesn't calculate MRR or ARR."
+            "text": "Stripe and Gumroad renewals each show as an order with revenue, because each renewal is a new charge or sale. Lemon Squeezy renewals don't show: Lemon Squeezy bills them as subscription invoices, not orders, and SaneSales reads orders. It doesn't calculate MRR or ARR."
           }
         },
         {
@@ -2556,7 +2556,7 @@
                         Does it track subscriptions and recurring revenue?
                         <svg class="faq-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                     </button>
-                    <div class="faq-answer"><div class="faq-answer-inner">SaneSales tracks all orders including subscription payments. Each renewal shows as an order with revenue. It doesn't calculate MRR or ARR.</div></div>
+                    <div class="faq-answer"><div class="faq-answer-inner">Stripe and Gumroad renewals each show as an order with revenue, because each renewal is a new charge or sale. Lemon Squeezy renewals don't show: Lemon Squeezy bills them as subscription invoices, not orders, and SaneSales reads orders. It doesn't calculate MRR or ARR.</div></div>
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" onclick="toggleFaq(this)">
